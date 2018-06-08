@@ -34,8 +34,7 @@ namespace Insurance.Domain.Code
             {
                 if (!_initHasRun)
                 {
-                    _initHasRun = true;
-                    SvConstraints.Instance.Init();
+                    _initHasRun = true;                  
                    
 
                     // set system wide severity
