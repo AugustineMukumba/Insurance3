@@ -13,7 +13,7 @@ namespace Insurance.Domain.Code
 
 		public void InitDb()
 		{
-			WebSecurity.InitializeDatabaseConnection(InsuranceContext.ConnectionString, "System.Data.SqlClient", "User", "Id", "UserId", true);
+			
 
 			//foreach(var role in SvConstraints.Instance.SvRoles)
 			//{

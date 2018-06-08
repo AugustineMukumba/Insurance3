@@ -196,9 +196,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -282,6 +279,10 @@
     <ProjectReference Include="..\Insurance.Domain\Insurance.Domain.csproj">
       <Project>{91022542-0a04-430f-afe0-d0172c5c866e}</Project>
       <Name>Insurance.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InsuranceClaim.Models\InsuranceClaim.Models.csproj">
+      <Project>{a9c210c8-31c7-4d42-9ac4-c710d25e7057}</Project>
+      <Name>InsuranceClaim.Models</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
