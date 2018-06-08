@@ -111,7 +111,6 @@
     <Compile Include="Code\Logging\ObserverLogToStdOut.cs" />
     <Compile Include="Code\RunMgr\LoggedIn.cs" />
     <Compile Include="Code\RunMgr\RunMgr.cs" />
-    <Compile Include="Code\Settings\Constraints.cs" />
     <Compile Include="Code\Settings\CustomAssembly.cs" />
     <Compile Include="Data\Data.partial.cs" />
     <Compile Include="Data\InsuranceData.cs" />
