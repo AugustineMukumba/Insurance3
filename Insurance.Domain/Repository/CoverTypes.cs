@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Insurance.Domain
 {
 
-    public partial class CoverTypes : Entity<CoverType>
+    public partial class CoverTypes : Repository<CoverType>
     {
     }
 }

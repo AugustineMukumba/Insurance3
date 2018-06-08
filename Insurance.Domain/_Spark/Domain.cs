@@ -40,7 +40,7 @@ namespace Insurance.Domain
         public AgentCommission() { }
         public AgentCommission(bool defaults) : base(defaults) { }
 
-        public int AgentCommissionId { get; set; }
+        public int Id { get; set; }
         public string CommissionName { get; set; }
         public float? CommissionAmount { get; set; }
         public DateTime? CreatedOn { get; set; }
@@ -55,7 +55,7 @@ namespace Insurance.Domain
         public BusinessSource() { }
         public BusinessSource(bool defaults) : base(defaults) { }
 
-        public int BusinessSourceId { get; set; }
+        public int Id { get; set; }
         public string Source { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
@@ -69,7 +69,7 @@ namespace Insurance.Domain
         public CoverType() { }
         public CoverType(bool defaults) : base(defaults) { }
 
-        public int CoverTypeId { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
@@ -84,7 +84,8 @@ namespace Insurance.Domain
         public Customer(bool defaults) : base(defaults) { }
 
         public int Id { get; set; }
-        public int UserID { get; set; }
+        public decimal CustomerId { get; set; }
+        public string UserID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string AddressLine1 { get; set; }
@@ -147,7 +148,7 @@ namespace Insurance.Domain
         public PaymentMethod() { }
         public PaymentMethod(bool defaults) : base(defaults) { }
 
-        public int PaymentMethodId { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
@@ -161,7 +162,7 @@ namespace Insurance.Domain
         public PaymentTerm() { }
         public PaymentTerm(bool defaults) : base(defaults) { }
 
-        public int PaymentTermId { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
@@ -271,7 +272,7 @@ namespace Insurance.Domain
         public VehicleMake() { }
         public VehicleMake(bool defaults) : base(defaults) { }
 
-        public int? MakeId { get; set; }
+        public int? Id { get; set; }
         public string Name { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
@@ -285,7 +286,7 @@ namespace Insurance.Domain
         public VehicleModel() { }
         public VehicleModel(bool defaults) : base(defaults) { }
 
-        public int ModelId { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
@@ -300,7 +301,7 @@ namespace Insurance.Domain
         public BasicExcess(bool defaults) : base(defaults) { }
 
         public int Id { get; set; }
-        public string Type { get; set; }
+        public string ExcessType { get; set; }
         public decimal? TotalLoss { get; set; }
         public decimal? PartialLoss { get; set; }
         public decimal? OutSideOfZimbabwe { get; set; }
@@ -342,7 +343,7 @@ namespace Insurance.Domain
         public decimal? ExcessAmount { get; set; }
         public string Description { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public int? Createdby { get; set; }
+        public int? CreatedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
         public bool? IsActive { get; set; }

@@ -42,7 +42,9 @@ namespace Insurance.Domain
         public static VehicleDetails VehicleDetails { get { return new VehicleDetails(); } }
         public static VehicleMakes VehicleMakes { get { return new VehicleMakes(); } }
         public static VehicleModels VehicleModels { get { return new VehicleModels(); } }
-
+        public static BasicExcesses BasicExcesses { get { return new BasicExcesses(); } }
+        public static AgeExcesses AgeExcesses { get { return new AgeExcesses(); } }
+        public static SpecificExcesses SpecificExcesses { get { return new SpecificExcesses(); } }
         // general purpose operations
 
         public static void Execute(string sql, params object[] parms) { db.Execute(sql, parms); }

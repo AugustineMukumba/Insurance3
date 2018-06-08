@@ -21,7 +21,7 @@ namespace InsuranceClaim.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("Insurance", throwIfV1Schema: false)
         {
         }
 

@@ -1,167 +1,190 @@
-﻿
+﻿@model InsuranceClaim.Models.CustomerModel
 @{
     ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
-<h2>Index</h2>
-<style>
-    .centered-form {
-        margin-top: 60px;
-    }
+<html lang="en">
+<head>
+</head>
+<body>
+    <div class="top-banner-section">
+        <div class="container">
+            <div class="car-insurance-content">
+                <h2>Get Car Insurance In Less<br>Than 5 Minutes<h2>
+            </div>
+        </div>
+    </div>
 
-        .centered-form .panel {
-            background: rgba(255, 255, 255, 0.8);
-            box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;
-        }
-
-    #errmsg {
-        color: red;
-    }
-</style>
-<div class="container">
-    <div class="row centered-form">
-        <!--Customer Info-->
-        <div class="col-xs-12 col-sm-8 col-sm-offset-2" id="DivCustomerRegistration">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Customer Registration</h3>
-                </div>
-                <div class="panel-body">
-                    <form id="formCustomer" method="post">
-                        <div class="row">
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <input type="text" name="first_name" id="first_name" class="form-control input-sm" placeholder="First Name">
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <input type="text" name="last_name" id="last_name" class="form-control input-sm" placeholder="Last Name">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <input type="text" name="address1" id="address1" class="form-control input-sm" placeholder="Address1">
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <input type="text" class="form-control input-sm" name="Address2" id="Address2" placeholder="Address2" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <input type="text" name="Country" id="Country" class="form-control input-sm" placeholder="Country">
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <input type="text" class="form-control input-sm" name="state" id="state" placeholder="State" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <input type="text" name="City" id="City" class="form-control input-sm" placeholder="City">
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <input type="text" class="form-control input-sm" name="zip_code" id="zip_code" placeholder="Zip Code" />
-                                </div>
-                            </div>
+    <div class="body-content-section">
+        <div class="Process-step-section">
+            <div class="container">
+                <div class="row bs-wizard">
+                    <div class="process-block">
+                        <div class="col-xs-2 bs-wizard-step active">
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="#" class="bs-wizard-dot"></a>
+                            <div class="text-center bs-wizard-stepnum">Client Details</div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <input type="date" name="DateofBirth" id="DateofBirth" class="form-control input-sm" placeholder="DOB">
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <input type="text" class="form-control input-sm" id="phone_number" name="phone_number" placeholder="Phone Number" /><span id="errmsg"></span>
-                                </div>
-                            </div>
+                        <div class="col-xs-2 bs-wizard-step disabled">
+                            <!-- complete -->
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="#" class="bs-wizard-dot"></a>
+                            <div class="text-center bs-wizard-stepnum">Product Details</div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <select class="form-control input-sm" id="customer_gender" name="customer_gender">
-                                        <option value="0">Select Gender</option>
-                                        <option value="1">Male</option>
-                                        <option value="2">Female</option>
-                                    </select>
-                                </div>
-                            </div>
+                        <div class="col-xs-2 bs-wizard-step disabled">
+                            <!-- complete -->
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="#" class="bs-wizard-dot"></a>
+                            <div class="text-center bs-wizard-stepnum">Risk Details</div>
                         </div>
-                        <input type="submit" value="Next" id="buttonNextCustomer" class="btn btn-info btn-block pull-right">
-                    </form>
+
+                        <div class="col-xs-2 bs-wizard-step disabled">
+                            <!-- active -->
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="#" class="bs-wizard-dot"></a>
+                            <div class="text-center bs-wizard-stepnum">Summay Details</div>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step disabled">
+                            <!-- active -->
+
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="#" class="bs-wizard-dot"></a>
+                            <div class="text-center bs-wizard-stepnum">Payment Details</div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!--Product Info-->
-        @*<div class="col-xs-12 col-sm-8 col-sm-offset-2" id="DivProductInfo">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Product Info</h3>
-                    </div>
-                    <div class="panel-body">
-                        <form role="form">
-                            <div class="row">
-                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                    <div class="form-group">
-                                        <input type="text" name="first_name" id="first_name" class="form-control input-sm" placeholder="Customer Name">
-                                    </div>
-                                </div>
-                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                    <div class="form-group">
-                                        <input type="text" name="last_name" id="last_name" class="form-control input-sm" placeholder="Contact Number">
-                                    </div>
-                                </div>
+        <div class="form-section-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-section-col">
+                        <div class="form-group-section">
+                            <div class="form-title">
+                                <h4>Client Details</h4>
                             </div>
-                            <div class="row">
-                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                    <div class="form-group">
-                                        <input type="email" name="email" id="email" class="form-control input-sm" placeholder="Email Address">
+                            <div class="form-group-input">
+                                @*@using (Ajax.BeginForm("SaveCustomerData", "CustomerRegistration", new AjaxOptions { UpdateTargetId = "CustomerResult", OnSuccess = "GoToProductDetail" }))*@
+                                @using (Ajax.BeginForm("SaveCustomerData", "CustomerRegistration", null, new AjaxOptions() { OnSuccess = "GoToProductDetail" }, null))
+                                {
+                                    <input type="hidden" id="clinetId" name="clinetId" />
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", @name = "FirstName", @autocomplete = "off", @id = "FirstName", @placeholder = "First Name" })
+                                                @Html.ValidationMessageFor(x => x.FirstName, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", @name = "LastName", @autocomplete = "off", @id = "LastName", @placeholder = "Last Name" })
+                                                @Html.ValidationMessageFor(x => x.LastName, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                    <div class="form-group">
-                                        <textarea class="form-control input-sm" placeholder="Address"></textarea>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.EmailAddress, new { @class = "form-control", @name = "EmailAddress", @autocomplete = "off", @id = "EmailAddress", @placeholder = "Email Address" })
+                                                @Html.ValidationMessageFor(x => x.EmailAddress, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control", @name = "PhoneNumber", @autocomplete = "off", @id = "PhoneNumber", @placeholder = "Phone Number" })
+                                                @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                    <div class="form-group">
-                                        <input type="date" name="DateofBirth" id="DateofBirth" class="form-control input-sm" placeholder="DOB">
+                                    <div class="row">
+                                        <div class="col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.Gender, new { @class = "gender-label" })
+                                                <div class="form-group-label">
+                                                    <label>@Html.RadioButtonFor(model => model.Gender, "Male", true)<span class="outside"><span class="inside"></span></span><strong>Male</strong></label>
+                                                    <label>@Html.RadioButtonFor(model => model.Gender, "Female", true)<span class="outside"><span class="inside"></span></span><strong>Female</strong></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.DateOfBirth, new { @class = "gender-label" })
+                                                <div class="form-group-label">
+                                                    @Html.TextBoxFor(x => x.DateOfBirth, new { @class = "form-control", @name = "DateOfBirth", @autocomplete = "off", @id = "DateOfBirth", @placeholder = "DOB", @type = "date" })
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                    <div class="form-group">
-                                        <select class="form-control input-sm">
-                                            <option value="0">Select Gender</option>
-                                            <option value="1">Male</option>
-                                            <option value="2">Female</option>
-                                        </select>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.AddressLine1, new { @class = "form-control", @name = "AddressLine1", @autocomplete = "off", @id = "AddressLine1", @placeholder = "AddressLine1" })
+                                                @Html.ValidationMessageFor(x => x.AddressLine1, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.AddressLine2, new { @class = "form-control", @name = "AddressLine2", @autocomplete = "off", @id = "AddressLine2", @placeholder = "AddressLine2" })
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.Country, new { @class = "form-control", @name = "Country", @autocomplete = "off", @id = "Country", @placeholder = "Country" })
+                                                @Html.ValidationMessageFor(x => x.Country, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.State, new { @class = "form-control", @name = "State", @autocomplete = "off", @id = "State", @placeholder = "State" })
+                                                @Html.ValidationMessageFor(x => x.State, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.City, new { @class = "form-control", @name = "City", @autocomplete = "off", @id = "City", @placeholder = "City" })
+                                                @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.Zipcode, new { @class = "form-control", @name = "Zipcode", @autocomplete = "off", @id = "Zipcode", @placeholder = "Zip Code" })
+                                                @Html.ValidationMessageFor(x => x.Zipcode, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
 
-                            <input type="submit" value="Next" class="btn btn-info btn-block pull-right">
 
-                        </form>
+                                    <div class="col-md-12 next-btn">
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6">
+
+                                            </div>
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="text-right">
+                                                    <button type="submit" id="buttonNext" class="btn">Next</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>*@
+            </div>
+        </div>
     </div>
-</div>
 
-<script src="~/Scripts/CustomerRegistration/CustomerRegistration.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="~/Scripts/CustomerRegistration/CustomerRegistration.js"></script>
+</body>
+</html>

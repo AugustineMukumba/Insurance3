@@ -114,7 +114,9 @@
     <Compile Include="Code\Settings\CustomAssembly.cs" />
     <Compile Include="Data\Data.partial.cs" />
     <Compile Include="Data\InsuranceData.cs" />
+    <Compile Include="Domain\AgeExcess.cs" />
     <Compile Include="Domain\AgentCommission.cs" />
+    <Compile Include="Domain\BasicExcess.cs" />
     <Compile Include="Domain\BusinessSource.cs" />
     <Compile Include="Domain\CoverType.cs" />
     <Compile Include="Domain\Currency.cs" />
@@ -126,12 +128,15 @@
     <Compile Include="Domain\PaymentTerm.cs" />
     <Compile Include="Domain\PolicyDetail.cs" />
     <Compile Include="Domain\PolicyStatus.cs" />
+    <Compile Include="Domain\SpecificExcess.cs" />
     <Compile Include="Domain\SummaryDetail.cs" />
     <Compile Include="Domain\VehicleDetail.cs" />
     <Compile Include="Domain\VehicleMake.cs" />
     <Compile Include="Domain\VehicleModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\AgeExcesses.cs" />
     <Compile Include="Repository\AgentCommissions.cs" />
+    <Compile Include="Repository\BasicExcesses.cs" />
     <Compile Include="Repository\BusinessSources.cs" />
     <Compile Include="Repository\CoverTypes.cs" />
     <Compile Include="Repository\Currencies.cs" />
@@ -143,6 +148,7 @@
     <Compile Include="Repository\PolicyDetails.cs" />
     <Compile Include="Repository\PolicyStatuses.cs" />
     <Compile Include="Repository\Repository.partial.cs" />
+    <Compile Include="Repository\SpecificExcesses.cs" />
     <Compile Include="Repository\SummaryDetails.cs" />
     <Compile Include="Repository\VehicleDetails.cs" />
     <Compile Include="Repository\VehicleMakes.cs" />

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Insurance.Domain
 {
   
-    public partial class VehicleMakes : Entity<VehicleMake>
+    public partial class VehicleMakes : Repository<VehicleMake>
     {
     }
 }

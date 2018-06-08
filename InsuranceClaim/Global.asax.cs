@@ -1,4 +1,7 @@
-﻿using Insurance.Domain.Code;
+﻿using AutoMapper;
+using Insurance.Domain;
+using Insurance.Domain.Code;
+using InsuranceClaim.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +21,15 @@ namespace InsuranceClaim
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             RunMgr.Instance.Init();
+            Map();
+           
+        }
+        private void Map()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Customer, CustomerModel>().ReverseMap();               
+            });
         }
     }
 }
