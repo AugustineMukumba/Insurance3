@@ -16,7 +16,7 @@ namespace Insurance.Domain.Code
 
 		// private constructor. 
 		private NfCmdLineMgr()
-		{
+		{ 
 			Debug = false;
 			ExitApp = false;
 			AutoRun = false;
