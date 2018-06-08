@@ -1,0 +1,171 @@
+﻿@model InsuranceClaim.Models.PolicyDetailModel
+@{
+    ViewBag.Title = "ProductDetail";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+    <div class="top-banner-section">
+        <div class="container">
+            <div class="car-insurance-content">
+                <h2>Get Car Insurance In Less<br>Than 5 Minutes<h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="body-content-section">
+        <div class="Process-step-section">
+            <div class="container">
+                <div class="row bs-wizard">
+                    <div class="process-block">
+                        <div class="col-xs-2 bs-wizard-step complete">
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="#" class="bs-wizard-dot"></a>
+                            <div class="text-center bs-wizard-stepnum">Client Details</div>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step active">
+                            <!-- complete -->
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="#" class="bs-wizard-dot"></a>
+                            <div class="text-center bs-wizard-stepnum">Product Details</div>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step disabled">
+                            <!-- complete -->
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="#" class="bs-wizard-dot"></a>
+                            <div class="text-center bs-wizard-stepnum">Risk Details</div>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step disabled">
+                            <!-- active -->
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="#" class="bs-wizard-dot"></a>
+                            <div class="text-center bs-wizard-stepnum">Summay Details</div>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step disabled">
+                            <!-- active -->
+
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="#" class="bs-wizard-dot"></a>
+                            <div class="text-center bs-wizard-stepnum">Payment Details</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-section-col">
+                        <div class="form-group-section">
+                            <div class="form-title">
+                                <h4>Product Details</h4>
+                            </div>
+                            <div class="form-group-input">
+                                @using (Ajax.BeginForm("SavePolicyData", "CustomerRegistration", null, new AjaxOptions() { OnSuccess = "GoToProductDetail" }, null))
+                                {
+                                    @Html.HiddenFor(x => x.InsurerId,new {@Value=ViewBag.InsurerId });
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.PolicyName, new { @class = "form-control", @name = "PolicyName", @autocomplete = "off", @id = "PolicyName", @placeholder = "Policy Name" })
+                                                @Html.ValidationMessageFor(x => x.PolicyName, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.PolicyNumber, new { @class = "form-control", @name = "PolicyNumber", @autocomplete = "off", @id = "PolicyNumber", @placeholder = "Policy Number", @Value = ViewBag.Policynumber, @readonly = "readonly" })
+                                                @Html.ValidationMessageFor(x => x.PolicyNumber, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" autocomplete="off" id="insurer_name" name="insurer_name" value="@ViewBag.InsurerName" />                                                
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                            <div class="form-group">
+                                                @Html.DropDownListFor(x => x.PolicyStatusId, new SelectList(ViewBag.PoliCyStatus, "Id", "Status"), new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 form-group-select">
+                                            <div class="form-group">
+                                                @Html.DropDownListFor(x => x.CurrencyId, new SelectList(ViewBag.Currency, "Id", "Name"), new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.StartDate, new { @class = "form-control calender", @type = "date", @name = "StartDate", @autocomplete = "off", @id = "StartDate", @placeholder = "Policy start date" })
+                                                @Html.ValidationMessageFor(x => x.StartDate, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.EndDate, new { @class = "form-control calender", @type = "date", @name = "EndDate", @autocomplete = "off", @id = "EndDate", @placeholder = "Policy end date" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.RenewalDate, new { @class = "form-control calender", @type = "date", @name = "RenewalDate", @autocomplete = "off", @id = "RenewalDate", @placeholder = "Policy Renewal Date" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(x => x.TransactionDate, new { @class = "form-control calender", @name = "TransactionDate", @autocomplete = "off", @id = "TransactionDate", @placeholder = "Policy Transaction/Effective Date", @type = "date" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12 form-group-select">
+                                            <div class="form-group">
+                                                @Html.DropDownListFor(x => x.BusinessSourceId, new SelectList(ViewBag.BusinessSource, "Id", "Source"), new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12 next-btn">
+                                            <div class="row">
+                                                <div class="col-sm-6 col-md-6">
+                                                    <div class="text-left">
+                                                        <div class="back-left"><button type="submit" class="btn">Back</button></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6">
+                                                    <div class="text-right">
+                                                        <button type="submit" class="btn">Next</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
