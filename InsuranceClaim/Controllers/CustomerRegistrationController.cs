@@ -42,7 +42,7 @@ namespace InsuranceClaim.Controllers
             ViewBag.Currency = InsuranceContext.Currencies.All().ToList();
             ViewBag.PoliCyStatus = InsuranceContext.PolicyStatuses.All().ToList();
             ViewBag.BusinessSource = InsuranceContext.BusinessSources.All().ToList();
-            var objList = InsuranceContext.PolicyDetails.All().OrderByDescending(x => x.Id).ToList();
+            var objList = InsuranceContext.PolicyDetails.All(orderBy:"Id desc",top:1).ToList();
             if (objList.Count > 0)
             {
                 ViewBag.PolicyNumber = objList.FirstOrDefault().PolicyNumber;

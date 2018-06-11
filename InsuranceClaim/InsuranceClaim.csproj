@@ -311,9 +311,9 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Insurance.Domain\Insurance.Domain.csproj">
-      <Project>{91022542-0a04-430f-afe0-d0172c5c866e}</Project>
-      <Name>Insurance.Domain</Name>
+    <ProjectReference Include="..\Insurance.Service\Insurance.Service.csproj">
+      <Project>{bd3294a3-8556-496a-8454-5f0b25b85c45}</Project>
+      <Name>Insurance.Service</Name>
     </ProjectReference>
     <ProjectReference Include="..\InsuranceClaim.Models\InsuranceClaim.Models.csproj">
       <Project>{a9c210c8-31c7-4d42-9ac4-c710d25e7057}</Project>
