@@ -80,17 +80,16 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                    <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
                                            
-                                            @Html.TextBoxFor(m=>m.MakeId,new{@class="form-control",@autocomplete="off",@placeholder="Vehicle make" })
+                                            @Html.DropDownListFor(x => x.MakeId, new SelectList(ViewBag.Makers, "MakeCode", "MakeDescription"), new { @class = "form-control" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
-                                            <select class="form-control">
-                                                <option>Vehicle Model</option>
-                                            </select>
+                                            
+                                            @Html.DropDownListFor(x => x.ModelId, new SelectList(ViewBag.Model, "ModelCode", "ModelDescription"), new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -272,7 +271,22 @@
         $('#datetimepicker1,#datetimepicker2,#datetimepicker3,#datetimepicker4').datetimepicker({
 
         });
-
+        $("#MakeId").change(function () {
+            $.ajax({
+                url: "@Url.Action("GetVehicleModel", "CustomerRegistration")",
+                type: "POST",
+                data: { makeCode: $("#MakeId").val() },
+                dataType:"json",
+                success: function (result) {
+                    debugger;
+                    var $dropdown = $("#ModelId");
+                    $dropdown.empty();
+                    $.each(result, function () {
+                        $dropdown.append($("<option />").val(this.ModelCode).text(this.ModelDescription));
+                    });
+                }
+            });
+        });
     });
     function replacableRedirect() {
         window.location.href = "@Url.Action("SummaryDetail", "CustomerRegistration")";

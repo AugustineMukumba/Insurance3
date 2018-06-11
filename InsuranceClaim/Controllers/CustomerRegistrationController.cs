@@ -11,6 +11,7 @@ using Insurance.Domain;
 using AutoMapper;
 using System.Configuration;
 using System.Globalization;
+using Insurance.Service;
 
 namespace InsuranceClaim.Controllers
 {
@@ -63,10 +64,26 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult RiskDetail()
         {
-            ViewBag.BusinessSource = InsuranceContext.BusinessSources.All().ToList();
+            var service = new VehicleService();
+            var makers = service.GetMakers();
+            ViewBag.Makers = makers;
+            if(makers.Count>0)
+            {
+                var model = service.GetModel(makers.FirstOrDefault().MakeCode);
+                ViewBag.Model = model;
+            }
+            service = null;
             return View();
         }
-
+        public JsonResult GetVehicleModel(string makeCode)
+        {
+            var service = new VehicleService();
+            var model = service.GetModel(makeCode);
+            JsonResult jsonResult = new JsonResult();
+            jsonResult.Data = model;
+            jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            return jsonResult;
+        }
         public ActionResult SummaryDetail()
         {
             return View();
@@ -153,7 +170,7 @@ namespace InsuranceClaim.Controllers
 
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
-            
+
         }
     }
 }
