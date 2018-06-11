@@ -35,19 +35,19 @@ namespace InsuranceClaim.Models
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         [Display(Name = "City")]
-        [Required(ErrorMessage = "Please enter city.")]
+       // [Required(ErrorMessage = "Please enter city.")]
         [MaxLength(25, ErrorMessage = "City must be less than 25 characters long.")]
         public string City { get; set; }
         [Display(Name = "State")]
-        [Required(ErrorMessage = "Please enter state.")]
+        //[Required(ErrorMessage = "Please enter state.")]
         [MaxLength(25, ErrorMessage = "State must be less than 25 characters long.")]
         public string State { get; set; }
         [Display(Name = "ZipCode")]
-        [Required(ErrorMessage = "Please enter zip code.")]
+        //[Required(ErrorMessage = "Please enter zip code.")]
         [RegularExpression(@"^\d{5}(-\d{4})?$", ErrorMessage = "Invalid Zip.")]
         public string Zipcode { get; set; }
         [Display(Name = "Country")]
-        [Required(ErrorMessage = "Please enter country.")]
+        //[Required(ErrorMessage = "Please enter country.")]
         [MaxLength(25, ErrorMessage = "Country must be less than 25 characters long.")]
         public string Country { get; set; }
         public DateTime? DateOfBirth { get; set; }

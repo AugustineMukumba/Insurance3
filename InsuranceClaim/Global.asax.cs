@@ -28,7 +28,8 @@ namespace InsuranceClaim
         {
             Mapper.Initialize(cfg =>
             {
-                cfg.CreateMap<Customer, CustomerModel>().ReverseMap();               
+                cfg.CreateMap<Customer, CustomerModel>().ReverseMap();
+                cfg.CreateMap<PolicyDetailModel, PolicyDetail>().ReverseMap();
             });
         }
     }

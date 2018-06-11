@@ -226,6 +226,7 @@
     <Content Include="Images\icon-4.png" />
     <Content Include="Images\icon-5.png" />
     <Content Include="Images\top-header-bg.png" />
+    <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -311,6 +312,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Insurance.Domain\Insurance.Domain.csproj">
+      <Project>{91022542-0a04-430f-afe0-d0172c5c866e}</Project>
+      <Name>Insurance.Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Insurance.Service\Insurance.Service.csproj">
       <Project>{bd3294a3-8556-496a-8454-5f0b25b85c45}</Project>
       <Name>Insurance.Service</Name>

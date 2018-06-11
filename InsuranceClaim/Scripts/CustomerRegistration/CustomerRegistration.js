@@ -2,15 +2,27 @@
 })
 
 function GoToProductDetail(json) {
-    window.location.href = '/CustomerRegistration/ProductDetail';
+    debugger;
+    if (json == true) {
+        window.location.href = '/CustomerRegistration/ProductDetail';
+    }
+    else {
+
+    }
 }
 
 function GoToRiskDetail(json) {
-    window.location.href = '/CustomerRegistration/RiskDetail';
+    if (json == true) {
+        window.location.href = '/CustomerRegistration/RiskDetail';
+    }
+   
 }
 
 function GoToSummaryDetail(json) {
-    window.location.href = '/CustomerRegistration/SummaryDetail';
+    if (json == true) {
+        window.location.href = '/CustomerRegistration/SummaryDetail';
+    }
+   
 }
 
 function GoToPaymentDetail(json) {

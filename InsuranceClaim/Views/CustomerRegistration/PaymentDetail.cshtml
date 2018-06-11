@@ -3,131 +3,156 @@
     ViewBag.Title = "PaymentDetail";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
-<html>
-<head></head>
-<body>
-    <div class="top-banner-section">
+
+<div class="top-banner-section">
+    <div class="container">
+        <div class="car-insurance-content">
+            <h2>Get Car Insurance In Less<br>Than 5 Minutes<h2>
+        </div>
+    </div>
+</div>
+<div class="body-content-section">
+    <div class="Process-step-section">
         <div class="container">
-            <div class="car-insurance-content">
-                <h2>Get Car Insurance In Less<br>Than 5 Minutes<h2>
-            </div>
-        </div>
-    </div>
-    <div class="body-content-section">
-        <div class="Process-step-section">
-            <div class="container">
-                <div class="row bs-wizard">
-                    <div class="process-block">
-                        <div class="col-xs-2 bs-wizard-step complete">
-                            <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="#" class="bs-wizard-dot"></a>
-                            <div class="text-center bs-wizard-stepnum">Client Details</div>
-                        </div>
-
-                        <div class="col-xs-2 bs-wizard-step complete">
-                            <!-- complete -->
-                            <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="#" class="bs-wizard-dot"></a>
-                            <div class="text-center bs-wizard-stepnum">Product Details</div>
-                        </div>
-
-                        <div class="col-xs-2 bs-wizard-step complete">
-                            <!-- complete -->
-                            <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="#" class="bs-wizard-dot"></a>
-                            <div class="text-center bs-wizard-stepnum">Risk Details</div>
-                        </div>
-
-                        <div class="col-xs-2 bs-wizard-step complete">
-                            <!-- active -->
-                            <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="#" class="bs-wizard-dot"></a>
-                            <div class="text-center bs-wizard-stepnum">Summay Details</div>
-                        </div>
-
-                        <div class="col-xs-2 bs-wizard-step active">
-                            <!-- active -->
-
-                            <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="#" class="bs-wizard-dot"></a>
-                            <div class="text-center bs-wizard-stepnum">Payment Details</div>
-                        </div>
-
+            <div class="row bs-wizard">
+                <div class="process-block">
+                    <div class="col-xs-2 bs-wizard-step complete">
+                        <div class="progress"><div class="progress-bar"></div></div>
+                        <a href="#" class="bs-wizard-dot"></a>
+                        <div class="text-center bs-wizard-stepnum">Client Details</div>
                     </div>
+
+                    <div class="col-xs-2 bs-wizard-step complete">
+                        <!-- complete -->
+                        <div class="progress"><div class="progress-bar"></div></div>
+                        <a href="#" class="bs-wizard-dot"></a>
+                        <div class="text-center bs-wizard-stepnum">Product Details</div>
+                    </div>
+
+                    <div class="col-xs-2 bs-wizard-step complete">
+                        <!-- complete -->
+                        <div class="progress"><div class="progress-bar"></div></div>
+                        <a href="#" class="bs-wizard-dot"></a>
+                        <div class="text-center bs-wizard-stepnum">Risk Details</div>
+                    </div>
+
+                    <div class="col-xs-2 bs-wizard-step complete">
+                        <!-- active -->
+                        <div class="progress"><div class="progress-bar"></div></div>
+                        <a href="#" class="bs-wizard-dot"></a>
+                        <div class="text-center bs-wizard-stepnum">Summay Details</div>
+                    </div>
+
+                    <div class="col-xs-2 bs-wizard-step active">
+                        <!-- active -->
+
+                        <div class="progress"><div class="progress-bar"></div></div>
+                        <a href="#" class="bs-wizard-dot"></a>
+                        <div class="text-center bs-wizard-stepnum">Payment Details</div>
+                    </div>
+
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="form-section-top">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-section-col">
-                        <div class="form-group-section">
-                            <div class="form-title">
-                                <h4>Payment Details</h4>
-                            </div>
+    <div class="form-section-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-section-col">
+                    <div class="form-group-section">
+                        <div class="form-title">
+                            <h4>Payment Details</h4>
+                        </div>
 
-                            <div class="form-group-input">
-                                <form role="form" id="contact-form" class="contact-form">
+                        <div class="form-group-input">
+                            <form role="form" id="contact-form" class="contact-form">
 
 
 
-                                    <div class="row">
-                                        <div class="col-md-12 form-group-text">
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Card Number">
+                                <div class="row">
+                                    <div class="col-md-12 form-group-text">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Card Number">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 form-group-text">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Name on Card">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group">
+                                           
+                                            <div class='input-group date' id='datetimepicker1'>
+                                                <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Expiry Date">
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="row">
-                                        <div class="col-md-12 form-group-text">
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Name on Card">
-                                            </div>
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Cvc Number">
                                         </div>
                                     </div>
-
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                <input type="text" class="form-control calender" name="Name" autocomplete="off" id="Name" placeholder="Expiry Date">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Cvc Number">
-                                            </div>
-                                        </div>
-                                    </div>
+                                </div>
 
 
 
-                                    <div class="row">
-                                        <div class="col-md-12 next-btn">
-                                            <div class="row">
-                                                <div class="col-sm-6 col-md-6">
-                                                    <div class="text-left">
-                                                        <div class="back-left"><button type="submit" class="btn">Back</button></div>
-                                                    </div>
+                                <div class="row">
+                                    <div class="col-md-12 next-btn">
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="text-left">
+                                                    <div class="back-left"><button type="submit" class="btn">Back</button></div>
                                                 </div>
-                                                <div class="col-sm-6 col-md-6">
-                                                    <div class="text-right">
-                                                        <button type="submit" class="btn">Next</button>
-                                                    </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="text-right">
+                                                    <button type="submit" class="btn">Next</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
-</body>
-</html>
+
+</div>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+<link href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+<![endif]-->
+<script type="text/javascript" src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+<script src="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
+
+
+<script type="text/javascript">
+    $(function () { // will trigger when the document is ready
+        $('#datetimepicker1').datetimepicker({
+            format: 'MM/YYYY'
+        });
+
+    });
+</script>
 

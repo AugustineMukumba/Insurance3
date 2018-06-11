@@ -232,3 +232,5 @@ E:\Roheet\Development\Insurance\SourceCode\Insurance.git\trunk\InsuranceClaim\ob
 E:\Roheet\Development\Insurance\SourceCode\Insurance.git\trunk\InsuranceClaim\obj\Debug\InsuranceClaim.pdb
 E:\Roheet\Development\Insurance\SourceCode\Insurance.git\trunk\InsuranceClaim\bin\AutoMapper.dll
 E:\Roheet\Development\Insurance\SourceCode\Insurance.git\trunk\InsuranceClaim\bin\AutoMapper.xml
+E:\Roheet\Development\Insurance\SourceCode\Insurance.git\trunk\InsuranceClaim\bin\Insurance.Service.dll
+E:\Roheet\Development\Insurance\SourceCode\Insurance.git\trunk\InsuranceClaim\bin\Insurance.Service.pdb

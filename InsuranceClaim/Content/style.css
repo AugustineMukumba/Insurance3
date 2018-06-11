@@ -102,145 +102,107 @@ span.online-dot {  display: inline-block;  width: 15px;  height: 15px;  backgrou
 
 
 
-.top-banner {
-  background: rgba(0, 0, 0, 0) url("../images/banner.png") no-repeat scroll center center / cover ;
-  height: 400px;
-  padding: 0;
-  position: relative;
-}
-.banner-content {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+.top-banner { background: rgba(0, 0, 0, 0) url("../images/banner.png") no-repeat scroll center center / cover ; height: 400px;  padding: 0;  position: relative;}
+.banner-content {position: absolute; top: 50%;  transform: translateY(-50%);}
+.banner-content h2 {color: white; font-size: 24px;  text-transform: uppercase;  font-weight: 500;}
+.banner-content p { color: white; float: left;  font-size: 15px;  margin: 20px auto;  width: 40%;  font-family: "Poppins",sans-serif;  font-weight: 300;  line-height: 25px;}
+.banner-content > button { background: black none repeat scroll 0 0; border: medium none; clear: both;  color: white;  float: left; font-size: 15px;  font-weight: 600;
+  letter-spacing: 1px; padding: 16px 40px;  text-transform: uppercase;}
+.policy-option li { display: inline-block;  float: none;  margin: 60px 0px; width: 19%;}
+.policy-option p {color: #16909d;  font-family: poppins; font-size: 14px;  font-weight: 500; margin: 15px auto 0;  text-align: center;  text-transform: uppercase;}
+.policy-option > ul { text-align: center;}
+.policy-option > ul li a {text-decoration: none;}
+.coll-back { bottom: 0;  margin: 0 auto;  position: fixed;  right: 0;  top: 50%;  z-index: 9;}
+.main-content-b h1 { color: black;  font-size: 25px;  font-weight: 600;   font-family: poppins;  margin: 35px auto;}
+.main-content-b h3 { color: #16909d;  font-size: 18px;  font-weight: 600;  margin: 18px auto;   font-family: poppins;  float: left;}
+.main-content-b > p { color: #666; float: left;  font-family: poppins;  font-size: 16px;  font-weight: 300;  line-height: 30px;  margin: 10px auto;}
+.ads-sec { clear: both;  float: left;  margin: 50px auto;}
+.ads-sec p { color: #666;  float: left;  font-family: poppins;  font-size: 16px;  font-weight: 300;  line-height: 30px; padding-left: 30px; margin: 10px auto;}
+.ads {  padding: 0;}
+.touch { padding: 80px 0;  background: #e1e9ed;  margin-top: 40px;}
+.get-in-touch > button { background: black none repeat scroll 0 0;  border: medium none;  border-radius: 200px;  color: white;  font-size: 16px;  font-weight: 600;
+  letter-spacing: 0.9px;  padding: 25px 70px;  text-transform: uppercase;}
+
+  .choose-plan-heading{margin:0 0 20px; }
+  .choose-plan-heading h4{color:#000;  font-family: poppins;}
+  .choose-plan-box{border:2px solid #16909d; text-align:center; font-family: poppins;}
+  .choose-plan-box h4 {  background: #16909d;  padding: 15px 0; color:#fff; font-family: poppins;}
+  .plan-white-box{background:#fff; padding:15px 7px}
+  
+  .plan-white-box h3 {
+    color: #000;
+    margin: 0 0 5px;
 }
 
-.banner-content h2 {
-  color: white;
-  font-size: 24px;
-  text-transform: uppercase;
-  font-weight: 500;
+.plan-white-box p {
+    color: #000;
+    margin: 0 0 5px;
 }
-.banner-content p {
-  color: white;
-  float: left;
-  font-size: 15px;
-  margin: 20px auto;
-  width: 40%;
-  font-family: "Poppins",sans-serif;
-  font-weight: 300;
-  line-height: 25px;
-}
-.banner-content > button {
-  background: black none repeat scroll 0 0;
-  border: medium none;
-  clear: both;
-  color: white;
-  float: left;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  padding: 16px 40px;
-  text-transform: uppercase;
-}
-.policy-option li {
-  display: inline-block;
-  float: none;
-  margin: 60px 40px;
-}
-.policy-option p {
-  color: #16909d;
-  font-family: poppins;
-  font-size: 14px;
-  font-weight: 500;
-  margin: 15px auto 0;
-  text-align: center;
-  text-transform: uppercase;
-}
-.policy-option > ul {
-  text-align: center;
-}
+.plan-white-box a{background:#000; padding:12px 15px;  display:inline-block; color:#fff; margin:10px 0; border-radius:3px;}
 
-.policy-option > ul li a {
- text-decoration: none;
+  
+  .choose-plan {
+    margin: 0 0 40px;
 }
-.coll-back {
-  bottom: 0;
+  
+  .confirmation-page > img {
+  display: block;
+  margin: 10px auto 40px;
+}
+.confirmation-page {
   margin: 0 auto;
-  position: fixed;
-  right: 0;
-  top: 50%;
-  z-index: 9;
+  text-align: center;
+  width: 80%;
+  background: #e7edf1;
+  padding: 60px 10px;
+  margin: 70px auto;
+   box-shadow: 0 2px 5px #ddd;
+  border-radius: 3px;
 }
-
-.main-content-b h1 {
-  color: black;
-  font-size: 25px;
-  font-weight: 600;
-   font-family: poppins;
-  margin: 35px auto;
+.confirmation-page > h2 {
+  color: #3cb878;
+  font-family: open sans;
+  font-size: 28px;
+  font-weight: 500;
+  margin-bottom: 20px;
 }
-
-.main-content-b h3 {
-  color: #16909d;
-  font-size: 18px;
-  font-weight: 600;
-  margin: 18px auto;
-   font-family: poppins;
-  float: left;
+.confirmation-page > p {
+  color: #999;
+  font-family: open sans;
+  font-size: 15px;
+  line-height: 26px;
+  margin: 30px auto;
+  text-align: center;
+  width: 80%;
 }
-.main-content-b > p {
-  color: #666;
-  float: left;
-  font-family: poppins;
+.confirmation-page > strong {
+  color: #000;
   font-size: 16px;
-  font-weight: 300;
-  line-height: 30px;
-  margin: 10px auto;
+  letter-spacing: 0.3px;
 }
-
-.ads-sec {
+  
+  .confirmation-page > a {
   clear: both;
-  float: left;
-  margin: 50px auto;
+  display: block;
+  font-size: 14px;
+  margin-top: 50px;
+  text-decoration: underline;
 }
-.ads-sec p {
-  color: #666;
-  float: left;
-  font-family: poppins;
-  font-size: 16px;
-  font-weight: 300;
-  line-height: 30px;
-  padding-left: 30px;
-  margin: 10px auto;
-}
-
-.ads {
-  padding: 0;
-}
-.touch {
-  padding: 80px 0;
-  background: #e1e9ed;
-  margin-top: 40px;
-}
-.get-in-touch > button {
-  background: black none repeat scroll 0 0;
-  border: medium none;
-  border-radius: 200px;
-  color: white;
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0.9px;
-  padding: 25px 70px;
-  text-transform: uppercase;
-}
-
+  
+  
 
 
 @media(max-width:767px){
+  .policy-option li {  float: left;  margin: 15px 0;  width: 48%;}
+  .ads-sec p{padding: 0;}
+  .banner-content p{width: 100%;}
+  
+.policy-option p {  margin: 5px auto 0;}
 	
 .menu-navigation .navbar-nav li{width:100%;}	
 	.logo-img { text-align: center; margin:0 0 10px}
 .renew-blocks .text-right{text-align:center}	
+.confirmation-page {  width: 100%;}
 	
 }
 

@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Insurance.Domain;
 using AutoMapper;
 using System.Configuration;
+using System.Globalization;
 
 namespace InsuranceClaim.Controllers
 {
@@ -42,7 +43,7 @@ namespace InsuranceClaim.Controllers
             ViewBag.Currency = InsuranceContext.Currencies.All().ToList();
             ViewBag.PoliCyStatus = InsuranceContext.PolicyStatuses.All().ToList();
             ViewBag.BusinessSource = InsuranceContext.BusinessSources.All().ToList();
-            var objList = InsuranceContext.PolicyDetails.All(orderBy:"Id desc",top:1).ToList();
+            var objList = InsuranceContext.PolicyDetails.All(orderBy: "Id desc", top: 1).ToList();
             if (objList.Count > 0)
             {
                 ViewBag.PolicyNumber = objList.FirstOrDefault().PolicyNumber;
@@ -62,6 +63,7 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult RiskDetail()
         {
+            ViewBag.BusinessSource = InsuranceContext.BusinessSources.All().ToList();
             return View();
         }
 
@@ -78,42 +80,80 @@ namespace InsuranceClaim.Controllers
         [HttpPost]
         public async Task<JsonResult> SaveCustomerData(CustomerModel model)
         {
-            string custId = string.Empty;
+            decimal custId = 0;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.EmailAddress, Email = model.EmailAddress, PhoneNumber = model.PhoneNumber };
-                var result = await UserManager.CreateAsync(user, "Kindle@123");
-                if (result.Succeeded)
+                try
                 {
-                    var objCustomerId = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).ToList();
-                    if (objCustomerId.Count > 0)
+                    var user = new ApplicationUser { UserName = model.EmailAddress, Email = model.EmailAddress, PhoneNumber = model.PhoneNumber };
+                    var result = await UserManager.CreateAsync(user, "Kindle@123");
+                    if (result.Succeeded)
                     {
-                        custId = Convert.ToString(objCustomerId.FirstOrDefault().CustomerId);
-                    }
-                    else
-                    {
-                        custId = ConfigurationManager.AppSettings["CustomerId"];
-                    }
+                        var objCustomer = InsuranceContext.Customers.All(top: 1).OrderByDescending(x => x.Id).ToList();
+                        if (objCustomer.Count > 0)
+                        {
+                            custId = objCustomer.FirstOrDefault().CustomerId + 1;
+                        }
+                        else
+                        {
+                            custId = Convert.ToDecimal(ConfigurationManager.AppSettings["CustomerId"]);
+                        }
 
-                    model.UserID = user.Id;
-                    var customer = Mapper.Map<CustomerModel, Customer>(model);
-                    InsuranceContext.Customers.Insert(customer);
+                        model.UserID = user.Id;
+                        model.CustomerId = custId;
+                        var customer = Mapper.Map<CustomerModel, Customer>(model);
+                        InsuranceContext.Customers.Insert(customer);
+                        return Json(true, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    return Json(false, JsonRequestBehavior.AllowGet);
                 }
 
             }
-            return Json(true, JsonRequestBehavior.AllowGet);
+            return Json(false, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult SavePolicyData(PolicyDetailModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
+                DateTimeFormatInfo usDtfi = new CultureInfo("en-US", false).DateTimeFormat;
+                var startDate = Request.Form["StartDate"];
+                var endDate = Request.Form["EndDate"];
+                var renewDate = Request.Form["RenewalDate"];
+                var transactionDate = Request.Form["TransactionDate"];
+                if (startDate != null)
+                {
+                    model.StartDate = Convert.ToDateTime(startDate, usDtfi);
+                }
+                if (endDate != null)
+                {
+                    model.EndDate = Convert.ToDateTime(endDate, usDtfi);
+                }
+                if (renewDate != null)
+                {
+                    model.RenewalDate = Convert.ToDateTime(renewDate, usDtfi);
+                }
+                if (transactionDate != null)
+                {
+                    model.TransactionDate = Convert.ToDateTime(transactionDate, usDtfi);
+                }
 
                 var policy = Mapper.Map<PolicyDetailModel, PolicyDetail>(model);
                 InsuranceContext.PolicyDetails.Insert(policy);
+
+                return Json(true, JsonRequestBehavior.AllowGet);
             }
-            return Json(true, JsonRequestBehavior.AllowGet);
+            catch (Exception)
+            {
+
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+            
         }
     }
 }
