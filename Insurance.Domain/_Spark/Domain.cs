@@ -273,7 +273,9 @@ namespace Insurance.Domain
         public VehicleMake(bool defaults) : base(defaults) { }
 
         public int? Id { get; set; }
-        public string Name { get; set; }
+        public string MakeDescription { get; set; }
+        public string MakeCode { get; set; }
+        public string ShortDescription { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
@@ -287,7 +289,10 @@ namespace Insurance.Domain
         public VehicleModel(bool defaults) : base(defaults) { }
 
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string ModelDescription { get; set; }
+        public string ModelCode { get; set; }
+        public string ShortDescription { get; set; }
+        public string MakeCode { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
