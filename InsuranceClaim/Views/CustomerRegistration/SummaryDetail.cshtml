@@ -1,199 +1,211 @@
-﻿
+﻿@model InsuranceClaim.Models.SummaryDetailModel
 @{
     ViewBag.Title = "SummaryDetail";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
 
 
-    <div class="top-banner-section">
-        <div class="container">
-            <div class="car-insurance-content">
-                <h2>Get Car Insurance In Less<br>Than 5 Minutes<h2>
-            </div>
+<div class="top-banner-section">
+    <div class="container">
+        <div class="car-insurance-content">
+            <h2>Get Car Insurance In Less<br>Than 5 Minutes<h2>
         </div>
     </div>
-    <div class="body-content-section">
-        <div class="Process-step-section">
-            <div class="container">
-                <div class="row bs-wizard">
-                    <div class="process-block">
-                        <div class="col-xs-2 bs-wizard-step complete">
-                            <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="#" class="bs-wizard-dot"></a>
-                            <div class="text-center bs-wizard-stepnum">Client Details</div>
-                        </div>
-
-                        <div class="col-xs-2 bs-wizard-step complete">
-                            <!-- complete -->
-                            <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="#" class="bs-wizard-dot"></a>
-                            <div class="text-center bs-wizard-stepnum">Product Details</div>
-                        </div>
-
-                        <div class="col-xs-2 bs-wizard-step complete">
-                            <!-- complete -->
-                            <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="#" class="bs-wizard-dot"></a>
-                            <div class="text-center bs-wizard-stepnum">Risk Details</div>
-                        </div>
-
-                        <div class="col-xs-2 bs-wizard-step active">
-                            <!-- active -->
-                            <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="#" class="bs-wizard-dot"></a>
-                            <div class="text-center bs-wizard-stepnum">Summay Details</div>
-                        </div>
-
-                        <div class="col-xs-2 bs-wizard-step disabled">
-                            <!-- active -->
-
-                            <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="#" class="bs-wizard-dot"></a>
-                            <div class="text-center bs-wizard-stepnum">Payment Details</div>
-                        </div>
-
+</div>
+<div class="body-content-section">
+    <div class="Process-step-section">
+        <div class="container">
+            <div class="row bs-wizard">
+                <div class="process-block">
+                    <div class="col-xs-2 bs-wizard-step complete">
+                        <div class="progress"><div class="progress-bar"></div></div>
+                        <a href="#" class="bs-wizard-dot"></a>
+                        <div class="text-center bs-wizard-stepnum">Client Details</div>
                     </div>
+
+                    <div class="col-xs-2 bs-wizard-step complete">
+                        <!-- complete -->
+                        <div class="progress"><div class="progress-bar"></div></div>
+                        <a href="#" class="bs-wizard-dot"></a>
+                        <div class="text-center bs-wizard-stepnum">Product Details</div>
+                    </div>
+
+                    <div class="col-xs-2 bs-wizard-step complete">
+                        <!-- complete -->
+                        <div class="progress"><div class="progress-bar"></div></div>
+                        <a href="#" class="bs-wizard-dot"></a>
+                        <div class="text-center bs-wizard-stepnum">Risk Details</div>
+                    </div>
+
+                    <div class="col-xs-2 bs-wizard-step active">
+                        <!-- active -->
+                        <div class="progress"><div class="progress-bar"></div></div>
+                        <a href="#" class="bs-wizard-dot"></a>
+                        <div class="text-center bs-wizard-stepnum">Summay Details</div>
+                    </div>
+
+                    <div class="col-xs-2 bs-wizard-step disabled">
+                        <!-- active -->
+
+                        <div class="progress"><div class="progress-bar"></div></div>
+                        <a href="#" class="bs-wizard-dot"></a>
+                        <div class="text-center bs-wizard-stepnum">Payment Details</div>
+                    </div>
+
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="form-section-top">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-section-col">
-                        <div class="form-group-section">
-                            <div class="form-title">
-                                <h4>SUMMARY DETAILS</h4>
-                            </div>
-                            <div class="choose-plan">
-                                <div class="row">
-                                    <div class="col-sm-12 col-md-12 choose-plan-heading">
-                                        <h4>Choose your plan</h4>
+    <div class="form-section-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-section-col">
+                    <div class="form-group-section">
+                        <div class="form-title">
+                            <h4>SUMMARY DETAILS</h4>
+                        </div>
+                        <div class="choose-plan">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12 choose-plan-heading">
+                                    <h4>Choose your plan</h4>
+                                </div>
+                                <div class="Choose-sections">
+                                    <div class="col-sm-3 col-md-3 choose-plan-blocl">
+                                        <div class="choose-plan-box">
+                                            <h4>Annual</h4>
+                                            <div class="plan-white-box">
+                                                <h3>$0.00</h3>
+                                                <p>for all 3 items</p>
+                                                <a href="">PAY FOR 12 MONTHS</a>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="Choose-sections">
-                                        <div class="col-sm-3 col-md-3 choose-plan-blocl">
-                                            <div class="choose-plan-box">
-                                                <h4>Annual</h4>
-                                                <div class="plan-white-box">
-                                                    <h3>$0.00</h3>
-                                                    <p>for all 3 items</p>
-                                                    <a href="">PAY FOR 12 MONTHS</a>
-                                                </div>
+                                    <div class="col-sm-3 col-md-3 choose-plan-blocl">
+                                        <div class="choose-plan-box">
+                                            <h4>Quarterly</h4>
+                                            <div class="plan-white-box">
+                                                <h3>$0.00</h3>
+                                                <p>for all 3 items</p>
+                                                <a href="">PAY FOR 3 MONTHS</a>
                                             </div>
                                         </div>
-                                        <div class="col-sm-3 col-md-3 choose-plan-blocl">
-                                            <div class="choose-plan-box">
-                                                <h4>Quarterly</h4>
-                                                <div class="plan-white-box">
-                                                    <h3>$0.00</h3>
-                                                    <p>for all 3 items</p>
-                                                    <a href="">PAY FOR 3 MONTHS</a>
-                                                </div>
+                                    </div>
+                                    <div class="col-sm-3 col-md-3 choose-plan-blocl">
+                                        <div class="choose-plan-box">
+                                            <h4>Termly</h4>
+                                            <div class="plan-white-box">
+                                                <h3>$0.00</h3>
+                                                <p>for all 3 items</p>
+                                                <a href="">PAY FOR 6 MONTHS</a>
                                             </div>
                                         </div>
-                                        <div class="col-sm-3 col-md-3 choose-plan-blocl">
-                                            <div class="choose-plan-box">
-                                                <h4>Termly</h4>
-                                                <div class="plan-white-box">
-                                                    <h3>$0.00</h3>
-                                                    <p>for all 3 items</p>
-                                                    <a href="">PAY FOR 6 MONTHS</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3 col-md-3 choose-plan-blocl">
-                                            <div class="choose-plan-box">
-                                                <h4>Monthly</h4>
-                                                <div class="plan-white-box">
-                                                    <h3>$0.00</h3>
-                                                    <p>for all 3 items</p>
-                                                    <a href="">PAY FOR 1 MONTHS</a>
-                                                </div>
+                                    </div>
+                                    <div class="col-sm-3 col-md-3 choose-plan-blocl">
+                                        <div class="choose-plan-box">
+                                            <h4>Monthly</h4>
+                                            <div class="plan-white-box">
+                                                <h3>$0.00</h3>
+                                                <p>for all 3 items</p>
+                                                <a href="">PAY FOR 1 MONTHS</a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group-input">
-                                <form role="form" id="contact-form" class="contact-form">
+                        </div>
+                        <div class="form-group-input">
+                            <form role="form" id="contact-form" class="contact-form">
+                                @Html.HiddenFor(m => m.PaymentTermId)
+                                <div class="row">
 
-                                    <div class="row">
-
-                                        <div class="col-sm-6 col-md-6 form-group-select">
-                                            <div class="form-group">
-                                                <select class="form-control">
-                                                    <option>Payment Method </option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Total Sum Insured">
-                                            </div>
+                                    <div class="col-sm-6 col-md-6 form-group-select">
+                                        <div class="form-group">
+                                            <select class="form-control">
+                                                <option value="1">Bank</option>
+                                                <option value="2">Cash </option>
+                                                <option value="3">Visa </option>
+                                            </select>
                                         </div>
                                     </div>
-
-
-
-
-                                    <div class="row">
-                                        <div class="col-md-12 form-group-text">
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Total Premium / Total vehicle Licence Cost">
-                                            </div>
+                                    <div class="col-md-6 form-group-text">
+                                        <div class="form-group">                                           
+                                            @Html.TextBoxFor(m => m.TotalSumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Sum Insured" })
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Total Stamp Duty">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Total ZTSC Levies">
-                                            </div>
+
+
+
+                                <div class="row">
+                                    <div class="col-md-12 form-group-text">
+                                        <div class="form-group">                                           
+                                            @Html.TextBox("VehicleLicenceCost", null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Premium / Total vehicle Licence Cost" })
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Total Radio Licence Cost">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Debit Note/Invoice Number">
-                                            </div>
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group">                                           
+                                            @Html.TextBoxFor(m=>m.TotalStampDuty, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Stamp Duty" })
                                         </div>
                                     </div>
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group">                                            
+                                            @Html.TextBoxFor(m => m.TotalZTSCLevies, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total ZTSC Levies" })
+                                        </div>
+                                    </div>
+                                </div>
 
-                                    <div class="row">
-                                        <div class="col-md-12 next-btn">
-                                            <div class="row">
-                                                <div class="col-sm-6 col-md-6">
-                                                    <div class="text-left">
-                                                        <div class="back-left"><button type="submit" class="btn">Back</button></div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-6 col-md-6">
-                                                    <div class="text-right">
-                                                        <button type="submit" class="btn">Next</button>
-                                                    </div>
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group">                                           
+                                            @Html.TextBoxFor(m => m.TotalRadioLicenseCost, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Radio Licence Cost" })
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group">
+                                           
+                                            @Html.TextBoxFor(m => m.DebitNote, new { @class = "form-control", @autocomplete = "off", @placeholder = "Debit Note/Invoice Number" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 next-btn">
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="text-left">
+                                                    <div class="back-left"><button type="submit" class="btn">Back</button></div>
                                                 </div>
                                             </div>
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="text-right">
+                                                    <button type="button" onclick="Replacable()" class="btn">Next</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
+
+</div>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+    });
+    function Replacable() {
+        window.location.href = "@Url.Action("PaymentDetail", "CustomerRegistration")";
+    }
+</script>
 
 

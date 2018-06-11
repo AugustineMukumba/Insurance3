@@ -1,4 +1,4 @@
-﻿
+﻿@model InsuranceClaim.Models.CardDetailModel
 @{
     ViewBag.Title = "PaymentDetail";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
@@ -73,7 +73,8 @@
                                 <div class="row">
                                     <div class="col-md-12 form-group-text">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Card Number">
+                                           
+                                            @Html.TextBoxFor(m=>m.CardNumber,new { @class="form-control",@autocomplete="off",@placeholder="Card Number"})
                                         </div>
                                     </div>
                                 </div>
@@ -81,7 +82,8 @@
                                 <div class="row">
                                     <div class="col-md-12 form-group-text">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Name on Card">
+                                            @Html.TextBoxFor(m => m.NameOnCard, new { @class = "form-control", @autocomplete = "off", @placeholder = "Name on Card" })
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -91,7 +93,7 @@
                                         <div class="form-group">
                                            
                                             <div class='input-group date' id='datetimepicker1'>
-                                                <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Expiry Date">
+                                                @Html.TextBoxFor(m => m.ExpiryDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Expiry Date" })                                               
                                                 <span class="input-group-addon">
                                                     <span class="glyphicon glyphicon-calendar"></span>
                                                 </span>
@@ -100,7 +102,7 @@
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="Name" autocomplete="off" id="Name" placeholder="Cvc Number">
+                                            @Html.TextBoxFor(m => m.CVC, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cvc Number" })                                            
                                         </div>
                                     </div>
                                 </div>
