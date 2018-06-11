@@ -30,3 +30,5 @@ E:\Roheet\Development\Insurance\SourceCode\Insurance.git\trunk\Insurance.Service
 E:\Roheet\Development\Insurance\SourceCode\Insurance.git\trunk\Insurance.Service\obj\Debug\Insurance.Service.csproj.CoreCompileInputs.cache
 E:\Roheet\Development\Insurance\SourceCode\Insurance.git\trunk\Insurance.Service\obj\Debug\Insurance.Service.dll
 E:\Roheet\Development\Insurance\SourceCode\Insurance.git\trunk\Insurance.Service\obj\Debug\Insurance.Service.pdb
+E:\Roheet\Development\Insurance\SourceCode\Insurance.git\trunk\Insurance.Service\bin\Debug\AutoMapper.dll
+E:\Roheet\Development\Insurance\SourceCode\Insurance.git\trunk\Insurance.Service\bin\Debug\AutoMapper.xml
