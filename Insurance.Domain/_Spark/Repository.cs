@@ -45,6 +45,12 @@ namespace Insurance.Domain
         public static BasicExcesses BasicExcesses { get { return new BasicExcesses(); } }
         public static AgeExcesses AgeExcesses { get { return new AgeExcesses(); } }
         public static SpecificExcesses SpecificExcesses { get { return new SpecificExcesses(); } }
+
+        public static Reinsurances Reinsurances { get { return new Reinsurances(); } }
+        public static ReinsuranceBrokers ReinsuranceBrokers { get { return new ReinsuranceBrokers(); } }
+        public static ReinsuranceTransactions ReinsuranceTransactions { get { return new ReinsuranceTransactions(); } }
+        public static ReinsurerDetails ReinsurerDetails { get { return new ReinsurerDetails(); } }
+        public static Products Products { get { return new Products(); } }
         // general purpose operations
 
         public static void Execute(string sql, params object[] parms) { db.Execute(sql, parms); }

@@ -128,6 +128,11 @@
     <Compile Include="Domain\PaymentTerm.cs" />
     <Compile Include="Domain\PolicyDetail.cs" />
     <Compile Include="Domain\PolicyStatus.cs" />
+    <Compile Include="Domain\Product.cs" />
+    <Compile Include="Domain\Reinsurance.cs" />
+    <Compile Include="Domain\ReinsuranceBroker.cs" />
+    <Compile Include="Domain\ReinsuranceTransaction.cs" />
+    <Compile Include="Domain\ReinsurerDetail.cs" />
     <Compile Include="Domain\SpecificExcess.cs" />
     <Compile Include="Domain\SummaryDetail.cs" />
     <Compile Include="Domain\VehicleDetail.cs" />
@@ -147,6 +152,11 @@
     <Compile Include="Repository\PaymentTerms.cs" />
     <Compile Include="Repository\PolicyDetails.cs" />
     <Compile Include="Repository\PolicyStatuses.cs" />
+    <Compile Include="Repository\Products.cs" />
+    <Compile Include="Repository\ReinsuranceBrokers.cs" />
+    <Compile Include="Repository\Reinsurances.cs" />
+    <Compile Include="Repository\ReinsuranceTransactions.cs" />
+    <Compile Include="Repository\ReinsurerDetails.cs" />
     <Compile Include="Repository\Repository.partial.cs" />
     <Compile Include="Repository\SpecificExcesses.cs" />
     <Compile Include="Repository\SummaryDetails.cs" />

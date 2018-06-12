@@ -27,12 +27,8 @@ namespace Insurance.Domain
         public Currency(bool defaults) : base(defaults) { }
 
         public int Id { get; set; }
-        public string Name { get; set; }
-        public DateTime? CreatedOn { get; set; }
-        public int? CreatedBy { get; set; }
-        public DateTime? ModifiedOn { get; set; }
-        public int? ModifiedBy { get; set; }
-        public bool? IsActive { get; set; }
+        public string Name { get; set; }      
+       
     }
 
     public partial class AgentCommission : Entity<AgentCommission>
@@ -43,11 +39,8 @@ namespace Insurance.Domain
         public int Id { get; set; }
         public string CommissionName { get; set; }
         public float? CommissionAmount { get; set; }
-        public DateTime? CreatedOn { get; set; }
-        public int? CreatedBy { get; set; }
-        public DateTime? ModifiedOn { get; set; }
-        public int? ModifiedBy { get; set; }
-        public bool? IsActive { get; set; }
+    
+       
     }
 
     public partial class BusinessSource : Entity<BusinessSource>
@@ -56,12 +49,8 @@ namespace Insurance.Domain
         public BusinessSource(bool defaults) : base(defaults) { }
 
         public int Id { get; set; }
-        public string Source { get; set; }
-        public DateTime? CreatedOn { get; set; }
-        public int? CreatedBy { get; set; }
-        public DateTime? ModifiedOn { get; set; }
-        public int? ModifiedBy { get; set; }
-        public bool? IsActive { get; set; }
+        public string Source { get; set; }     
+      
     }
 
     public partial class CoverType : Entity<CoverType>
@@ -70,11 +59,7 @@ namespace Insurance.Domain
         public CoverType(bool defaults) : base(defaults) { }
 
         public int Id { get; set; }
-        public string Name { get; set; }
-        public DateTime? CreatedOn { get; set; }
-        public int? CreatedBy { get; set; }
-        public DateTime? ModifiedOn { get; set; }
-        public int? ModifiedBy { get; set; }
+        public string Name { get; set; }      
         public bool? IsActive { get; set; }
     }
 
@@ -100,10 +85,7 @@ namespace Insurance.Domain
         public bool? IsPolicyDocSent { get; set; }
         public bool? IsLicenseDiskNeeded { get; set; }
         public bool? IsOTPConfirmed { get; set; }
-        public DateTime? CreatedOn { get; set; }
-        public int? CreatedBy { get; set; }
-        public DateTime? ModifiedOn { get; set; }
-        public int? ModifiedBy { get; set; }
+      
         public bool? IsActive { get; set; }
     }
 
@@ -117,10 +99,7 @@ namespace Insurance.Domain
         public int? CustomerId { get; set; }
         public int? UserId { get; set; }
         public DateTime? DeliveryDate { get; set; }
-        public DateTime? CreatedOn { get; set; }
-        public int? CreatedBy { get; set; }
-        public DateTime? ModifiedOn { get; set; }
-        public int? ModifiedBy { get; set; }
+     
         public bool? IsAcive { get; set; }
     }
 
@@ -136,10 +115,7 @@ namespace Insurance.Domain
         public DateTime? EarnedDate { get; set; }
         public int? PointsRedemed { get; set; }
         public DateTime? RedemedDate { get; set; }
-        public DateTime? CreatedOn { get; set; }
-        public int? CreatedBy { get; set; }
-        public DateTime? ModifiedOn { get; set; }
-        public int? ModifiedBy { get; set; }
+       
         public bool? IsActive { get; set; }
     }
 
@@ -150,10 +126,7 @@ namespace Insurance.Domain
 
         public int Id { get; set; }
         public string Name { get; set; }
-        public DateTime? CreatedOn { get; set; }
-        public int? CreatedBy { get; set; }
-        public DateTime? ModifiedOn { get; set; }
-        public int? ModifiedBy { get; set; }
+     
         public bool? IsActive { get; set; }
     }
 
@@ -186,11 +159,7 @@ namespace Insurance.Domain
         public DateTime? EndDate { get; set; }
         public DateTime? RenewalDate { get; set; }
         public DateTime? TransactionDate { get; set; }
-        public int BusinessSourceId { get; set; }
-        public DateTime? CreatedOn { get; set; }
-        public int? CreatedBy { get; set; }
-        public DateTime? ModifiedOn { get; set; }
-        public int? ModifiedBy { get; set; }
+        public int BusinessSourceId { get; set; }      
         public bool? IsActive { get; set; }
     }
 
@@ -240,8 +209,8 @@ namespace Insurance.Domain
         public int? NoOfCarsCovered { get; set; }
         public string RegistrationNo { get; set; }
         public int? CustomerId { get; set; }
-        public int? MakeId { get; set; }
-        public int? ModelId { get; set; }
+        public string MakeId { get; set; }
+        public string ModelId { get; set; }
         public decimal? CubicCapacity { get; set; }
         public int? VehicleYear { get; set; }
         public string EngineNumber { get; set; }
@@ -250,7 +219,7 @@ namespace Insurance.Domain
         public string VehicleUsage { get; set; }
         public int? CoverTypeId { get; set; }
         public DateTime? CoverStartDate { get; set; }
-        public DateTime? CoverEndDate { get; set; }
+        public DateTime? CoverEndDate { get; set; } 
         public decimal? SumInsured { get; set; }
         public decimal? Premium { get; set; }
         public int? AgentCommissionId { get; set; }
@@ -260,6 +229,7 @@ namespace Insurance.Domain
         public decimal? RadioLicenseCost { get; set; }
         public string OptionalCovers { get; set; }
         public string Excess { get; set; }
+        public string CoverNoteNo { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
@@ -275,12 +245,8 @@ namespace Insurance.Domain
         public int? Id { get; set; }
         public string MakeDescription { get; set; }
         public string MakeCode { get; set; }
-        public string ShortDescription { get; set; }
-        public DateTime? CreatedOn { get; set; }
-        public int? CreatedBy { get; set; }
-        public DateTime? ModifiedOn { get; set; }
-        public int? ModifiedBy { get; set; }
-        public bool? IsActive { get; set; }
+        public string ShortDescription { get; set; }     
+      
     }
 
     public partial class VehicleModel : Entity<VehicleModel>
@@ -292,12 +258,8 @@ namespace Insurance.Domain
         public string ModelDescription { get; set; }
         public string ModelCode { get; set; }
         public string ShortDescription { get; set; }
-        public string MakeCode { get; set; }
-        public DateTime? CreatedOn { get; set; }
-        public int? CreatedBy { get; set; }
-        public DateTime? ModifiedOn { get; set; }
-        public int? ModifiedBy { get; set; }
-        public bool? IsActive { get; set; }
+        public string MakeCode { get; set; }     
+       
     }
 
     public partial class BasicExcess : Entity<BasicExcess>
@@ -352,5 +314,63 @@ namespace Insurance.Domain
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
         public bool? IsActive { get; set; }
+    }
+    public partial class ReinsuranceBroker : Entity<ReinsuranceBroker>
+    {
+        public ReinsuranceBroker() { }
+        public ReinsuranceBroker(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public string ReinsuranceBrokerCode { get; set; }
+        public string ReinsuranceBrokerName { get; set; }
+        public Single? Commission { get; set; }
+
+    }
+    public partial class ReinsurerDetail : Entity<ReinsurerDetail>
+    {
+        public ReinsurerDetail() { }
+        public ReinsurerDetail(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public string ReinsurerCode { get; set; }
+        public string ReinsurerName { get; set; }
+        public Single? ReinsurerCommission { get; set; }
+       
+    }
+    public partial class Reinsurance : Entity<Reinsurance>
+    {
+        public Reinsurance() { }
+        public Reinsurance(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public string TreatyCode { get; set; }
+        public string TreatyName { get; set; }
+        public Single? TreatyCapacity { get; set; }
+        public string OwnRetention { get; set; }
+
+    }
+    public partial class ReinsuranceTransaction : Entity<ReinsuranceTransaction>
+    {
+        public ReinsuranceTransaction() { }
+        public ReinsuranceTransaction(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public string TreatyCode { get; set; }
+        public string TreatyName { get; set; }
+        public decimal? ReinsuranceAmount { get; set; }
+        public Single? ReinsuranceCommission { get; set; }
+        public decimal? ReinsurancePremium { get; set; }
+
+    }
+    public partial class Product : Entity<Product>
+    {
+        public Product() { }
+        public Product(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public string ProductName { get; set; }
+        public string ProductCode { get; set; }
+        
+
     }
 }
