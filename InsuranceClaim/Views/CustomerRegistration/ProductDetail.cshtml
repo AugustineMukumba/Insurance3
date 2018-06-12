@@ -69,7 +69,7 @@
                         <div class="form-group-input">
                             @using (Ajax.BeginForm("SavePolicyData", "CustomerRegistration", null, new AjaxOptions() { OnSuccess = "GoToRiskDetail" }, null))
                             {
-                                @Html.HiddenFor(x => x.InsurerId, new { @Value = ViewBag.InsurerId });
+                                @*@Html.HiddenFor(x => x.InsurerId, new { @Value = ViewBag.InsurerId });*@
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
@@ -86,9 +86,10 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                    <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" autocomplete="off" id="insurer_name" name="insurer_name" value="@ViewBag.InsurerName" />
+                                           
+                                            @Html.DropDownListFor(x => x.InsurerId, new SelectList(ViewBag.Insurer, "Id", "InsurerName"), new { @class = "form-control" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-select">

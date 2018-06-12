@@ -32,6 +32,7 @@ namespace InsuranceClaim
                 cfg.CreateMap<PolicyDetailModel, PolicyDetail>().ReverseMap();
                 cfg.CreateMap<RiskDetailModel, VehicleDetail>().ReverseMap();
                 cfg.CreateMap<VehicleModel, ClsVehicleModel>().ReverseMap();
+                cfg.CreateMap<InsurerModel, PolicyInsurer>().ReverseMap();
             });
         }
     }

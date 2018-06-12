@@ -41,18 +41,30 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult ProductDetail()
         {
+            var InsService = new InsurerService();
             ViewBag.Currency = InsuranceContext.Currencies.All().ToList();
             ViewBag.PoliCyStatus = InsuranceContext.PolicyStatuses.All().ToList();
             ViewBag.BusinessSource = InsuranceContext.BusinessSources.All().ToList();
             ViewBag.Products = InsuranceContext.Products.All().ToList();
+            ViewBag.Insurer = InsService.GetInsurers();
             var objList = InsuranceContext.PolicyDetails.All(orderBy: "Id desc").FirstOrDefault();
             if (objList != null)
             {
-                ViewBag.PolicyNumber = Convert.ToDecimal(objList.PolicyNumber) + 1;
+                string number = objList.PolicyNumber.Split('-')[0].Substring(4, objList.PolicyNumber.Length - 6);
+                long pNumber = Convert.ToInt64(number.Substring(2, number.Length - 2)) +1;
+                string policyNumber = string.Empty;
+                int length = 7;
+                length = length - pNumber.ToString().Length;
+                for (int i = 0; i < length; i++)
+                {
+                    policyNumber += "0";
+                }
+                policyNumber += pNumber;
+                ViewBag.PolicyNumber = "GMCC" + DateTime.Now.Year.ToString().Substring(2,2) + policyNumber + "-1";
             }
             else
             {
-                ViewBag.PolicyNumber = ConfigurationManager.AppSettings["PolicyNumber"];
+                ViewBag.PolicyNumber = ConfigurationManager.AppSettings["PolicyNumber"] + "-1";
             }
             var objCustomerData = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).ToList();
             if (objCustomerData.Count > 0)
@@ -67,6 +79,7 @@ namespace InsuranceClaim.Controllers
         {
             var service = new VehicleService();
             var makers = service.GetMakers();
+            ViewBag.CoverType = service.GetCoverType();
             ViewBag.Makers = makers;
             if (makers.Count > 0)
             {
@@ -121,6 +134,7 @@ namespace InsuranceClaim.Controllers
                         model.CustomerId = custId;
                         var customer = Mapper.Map<CustomerModel, Customer>(model);
                         InsuranceContext.Customers.Insert(customer);
+                        Session["CustomerId"] = customer.Id;
                         return Json(true, JsonRequestBehavior.AllowGet);
                     }
                 }
@@ -162,6 +176,7 @@ namespace InsuranceClaim.Controllers
                 }
 
                 var policy = Mapper.Map<PolicyDetailModel, PolicyDetail>(model);
+                policy.CustomerId = Session["CustomerId"] == null ? 0 : Convert.ToInt32(Session["CustomerId"]);
                 InsuranceContext.PolicyDetails.Insert(policy);
 
                 return Json(true, JsonRequestBehavior.AllowGet);
@@ -181,7 +196,7 @@ namespace InsuranceClaim.Controllers
             var service = new RiskDetailService();
             var startDate = Request.Form["CoverStartDate"];
             var endDate = Request.Form["CoverEndDate"];
-            if(!string.IsNullOrEmpty(startDate))
+            if (!string.IsNullOrEmpty(startDate))
             {
                 ModelState.Remove("CoverStartDate");
                 model.CoverStartDate = Convert.ToDateTime(startDate, usDtfi);
@@ -190,12 +205,12 @@ namespace InsuranceClaim.Controllers
             {
                 ModelState.Remove("CoverEndDate");
                 model.CoverEndDate = Convert.ToDateTime(endDate, usDtfi);
-            }          
+            }
             if (ModelState.IsValid)
             {
                 service.AddVehicleInformation(model);
             }
-          
+
             return View();
         }
     }

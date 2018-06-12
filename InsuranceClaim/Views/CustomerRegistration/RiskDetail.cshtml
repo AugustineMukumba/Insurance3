@@ -131,9 +131,10 @@
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
-                                            <select class="form-control">
+                                            @*<select class="form-control">
                                                 <option>Vehicle Cover type</option>
-                                            </select>
+                                            </select>*@
+                                            @Html.DropDownListFor(x => x.CoverTypeId, new SelectList(ViewBag.CoverType, "id", "Name"), new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
