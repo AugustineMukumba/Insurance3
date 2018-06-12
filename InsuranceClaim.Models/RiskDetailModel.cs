@@ -12,8 +12,8 @@ namespace InsuranceClaim.Models
         public int? NoOfCarsCovered { get; set; }
         public string RegistrationNo { get; set; }
         public int? CustomerId { get; set; }
-        public int? MakeId { get; set; }
-        public int? ModelId { get; set; }
+        public string  MakeId { get; set; }
+        public string  ModelId { get; set; }
         public decimal? CubicCapacity { get; set; }
         public int? VehicleYear { get; set; }
         public string EngineNumber { get; set; }
@@ -32,5 +32,6 @@ namespace InsuranceClaim.Models
         public decimal? RadioLicenseCost { get; set; }
         public string OptionalCovers { get; set; }
         public string Excess { get; set; }
+        public string CoverNoteNo { get; set; }
     }
 }
