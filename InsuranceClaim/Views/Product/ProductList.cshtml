@@ -1,0 +1,63 @@
+﻿@model  List<Insurance.Domain.Product>
+@{
+    ViewBag.Title = "ProductList";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+}
+
+
+@using (Html.BeginForm("ProductEdit", "Product", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <div class="productsave-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
+                    <div class="head-title">
+                        <h2>Products</h2>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 add-btn">
+                    <div class="text-right">
+                        @*<button type="button" class="btn btn-primary">Add</button>*@
+                        <form>
+                            <input class="btn btn-primary" type="button" value="Add" onclick="window.location.href='@Url.Action("Index", "Product" )'" />
+                        </form>
+
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="product-table-grid">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Product Code</th>
+                            <th class="action-th">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Insurance.Domain.Product item in Model)
+                        {
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td>@item.ProductCode</td>
+                                <td>
+                                    <div class="tbl-btn-list">
+                                        <ul class="list-inline">
+                                            <li>@Html.ActionLink("Edit", "ProductEdit", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
+                                            @*<li>@Html.ActionLink("Delete", "Delete", new {id=item.Id }, new { @class = "btn-sm btn-danger" })</li>*@
+                                        </ul>
+                                    </div>
+
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+}

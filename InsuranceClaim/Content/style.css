@@ -188,7 +188,18 @@ span.online-dot {  display: inline-block;  width: 15px;  height: 15px;  backgrou
   margin-top: 50px;
   text-decoration: underline;
 }
-  
+
+.productsave-section { display:inline-block; width:100%; padding:70px 0
+}
+.head-title h2 {
+    text-transform: uppercase;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 0 20px 0;
+}
+.product-table-grid table tr th.action-th {
+    width: 150px;
+}
   
 
 

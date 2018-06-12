@@ -1,0 +1,39 @@
+﻿@model InsuranceClaim.Models.
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+}
+
+<h2></h2>
+
+<style>
+    #dot {
+        padding: 10%;
+    }
+</style>
+<div class="container" id="dot">
+
+    @using (Html.BeginForm("ProductSave", "Product", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        <div class="form-group">
+            @Html.Label("Commission Name", new { @class = "col-md-2 control-label" })
+            <div class="col-md-5">
+                @Html.TextBoxFor(m => m.CommissionName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("CommissionAmount", new { @class = "col-md-2 control-label" })
+            <div class="col-md-5">
+                @Html.TextBoxFor(m => m.CommissionAmount, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("ManagementCommission", new { @class = "col-md-2 control-label" })
+            <div class="col-md-5">
+                @Html.TextBoxFor(m => m.ManagementCommission, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div><input type="submit" name="Submit" class="btn btn-primary btn sm" /></div>
+    }
+</div>
