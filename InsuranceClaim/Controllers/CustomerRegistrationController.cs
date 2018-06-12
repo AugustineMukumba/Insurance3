@@ -44,10 +44,11 @@ namespace InsuranceClaim.Controllers
             ViewBag.Currency = InsuranceContext.Currencies.All().ToList();
             ViewBag.PoliCyStatus = InsuranceContext.PolicyStatuses.All().ToList();
             ViewBag.BusinessSource = InsuranceContext.BusinessSources.All().ToList();
-            var objList = InsuranceContext.PolicyDetails.All(orderBy: "Id desc", top: 1).ToList();
-            if (objList.Count > 0)
+            ViewBag.Products = InsuranceContext.Products.All().ToList();
+            var objList = InsuranceContext.PolicyDetails.All(orderBy: "Id desc").FirstOrDefault();
+            if (objList != null)
             {
-                ViewBag.PolicyNumber = objList.FirstOrDefault().PolicyNumber;
+                ViewBag.PolicyNumber = Convert.ToDecimal(objList.PolicyNumber) + 1;
             }
             else
             {
@@ -67,7 +68,7 @@ namespace InsuranceClaim.Controllers
             var service = new VehicleService();
             var makers = service.GetMakers();
             ViewBag.Makers = makers;
-            if(makers.Count>0)
+            if (makers.Count > 0)
             {
                 var model = service.GetModel(makers.FirstOrDefault().MakeCode);
                 ViewBag.Model = model;
@@ -106,10 +107,10 @@ namespace InsuranceClaim.Controllers
                     var result = await UserManager.CreateAsync(user, "Kindle@123");
                     if (result.Succeeded)
                     {
-                        var objCustomer = InsuranceContext.Customers.All(top: 1).OrderByDescending(x => x.Id).ToList();
-                        if (objCustomer.Count > 0)
+                        var objCustomer = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).FirstOrDefault();
+                        if (objCustomer != null)
                         {
-                            custId = objCustomer.FirstOrDefault().CustomerId + 1;
+                            custId = objCustomer.CustomerId + 1;
                         }
                         else
                         {
@@ -171,6 +172,31 @@ namespace InsuranceClaim.Controllers
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
 
+        }
+
+        [HttpPost]
+        public ActionResult GenerateQuote(RiskDetailModel model)
+        {
+            DateTimeFormatInfo usDtfi = new CultureInfo("en-US", false).DateTimeFormat;
+            var service = new RiskDetailService();
+            var startDate = Request.Form["CoverStartDate"];
+            var endDate = Request.Form["CoverEndDate"];
+            if(!string.IsNullOrEmpty(startDate))
+            {
+                ModelState.Remove("CoverStartDate");
+                model.CoverStartDate = Convert.ToDateTime(startDate, usDtfi);
+            }
+            if (!string.IsNullOrEmpty(endDate))
+            {
+                ModelState.Remove("CoverEndDate");
+                model.CoverEndDate = Convert.ToDateTime(endDate, usDtfi);
+            }          
+            if (ModelState.IsValid)
+            {
+                service.AddVehicleInformation(model);
+            }
+          
+            return View();
         }
     }
 }
