@@ -88,6 +88,7 @@
     <Compile Include="CardDetailModel.cs" />
     <Compile Include="CustomerModel.cs" />
     <Compile Include="IdentityModels.cs" />
+    <Compile Include="InsurerModel.cs" />
     <Compile Include="ManageViewModels.cs" />
     <Compile Include="PolicyDetailModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
