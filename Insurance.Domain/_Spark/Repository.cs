@@ -51,6 +51,8 @@ namespace Insurance.Domain
         public static ReinsuranceTransactions ReinsuranceTransactions { get { return new ReinsuranceTransactions(); } }
         public static ReinsurerDetails ReinsurerDetails { get { return new ReinsurerDetails(); } }
         public static Products Products { get { return new Products(); } }
+        public static PolicyInsurers PolicyInsurers { get { return new PolicyInsurers(); } }
+        public static VehicleCoverTypes VehicleCoverTypes { get { return new VehicleCoverTypes(); } }
         // general purpose operations
 
         public static void Execute(string sql, params object[] parms) { db.Execute(sql, parms); }

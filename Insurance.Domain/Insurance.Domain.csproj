@@ -127,6 +127,7 @@
     <Compile Include="Domain\PaymentMethod.cs" />
     <Compile Include="Domain\PaymentTerm.cs" />
     <Compile Include="Domain\PolicyDetail.cs" />
+    <Compile Include="Domain\PolicyInsurer.cs" />
     <Compile Include="Domain\PolicyStatus.cs" />
     <Compile Include="Domain\Product.cs" />
     <Compile Include="Domain\Reinsurance.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="Domain\ReinsurerDetail.cs" />
     <Compile Include="Domain\SpecificExcess.cs" />
     <Compile Include="Domain\SummaryDetail.cs" />
+    <Compile Include="Domain\VehicleCoverType.cs" />
     <Compile Include="Domain\VehicleDetail.cs" />
     <Compile Include="Domain\VehicleMake.cs" />
     <Compile Include="Domain\VehicleModel.cs" />
@@ -151,6 +153,7 @@
     <Compile Include="Repository\PaymentMethods.cs" />
     <Compile Include="Repository\PaymentTerms.cs" />
     <Compile Include="Repository\PolicyDetails.cs" />
+    <Compile Include="Repository\PolicyInsurers.cs" />
     <Compile Include="Repository\PolicyStatuses.cs" />
     <Compile Include="Repository\Products.cs" />
     <Compile Include="Repository\ReinsuranceBrokers.cs" />
@@ -160,6 +163,7 @@
     <Compile Include="Repository\Repository.partial.cs" />
     <Compile Include="Repository\SpecificExcesses.cs" />
     <Compile Include="Repository\SummaryDetails.cs" />
+    <Compile Include="Repository\VehicleCoverTypes.cs" />
     <Compile Include="Repository\VehicleDetails.cs" />
     <Compile Include="Repository\VehicleMakes.cs" />
     <Compile Include="Repository\VehicleModels.cs" />

@@ -38,9 +38,9 @@ namespace Insurance.Domain
 
         public int Id { get; set; }
         public string CommissionName { get; set; }
-        public float? CommissionAmount { get; set; }
-    
-       
+        public Single? CommissionAmount { get; set; }
+        public Single? ManagementCommission { get; set; }
+
     }
 
     public partial class BusinessSource : Entity<BusinessSource>
@@ -150,6 +150,7 @@ namespace Insurance.Domain
         public PolicyDetail(bool defaults) : base(defaults) { }
 
         public int Id { get; set; }
+        public int CustomerId { get; set; }
         public string PolicyName { get; set; }
         public string PolicyNumber { get; set; }
         public int? InsurerId { get; set; }
@@ -371,6 +372,26 @@ namespace Insurance.Domain
         public string ProductName { get; set; }
         public string ProductCode { get; set; }
         
+
+    }
+    public partial class PolicyInsurer : Entity<PolicyInsurer>
+    {
+        public PolicyInsurer() { }
+        public PolicyInsurer(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public string InsurerName { get; set; }
+        public string InsurerCode { get; set; }
+        public string InsurerAddress { get; set; }
+
+    }
+    public partial class VehicleCoverType : Entity<VehicleCoverType>
+    {
+        public VehicleCoverType() { }
+        public VehicleCoverType(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public string CoverType { get; set; }     
 
     }
 }
