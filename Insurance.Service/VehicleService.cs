@@ -24,5 +24,10 @@ namespace Insurance.Service
             return map;
 
         }
+        public List<CoverType> GetCoverType()
+        {
+            var list = InsuranceContext.CoverTypes.All().ToList();
+            return list;
+        }
     }
 }
