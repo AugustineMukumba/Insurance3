@@ -314,6 +314,7 @@
     <Content Include="Views\Covertype\CoverList.cshtml" />
     <Content Include="Views\Covertype\EditCovertype.cshtml" />
     <Content Include="Views\VehicleUsage\Index.cshtml" />
+    <Content Include="Views\VehicleUsage\VehicalUserList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

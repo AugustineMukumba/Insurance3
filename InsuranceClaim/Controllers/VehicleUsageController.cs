@@ -1,4 +1,7 @@
-﻿using System;
+﻿using AutoMapper;
+using Insurance.Domain;
+using InsuranceClaim.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,10 +14,25 @@ namespace InsuranceClaim.Controllers
         // GET: VehicleUsage
         public ActionResult Index()
         {
-
-
-
-            return View();
+            var obj = new InsuranceClaim.Models.VehicleUsageModel();
+           var objList = InsuranceContext.VehicleUsages.All().ToList();
+            ViewBag.Products = InsuranceContext.Products.All().ToList();
+            return View(obj);
         }
+        [HttpPost]
+        public ActionResult SaveVehicalUsage(VehicleUsageModel model)
+        {
+            var dbModel = Mapper.Map<VehicleUsageModel,VehicleUsage>(model);
+            InsuranceContext.VehicleUsages.Insert(dbModel);
+            //return View(dbModel);
+            return RedirectToAction("VehicalUserList");
+        }
+        public ActionResult VehicalUserList()
+        {
+            var UserList = InsuranceContext.VehicleUsages.All().ToList();
+
+            return View(UserList);
+        }
+
     }
 }

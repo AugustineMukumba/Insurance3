@@ -17,16 +17,11 @@ namespace InsuranceClaim.Controllers
             InsuranceClaim.Models.PolicyInsurerModel obj = new InsuranceClaim.Models.PolicyInsurerModel();
             List<Insurance.Domain.PolicyInsurer> objList = new List<Insurance.Domain.PolicyInsurer>();
             objList = InsuranceContext.PolicyInsurers.All().ToList();
-            //obj.CommissionAmount = null;
-            //obj.ManagementCommission = null;
             return View(obj);
         }
         [HttpPost]
         public ActionResult PolicySave(PolicyInsurerModel model)
         {
-            //var sb = Mapper.Map<PolicyDetailModel, PolicyDetail>(model);
-            //InsuranceContext.PolicyDetails.Insert(sb);
-            //return View();
             var data = Mapper.Map<PolicyInsurerModel, PolicyInsurer>(model);
             InsuranceContext.PolicyInsurers.Insert(data);
             return RedirectToAction("PolicyList");
