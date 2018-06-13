@@ -1,0 +1,24 @@
+﻿@model InsuranceClaim.Models.CovertypeModel
+@{
+    ViewBag.Title = "EditCovertype";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+}
+
+<style>
+    #dot {
+        padding: 10%;
+    }
+</style>
+<div class="container" id="dot">
+
+    @using (Html.BeginForm("EditCovertype", "Covertype", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        <div class="form-group">
+            @Html.Label("Name", new { @class = "col-md-2 control-label" })
+            <div class="col-md-5">
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+            </div>
+        </div>
+        <div><input type="submit" name="Update" value="Update" class="btn btn-primary btn sm" /></div>
+    }
+</div>

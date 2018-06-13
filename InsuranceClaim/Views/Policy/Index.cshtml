@@ -1,0 +1,43 @@
+﻿@model InsuranceClaim.Models.PolicyInsurerModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+}
+
+<style>
+    #dot {
+        padding: 10%;
+    }
+</style>
+<div class="container" id="dot">
+
+    @using (Html.BeginForm("PolicySave", "Policy", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        <div class="form-group">
+            @Html.Label("Insurer Name", new { @class = "col-md-2 control-label" })
+            <div class="col-md-5">
+                @Html.ValidationMessageFor(x => x.InsurerName, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.InsurerName, new { @class = "form-control" })
+                @*@Html.ValidationMessageFor(x => x.ProductName, "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Insurer Code", new { @class = "col-md-2 control-label" })
+            <div class="col-md-5">
+                @Html.ValidationMessageFor(x => x.InsurerCode, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.InsurerCode, new { @class = "form-control" })
+                @*@Html.ValidationMessageFor(x => x.ProductCode, "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Insurer Address", new { @class = "col-md-2 control-label" })
+            <div class="col-md-5">
+                @Html.ValidationMessageFor(x => x.InsurerAddress, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.InsurerAddress, new { @class = "form-control" })
+                @*@Html.ValidationMessageFor(x => x.ProductName, "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+
+        <div><input type="submit" name="Submit" class="btn btn-primary btn sm" /></div>
+    }
+</div>

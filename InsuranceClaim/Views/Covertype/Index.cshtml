@@ -1,0 +1,27 @@
+﻿@model InsuranceClaim.Models.CovertypeModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+}
+
+<h2>Cover types</h2>
+<style>
+    #dot {
+        padding: 10%;
+    }
+</style>
+<div class="container" id="dot">
+
+    @using (Html.BeginForm("SaveCover", "Covertype", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        <div class="form-group">
+            @Html.Label("Name", new { @class = "col-md-2 control-label" })
+            <div class="col-md-5">
+                @Html.ValidationMessageFor(x => x.Name, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                @*@Html.ValidationMessageFor(x => x.ProductName, "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+        <div><input type="submit" name="Submit" class="btn btn-primary btn sm" /></div>
+    }
+</div>

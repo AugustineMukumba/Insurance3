@@ -6,6 +6,9 @@ using System.Web.Mvc;
 using Insurance.Domain;
 using InsuranceClaim.Models;
 using AutoMapper;
+
+
+
 namespace InsuranceClaim.Controllers
 {
     public class ProductController : Controller
@@ -19,7 +22,7 @@ namespace InsuranceClaim.Controllers
             InsuranceClaim.Models.ProductModel obj = new InsuranceClaim.Models.ProductModel();
             List<Insurance.Domain.Product> objList = new List<Insurance.Domain.Product>();
             objList = InsuranceContext.Products.All().ToList();
-
+                
             return View(obj);
         }
         [HttpPost]

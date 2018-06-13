@@ -195,11 +195,14 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CommissionController.cs" />
+    <Compile Include="Controllers\CovertypeController.cs" />
     <Compile Include="Controllers\CustomerRegistrationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InsuranceHomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\PolicyController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\VehicleUsageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -302,6 +305,15 @@
     <Content Include="Views\Product\ProductList.cshtml" />
     <Content Include="Views\Product\ProductEdit.cshtml" />
     <Content Include="Views\Commission\Index.cshtml" />
+    <Content Include="Views\Commission\CommissionList.cshtml" />
+    <Content Include="Views\Commission\CommissionEdit.cshtml" />
+    <Content Include="Views\Policy\Index.cshtml" />
+    <Content Include="Views\Policy\PolicyList.cshtml" />
+    <Content Include="Views\Policy\EditPolicy.cshtml" />
+    <Content Include="Views\Covertype\Index.cshtml" />
+    <Content Include="Views\Covertype\CoverList.cshtml" />
+    <Content Include="Views\Covertype\EditCovertype.cshtml" />
+    <Content Include="Views\VehicleUsage\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
