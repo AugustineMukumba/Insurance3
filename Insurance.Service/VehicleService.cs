@@ -36,9 +36,14 @@ namespace Insurance.Service
         }
         public List<VehicleUsage> GetVehicleUsage(int policyId)
         {
-            var policy = InsuranceContext.PolicyDetails.Single(policyId);
+            var policy = GetPolicy(policyId);
             var list = InsuranceContext.VehicleUsages.All(where: $"ProductId='{policy.PolicyName}'").ToList();
             return list;
+        }
+        public PolicyDetail GetPolicy(int policyId)
+        {
+            var policy = InsuranceContext.PolicyDetails.Single(policyId);
+            return policy;
         }
     }
 }

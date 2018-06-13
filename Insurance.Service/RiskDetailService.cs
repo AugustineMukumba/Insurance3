@@ -18,12 +18,12 @@ namespace Insurance.Service
                 InsuranceContext.VehicleDetails.Insert(db);
                 return db.Id;
             }
-            catch 
+            catch (Exception ex)
             {
 
                 return 0;
             }
-           
+
 
         }
     }
