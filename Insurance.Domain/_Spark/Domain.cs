@@ -38,8 +38,8 @@ namespace Insurance.Domain
 
         public int Id { get; set; }
         public string CommissionName { get; set; }
-        public Single? CommissionAmount { get; set; }
-        public Single? ManagementCommission { get; set; }
+        public double? CommissionAmount { get; set; }
+        public double? ManagementCommission { get; set; }
 
     }
 
