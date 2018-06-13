@@ -29,5 +29,16 @@ namespace Insurance.Service
             var list = InsuranceContext.CoverTypes.All().ToList();
             return list;
         }
+        public List<AgentCommission> GetAgentCommission()
+        {
+            var list = InsuranceContext.AgentCommissions.All().ToList();
+            return list;
+        }
+        public List<VehicleUsage> GetVehicleUsage(int policyId)
+        {
+            var policy = InsuranceContext.PolicyDetails.Single(policyId);
+            var list = InsuranceContext.VehicleUsages.All(where: $"ProductId='{policy.PolicyName}'").ToList();
+            return list;
+        }
     }
 }
