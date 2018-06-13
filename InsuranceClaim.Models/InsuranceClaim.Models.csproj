@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="AccountViewModels.cs" />
     <Compile Include="CardDetailModel.cs" />
+    <Compile Include="CommissionModel.cs" />
     <Compile Include="CustomerModel.cs" />
     <Compile Include="IdentityModels.cs" />
     <Compile Include="InsurerModel.cs" />
