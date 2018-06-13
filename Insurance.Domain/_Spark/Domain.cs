@@ -243,7 +243,7 @@ namespace Insurance.Domain
         public VehicleMake() { }
         public VehicleMake(bool defaults) : base(defaults) { }
 
-        public int? Id { get; set; }
+        public int Id { get; set; }
         public string MakeDescription { get; set; }
         public string MakeCode { get; set; }
         public string ShortDescription { get; set; }
