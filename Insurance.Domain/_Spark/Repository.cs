@@ -53,6 +53,7 @@ namespace Insurance.Domain
         public static Products Products { get { return new Products(); } }
         public static PolicyInsurers PolicyInsurers { get { return new PolicyInsurers(); } }
         public static VehicleCoverTypes VehicleCoverTypes { get { return new VehicleCoverTypes(); } }
+        public static VehicleUsages VehicleUsages { get { return new VehicleUsages(); } }
         // general purpose operations
 
         public static void Execute(string sql, params object[] parms) { db.Execute(sql, parms); }
