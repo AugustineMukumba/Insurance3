@@ -84,6 +84,7 @@ namespace InsuranceClaim.Controllers
             ViewBag.AgentCommission = service.GetAgentCommission();
             ViewBag.Makers = makers;
             ViewBag.VehicleUsage = service.GetVehicleUsage(id);
+            TempData["Policy"] = service.GetPolicy(id);
             if (makers.Count > 0)
             {
                 var model = service.GetModel(makers.FirstOrDefault().MakeCode);
@@ -116,9 +117,23 @@ namespace InsuranceClaim.Controllers
             jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             return jsonResult;
         }
-        public ActionResult SummaryDetail()
+        public ActionResult SummaryDetail(int id)
         {
-            return View();
+            var model = new SummaryDetailModel();
+            var summary = new SummaryDetailService();
+            var vehicle = summary.GetVehicleInformation(id);
+            model.CarInsuredCount = vehicle.NoOfCarsCovered;
+            model.DebitNote = "INV"+DateTime.Now.Ticks;
+            model.PaymentMethodId = 1;
+            model.PaymentTermId = 1;
+            model.ReceiptNumber = "";
+            model.SMSConfirmation = false;
+            model.TotalPremium = vehicle.Premium + vehicle.StampDuty + vehicle.ZTSCLevy;
+            model.TotalRadioLicenseCost = vehicle.RadioLicenseCost;
+            model.TotalStampDuty = vehicle.StampDuty;
+            model.TotalSumInsured = vehicle.SumInsured;
+            model.TotalZTSCLevies = vehicle.ZTSCLevy;
+            return View(model);
         }
 
         public ActionResult PaymentDetail()
@@ -236,10 +251,13 @@ namespace InsuranceClaim.Controllers
             }
             if (ModelState.IsValid)
             {
-                service.AddVehicleInformation(model);
+                var policy = TempData["Policy"] as PolicyDetail;
+                model.CustomerId = policy.CustomerId;
+               var Id= service.AddVehicleInformation(model);
+                return RedirectToAction("SummaryDetail",new { id= Id });
             }
 
-            return View();
+            return View("RiskDetail");
         }
     }
 }

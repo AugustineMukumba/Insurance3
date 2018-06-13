@@ -201,7 +201,9 @@ span.online-dot {  display: inline-block;  width: 15px;  height: 15px;  backgrou
     width: 150px;
 }
   
-
+.choose-plan-box.active {
+    border: #00d065 solid 4px;
+}
 
 @media(max-width:767px){
   .policy-option li {  float: left;  margin: 15px 0;  width: 48%;}
