@@ -51,7 +51,7 @@ namespace InsuranceClaim.Controllers
             if (objList != null)
             {
                 string number = objList.PolicyNumber.Split('-')[0].Substring(4, objList.PolicyNumber.Length - 6);
-                long pNumber = Convert.ToInt64(number.Substring(2, number.Length - 2)) +1;
+                long pNumber = Convert.ToInt64(number.Substring(2, number.Length - 2)) + 1;
                 string policyNumber = string.Empty;
                 int length = 7;
                 length = length - pNumber.ToString().Length;
@@ -60,7 +60,7 @@ namespace InsuranceClaim.Controllers
                     policyNumber += "0";
                 }
                 policyNumber += pNumber;
-                ViewBag.PolicyNumber = "GMCC" + DateTime.Now.Year.ToString().Substring(2,2) + policyNumber + "-1";
+                ViewBag.PolicyNumber = "GMCC" + DateTime.Now.Year.ToString().Substring(2, 2) + policyNumber + "-1";
             }
             else
             {
@@ -75,12 +75,15 @@ namespace InsuranceClaim.Controllers
             return View();
         }
 
-        public ActionResult RiskDetail()
+        public ActionResult RiskDetail(int id)
         {
+            //Id is policyid from Policy detail table
             var service = new VehicleService();
             var makers = service.GetMakers();
             ViewBag.CoverType = service.GetCoverType();
+            ViewBag.AgentCommission = service.GetAgentCommission();
             ViewBag.Makers = makers;
+            ViewBag.VehicleUsage = service.GetVehicleUsage(id);
             if (makers.Count > 0)
             {
                 var model = service.GetModel(makers.FirstOrDefault().MakeCode);
@@ -88,6 +91,21 @@ namespace InsuranceClaim.Controllers
             }
             service = null;
             return View();
+        }
+        [HttpPost]
+        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType)
+        {
+            JsonResult json = new JsonResult();
+            var quote = new QuoteLogic();
+            var typeCover = eCoverType.Comprehensive;
+            if (coverType == 2)
+            {
+                typeCover = eCoverType.ThirdParty;
+            }
+            var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover);
+            json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            json.Data = premium;
+            return json;
         }
         public JsonResult GetVehicleModel(string makeCode)
         {
@@ -151,6 +169,8 @@ namespace InsuranceClaim.Controllers
         [HttpPost]
         public JsonResult SavePolicyData(PolicyDetailModel model)
         {
+            JsonResult json = new JsonResult();
+            var response = new Response();
             try
             {
                 DateTimeFormatInfo usDtfi = new CultureInfo("en-US", false).DateTimeFormat;
@@ -178,13 +198,21 @@ namespace InsuranceClaim.Controllers
                 var policy = Mapper.Map<PolicyDetailModel, PolicyDetail>(model);
                 policy.CustomerId = Session["CustomerId"] == null ? 0 : Convert.ToInt32(Session["CustomerId"]);
                 InsuranceContext.PolicyDetails.Insert(policy);
-
-                return Json(true, JsonRequestBehavior.AllowGet);
+                response.Id = policy.Id;
+                response.Message = "Success";
+                response.Status = true;
+                json.Data = response;
+                json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+                return json;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                return Json(false, JsonRequestBehavior.AllowGet);
+                response.Id = 0;
+                response.Message = ex.Message;
+                response.Status = false;
+                json.Data = response;
+                json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+                return json;
             }
 
         }

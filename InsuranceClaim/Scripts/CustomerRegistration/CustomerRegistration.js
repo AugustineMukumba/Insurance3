@@ -1,8 +1,7 @@
 ﻿$(document).ready(function () {
 })
 
-function GoToProductDetail(json) {
-    debugger;
+function GoToProductDetail(json) { 
     if (json == true) {
         window.location.href = '/CustomerRegistration/ProductDetail';
     }
@@ -11,11 +10,14 @@ function GoToProductDetail(json) {
     }
 }
 
-function GoToRiskDetail(json) {
-    if (json == true) {
-        window.location.href = '/CustomerRegistration/RiskDetail';
+function GoToRiskDetail(json) {   
+    debugger;
+    if (json.Status == true) {
+        window.location.href = '/CustomerRegistration/RiskDetail/' + json.Id;
     }
-   
+    else {
+        alert(json.Message);
+    }
 }
 
 function GoToSummaryDetail(json) {

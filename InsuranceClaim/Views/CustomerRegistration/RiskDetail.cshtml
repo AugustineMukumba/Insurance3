@@ -69,26 +69,26 @@
                             <form role="form" id="contact-form" class="contact-form">
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">                                           
-                                            @Html.TextBoxFor(m => m.NoOfCarsCovered, new {@placeholder= "Number of Cars Covered", @autocomplete = "off", @class = "form-control" })
+                                        <div class="form-group">
+                                            @Html.TextBoxFor(m => m.NoOfCarsCovered, new { @placeholder = "Number of Cars Covered", @autocomplete = "off", @class = "form-control" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                            @Html.TextBoxFor(m => m.RegistrationNo, new {@class="form-control", @autocomplete="off", @placeholder="Vehicle Registration Number" })                                            
+                                            @Html.TextBoxFor(m => m.RegistrationNo, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Registration Number" })
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
-                                           
+
                                             @Html.DropDownListFor(x => x.MakeId, new SelectList(ViewBag.Makers, "MakeCode", "MakeDescription"), new { @class = "form-control" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
-                                            
+
                                             @Html.DropDownListFor(x => x.ModelId, new SelectList(ViewBag.Model, "ModelCode", "ModelDescription"), new { @class = "form-control" })
                                         </div>
                                     </div>
@@ -97,12 +97,12 @@
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                           
-                                            @Html.TextBoxFor(m => m.CubicCapacity, new { @class="form-control",@autocomplete="off",@placeholder="Cubic Capacity"})
+
+                                            @Html.TextBoxFor(m => m.CubicCapacity, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cubic Capacity" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">                                          
+                                        <div class="form-group">
                                             @Html.TextBoxFor(m => m.VehicleYear, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle year" })
                                         </div>
                                     </div>
@@ -110,30 +110,27 @@
 
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">                                          
+                                        <div class="form-group">
                                             @Html.TextBoxFor(m => m.EngineNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Engine Number" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                         
+
                                             @Html.TextBoxFor(m => m.ChasisNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Chassis Number" })
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                    <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
-                                           
-                                            @Html.TextBoxFor(m => m.VehicleUsage, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Usage" })
+
+                                            @Html.DropDownListFor(x => x.VehicleUsage, new SelectList(ViewBag.VehicleUsage, "Id", "VehUsage"), new { @class = "form-control" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
-                                            @*<select class="form-control">
-                                                <option>Vehicle Cover type</option>
-                                            </select>*@
                                             @Html.DropDownListFor(x => x.CoverTypeId, new SelectList(ViewBag.CoverType, "id", "Name"), new { @class = "form-control" })
                                         </div>
                                     </div>
@@ -144,7 +141,7 @@
                                         <div class="form-group">
 
                                             <div class='input-group date' id='datetimepicker1'>
-                                                @Html.TextBoxFor(m => m.CoverStartDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Cover Start Date" })                                               
+                                                @Html.TextBoxFor(m => m.CoverStartDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Cover Start Date" })
                                                 <span class="input-group-addon">
                                                     <span class="glyphicon glyphicon-calendar"></span>
                                                 </span>
@@ -153,7 +150,7 @@
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                            <div class='input-group date' id='datetimepicker2'>                                               
+                                            <div class='input-group date' id='datetimepicker2'>
                                                 @Html.TextBoxFor(m => m.CoverEndDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Cover End Date" })
                                                 <span class="input-group-addon">
                                                     <span class="glyphicon glyphicon-calendar"></span>
@@ -166,40 +163,38 @@
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                            @Html.TextBox("VehicleSumInsures", null,new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insures" })
-                                            
+                                            @Html.TextBox("VehicleSumInsures", null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insures" })
+
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">                                           
+                                        <div class="form-group">
                                             @Html.TextBoxFor(m => m.SumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insured" })
                                         </div>
                                     </div>
-                                  
+
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">                                            
-                                            @Html.TextBoxFor(m => m.Premium, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Premium" })
+                                        <div class="form-group">
+                                            @Html.TextBoxFor(m => m.Premium, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Premium", @readonly = "readonly" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
-                                            <select class="form-control">
-                                                <option>Broker/Agent Commission</option>
-                                            </select>
+                                            @Html.DropDownListFor(x => x.AgentCommissionId, new SelectList(ViewBag.AgentCommission, "Id", "CommissionName"), new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                            @Html.TextBoxFor(m => m.StampDuty, new { @class = "form-control", @autocomplete = "off", @placeholder = "Stamp Duty" })                                            
+                                            @Html.TextBoxFor(m => m.StampDuty, new { @class = "form-control", @autocomplete = "off", @placeholder = "Stamp Duty", @readonly = "readonly" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">                                            
-                                            @Html.TextBoxFor(m => m.ZTSCLevy, new { @class = "form-control", @autocomplete = "off", @placeholder = "ZTSC Levy" })
+                                        <div class="form-group">
+                                            @Html.TextBoxFor(m => m.ZTSCLevy, new { @class = "form-control", @autocomplete = "off", @placeholder = "ZTSC Levy", @readonly = "readonly" })
                                         </div>
                                     </div>
                                 </div>
@@ -207,12 +202,12 @@
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                            @Html.TextBoxFor(m => m.RadioLicenseCost, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Radio Licence Cost" })                                           
+                                            @Html.TextBoxFor(m => m.RadioLicenseCost, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Radio Licence Cost" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                            
+
                                             @Html.TextBoxFor(m => m.OptionalCovers, new { @class = "form-control", @autocomplete = "off", @placeholder = "Additional/Optional Covers" })
                                         </div>
                                     </div>
@@ -220,7 +215,7 @@
 
                                 <div class="row">
                                     <div class="col-sm-12 col-md-12 form-group-text">
-                                        <div class="form-group">                                          
+                                        <div class="form-group">
                                             @Html.TextBoxFor(m => m.Excess, new { @class = "form-control", @autocomplete = "off", @placeholder = "Excess" })
                                         </div>
                                     </div>
@@ -236,10 +231,10 @@
                                             </div>
                                             <div class="col-sm-6 col-md-6">
                                                 <div class="text-right">
-                                                   <button type="button" class="btn" onclick="replacableRedirect()">Generate Quote</button>
+                                                    <button type="button" class="btn" onclick="replacableRedirect()">Generate Quote</button>
                                                 </div>
                                             </div>
-                                           
+
                                         </div>
                                     </div>
                                 </div>
@@ -277,7 +272,7 @@
                 url: "@Url.Action("GetVehicleModel", "CustomerRegistration")",
                 type: "POST",
                 data: { makeCode: $("#MakeId").val() },
-                dataType:"json",
+                dataType: "json",
                 success: function (result) {
                     debugger;
                     var $dropdown = $("#ModelId");
@@ -288,9 +283,59 @@
                 }
             });
         });
+
+        $("#SumInsured").blur(function () {
+
+            QuoteCalculation();
+        });
+
+        $("#VehicleUsage").change(function () {
+
+            QuoteCalculation();
+        });
+        $("#CoverTypeId").change(function () {
+
+            QuoteCalculation();
+        });
     });
     function replacableRedirect() {
         window.location.href = "@Url.Action("SummaryDetail", "CustomerRegistration")";
     }
-</script>
+    function QuoteCalculation() {
+        debugger;
+        var sumInsured = parseFloat($("#SumInsured").val());
+        if (sumInsured < 1) {
+            return false;
+        }
+        var vehicleUsageId = parseInt($("#VehicleUsage").val());
+        if (vehicleUsageId < 1) {
+            return false;
+        }
+        var coverType = parseInt($("#CoverTypeId").val());
+        if (coverType < 1) {
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("CalculatePremium", "CustomerRegistration")",
+            data: { vehicleUsageId: vehicleUsageId, sumInsured: sumInsured, coverType: coverType },
+            success: function (data) {
+                debugger;
+                $("#Premium").val(data.Premium);
+                $("#StampDuty").val(data.StamDuty);
+                $("#ZTSCLevy").val(data.ZtscLevy);
+                if (data.Status == false) {
+                    alert(data.Message);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (textStatus == 'timeout') {
+                    //doe iets
+                } else if (textStatus == 'error') {
+                    //doe iets
+                }                
+            } //EINDE error
+        }); //EINDE ajax
 
+    }
+</script>
