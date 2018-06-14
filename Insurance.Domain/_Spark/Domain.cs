@@ -411,5 +411,6 @@ namespace Insurance.Domain
         public decimal? MinThirdAmount { get; set; }
         public decimal? FTPAmount { get; set; }
         public decimal? AnnualTPAmount { get; set; }
+
     }
 }
