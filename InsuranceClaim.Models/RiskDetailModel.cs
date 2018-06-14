@@ -31,7 +31,8 @@ namespace InsuranceClaim.Models
         public decimal? ZTSCLevy { get; set; }
         public decimal? RadioLicenseCost { get; set; }
         public string OptionalCovers { get; set; }
-        public string Excess { get; set; }
+        public int ExcessType { get; set; }
+        public decimal Excess { get; set; }
         public string CoverNoteNo { get; set; }
     }
 }

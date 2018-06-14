@@ -54,6 +54,9 @@
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
+    <Reference Include="PayPal">
+      <HintPath>..\packages\PayPal.1.9.1\lib\net451\PayPal.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -87,11 +90,13 @@
     <Compile Include="AccountViewModels.cs" />
     <Compile Include="AgentCommissionModel.cs" />
     <Compile Include="CardDetailModel.cs" />
+    <Compile Include="Configuration.cs" />
     <Compile Include="CovertypeModel.cs" />
     <Compile Include="CustomerModel.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="IdentityModels.cs" />
     <Compile Include="InsurerModel.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="ManageViewModels.cs" />
     <Compile Include="PolicyDetailModel.cs" />
     <Compile Include="PolicyInsurerModel.cs" />

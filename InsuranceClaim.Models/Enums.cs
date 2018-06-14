@@ -11,4 +11,9 @@ namespace InsuranceClaim.Models
         Comprehensive = 1,
         ThirdParty = 2
     }
+    public enum eExcessType
+    {
+        Percentage = 1,
+        FixedAmount = 2
+    }
 }
