@@ -16,7 +16,7 @@ namespace Insurance.Service
         public bool Status { get; set; } = true;
         public string Message { get; set; }
 
-        public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType)
+        public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType, eExcessType excessType, decimal excess)
         {
             var vehicleUsage = InsuranceContext.VehicleUsages.Single(vehicleUsageId);
             float? InsuranceRate = 0;
@@ -31,7 +31,15 @@ namespace Insurance.Service
                 InsuranceRate = vehicleUsage.ThirdPartyRate;
                 InsuranceMinAmount = vehicleUsage.MinThirdAmount;
             }
+            if (excessType == eExcessType.Percentage && excess > 0) 
+            {
+                InsuranceRate = InsuranceRate + float.Parse(excess.ToString());
+            }
             var premium = (sumInsured * Convert.ToDecimal(InsuranceRate)) / 100;
+            if (excessType == eExcessType.FixedAmount && excess > 0)
+            {
+                premium = premium + excess;
+            }
             if (premium < InsuranceMinAmount)
             {
                 Status = false;
