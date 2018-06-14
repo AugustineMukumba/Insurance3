@@ -26,5 +26,6 @@ namespace InsuranceClaim.Models
         public decimal? FTPAmount { get; set; }
         [Required(ErrorMessage = "Please enter AnnualTP Amount.")]
         public decimal? AnnualTPAmount { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

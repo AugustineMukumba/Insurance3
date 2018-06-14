@@ -15,5 +15,6 @@ namespace InsuranceClaim.Models
         public string ProductName { get; set; }
         [Required(ErrorMessage = "Please enter Product Code.")]
         public string ProductCode { get; set; }
+        public bool? Active { get; set; }
     }
 }

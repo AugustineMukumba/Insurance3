@@ -16,6 +16,7 @@ namespace InsuranceClaim.Models
         public string InsurerCode { get; set; }
         [Required(ErrorMessage = "Please enter Insurer Address.")]
         public string InsurerAddress { get; set; }
-       
+        public bool? IsActive { get; set; }
+
     }
 }
