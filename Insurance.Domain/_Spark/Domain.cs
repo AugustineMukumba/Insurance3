@@ -184,6 +184,8 @@ namespace Insurance.Domain
         public SummaryDetail(bool defaults) : base(defaults) { }
 
         public int Id { get; set; }
+        public int? VehicleDetailId { get; set; }
+        public int? CustomerId { get; set; }
         public int? PaymentTermId { get; set; }
         public int? PaymentMethodId { get; set; }
         public decimal? TotalSumInsured { get; set; }
@@ -229,7 +231,8 @@ namespace Insurance.Domain
         public decimal? ZTSCLevy { get; set; }
         public decimal? RadioLicenseCost { get; set; }
         public string OptionalCovers { get; set; }
-        public string Excess { get; set; }
+        public int ExcessType { get; set; }
+        public decimal Excess { get; set; }
         public string CoverNoteNo { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
