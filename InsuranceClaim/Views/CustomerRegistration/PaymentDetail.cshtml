@@ -66,66 +66,67 @@
                         </div>
 
                         <div class="form-group-input">
-                            <form role="form" id="contact-form" class="contact-form">
-
-
-
-                                <div class="row">
-                                    <div class="col-md-12 form-group-text">
-                                        <div class="form-group">
-                                           
-                                            @Html.TextBoxFor(m=>m.CardNumber,new { @class="form-control",@autocomplete="off",@placeholder="Card Number"})
-                                        </div>
-                                    </div>
-                                </div>
+                            @using (Html.BeginForm("PaymentWithCreditCard", "Paypal"))
+                            {
 
                                 <div class="row">
                                     <div class="col-md-12 form-group-text">
                                         <div class="form-group">
-                                            @Html.TextBoxFor(m => m.NameOnCard, new { @class = "form-control", @autocomplete = "off", @placeholder = "Name on Card" })
-                                            
+
+                                            @Html.TextBoxFor(m => m.CardNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Card Number" })
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-                                           
-                                            <div class='input-group date' id='datetimepicker1'>
-                                                @Html.TextBoxFor(m => m.ExpiryDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Expiry Date" })                                               
-                                                <span class="input-group-addon">
-                                                    <span class="glyphicon glyphicon-calendar"></span>
-                                                </span>
+                                    <div class="row">
+                                        <div class="col-md-12 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(m => m.NameOnCard, new { @class = "form-control", @autocomplete = "off", @placeholder = "Name on Card" })
+
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.TextBoxFor(m => m.CVC, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cvc Number" })                                            
-                                        </div>
-                                    </div>
-                                </div>
 
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
 
-
-                                <div class="row">
-                                    <div class="col-md-12 next-btn">
-                                        <div class="row">
-                                            <div class="col-sm-6 col-md-6">
-                                                <div class="text-left">
-                                                    <div class="back-left"><button type="submit" class="btn">Back</button></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6 col-md-6">
-                                                <div class="text-right">
-                                                    <button type="submit" class="btn">Next</button>
+                                                <div class='input-group date' id='datetimepicker1'>
+                                                    @Html.TextBoxFor(m => m.ExpiryDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Expiry Date" })
+                                                    <span class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-calendar"></span>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(m => m.CVC, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cvc Number" })
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </form>
+
+
+
+                                    <div class="row">
+                                        <div class="col-md-12 next-btn">
+                                            <div class="row">
+                                                <div class="col-sm-6 col-md-6">
+                                                    <div class="text-left">
+                                                        <div class="back-left"><button type="submit" class="btn">Back</button></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6">
+                                                    <div class="text-right">
+                                                        <button type="submit" class="btn">Next</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                            }
+
                         </div>
                     </div>
                 </div>

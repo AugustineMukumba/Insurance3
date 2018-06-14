@@ -94,7 +94,7 @@ namespace InsuranceClaim.Controllers
             return View();
         }
         [HttpPost]
-        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType)
+        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess)
         {
             JsonResult json = new JsonResult();
             var quote = new QuoteLogic();
@@ -103,7 +103,12 @@ namespace InsuranceClaim.Controllers
             {
                 typeCover = eCoverType.ThirdParty;
             }
-            var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover);
+            var eexcessType = eExcessType.Percentage;
+            if (excessType == 2)
+            {
+                eexcessType = eExcessType.FixedAmount;
+            }
+            var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover, eexcessType, excess);
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             json.Data = premium;
             return json;
@@ -122,8 +127,9 @@ namespace InsuranceClaim.Controllers
             var model = new SummaryDetailModel();
             var summary = new SummaryDetailService();
             var vehicle = summary.GetVehicleInformation(id);
+            TempData["VehicleDetail"] = vehicle;
             model.CarInsuredCount = vehicle.NoOfCarsCovered;
-            model.DebitNote = "INV"+DateTime.Now.Ticks;
+            model.DebitNote = "INV" + DateTime.Now.Ticks;
             model.PaymentMethodId = 1;
             model.PaymentTermId = 1;
             model.ReceiptNumber = "";
@@ -253,11 +259,22 @@ namespace InsuranceClaim.Controllers
             {
                 var policy = TempData["Policy"] as PolicyDetail;
                 model.CustomerId = policy.CustomerId;
-               var Id= service.AddVehicleInformation(model);
-                return RedirectToAction("SummaryDetail",new { id= Id });
+                var Id = service.AddVehicleInformation(model);
+                return RedirectToAction("SummaryDetail", new { id = Id });
             }
 
             return View("RiskDetail");
+        }
+        [HttpPost]
+        public ActionResult SubmitPlan(SummaryDetailModel model)
+        {
+            var vehicle= TempData["VehicleDetail"] as VehicleDetail;
+
+            var DbEntry = Mapper.Map<SummaryDetailModel, SummaryDetail>(model);
+            DbEntry.VehicleDetailId = vehicle.Id;
+            DbEntry.CustomerId=vehicle.CustomerId;
+            InsuranceContext.SummaryDetails.Insert(DbEntry);
+            return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
         }
     }
 }

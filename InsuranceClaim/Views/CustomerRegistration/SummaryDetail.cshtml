@@ -72,7 +72,7 @@
                                 </div>
                                 <div class="Choose-sections">
                                     <div class="col-sm-3 col-md-3 choose-plan-blocl">
-                                        <div class="choose-plan-box active" planpurchase="12" style="cursor:pointer" onclick="SelectPlan(this);">
+                                        <div class="choose-plan-box active" planpurchase="1" style="cursor:pointer" onclick="SelectPlan(this);">
                                             <h4>Annual</h4>
                                             <div class="plan-white-box">
                                                 <h3>$@Model.TotalPremium</h3>
@@ -82,7 +82,7 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-3 col-md-3 choose-plan-blocl">
-                                        <div class="choose-plan-box" planpurchase="3" style="cursor:pointer" onclick="SelectPlan(this);">
+                                        <div class="choose-plan-box" planpurchase="2" style="cursor:pointer" onclick="SelectPlan(this);">
                                             <h4>Quarterly</h4>
                                             <div class="plan-white-box">
                                                 <h3>$ @Math.Round(Convert.ToDouble(Model.TotalPremium)/4,2)</h3>
@@ -92,7 +92,7 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-3 col-md-3 choose-plan-blocl">
-                                        <div class="choose-plan-box" planpurchase="4" style="cursor:pointer" onclick="SelectPlan(this);">
+                                        <div class="choose-plan-box" planpurchase="3" style="cursor:pointer" onclick="SelectPlan(this);">
                                             <h4>Termly</h4>
                                             <div class="plan-white-box">
                                                 <h3>$@Math.Round(Convert.ToDouble(Model.TotalPremium) / 3, 2)</h3>
@@ -102,7 +102,7 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-3 col-md-3 choose-plan-blocl">
-                                        <div class="choose-plan-box" planpurchase="1" style="cursor:pointer" onclick="SelectPlan(this);">
+                                        <div class="choose-plan-box" planpurchase="4" style="cursor:pointer" onclick="SelectPlan(this);">
                                             <h4>Monthly</h4>
                                             <div class="plan-white-box">
                                                 <h3>$@Math.Round(Convert.ToDouble(Model.TotalPremium) / 12, 2)</h3>
@@ -115,81 +115,85 @@
                             </div>
                         </div>
                         <div class="form-group-input">
-                            <form role="form" id="contact-form" class="contact-form">
-                                @Html.HiddenFor(m => m.PaymentTermId)
-                                <div class="row">
+                            @using (Html.BeginForm("SubmitPlan", "CustomerRegistration"))
+                            {
+                                <div  id="contact-form" class="contact-form">
+                                    @Html.HiddenFor(m => m.PaymentTermId)
+                                    <div class="row">
 
-                                    <div class="col-sm-6 col-md-6 form-group-select">
-                                        <div class="form-group">
-                                            <select id="PaymentMethodId" name="PaymentMethodId" class="form-control">
-                                                <option value="1">Bank</option>
-                                                <option value="2">Cash </option>
-                                                <option value="3">Visa </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.TextBoxFor(m => m.TotalSumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Sum Insured",@readonly= "readonly" })
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-
-                                <div class="row">
-                                    <div class="col-md-12 form-group-text">
-                                        <div class="form-group">
-                                            @Html.TextBoxFor(m=>m.TotalPremium, null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Premium / Total vehicle Licence Cost", @readonly = "readonly" })
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.TextBoxFor(m => m.TotalStampDuty, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Stamp Duty",@readonly = "readonly" })
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.TextBoxFor(m => m.TotalZTSCLevies, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total ZTSC Levies",@readonly = "readonly" })
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.TextBoxFor(m => m.TotalRadioLicenseCost, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Radio Licence Cost", @readonly = "readonly" })
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-
-                                            @Html.TextBoxFor(m => m.DebitNote, new { @class = "form-control", @autocomplete = "off", @placeholder = "Debit Note/Invoice Number", @readonly = "readonly" })
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12 next-btn">
-                                        <div class="row">
-                                            <div class="col-sm-6 col-md-6">
-                                                <div class="text-left">
-                                                    <div class="back-left"><button type="submit" class="btn">Back</button></div>
-                                                </div>
+                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                            <div class="form-group">
+                                                <select id="PaymentMethodId" name="PaymentMethodId" class="form-control">
+                                                    <option value="1">Bank</option>
+                                                    <option value="2">Cash </option>
+                                                    <option value="3">Visa </option>
+                                                </select>
                                             </div>
-                                            <div class="col-sm-6 col-md-6">
-                                                <div class="text-right">
-                                                    <button type="button" onclick="Replacable()" class="btn">Next</button>
-                                                </div>
+                                        </div>
+                                        <div class="col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(m => m.TotalSumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Sum Insured", @readonly = "readonly" })
                                             </div>
                                         </div>
                                     </div>
+
+
+
+
+                                    <div class="row">
+                                        <div class="col-md-12 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(m => m.TotalPremium, null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Premium / Total vehicle Licence Cost", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(m => m.TotalStampDuty, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Stamp Duty", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(m => m.TotalZTSCLevies, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total ZTSC Levies", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(m => m.TotalRadioLicenseCost, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Radio Licence Cost", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+
+                                                @Html.TextBoxFor(m => m.DebitNote, new { @class = "form-control", @autocomplete = "off", @placeholder = "Debit Note/Invoice Number", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12 next-btn">
+                                            <div class="row">
+                                                <div class="col-sm-6 col-md-6">
+                                                    <div class="text-left">
+                                                        <div class="back-left"><button type="submit" class="btn">Back</button></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6">
+                                                    <div class="text-right">
+                                                        <button type="submit" class="btn">Next</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </form>
+                            }
+                           
                         </div>
                     </div>
                 </div>
