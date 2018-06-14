@@ -34,7 +34,7 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult CommissionList()
         {
-            var db = InsuranceContext.AgentCommissions.All().ToList();
+            var db = InsuranceContext.AgentCommissions.All(where:"IsActive='True' Or IsActive is null").ToList();
 
 
             return View(db);
@@ -66,7 +66,14 @@ namespace InsuranceClaim.Controllers
             return RedirectToAction("CommissionList");
 
         }
+        public ActionResult DeleteCommission(int Id)
+        {
+            string query = $"update AgentCommission set IsActive = 0 where Id ={Id}";
+            InsuranceContext.AgentCommissions.Execute(query);
 
+
+            return RedirectToAction("CommissionList");
+        }
 
     }
 }

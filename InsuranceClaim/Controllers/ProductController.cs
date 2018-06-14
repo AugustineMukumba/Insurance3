@@ -38,7 +38,7 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult ProductList()
         {
-            var db = InsuranceContext.Products.All().ToList();
+            var db = InsuranceContext.Products.All(where:"Active ='True' or Active is null").ToList();
 
 
             return View(db);
@@ -65,6 +65,13 @@ namespace InsuranceClaim.Controllers
                 InsuranceContext.Products.Update(db);
 
             }
+
+            return RedirectToAction("ProductList");
+        }
+        public ActionResult DeleteProduct(int Id )
+        {
+            string query = $"update Product set Active=0 where Id={Id}";
+            InsuranceContext.Products.Execute(query);
 
             return RedirectToAction("ProductList");
         }

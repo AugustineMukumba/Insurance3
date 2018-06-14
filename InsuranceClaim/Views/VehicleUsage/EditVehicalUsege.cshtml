@@ -1,0 +1,69 @@
+﻿@model InsuranceClaim.Models.VehicleUsageModel
+@{
+    ViewBag.Title = "EditVehicalUsege";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+}
+
+<style>
+    #dot {
+        padding: 10%;
+    }
+</style>
+<div class="container" id="dot">
+
+    @using (Html.BeginForm("EditVehicalUsege", "VehicleUsage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        <div class="form-group">
+            @Html.Label("Product Id", new { @class = "col-md-3 control-label" })
+            <div class="col-md-4">
+                @Html.ValidationMessageFor(x => x.ProductId, "", new { @class = "text-danger" })
+                @Html.DropDownListFor(x => x.ProductId, new SelectList(ViewBag.Products, "Id", "ProductName"), new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("VehUsage", new { @class = "col-md-3 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.VehUsage, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("ComprehensiveRate", new { @class = "col-md-3 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ComprehensiveRate, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("MinCompAmount", new { @class = "col-md-3 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.MinCompAmount, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("ThirdPartyRate", new { @class = "col-md-3 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ThirdPartyRate, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("MinThirdAmount", new { @class = "col-md-3 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.MinThirdAmount, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("FTPAmount", new { @class = "col-md-3 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.FTPAmount, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("AnnualTPAmount", new { @class = "col-md-3 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.AnnualTPAmount, new { @class = "form-control" })
+            </div>
+        </div>
+        <div><input type="submit" name="Update" value="Update" class="btn btn-primary btn sm" /></div>
+    }
+</div>
+
+

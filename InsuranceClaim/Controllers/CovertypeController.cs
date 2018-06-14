@@ -29,7 +29,7 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult CoverList()
         {
-            var db = InsuranceContext.CoverTypes.All().ToList();
+            var db = InsuranceContext.CoverTypes.All(where: "IsActive = 'True' or IsActive is null").ToList();
 
 
             return View(db);
@@ -52,6 +52,13 @@ namespace InsuranceClaim.Controllers
                 db.Name = model.Name;
                 InsuranceContext.CoverTypes.Update(db);
             }
+            return RedirectToAction("CoverList");
+        }
+        public ActionResult DeleteCovertype(int Id)
+        {
+            string query = $"update CoverType set IsActive = 0 where Id = {Id}";
+            InsuranceContext.CoverTypes.Execute(query);
+
             return RedirectToAction("CoverList");
         }
     }

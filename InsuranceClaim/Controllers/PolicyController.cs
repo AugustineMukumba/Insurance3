@@ -28,7 +28,7 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult PolicyList()
         {
-            var db = InsuranceContext.PolicyInsurers.All().ToList();
+            var db = InsuranceContext.PolicyInsurers.All(where:"IsActive = 'True' or IsActive is null").ToList();
 
             return View(db);
         }
@@ -55,6 +55,13 @@ namespace InsuranceClaim.Controllers
                 db.InsurerAddress = model.InsurerAddress;
                 InsuranceContext.PolicyInsurers.Update(db);
             }
+            return RedirectToAction("PolicyList");
+        }
+        public ActionResult DeletePolicy( int Id)
+        {
+            string query = $"update PolicyInsurer set IsActive = 0 where Id = {Id}";
+            InsuranceContext.PolicyInsurers.Execute(query);
+
             return RedirectToAction("PolicyList");
         }
     }
