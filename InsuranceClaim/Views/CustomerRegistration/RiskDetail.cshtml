@@ -64,12 +64,15 @@
 
                     @using (Html.BeginForm("GenerateQuote", "CustomerRegistration"))
                     {
+                       <div>
+                           @Html.HiddenFor(m => m.PolicyId)
+                       </div>
                         <div class="form-group-section">
                             <div class="form-title">
                                 <h4>Risk Details</h4>
                             </div>
                             <div class="form-group-input">
-                                <form role="form" id="contact-form" class="contact-form">
+                                <div  id="contact-form" class="contact-form">
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
@@ -249,7 +252,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     }

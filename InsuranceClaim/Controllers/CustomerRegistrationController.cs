@@ -78,6 +78,8 @@ namespace InsuranceClaim.Controllers
         public ActionResult RiskDetail(int id)
         {
             //Id is policyid from Policy detail table
+            var viewModel = new RiskDetailModel();
+            viewModel.PolicyId = id;
             var service = new VehicleService();
             var makers = service.GetMakers();
             ViewBag.CoverType = service.GetCoverType();
@@ -91,7 +93,7 @@ namespace InsuranceClaim.Controllers
                 ViewBag.Model = model;
             }
             service = null;
-            return View();
+            return View(viewModel);
         }
         [HttpPost]
         public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess)
@@ -142,9 +144,11 @@ namespace InsuranceClaim.Controllers
             return View(model);
         }
 
-        public ActionResult PaymentDetail()
+        public ActionResult PaymentDetail(int id)
         {
-            return View();
+            var model = new CardDetailModel();
+            model.SummaryDetailId = id;
+            return View(model);
         }
 
         [HttpPost]

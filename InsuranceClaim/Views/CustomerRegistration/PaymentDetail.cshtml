@@ -67,8 +67,10 @@
 
                         <div class="form-group-input">
                             @using (Html.BeginForm("PaymentWithCreditCard", "Paypal"))
-                            {
-
+                            {<div>
+                                 @Html.HiddenFor(m => m.SummaryDetailId)
+                            </div>
+                              
                                 <div class="row">
                                     <div class="col-md-12 form-group-text">
                                         <div class="form-group">

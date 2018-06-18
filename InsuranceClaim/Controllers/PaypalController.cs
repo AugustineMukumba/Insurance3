@@ -5,16 +5,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-
+using Insurance.Domain;
 namespace InsuranceClaim.Controllers
 {
     public class PaypalController : Controller
     {
         //
         // GET: /Paypal/
-
-        public ActionResult Index()
+   
+        public ActionResult Index(int id)
         {
+
             return View();
         }
 
@@ -23,11 +24,32 @@ namespace InsuranceClaim.Controllers
             //create and item for which you are taking payment
             //if you need to add more items in the list
             //Then you will need to create multiple item objects or use some loop to instantiate object
+            var summaryDetail = InsuranceContext.SummaryDetails.Single(model.SummaryDetailId);
+            var vehicle = InsuranceContext.VehicleDetails.Single(summaryDetail.VehicleDetailId);
+            var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
+            var customer = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
+            var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+            var currency = InsuranceContext.Currencies.Single(policy.CurrencyId);
+
+            double totalPremium = Convert.ToDouble(summaryDetail.TotalPremium);
+            var term = summaryDetail.PaymentTermId;
+            if (term == Convert.ToInt32(ePaymentTerm.Monthly))
+            {
+                totalPremium = Math.Round(totalPremium / 12, 2);
+            }
+            else if (term == Convert.ToInt32(ePaymentTerm.Quarterly))
+            {
+                totalPremium = Math.Round(totalPremium / 4, 2);
+            }
+            else if (term == Convert.ToInt32(ePaymentTerm.Termly))
+            {
+                totalPremium = Math.Round(totalPremium / 3, 2);
+            }
             Item item = new Item();
-            item.name = "Demo Item";
-            item.currency = "USD";
-            item.price = "5";
-            item.quantity = "1";
+            item.name = product.ProductName;
+            item.currency = currency.Name;
+            item.price = totalPremium.ToString();
+            item.quantity = vehicle.NoOfCarsCovered.ToString();
             item.sku = "sku";
 
             //Now make a List of Item and add the above item to it
@@ -39,43 +61,43 @@ namespace InsuranceClaim.Controllers
 
             //Address for the payment
             Address billingAddress = new Address();
-            billingAddress.city = "NewYork";
-            billingAddress.country_code = "US";
-            billingAddress.line1 = "23rd street kew gardens";
-            billingAddress.postal_code = "43210";
-            billingAddress.state = "NY";
+            //billingAddress.city = "NewYork";
+            // billingAddress.country_code = "US";
+            billingAddress.line1 = customer.AddressLine1 == string.Empty ? customer.AddressLine2 : customer.AddressLine1;
+            // billingAddress.postal_code = "43210";
+            // billingAddress.state = "NY";
 
 
             //Now Create an object of credit card and add above details to it
             CreditCard crdtCard = new CreditCard();
             crdtCard.billing_address = billingAddress;
             crdtCard.cvv2 = model.CVC;
-            crdtCard.expire_month =Convert.ToInt32(model.ExpiryDate.Split('/')[0]);
+            crdtCard.expire_month = Convert.ToInt32(model.ExpiryDate.Split('/')[0]);
             crdtCard.expire_year = Convert.ToInt32(model.ExpiryDate.Split('/')[1]);
             crdtCard.first_name = model.NameOnCard;
             //crdtCard.last_name = "Thakur";
             crdtCard.number = model.CardNumber;
-            crdtCard.type = "discover";
+            crdtCard.type = CardType.GetCardTypeFromNumber(model.CardNumber).ToString();
 
             // Specify details of your payment amount.
             Details details = new Details();
-            details.shipping = "1";
-            details.subtotal = "5";
-            details.tax = "1";
+            // details.shipping = "1";
+            //details.subtotal = "5";
+            details.tax = Convert.ToString(vehicle.ZTSCLevy + vehicle.StampDuty);
 
             // Specify your total payment amount and assign the details object
             Amount amnt = new Amount();
-            amnt.currency = "USD";
+            amnt.currency = currency.Name;
             // Total = shipping tax + subtotal.
-            amnt.total = "7";
+            amnt.total = totalPremium.ToString();
             amnt.details = details;
 
             // Now make a trasaction object and assign the Amount object
             Transaction tran = new Transaction();
             tran.amount = amnt;
-            tran.description = "Description about the payment amount.";
+            tran.description = "Online vehicle insurance purchased";
             tran.item_list = itemList;
-            tran.invoice_number = "your invoice number which you are generating";
+            tran.invoice_number = summaryDetail.DebitNote;
 
             // Now, we have to make a list of trasaction and add the trasactions object
             // to this list. You can create one or more object as per your requirements
@@ -101,7 +123,7 @@ namespace InsuranceClaim.Controllers
 
             // finally create the payment object and assign the payer object & transaction list to it
             Payment pymnt = new Payment();
-            pymnt.intent = "sale";
+            pymnt.intent = "Insurance";
             pymnt.payer = payr;
             pymnt.transactions = transactions;
 
@@ -124,13 +146,15 @@ namespace InsuranceClaim.Controllers
 
                 if (createdPayment.state.ToLower() != "approved")
                 {
-                    return View("FailureView");
+                    ModelState.AddModelError("PaymentError", "Payment not approved");
+                    return View("PaymentDetail");
                 }
             }
             catch (PayPal.PayPalException ex)
             {
                 Logger.Log("Error: " + ex.Message);
-                return View("FailureView");
+                ModelState.AddModelError("PaymentError", ex.Message);
+                return View("PaymentDetail");
             }
 
             return View("SuccessView");
@@ -214,7 +238,7 @@ namespace InsuranceClaim.Controllers
             }
             catch (Exception ex)
             {
-                Logger.Log("Error"+ ex.Message);
+                Logger.Log("Error" + ex.Message);
                 return View("FailureView");
             }
 
