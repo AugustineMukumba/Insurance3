@@ -9,6 +9,7 @@ namespace InsuranceClaim.Models
     public class RiskDetailModel
     {
         public int Id { get; set; }
+        public int PolicyId { get; set; }
         public int? NoOfCarsCovered { get; set; }
         public string RegistrationNo { get; set; }
         public int? CustomerId { get; set; }

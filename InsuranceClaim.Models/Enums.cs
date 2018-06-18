@@ -16,4 +16,11 @@ namespace InsuranceClaim.Models
         Percentage = 1,
         FixedAmount = 2
     }
+    public enum ePaymentTerm
+    {
+        Annual = 1,
+        Quarterly = 2,
+        Termly = 3,
+        Monthly = 4
+    }
 }
