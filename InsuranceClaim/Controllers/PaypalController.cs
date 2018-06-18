@@ -12,7 +12,7 @@ namespace InsuranceClaim.Controllers
     {
         //
         // GET: /Paypal/
-   
+
         public ActionResult Index(int id)
         {
 
@@ -45,11 +45,30 @@ namespace InsuranceClaim.Controllers
             {
                 totalPremium = Math.Round(totalPremium / 3, 2);
             }
+            //check if single decimal place
+            string zeros = string.Empty;
+            try
+            {
+                var percision = totalPremium.ToString().Split('.');
+                var length = 2 - percision[1].Length;
+                for (int i = 0; i < length; i++)
+                {
+                    zeros += "0";
+                }
+            }
+            catch
+            {
+                zeros = ".00";
+
+            }
+
+
             Item item = new Item();
             item.name = product.ProductName;
             item.currency = currency.Name;
-            item.price = totalPremium.ToString();
-            item.quantity = vehicle.NoOfCarsCovered.ToString();
+            item.price = totalPremium.ToString() + zeros;
+            //item.quantity = vehicle.NoOfCarsCovered.ToString();
+            item.quantity = "1";
             item.sku = "sku";
 
             //Now make a List of Item and add the above item to it
@@ -61,15 +80,15 @@ namespace InsuranceClaim.Controllers
 
             //Address for the payment
             Address billingAddress = new Address();
-            //billingAddress.city = "NewYork";
-            // billingAddress.country_code = "US";
+            billingAddress.city = "NewYork";
+            billingAddress.country_code = "US";
             billingAddress.line1 = customer.AddressLine1 == string.Empty ? customer.AddressLine2 : customer.AddressLine1;
-            // billingAddress.postal_code = "43210";
-            // billingAddress.state = "NY";
+            billingAddress.postal_code = "43210";
+            billingAddress.state = "NY";
 
 
             //Now Create an object of credit card and add above details to it
-            CreditCard crdtCard = new CreditCard();
+            PayPal.Api.CreditCard crdtCard = new PayPal.Api.CreditCard();
             crdtCard.billing_address = billingAddress;
             crdtCard.cvv2 = model.CVC;
             crdtCard.expire_month = Convert.ToInt32(model.ExpiryDate.Split('/')[0]);
@@ -77,20 +96,20 @@ namespace InsuranceClaim.Controllers
             crdtCard.first_name = model.NameOnCard;
             //crdtCard.last_name = "Thakur";
             crdtCard.number = model.CardNumber;
-            crdtCard.type = CardType.GetCardTypeFromNumber(model.CardNumber).ToString();
+            crdtCard.type = CreditCardUtility.GetTypeName(model.CardNumber).ToLower();
 
             // Specify details of your payment amount.
             Details details = new Details();
-            // details.shipping = "1";
-            //details.subtotal = "5";
-            details.tax = Convert.ToString(vehicle.ZTSCLevy + vehicle.StampDuty);
+            details.shipping = "0.00";
+            details.subtotal = totalPremium.ToString() + zeros;
+            details.tax = "0.00";
 
             // Specify your total payment amount and assign the details object
             Amount amnt = new Amount();
             amnt.currency = currency.Name;
             // Total = shipping tax + subtotal.
-            amnt.total = totalPremium.ToString();
-            amnt.details = details;
+            amnt.total = totalPremium.ToString() + zeros;
+           // amnt.details = details;
 
             // Now make a trasaction object and assign the Amount object
             Transaction tran = new Transaction();
@@ -123,7 +142,7 @@ namespace InsuranceClaim.Controllers
 
             // finally create the payment object and assign the payer object & transaction list to it
             Payment pymnt = new Payment();
-            pymnt.intent = "Insurance";
+            pymnt.intent = "sale";
             pymnt.payer = payr;
             pymnt.transactions = transactions;
 
