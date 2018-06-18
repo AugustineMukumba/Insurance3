@@ -64,19 +64,19 @@
 
                     @using (Html.BeginForm("GenerateQuote", "CustomerRegistration"))
                     {
-                       <div>
-                           @Html.HiddenFor(m => m.PolicyId)
-                       </div>
+                        <div>
+                            @Html.HiddenFor(m => m.PolicyId)
+                        </div>
                         <div class="form-group-section">
                             <div class="form-title">
                                 <h4>Risk Details</h4>
                             </div>
                             <div class="form-group-input">
-                                <div  id="contact-form" class="contact-form">
+                                <div id="contact-form" class="contact-form">
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                                @Html.TextBoxFor(m => m.NoOfCarsCovered, new { @placeholder = "Number of Cars Covered", @autocomplete = "off", @class = "form-control" })
+                                                @Html.TextBoxFor(m => m.NoOfCarsCovered, new { @placeholder = "Number of Cars Covered", @autocomplete = "off", @class = "form-control", @maxlength = "2" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
@@ -104,12 +104,12 @@
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
 
-                                                @Html.TextBoxFor(m => m.CubicCapacity, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cubic Capacity" })
+                                                @Html.TextBoxFor(m => m.CubicCapacity, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cubic Capacity", @maxlength = "3" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                                @Html.TextBoxFor(m => m.VehicleYear, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle year" })
+                                                @Html.TextBoxFor(m => m.VehicleYear, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle year", @maxlength = "4" })
                                             </div>
                                         </div>
                                     </div>
@@ -169,13 +169,13 @@
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                                @Html.TextBox("VehicleSumInsures", null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insures" })
+                                                @Html.TextBox("VehicleSumInsures", null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insures", @maxlength = "5" })
 
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                                @Html.TextBoxFor(m => m.SumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insured" })
+                                                @Html.TextBoxFor(m => m.SumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insured", @maxlength = "5" })
                                             </div>
                                         </div>
 
@@ -208,13 +208,13 @@
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                                @Html.TextBoxFor(m => m.RadioLicenseCost, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Radio Licence Cost" })
+                                                @Html.TextBoxFor(m => m.RadioLicenseCost, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Radio Licence Cost", @maxlength = "5" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
 
-                                                @Html.TextBoxFor(m => m.OptionalCovers, new { @class = "form-control", @autocomplete = "off", @placeholder = "Additional/Optional Covers" })
+                                                @Html.TextBoxFor(m => m.OptionalCovers, new { @class = "form-control", @autocomplete = "off", @placeholder = "Additional/Optional Covers", @maxlength = "5" })
                                             </div>
                                         </div>
                                     </div>
@@ -230,7 +230,7 @@
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                                @Html.TextBoxFor(m => m.Excess, new { @class = "form-control", @autocomplete = "off", @placeholder = "Excess" })
+                                                @Html.TextBoxFor(m => m.Excess, new { @class = "form-control", @autocomplete = "off", @placeholder = "Excess", maxlength = "5" })
                                             </div>
                                         </div>
                                     </div>
@@ -321,6 +321,16 @@
         $("#CoverTypeId").change(function () {
 
             QuoteCalculation();
+        });
+
+        //called when key is pressed in textbox
+        $("#NoOfCarsCovered,#CubicCapacity,#VehicleYear,#VehicleSumInsures,#SumInsured,#RadioLicenseCost,#OptionalCovers,#Excess").keypress(function (e) {
+            //if the letter is not digit then display error and don't type anything
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                //display error message
+                //$("#errmsg").html("Digits Only").show().fadeOut("slow");
+                return false;
+            }
         });
     });
     function replacableRedirect() {
