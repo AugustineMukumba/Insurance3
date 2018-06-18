@@ -33,6 +33,9 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please enter address 1.")]
         [MaxLength(100, ErrorMessage = "Address 1 must be less than 100  characters long.")]
         public string AddressLine1 { get; set; }
+        [Display(Name = "Address2")]
+        [Required(ErrorMessage = "Please enter address 2.")]
+        [MaxLength(100, ErrorMessage = "Address 2 must be less than 100  characters long.")]
         public string AddressLine2 { get; set; }
         [Display(Name = "City")]
        // [Required(ErrorMessage = "Please enter city.")]
@@ -50,6 +53,8 @@ namespace InsuranceClaim.Models
         //[Required(ErrorMessage = "Please enter country.")]
         [MaxLength(25, ErrorMessage = "Country must be less than 25 characters long.")]
         public string Country { get; set; }
+        [Display(Name = "Date Of Birth")]
+        [Required(ErrorMessage = "Please enter date Of birth .")]
         public DateTime? DateOfBirth { get; set; }
         public string Gender { get; set; }
         public bool? IsWelcomeNoteSent { get; set; }

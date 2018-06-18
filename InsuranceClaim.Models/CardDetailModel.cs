@@ -9,13 +9,13 @@ namespace InsuranceClaim.Models
 {
     public class CardDetailModel
     {
-        [Required]
+        [Required(ErrorMessage = "Please Enter Card Number")]
         public string CardNumber { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please Enter Name of Card")]
         public string NameOnCard { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please Enter Expiry Date ")]
         public string ExpiryDate { get; set; }
-        [Required]
+        [Required(ErrorMessage ="Please Enter CVC")]
         public string CVC { get; set; }
 
         public int SummaryDetailId { get; set; }

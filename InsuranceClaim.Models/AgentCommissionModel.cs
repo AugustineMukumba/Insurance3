@@ -16,6 +16,6 @@ namespace InsuranceClaim.Models
         public double? CommissionAmount { get; set; }
         [Required(ErrorMessage = "Please enter ManagementCommission.")]
         public double? ManagementCommission { get; set; }
-        public Boolean IsActive { get; set; }
+        public bool? IsActive { get; set; }
     }
 }
