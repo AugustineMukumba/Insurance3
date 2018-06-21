@@ -17,7 +17,6 @@ namespace InsuranceClaim.Models
         public string ExpiryDate { get; set; }
         [Required(ErrorMessage ="Please Enter CVC")]
         public string CVC { get; set; }
-
         public int SummaryDetailId { get; set; }
     }
 }

@@ -20,8 +20,6 @@ namespace InsuranceClaim.Models
         public string ReceiptNumber { get; set; }
         public bool SMSConfirmation { get; set; }
         public int? CarInsuredCount { get; set; }
-        //public int AgentCommissionId { get; set; }
-        //public int CovertypeId { get; set; }
-        //public int CustomerId { get; set; }
+        
     }
 }
