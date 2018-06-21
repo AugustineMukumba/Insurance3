@@ -68,64 +68,90 @@
                         <div class="form-group-input">
                             @using (Html.BeginForm("PaymentWithCreditCard", "Paypal"))
                             {<div>
-                                 @Html.HiddenFor(m => m.SummaryDetailId)
-                            </div>
-                              
+                                    @Html.HiddenFor(m => m.SummaryDetailId)
+                                </div>
+
                                 <div class="row">
                                     <div class="col-md-12 form-group-text">
                                         <div class="form-group">
+                                            <div class="controls">
 
-                                            @Html.TextBoxFor(m => m.CardNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Card Number" })
+                                                @Html.TextBoxFor(m => m.CardNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Card Number" })
+                                                @Html.ValidationMessageFor(m => m.CardNumber, "", new { @class = "text-danger" })
+                                                <span id="credit-card-type-text" style="color:red" class="help-inline"></span>
+                                            </div>
+                                        </div>
+                                        <!-- Card Images Output -->
+                                        <div class="control-group">
+                                            <label>Accepted Cards</label>
+                                            <div class="controls">
+                                                <div class="pull-left" id="accepted-cards-images">
+                                                    <!-- Icons Automatically Inserted Here -->
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                    <div class="row">
-                                        <div class="col-md-12 form-group-text">
-                                            <div class="form-group">
-                                                @Html.TextBoxFor(m => m.NameOnCard, new { @class = "form-control", @autocomplete = "off", @placeholder = "Name on Card" })
+                                <div class="row">
+                                    <div class="col-md-12 form-group-text">
+                                        <div class="form-group">
+                                            @Html.TextBoxFor(m => m.NameOnCard, new { @class = "form-control", @autocomplete = "off", @placeholder = "Name on Card" })
+                                            @Html.ValidationMessageFor(m => m.NameOnCard, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
 
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group">
+
+                                            <div class='input-group date' id='datetimepicker1'>
+                                                @Html.TextBoxFor(m => m.ExpiryDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Expiry Date" })
+                                                @Html.ValidationMessageFor(m => m.ExpiryDate, "", new { @class = "text-danger" })
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-
-                                                <div class='input-group date' id='datetimepicker1'>
-                                                    @Html.TextBoxFor(m => m.ExpiryDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Expiry Date" })
-                                                    <span class="input-group-addon">
-                                                        <span class="glyphicon glyphicon-calendar"></span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.TextBoxFor(m => m.CVC, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cvc Number" })
-                                            </div>
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group">
+                                            @Html.TextBoxFor(m => m.CVC, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cvc Number" })
+                                            @Html.ValidationMessageFor(m => m.CVC, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
+                                </div>
+
+
+                                @*<div class="control-group">
+                                        <label>Accepted Cards</label>
+                                        <div class="controls">
+                                            <div class="pull-left" id="accepted-cards-images">
+                                                 Icons Automatically Inserted Here
+                                            </div>
+                                        </div>
+                                    </div>*@
 
 
 
-                                    <div class="row">
-                                        <div class="col-md-12 next-btn">
-                                            <div class="row">
-                                                <div class="col-sm-6 col-md-6">
-                                                    <div class="text-left">
-                                                        <div class="back-left"><button type="submit" class="btn">Back</button></div>
-                                                    </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 next-btn">
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="text-left">
+                                                    <div class="back-left"><button type="submit" class="btn">Back</button></div>
                                                 </div>
-                                                <div class="col-sm-6 col-md-6">
-                                                    <div class="text-right">
-                                                        <button type="submit" class="btn">Next</button>
-                                                    </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="text-right">
+                                                    <button type="submit" onclick="cardFormValidate" class="btn">Next</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
 
                             }
 
@@ -147,17 +173,24 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
 <![endif]-->
 <script type="text/javascript" src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="~/Scripts/jquery.creditCardValidator.js"></script>
 <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
 <script src="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
-
-
 <script type="text/javascript">
     $(function () { // will trigger when the document is ready
         $('#datetimepicker1').datetimepicker({
             format: 'MM/YYYY'
         });
+        $('#CardNumber').validateCreditCard(function (result) {
 
+            $('#credit-card-type-text').html((result.card_type == null ? '' : result.card_type.name));
+          
+       
+        });
     });
+
+
+
 </script>
 

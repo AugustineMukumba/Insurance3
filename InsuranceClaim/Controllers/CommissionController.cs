@@ -17,9 +17,6 @@ namespace InsuranceClaim.Controllers
             InsuranceClaim.Models.AgentCommissionModel obj = new InsuranceClaim.Models.AgentCommissionModel();
             List<Insurance.Domain.AgentCommission> objList = new List<Insurance.Domain.AgentCommission>();
             objList = InsuranceContext.AgentCommissions.All().ToList();
-            obj.CommissionAmount = null;
-            obj.ManagementCommission = null;
-
             return View(obj);
 
     }
@@ -27,40 +24,30 @@ namespace InsuranceClaim.Controllers
         public ActionResult CommissionSave(AgentCommissionModel model)
         {
 
-                var data = Mapper.Map<AgentCommissionModel, AgentCommission>(model);
+            var data = Mapper.Map<AgentCommissionModel, AgentCommission>(model);
             InsuranceContext.AgentCommissions.Insert(data);
-                return RedirectToAction("CommissionList");
+            return RedirectToAction("CommissionList");
             
         }
         public ActionResult CommissionList()
         {
             var db = InsuranceContext.AgentCommissions.All(where:"IsActive='True' Or IsActive is null").ToList();
 
-
             return View(db);
         }
         public ActionResult CommissionEdit(int Id)
         {
             var record = InsuranceContext.AgentCommissions.All(where: $"Id ={Id}").FirstOrDefault();
-            AgentCommissionModel obj = new AgentCommissionModel();
-            obj.Id = record.Id;
-            obj.CommissionName = record.CommissionName;
-            obj.CommissionAmount = record.CommissionAmount;
-            obj.ManagementCommission = record.ManagementCommission;
-
-            return View(obj);
+            var model = Mapper.Map<AgentCommission, AgentCommissionModel>(record);
+            return View(model);
         }
         [HttpPost]
-
         public ActionResult CommissionEdit(AgentCommissionModel model )
         {
             if (ModelState.IsValid)
             {
-                var db = InsuranceContext.AgentCommissions.Single(where: $"Id = {model.Id}");
-                db.CommissionName = model.CommissionName;
-                db.CommissionAmount = model.CommissionAmount;
-                db.ManagementCommission = model.ManagementCommission;
-                InsuranceContext.AgentCommissions.Update(db);
+                var data = Mapper.Map<AgentCommissionModel, AgentCommission>(model);
+                InsuranceContext.AgentCommissions.Update(data);
             }
 
             return RedirectToAction("CommissionList");

@@ -205,6 +205,45 @@ span.online-dot {  display: inline-block;  width: 15px;  height: 15px;  backgrou
     border: #00d065 solid 4px;
 }
 
+
+/**15june css start**/
+button.btn-sm.btn-danger {
+    border: none;
+}
+.tbl-btn-list {
+    text-align: right;
+}
+.product-table-grid .table tr th:first-child {
+    width: 220px;
+}
+.product-table-grid .table tr th:last-child {
+    text-align: center;
+}
+#dot h2 {
+    margin-bottom: 40px;
+}
+#dot .form-horizontal .control-label {
+    text-align: left;
+}
+.product-page-design {
+    padding: 30px 30px 30px 150px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+    .product-page-design .form-group{
+        margin-bottom: 25px; 
+    }
+        .product-page-design .form-group .form-group-inputs {
+            position: relative;
+        }
+
+    .form-group-inputs span.field-validation-error {
+        position: absolute;
+        top: 100%;
+        font-size: 12px;
+    }
+/**15 june css end**/
+
 @media(max-width:767px){
   .policy-option li {  float: left;  margin: 15px 0;  width: 48%;}
   .ads-sec p{padding: 0;}

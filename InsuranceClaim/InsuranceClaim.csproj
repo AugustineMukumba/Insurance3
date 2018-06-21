@@ -224,23 +224,39 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\style.css" />
+    <Content Include="CustomerRegistration\PaymentDetail\images\amex.png" />
+    <Content Include="CustomerRegistration\PaymentDetail\images\diners.png" />
+    <Content Include="CustomerRegistration\PaymentDetail\images\discover.png" />
+    <Content Include="CustomerRegistration\PaymentDetail\images\jcb.png" />
+    <Content Include="CustomerRegistration\PaymentDetail\images\maestro.png" />
+    <Content Include="CustomerRegistration\PaymentDetail\images\mastercard.png" />
+    <Content Include="CustomerRegistration\PaymentDetail\images\visa.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Images\add.png" />
+    <Content Include="Images\amex.png" />
     <Content Include="Images\arrow-top.png" />
     <Content Include="Images\banner.png" />
     <Content Include="Images\calender_icon.png" />
     <Content Include="Images\call-me-back.png" />
+    <Content Include="Images\diners.png" />
+    <Content Include="Images\discover.png" />
     <Content Include="Images\geneinsure-logo.png" />
     <Content Include="Images\icon-1.png" />
     <Content Include="Images\icon-2.png" />
     <Content Include="Images\icon-3.png" />
     <Content Include="Images\icon-4.png" />
     <Content Include="Images\icon-5.png" />
+    <Content Include="Images\jcb.png" />
+    <Content Include="Images\maestro.png" />
+    <Content Include="Images\mastercard.png" />
+    <Content Include="Images\mastercard_images.jpg" />
     <Content Include="Images\top-header-bg.png" />
+    <Content Include="Images\visa.png" />
+    <Content Include="Images\visa_images.jpg" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -258,6 +274,7 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.creditCardValidator.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
@@ -326,6 +343,7 @@
     <Content Include="Views\VehicleUsage\Index.cshtml" />
     <Content Include="Views\VehicleUsage\VehicalUsageList.cshtml" />
     <Content Include="Views\VehicleUsage\EditVehicalUsege.cshtml" />
+    <Content Include="Views\Paypal\SaveDetailList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

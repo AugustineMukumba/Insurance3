@@ -272,13 +272,14 @@ namespace InsuranceClaim.Controllers
         [HttpPost]
         public ActionResult SubmitPlan(SummaryDetailModel model)
         {
-            var vehicle= TempData["VehicleDetail"] as VehicleDetail;
+            var vehicle = TempData["VehicleDetail"] as VehicleDetail;
 
             var DbEntry = Mapper.Map<SummaryDetailModel, SummaryDetail>(model);
             DbEntry.VehicleDetailId = vehicle.Id;
-            DbEntry.CustomerId=vehicle.CustomerId;
+            DbEntry.CustomerId = vehicle.CustomerId;
             InsuranceContext.SummaryDetails.Insert(DbEntry);
             return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
         }
+      
     }
 }

@@ -114,7 +114,8 @@
                                             <div class="form-group-label">
                                                
                                                 <div class='input-group date' id='datetimepicker1'>
-                                                    @Html.TextBoxFor(x => x.DateOfBirth, new { @class = "form-control", @autocomplete = "off",  @placeholder = "DOB"})
+                                                    @Html.TextBoxFor(x => x.DateOfBirth, new { @class = "form-control", @autocomplete = "off", @placeholder = "DOB" })
+                                                    @Html.ValidationMessageFor(x => x.DateOfBirth, "", new { @class = "text-danger" })
                                                     <span class="input-group-addon">
                                                         <span class="glyphicon glyphicon-calendar"></span>
                                                     </span>
@@ -133,6 +134,7 @@
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
                                             @Html.TextBoxFor(x => x.AddressLine2, new { @class = "form-control", @name = "AddressLine2", @autocomplete = "off", @id = "AddressLine2", @placeholder = "AddressLine2" })
+                                            @Html.ValidationMessageFor(x => x.AddressLine2, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                 </div>

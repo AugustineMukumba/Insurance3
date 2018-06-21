@@ -10,28 +10,32 @@
     }
 </style>
 <div class="container" id="dot">
-
-    @using (Html.BeginForm("CommissionEdit", "Commission", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-    {
-        <div class="form-group">
-            @Html.Label("Commission Name", new { @class = "col-md-2 control-label" })
-            <div class="col-md-5">
-                @Html.TextBoxFor(m => m.CommissionName, new { @class = "form-control" })
+    <div class="product-page-design">
+        <h2>Commission Edit</h2>
+        @using (Html.BeginForm("CommissionEdit", "Commission", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            <div class="form-group">
+                @Html.Label("Commission Name", new { @class = "col-md-4 control-label" })
+                <div class="col-md-5">
+                    @Html.TextBoxFor(m => m.CommissionName, new { @class = "form-control" })
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            @Html.Label("Commission Amount", new { @class = "col-md-2 control-label" })
-            <div class="col-md-5">
-                @Html.TextBoxFor(m => m.CommissionAmount, new { @class = "form-control" })
+            <div class="form-group">
+                @Html.Label("Commission Amount", new { @class = "col-md-4 control-label" })
+                <div class="col-md-5">
+                    @Html.TextBoxFor(m => m.CommissionAmount, new { @class = "form-control" })
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            @Html.Label("Management Commission", new { @class = "col-md-2 control-label" })
-            <div class="col-md-5">
-                @Html.TextBoxFor(m => m.ManagementCommission, new { @class = "form-control" })
+            <div class="form-group">
+                @Html.Label("Management Commission", new { @class = "col-md-4 control-label" })
+                <div class="col-md-5">
+                    @Html.TextBoxFor(m => m.ManagementCommission, new { @class = "form-control" })
+                </div>
             </div>
-        </div>
-
-        <div><input type="submit" name="Update" value="Update" class="btn btn-primary btn sm" /></div>
-    }
+            <div class="form-group">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-5"><input type="submit" name="Update" value="Update" class="btn btn-primary btn sm" /></div>
+            </div>
+        }
+    </div>
 </div>

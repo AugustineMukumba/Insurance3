@@ -30,10 +30,6 @@ namespace InsuranceClaim.Controllers
         {
             var dbModel = Mapper.Map<ProductModel, Product>(model);
             InsuranceContext.Products.Insert(dbModel);
-
-            //  InsuranceContext.Products.Insert(db);
-            // InsuranceContext.Products.a
-
             return RedirectToAction("ProductList");
         }
         public ActionResult ProductList()
@@ -46,23 +42,22 @@ namespace InsuranceClaim.Controllers
         public ActionResult ProductEdit(int Id)
         {
             var record = InsuranceContext.Products.All(where: $"Id ={Id}").FirstOrDefault();
-            ProductModel obj = new ProductModel();
-            obj.Id = record.Id;
-            obj.ProductName = record.ProductName;
-            obj.ProductCode = record.ProductCode;
 
-
-            return View(obj);
+            var model = Mapper.Map<Product, ProductModel>(record);
+            return View(model);
         }
         [HttpPost]
         public ActionResult ProductEdit(ProductModel model)
         {
             if (ModelState.IsValid)
             {
-                var db = InsuranceContext.Products.Single(where: $"Id = {model.Id}");
-                db.ProductName = model.ProductName;
-                db.ProductCode = model.ProductCode;
-                InsuranceContext.Products.Update(db);
+                //var db = InsuranceContext.Products.Single(where: $"Id = {model.Id}");
+
+
+                var data = Mapper.Map<ProductModel, Product>(model);
+                //db.ProductName = model.ProductName;
+                //db.ProductCode = model.ProductCode;
+                InsuranceContext.Products.Update(data);
 
             }
 

@@ -77,11 +77,13 @@
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.TextBoxFor(m => m.NoOfCarsCovered, new { @placeholder = "Number of Cars Covered", @autocomplete = "off", @class = "form-control", @maxlength = "2" })
+                                                @Html.ValidationMessageFor(m => m.NoOfCarsCovered, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.TextBoxFor(m => m.RegistrationNo, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Registration Number" })
+                                                @Html.ValidationMessageFor(m => m.RegistrationNo, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
@@ -105,11 +107,13 @@
                                             <div class="form-group">
 
                                                 @Html.TextBoxFor(m => m.CubicCapacity, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cubic Capacity", @maxlength = "3" })
+                                                @Html.ValidationMessageFor(m => m.CubicCapacity, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.TextBoxFor(m => m.VehicleYear, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle year", @maxlength = "4" })
+                                                @Html.ValidationMessageFor(m => m.VehicleYear, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
@@ -118,12 +122,14 @@
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.TextBoxFor(m => m.EngineNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Engine Number" })
+                                                @Html.ValidationMessageFor(m => m.EngineNumber, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
 
                                                 @Html.TextBoxFor(m => m.ChasisNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Chassis Number" })
+                                                @Html.ValidationMessageFor(m => m.ChasisNumber, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
@@ -148,8 +154,10 @@
 
                                                 <div class='input-group date' id='datetimepicker1'>
                                                     @Html.TextBoxFor(m => m.CoverStartDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Cover Start Date" })
+                                                    @Html.ValidationMessageFor(m => m.CoverEndDate, "", new { @class = "text-danger" })
                                                     <span class="input-group-addon">
                                                         <span class="glyphicon glyphicon-calendar"></span>
+
                                                     </span>
                                                 </div>
                                             </div>
@@ -158,6 +166,7 @@
                                             <div class="form-group">
                                                 <div class='input-group date' id='datetimepicker2'>
                                                     @Html.TextBoxFor(m => m.CoverEndDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Cover End Date" })
+                                                    @Html.ValidationMessageFor(m => m.CoverEndDate, "", new { @class = "text-danger" })
                                                     <span class="input-group-addon">
                                                         <span class="glyphicon glyphicon-calendar"></span>
                                                     </span>
@@ -170,12 +179,14 @@
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.TextBox("VehicleSumInsures", null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insures", @maxlength = "5" })
+                                                @Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })
 
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.TextBoxFor(m => m.SumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insured", @maxlength = "5" })
+                                                @Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 

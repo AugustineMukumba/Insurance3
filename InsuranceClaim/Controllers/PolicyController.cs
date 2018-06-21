@@ -35,13 +35,8 @@ namespace InsuranceClaim.Controllers
         public ActionResult EditPolicy(int Id)
         {
             var record = InsuranceContext.PolicyInsurers.All(where: $"Id ={Id}").FirstOrDefault();
-            PolicyInsurerModel obj = new PolicyInsurerModel();
-            obj.Id = record.Id;
-            obj.InsurerName = record.InsurerName;
-            obj.InsurerCode = record.InsurerCode;
-            obj.InsurerAddress = record.InsurerAddress;
-
-            return View(obj);
+            var data = Mapper.Map<PolicyInsurer,PolicyInsurerModel>(record);
+            return View(data);
         }
             [HttpPost]
         public ActionResult EditPolicy(PolicyInsurerModel model)
@@ -49,11 +44,9 @@ namespace InsuranceClaim.Controllers
 
             if (ModelState.IsValid)
             {
-                var db = InsuranceContext.PolicyInsurers.Single(where: $"Id = {model.Id}");
-                db.InsurerName = model.InsurerName;
-                db.InsurerCode = model.InsurerCode;
-                db.InsurerAddress = model.InsurerAddress;
-                InsuranceContext.PolicyInsurers.Update(db);
+
+                var data = Mapper.Map<PolicyInsurerModel, PolicyInsurer>(model);
+                InsuranceContext.PolicyInsurers.Update(data);
             }
             return RedirectToAction("PolicyList");
         }

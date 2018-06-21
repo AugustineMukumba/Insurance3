@@ -6,6 +6,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Insurance.Domain;
+using AutoMapper;
+
 namespace InsuranceClaim.Controllers
 {
     public class PaypalController : Controller
@@ -20,7 +22,7 @@ namespace InsuranceClaim.Controllers
         }
 
         public ActionResult PaymentWithCreditCard(CardDetailModel model)
-        {
+{
             //create and item for which you are taking payment
             //if you need to add more items in the list
             //Then you will need to create multiple item objects or use some loop to instantiate object
@@ -61,7 +63,6 @@ namespace InsuranceClaim.Controllers
                 zeros = ".00";
 
             }
-
 
             Item item = new Item();
             item.name = product.ProductName;
@@ -109,7 +110,7 @@ namespace InsuranceClaim.Controllers
             amnt.currency = currency.Name;
             // Total = shipping tax + subtotal.
             amnt.total = totalPremium.ToString() + zeros;
-           // amnt.details = details;
+            // amnt.details = details;
 
             // Now make a trasaction object and assign the Amount object
             Transaction tran = new Transaction();
@@ -176,7 +177,7 @@ namespace InsuranceClaim.Controllers
                 return View("PaymentDetail");
             }
 
-            return View("SuccessView");
+            return RedirectToAction("SaveDetailList", "Paypal", new { id = model.SummaryDetailId });
         }
 
         public ActionResult PaymentWithPaypal()
@@ -335,5 +336,37 @@ namespace InsuranceClaim.Controllers
             return this.payment.Create(apiContext);
 
         }
+        public ActionResult SaveDetailList(Int32 id)
+        {
+
+            var summaryDetail = InsuranceContext.SummaryDetails.Single(id);
+            var vehicle = InsuranceContext.VehicleDetails.Single(summaryDetail.VehicleDetailId);
+            var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
+            var customer = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
+            var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+            var currency = InsuranceContext.Currencies.Single(policy.CurrencyId);
+            var DebitNote = summaryDetail.DebitNote;
+
+            PaymentInformationsModel objSaveDetailListModel = new PaymentInformationsModel();
+            objSaveDetailListModel.CurrencyId = policy.CurrencyId;
+            objSaveDetailListModel.PolicyId = vehicle.PolicyId;
+            objSaveDetailListModel.VehicleDetailId = summaryDetail.VehicleDetailId.Value;
+            objSaveDetailListModel.CustomerId = summaryDetail.CustomerId.Value;
+            objSaveDetailListModel.SummaryDetailId = id;
+            //objSaveDetailListModel.DebitNote.summaryDetail.DebitNote;
+            //objSaveDetailListModel.productId = policy.PolicyName;
+
+            //Saving 'PaymentInformationModel' to database: 
+            
+
+            return View(objSaveDetailListModel);
+        }
+        [HttpPost]
+        public ActionResult SaveDetailList(PaymentInformationsModel model)
+        {
+
+            return View();
+        }
     }
 }
+

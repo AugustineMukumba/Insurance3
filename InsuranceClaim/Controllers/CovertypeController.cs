@@ -37,10 +37,8 @@ namespace InsuranceClaim.Controllers
         public ActionResult EditCovertype(int Id)
         {
             var record = InsuranceContext.CoverTypes.All(where: $"Id ={Id}").FirstOrDefault();
-            CovertypeModel obj = new CovertypeModel();
-            obj.Id = record.Id;
-            obj.Name = record.Name;
-            return View(obj);
+            var model = Mapper.Map<CoverType, CovertypeModel>(record);
+            return View(model);
         }
         [HttpPost]
         public ActionResult EditCovertype(CovertypeModel model )
@@ -48,9 +46,9 @@ namespace InsuranceClaim.Controllers
 
             if (ModelState.IsValid)
             {
-                var db = InsuranceContext.CoverTypes.Single(where: $"Id = {model.Id}");
-                db.Name = model.Name;
-                InsuranceContext.CoverTypes.Update(db);
+
+                var data = Mapper.Map<CovertypeModel, CoverType>(model);
+                InsuranceContext.CoverTypes.Update(data);
             }
             return RedirectToAction("CoverList");
         }
