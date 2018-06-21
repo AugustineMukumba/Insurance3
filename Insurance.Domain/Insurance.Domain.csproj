@@ -124,6 +124,7 @@
     <Compile Include="Domain\Entity.partial.cs" />
     <Compile Include="Domain\LicenseDelivery.cs" />
     <Compile Include="Domain\LoyaltyDetail.cs" />
+    <Compile Include="Domain\PaymentInformation.cs" />
     <Compile Include="Domain\PaymentMethod.cs" />
     <Compile Include="Domain\PaymentTerm.cs" />
     <Compile Include="Domain\PolicyDetail.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="Repository\Customers.cs" />
     <Compile Include="Repository\LicenseDeliveries.cs" />
     <Compile Include="Repository\LoyaltyDetails.cs" />
+    <Compile Include="Repository\PaymentInformations.cs" />
     <Compile Include="Repository\PaymentMethods.cs" />
     <Compile Include="Repository\PaymentTerms.cs" />
     <Compile Include="Repository\PolicyDetails.cs" />

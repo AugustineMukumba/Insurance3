@@ -54,6 +54,9 @@ namespace Insurance.Domain
         public static PolicyInsurers PolicyInsurers { get { return new PolicyInsurers(); } }
         public static VehicleCoverTypes VehicleCoverTypes { get { return new VehicleCoverTypes(); } }
         public static VehicleUsages VehicleUsages { get { return new VehicleUsages(); } }
+
+        public static PaymentInformations PaymentInformations { get { return new PaymentInformations(); } }
+
         // general purpose operations
 
         public static void Execute(string sql, params object[] parms) { db.Execute(sql, parms); }
@@ -63,7 +66,7 @@ namespace Insurance.Domain
         public static DataSet GetDataSet(string sql, params object[] parms) { return db.GetDataSet(sql, parms); }
         public static DataTable GetDataTable(string sql, params object[] parms) { return db.GetDataTable(sql, parms); }
         public static DataRow GetDataRow(string sql, params object[] parms) { return db.GetDataRow(sql, parms); }
-
+       
 
     }
 }

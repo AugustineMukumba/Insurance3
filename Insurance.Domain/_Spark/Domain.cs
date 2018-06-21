@@ -414,4 +414,17 @@ namespace Insurance.Domain
         public decimal? AnnualTPAmount { get; set; }
 
     }
+    public partial class PaymentInformation : Entity<PaymentInformation>
+    {
+        public PaymentInformation() { }
+        public PaymentInformation(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public int SummaryDetailId { get; set; }
+        public int VehicleDetailId { get; set; }
+        public int PolicyId { get; set; }
+        public int CustomerId { get; set; }
+        public int CurrencyId { get; set; }
+        public string DebitNote { get; set; }
+    }
 }
