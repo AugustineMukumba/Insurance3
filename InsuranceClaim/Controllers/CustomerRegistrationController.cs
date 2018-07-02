@@ -40,7 +40,8 @@ namespace InsuranceClaim.Controllers
         }
 
         public ActionResult ProductDetail()
-        {
+        {           
+
             var InsService = new InsurerService();
             ViewBag.Currency = InsuranceContext.Currencies.All().ToList();
             ViewBag.PoliCyStatus = InsuranceContext.PolicyStatuses.All().ToList();
@@ -126,12 +127,14 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult SummaryDetail(int id)
         {
+            SummaryDetailService SummaryDetailServiceObj = new SummaryDetailService();
+            
             var model = new SummaryDetailModel();
             var summary = new SummaryDetailService();
             var vehicle = summary.GetVehicleInformation(id);
             TempData["VehicleDetail"] = vehicle;
             model.CarInsuredCount = vehicle.NoOfCarsCovered;
-            model.DebitNote = "INV" + DateTime.Now.Ticks;
+            model.DebitNote = "INV" + Convert.ToString(SummaryDetailServiceObj.getNewDebitNote());
             model.PaymentMethodId = 1;
             model.PaymentTermId = 1;
             model.ReceiptNumber = "";

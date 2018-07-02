@@ -22,7 +22,7 @@ namespace InsuranceClaim.Controllers
         }
 
         public ActionResult PaymentWithCreditCard(CardDetailModel model)
-{
+        {
             //create and item for which you are taking payment
             //if you need to add more items in the list
             //Then you will need to create multiple item objects or use some loop to instantiate object
@@ -64,11 +64,12 @@ namespace InsuranceClaim.Controllers
 
             }
 
+
             Item item = new Item();
             item.name = product.ProductName;
+            item.currency = "USD";
             item.currency = currency.Name;
             item.price = totalPremium.ToString() + zeros;
-            //item.quantity = vehicle.NoOfCarsCovered.ToString();
             item.quantity = "1";
             item.sku = "sku";
 
@@ -110,6 +111,7 @@ namespace InsuranceClaim.Controllers
             amnt.currency = currency.Name;
             // Total = shipping tax + subtotal.
             amnt.total = totalPremium.ToString() + zeros;
+            amnt.currency = "USD";
             // amnt.details = details;
 
             // Now make a trasaction object and assign the Amount object
@@ -136,10 +138,25 @@ namespace InsuranceClaim.Controllers
             List<FundingInstrument> fundingInstrumentList = new List<FundingInstrument>();
             fundingInstrumentList.Add(fundInstrument);
 
+            PayerInfo pi = new PayerInfo();
+            pi.email = "noemail@noemail.com";
+            pi.first_name = "Stack";
+            pi.last_name = "Overflow";
+            pi.shipping_address = new ShippingAddress
+            {
+                city = "San Mateo",
+                country_code = "US",
+                line1 = "SO TEST",
+                line2 = "",
+                postal_code = "94002",
+                state = "CA",
+            };
+
             // Now create Payer object and assign the fundinginstrument list to the object
             Payer payr = new Payer();
             payr.funding_instruments = fundingInstrumentList;
             payr.payment_method = "credit_card";
+            payr.payer_info = pi;
 
             // finally create the payment object and assign the payer object & transaction list to it
             Payment pymnt = new Payment();
@@ -167,14 +184,14 @@ namespace InsuranceClaim.Controllers
                 if (createdPayment.state.ToLower() != "approved")
                 {
                     ModelState.AddModelError("PaymentError", "Payment not approved");
-                    return View("PaymentDetail");
+                    return RedirectToAction("PaymentDetail", "CustomerRegistration", new { id = model.SummaryDetailId });
                 }
             }
             catch (PayPal.PayPalException ex)
             {
                 Logger.Log("Error: " + ex.Message);
                 ModelState.AddModelError("PaymentError", ex.Message);
-                return View("PaymentDetail");
+                return RedirectToAction("PaymentDetail", "CustomerRegistration", new { id = model.SummaryDetailId });
             }
 
             return RedirectToAction("SaveDetailList", "Paypal", new { id = model.SummaryDetailId });
@@ -357,7 +374,7 @@ namespace InsuranceClaim.Controllers
             //objSaveDetailListModel.productId = policy.PolicyName;
 
             //Saving 'PaymentInformationModel' to database: 
-            
+
 
             return View(objSaveDetailListModel);
         }
