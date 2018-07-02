@@ -78,6 +78,7 @@
                                             <div class="form-group">
                                                 @Html.TextBoxFor(m => m.NoOfCarsCovered, new { @placeholder = "Number of Cars Covered", @autocomplete = "off", @class = "form-control", @maxlength = "2" })
                                                 @Html.ValidationMessageFor(m => m.NoOfCarsCovered, "", new { @class = "text-danger" })
+                                                @Html.ValidationMessageFor(m => m.NoOfCarsCovered, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
@@ -108,11 +109,13 @@
 
                                                 @Html.TextBoxFor(m => m.CubicCapacity, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cubic Capacity", @maxlength = "3" })
                                                 @Html.ValidationMessageFor(m => m.CubicCapacity, "", new { @class = "text-danger" })
+                                                @Html.ValidationMessageFor(m => m.CubicCapacity, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.TextBoxFor(m => m.VehicleYear, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle year", @maxlength = "4" })
+                                                @Html.ValidationMessageFor(m => m.VehicleYear, "", new { @class = "text-danger" })
                                                 @Html.ValidationMessageFor(m => m.VehicleYear, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
@@ -180,12 +183,14 @@
                                             <div class="form-group">
                                                 @Html.TextBox("VehicleSumInsures", null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insures", @maxlength = "5" })
                                                 @Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })
+                                                @Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })
 
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.TextBoxFor(m => m.SumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insured", @maxlength = "5" })
+                                                @Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })
                                                 @Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
