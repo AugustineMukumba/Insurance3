@@ -65,75 +65,155 @@ namespace InsuranceClaim.Controllers
             }
 
 
-            Item item = new Item();
-            item.name = product.ProductName;
-            item.currency = "USD";
-            item.currency = currency.Name;
-            item.price = totalPremium.ToString() + zeros;
-            item.quantity = "1";
-            item.sku = "sku";
+            //Item item = new Item();
+            //item.name = product.ProductName;            
+            //item.currency = currency.Name;
+            //item.price = totalPremium.ToString() + zeros;
+            //item.quantity = "1";
+            //item.sku = "sku";
 
-            //Now make a List of Item and add the above item to it
-            //you can create as many items as you want and add to this list
+            ////Now make a List of Item and add the above item to it
+            ////you can create as many items as you want and add to this list
+            //List<Item> itms = new List<Item>();
+            //itms.Add(item);
+            //ItemList itemList = new ItemList();
+            //itemList.items = itms;
+
+            ////Address for the payment
+            //Address billingAddress = new Address();
+            //billingAddress.city = "NewYork";
+            //billingAddress.country_code = "US";
+            //billingAddress.line1 = customer.AddressLine1 == string.Empty ? customer.AddressLine2 : customer.AddressLine1;
+            //billingAddress.postal_code = "43210";
+            //billingAddress.state = "NY";
+
+
+            ////Now Create an object of credit card and add above details to it
+            //PayPal.Api.CreditCard crdtCard = new PayPal.Api.CreditCard();
+            //crdtCard.billing_address = billingAddress;
+            //crdtCard.cvv2 = model.CVC;
+            //crdtCard.expire_month = Convert.ToInt32(model.ExpiryDate.Split('/')[0]);
+            //crdtCard.expire_year = Convert.ToInt32(model.ExpiryDate.Split('/')[1]);
+            //crdtCard.first_name = model.NameOnCard;
+            ////crdtCard.last_name = "Thakur";
+            //crdtCard.number = model.CardNumber;
+            //crdtCard.type = CreditCardUtility.GetTypeName(model.CardNumber).ToLower();
+
+            //// Specify details of your payment amount.
+            //Details details = new Details();
+            //details.shipping = "0.00";
+            //details.subtotal = totalPremium.ToString() + zeros;
+            //details.tax = "0.00";
+
+            //// Specify your total payment amount and assign the details object
+            //Amount amnt = new Amount();
+            //amnt.currency = currency.Name;
+            //// Total = shipping tax + subtotal.
+            //amnt.total = totalPremium.ToString() + zeros;            
+            //// amnt.details = details;
+
+            //// Now make a trasaction object and assign the Amount object
+            //Transaction tran = new Transaction();
+            //tran.amount = amnt;
+            //tran.description = "Online vehicle insurance purchased";
+            //tran.item_list = itemList;
+            //tran.invoice_number = summaryDetail.DebitNote;
+
+            //// Now, we have to make a list of trasaction and add the trasactions object
+            //// to this list. You can create one or more object as per your requirements
+
+            //List<Transaction> transactions = new List<Transaction>();
+            //transactions.Add(tran);
+
+            //// Now we need to specify the FundingInstrument of the Payer
+            //// for credit card payments, set the CreditCard which we made above
+
+            //FundingInstrument fundInstrument = new FundingInstrument();
+            //fundInstrument.credit_card = crdtCard;
+
+            //// The Payment creation API requires a list of FundingIntrument
+
+            //List<FundingInstrument> fundingInstrumentList = new List<FundingInstrument>();
+            //fundingInstrumentList.Add(fundInstrument);
+
+            //PayerInfo pi = new PayerInfo();
+            //pi.email = "noemail@noemail.com";
+            //pi.first_name = "Stack";
+            //pi.last_name = "Overflow";
+            //pi.shipping_address = new ShippingAddress
+            //{
+            //    city = "San Mateo",
+            //    country_code = "US",
+            //    line1 = "SO TEST",
+            //    line2 = "",
+            //    postal_code = "94002",
+            //    state = "CA",
+            //};
+
+            //// Now create Payer object and assign the fundinginstrument list to the object
+            //Payer payr = new Payer();
+            //payr.funding_instruments = fundingInstrumentList;
+            //payr.payment_method = "credit_card";
+            //payr.payer_info = pi;
+
+            //// finally create the payment object and assign the payer object & transaction list to it
+            //Payment pymnt = new Payment();
+            //pymnt.intent = "sale";
+            //pymnt.payer = payr;
+            //pymnt.transactions = transactions;
+
+            var _Amount = "99";
+
+            Item item = new Item();
+            item.name = "foo";
+            item.currency = "USD";
+            item.price = _Amount;
+            item.quantity = "1";
+            item.sku = "fooSku";
+
             List<Item> itms = new List<Item>();
             itms.Add(item);
             ItemList itemList = new ItemList();
             itemList.items = itms;
 
-            //Address for the payment
             Address billingAddress = new Address();
-            billingAddress.city = "NewYork";
+            billingAddress.city = "San Mateo";
             billingAddress.country_code = "US";
-            billingAddress.line1 = customer.AddressLine1 == string.Empty ? customer.AddressLine2 : customer.AddressLine1;
-            billingAddress.postal_code = "43210";
-            billingAddress.state = "NY";
+            billingAddress.line1 = "SO TEST";
+            billingAddress.line2 = "";
+            billingAddress.postal_code = "94002";
+            billingAddress.state = "CA";
 
-
-            //Now Create an object of credit card and add above details to it
             PayPal.Api.CreditCard crdtCard = new PayPal.Api.CreditCard();
             crdtCard.billing_address = billingAddress;
-            crdtCard.cvv2 = model.CVC;
-            crdtCard.expire_month = Convert.ToInt32(model.ExpiryDate.Split('/')[0]);
-            crdtCard.expire_year = Convert.ToInt32(model.ExpiryDate.Split('/')[1]);
-            crdtCard.first_name = model.NameOnCard;
-            //crdtCard.last_name = "Thakur";
-            crdtCard.number = model.CardNumber;
-            crdtCard.type = CreditCardUtility.GetTypeName(model.CardNumber).ToLower();
+            crdtCard.cvv2 = "123";
+            crdtCard.expire_month = 1;
+            crdtCard.expire_year = 2022;
+            crdtCard.first_name = "Stack";
+            crdtCard.last_name = "Overflow";
+            crdtCard.number = "4012888888881881"; //use some other test number if it fails
+            crdtCard.type = "visa";
 
-            // Specify details of your payment amount.
             Details details = new Details();
-            details.shipping = "0.00";
-            details.subtotal = totalPremium.ToString() + zeros;
-            details.tax = "0.00";
+            details.tax = "0";
+            details.shipping = "0";
+            details.subtotal = _Amount;
 
-            // Specify your total payment amount and assign the details object
-            Amount amnt = new Amount();
-            amnt.currency = currency.Name;
-            // Total = shipping tax + subtotal.
-            amnt.total = totalPremium.ToString() + zeros;
-            amnt.currency = "USD";
-            // amnt.details = details;
+            Amount amont = new Amount();
+            amont.currency = "USD";
+            amont.total = _Amount;
+            amont.details = details;
 
-            // Now make a trasaction object and assign the Amount object
             Transaction tran = new Transaction();
-            tran.amount = amnt;
-            tran.description = "Online vehicle insurance purchased";
+            tran.amount = amont;
+            tran.description = "trnx desc";
             tran.item_list = itemList;
-            tran.invoice_number = summaryDetail.DebitNote;
-
-            // Now, we have to make a list of trasaction and add the trasactions object
-            // to this list. You can create one or more object as per your requirements
 
             List<Transaction> transactions = new List<Transaction>();
             transactions.Add(tran);
 
-            // Now we need to specify the FundingInstrument of the Payer
-            // for credit card payments, set the CreditCard which we made above
-
             FundingInstrument fundInstrument = new FundingInstrument();
             fundInstrument.credit_card = crdtCard;
-
-            // The Payment creation API requires a list of FundingIntrument
 
             List<FundingInstrument> fundingInstrumentList = new List<FundingInstrument>();
             fundingInstrumentList.Add(fundInstrument);
@@ -152,13 +232,11 @@ namespace InsuranceClaim.Controllers
                 state = "CA",
             };
 
-            // Now create Payer object and assign the fundinginstrument list to the object
             Payer payr = new Payer();
             payr.funding_instruments = fundingInstrumentList;
             payr.payment_method = "credit_card";
             payr.payer_info = pi;
 
-            // finally create the payment object and assign the payer object & transaction list to it
             Payment pymnt = new Payment();
             pymnt.intent = "sale";
             pymnt.payer = payr;
@@ -364,16 +442,21 @@ namespace InsuranceClaim.Controllers
             var currency = InsuranceContext.Currencies.Single(policy.CurrencyId);
             var DebitNote = summaryDetail.DebitNote;
 
-            PaymentInformationsModel objSaveDetailListModel = new PaymentInformationsModel();
+            PaymentInformation objSaveDetailListModel = new PaymentInformation();
             objSaveDetailListModel.CurrencyId = policy.CurrencyId;
             objSaveDetailListModel.PolicyId = vehicle.PolicyId;
             objSaveDetailListModel.VehicleDetailId = summaryDetail.VehicleDetailId.Value;
             objSaveDetailListModel.CustomerId = summaryDetail.CustomerId.Value;
             objSaveDetailListModel.SummaryDetailId = id;
-            //objSaveDetailListModel.DebitNote.summaryDetail.DebitNote;
-            //objSaveDetailListModel.productId = policy.PolicyName;
+            objSaveDetailListModel.DebitNote = summaryDetail.DebitNote;
+            objSaveDetailListModel.ProductId = product.Id;
 
-            //Saving 'PaymentInformationModel' to database: 
+            Insurance.Service.PaymentInformationService objPaymentInformationService = new Insurance.Service.PaymentInformationService();
+            //objPaymentInformationService.Insert(objSaveDetailListModel);
+
+            Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
+            objEmailService.SendPaymentConfirmationEmail("Payment trasacted successfully", "Payment Confirmation", "ankit.dhiman@kindlebit.com", "");
+            objEmailService.SendAccountCreationEmail("Account Created successfully", "Account Creation", "ankit.dhiman@kindlebit.com", "");           
 
 
             return View(objSaveDetailListModel);
@@ -386,4 +469,5 @@ namespace InsuranceClaim.Controllers
         }
     }
 }
+
 

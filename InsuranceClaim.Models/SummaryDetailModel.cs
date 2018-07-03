@@ -19,7 +19,7 @@ namespace InsuranceClaim.Models
         public string DebitNote { get; set; }
         public string ReceiptNumber { get; set; }
         public bool SMSConfirmation { get; set; }
-        public int? CarInsuredCount { get; set; }
+        public int? CarInsuredCount { get; set; }        
         
     }
 }

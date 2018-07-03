@@ -426,5 +426,6 @@ namespace Insurance.Domain
         public int CustomerId { get; set; }
         public int CurrencyId { get; set; }
         public string DebitNote { get; set; }
+        public int ProductId { get; set; }
     }
 }
