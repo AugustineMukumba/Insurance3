@@ -138,6 +138,21 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group">
+                                            @Html.TextBoxFor(x => x.City, new { @class = "form-control", @name = "State", @autocomplete = "off", @placeholder = "Enter City Name" })
+                                            @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group">
+                                            @Html.TextBoxFor(x => x.State, new { @class = "form-control", @name = "State", @autocomplete = "off", @placeholder = "Enter State Name" })
+                                            @Html.ValidationMessageFor(x => x.State, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+
                                 @*<div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">

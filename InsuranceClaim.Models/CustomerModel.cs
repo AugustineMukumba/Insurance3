@@ -38,11 +38,11 @@ namespace InsuranceClaim.Models
         [MaxLength(100, ErrorMessage = "Address 2 must be less than 100  characters long.")]
         public string AddressLine2 { get; set; }
         [Display(Name = "City")]
-       // [Required(ErrorMessage = "Please enter city.")]
+        [Required(ErrorMessage = "Please enter city.")]
         [MaxLength(25, ErrorMessage = "City must be less than 25 characters long.")]
         public string City { get; set; }
         [Display(Name = "State")]
-        //[Required(ErrorMessage = "Please enter state.")]
+        [Required(ErrorMessage = "Please enter state.")]
         [MaxLength(25, ErrorMessage = "State must be less than 25 characters long.")]
         public string State { get; set; }
         [Display(Name = "ZipCode")]

@@ -76,7 +76,8 @@
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                                @Html.TextBoxFor(m => m.NoOfCarsCovered, new { @placeholder = "Number of Cars Covered", @autocomplete = "off", @class = "form-control", @maxlength = "2" })
+                                                @Html.TextBoxFor(m => m.NoOfCarsCovered, new { @placeholder = "Number of Cars Covered", @autocomplete = "off",@*@disabled="disabled",*@ @class = "form-control", @maxlength = "2",Value="1",@readonly= "readonly"
+                                           })
                                                 @Html.ValidationMessageFor(m => m.NoOfCarsCovered, "", new { @class = "text-danger" })
                                                 @Html.ValidationMessageFor(m => m.NoOfCarsCovered, "", new { @class = "text-danger" })
                                             </div>
@@ -109,14 +110,14 @@
 
                                                 @Html.TextBoxFor(m => m.CubicCapacity, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cubic Capacity", @maxlength = "3" })
                                                 @Html.ValidationMessageFor(m => m.CubicCapacity, "", new { @class = "text-danger" })
-                                                @Html.ValidationMessageFor(m => m.CubicCapacity, "", new { @class = "text-danger" })
+                                                @*@Html.ValidationMessageFor(m => m.CubicCapacity, "", new { @class = "text-danger" })*@
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.TextBoxFor(m => m.VehicleYear, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle year", @maxlength = "4" })
                                                 @Html.ValidationMessageFor(m => m.VehicleYear, "", new { @class = "text-danger" })
-                                                @Html.ValidationMessageFor(m => m.VehicleYear, "", new { @class = "text-danger" })
+                                                @*@Html.ValidationMessageFor(m => m.VehicleYear, "", new { @class = "text-danger" })*@
                                             </div>
                                         </div>
                                     </div>
@@ -167,7 +168,7 @@
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                                <div class='input-group date' id='datetimepicker2'>
+                                                <div class='input-group date' id='datetimepicker2' >
                                                     @Html.TextBoxFor(m => m.CoverEndDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Cover End Date" })
                                                     @Html.ValidationMessageFor(m => m.CoverEndDate, "", new { @class = "text-danger" })
                                                     <span class="input-group-addon">
@@ -297,9 +298,14 @@
 
 <script type="text/javascript">
     $(function () { // will trigger when the document is ready
+        debugger;
         $('#datetimepicker1,#datetimepicker2,#datetimepicker3,#datetimepicker4').datetimepicker({
+            format: 'MM/D/YYYY'
 
         });
+
+       
+
         $("#MakeId").change(function () {
             $.ajax({
                 url: "@Url.Action("GetVehicleModel", "CustomerRegistration")",
@@ -316,6 +322,7 @@
                 }
             });
         });
+
 
         $("#SumInsured").blur(function () {
 
@@ -349,6 +356,13 @@
             }
         });
     });
+    //$(".date").focusin(function () {
+    //    debugger;
+    //    $('#datetimepicker1,#datetimepicker2').datetimepicker({
+    //        format: 'MM/D/YYYY'
+
+    //})
+    
     function replacableRedirect() {
         window.location.href = "@Url.Action("SummaryDetail", "CustomerRegistration")";
     }

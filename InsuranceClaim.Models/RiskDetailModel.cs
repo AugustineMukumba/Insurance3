@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,8 @@ namespace InsuranceClaim.Models
     {
         public int Id { get; set; }
         public int PolicyId { get; set; }
-        [Required(ErrorMessage = "Please Enter No Of Cars Covered")]
+        //[Required(ErrorMessage = "Please Enter No Of Cars Covered")]
+        //[DefaultValue(1)]
         public int? NoOfCarsCovered { get; set; }
         [Required(ErrorMessage = "Please Enter Registration No")]
         public string RegistrationNo { get; set; }
