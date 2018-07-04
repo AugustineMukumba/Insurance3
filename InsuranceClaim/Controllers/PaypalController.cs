@@ -7,11 +7,24 @@ using System.Web;
 using System.Web.Mvc;
 using Insurance.Domain;
 using AutoMapper;
-
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 namespace InsuranceClaim.Controllers
 {
     public class PaypalController : Controller
     {
+        private ApplicationUserManager _userManager;
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
         //
         // GET: /Paypal/
 
@@ -440,8 +453,10 @@ namespace InsuranceClaim.Controllers
             var customer = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
             var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
             var currency = InsuranceContext.Currencies.Single(policy.CurrencyId);
+            var paymentInformations = InsuranceContext.PaymentInformations.SingleCustome(id);
+            var user = UserManager.FindById(customer.UserID);
+            //var user = Microsoft.AspNet.Identity.GetUserManager<ApplicationUserManager>();
             var DebitNote = summaryDetail.DebitNote;
-
             PaymentInformation objSaveDetailListModel = new PaymentInformation();
             objSaveDetailListModel.CurrencyId = policy.CurrencyId;
             objSaveDetailListModel.PolicyId = vehicle.PolicyId;
@@ -451,13 +466,21 @@ namespace InsuranceClaim.Controllers
             objSaveDetailListModel.DebitNote = summaryDetail.DebitNote;
             objSaveDetailListModel.ProductId = product.Id;
 
-            Insurance.Service.PaymentInformationService objPaymentInformationService = new Insurance.Service.PaymentInformationService();
-            objPaymentInformationService.Insert(objSaveDetailListModel);
+            // Insurance.Service.PaymentInformationService objPaymentInformationService = new Insurance.Service.PaymentInformationService();
+            //var isExist= objPaymentInformationService.GetById(id);
+            // if (true)
+            // {
 
-            Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
-            //objEmailService.SendEmail("ankit.dhiman@kindlebit.com", "testing1.kindlebit@gmail.com", "", "", "Payment Confirmation", "test body", null, false);
-            //objEmailService.SendAccountCreationEmail("Account Created successfully", "Account Creation", "ankit.dhiman@kindlebit.com", "");           
-
+            // }
+            if (paymentInformations == null)
+            {
+                InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
+                Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
+                string emailTemplatePath = "/Views/Shared/EmaiTemplates/UserRegisteration.cshtml";
+                string EmailBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(emailTemplatePath));
+                var Body = EmailBody.Replace(" #PolicyNumber#", policy.PolicyNumber).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2);
+                objEmailService.SendEmail(user.Email, "", "", "Account Creation", Body, null);
+            }
 
             return View(objSaveDetailListModel);
         }
@@ -466,6 +489,15 @@ namespace InsuranceClaim.Controllers
         {
 
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult SaveDeleverLicence(bool IsCheck,int Id)
+        {
+            var paymentInformations = InsuranceContext.PaymentInformations.SingleCustome(Id);
+            paymentInformations.DeleverLicence = IsCheck;
+            InsuranceContext.PaymentInformations.Update(paymentInformations);
+            return Json(true, JsonRequestBehavior.AllowGet);
         }
     }
 }

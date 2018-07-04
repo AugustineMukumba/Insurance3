@@ -24,6 +24,18 @@ namespace Insurance.Service
             
         }
 
+        public PaymentInformation GetById(Int32 Id)
+        {
+            try
+            {
+              
+               return InsuranceContext.PaymentInformations.SingleCustome(Id);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
 
+        }
     }
 }

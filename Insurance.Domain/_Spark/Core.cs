@@ -605,10 +605,14 @@ namespace Insurance.Domain
             string sql = CreateSelect(keyName + " = @0 ");
             return db.Read(sql, Make, id).FirstOrDefault();
         }
+        public T SingleCustome(int? id)
+        {
+            string sql = CreateSelect("SummaryDetailId" + " = @0 ");
+            return db.Read(sql, Make, id).FirstOrDefault();
+        }
+        // retrieves a single object with a where clause
 
-		// retrieves a single object with a where clause
-
-		public T Single(string where = null, params object[] parms)
+        public T Single(string where = null, params object[] parms)
         {
             string sql = CreateSelect(where);
             return db.Read(sql, Make, parms).FirstOrDefault();
@@ -1117,9 +1121,14 @@ namespace Insurance.Domain
 
         public virtual T Single(int? id)
         {
+            
             return t.Single(id);
         }
+        public virtual T SingleCustome(int? id)
+        {
 
+            return t.SingleCustome(id);
+        }
         public void InvalidateCachedEntries()
         {
             t.InvalidateCachedEntries();

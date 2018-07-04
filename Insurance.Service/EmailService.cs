@@ -12,32 +12,61 @@ namespace Insurance.Service
     public class EmailService
     {
 
-        public void SendEmail(string pTo, string pFrom, string pCc, string pBcc, string pSubject, string pBody, string[] pAttachments, bool pIsHTML)
+        public void SendEmail(string pTo, string pCc, string pBcc, string pSubject, string pBody, string[] pAttachments)
         {
             try
             {
-                SmtpClient _client = new SmtpClient(ConfigurationManager.AppSettings["SMTPServer"]);               
+                var portNumber = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["SendEmailPortNo"]);
+                var enableSSL = Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings["SendEmailEnableSSL"]);
+                var smtpAddress = Convert.ToString(ConfigurationManager.AppSettings["SendEmailSMTP"]);
 
-                MailMessage _message = new MailMessage();
-                _message.From = new MailAddress(pFrom);
-                populateMailAddresses(pTo, _message.To);
+                var FromMailAddress = System.Configuration.ConfigurationManager.AppSettings["SendEmailFrom"].ToString();
+                var password = System.Configuration.ConfigurationManager.AppSettings["SendEmailFromPassword"].ToString();
 
-                if (pCc != null && pCc != "")
-                    populateMailAddresses(pCc, _message.CC);
-                if (pBcc != null && pBcc != "")
-                    populateMailAddresses(pBcc, _message.Bcc);
-                _message.Body = pBody;
-                _message.BodyEncoding = System.Text.Encoding.UTF8;
-                _message.Subject = pSubject;
-                _message.SubjectEncoding = System.Text.Encoding.UTF8;
-                _message.IsBodyHtml = pIsHTML;
-                if (pAttachments != null)
+                //SmtpClient _client = new SmtpClient(ConfigurationManager.AppSettings["SMTPServer"]);
+                var client = new SmtpClient(smtpAddress, portNumber) //Port 8025, 587 and 25 can also be used.
                 {
-                    foreach (string _str in pAttachments)
-                        _message.Attachments.Add(new Attachment(_str));
-                }               
-                _client.Send(_message);
-                _message.Dispose();
+                    Credentials = new NetworkCredential(FromMailAddress, password),
+                };
+                MailMessage _mailMessage = new MailMessage();
+                _mailMessage.To.Add(new MailAddress(pTo));
+                _mailMessage.From = new MailAddress(FromMailAddress, "Insurance Claim");
+                _mailMessage.Subject = pSubject;
+                _mailMessage.IsBodyHtml = true;
+                AlternateView plainView = AlternateView.CreateAlternateViewFromString(pBody, null, "text/plain");
+                AlternateView htmlView = AlternateView.CreateAlternateViewFromString(pBody, null, "text/html");
+                _mailMessage.AlternateViews.Add(plainView);
+                _mailMessage.AlternateViews.Add(htmlView);
+                using (SmtpClient smtp = new SmtpClient(smtpAddress, portNumber))
+                {
+                    smtp.Credentials = new NetworkCredential(FromMailAddress, password);
+                    smtp.EnableSsl = enableSSL;
+                    try
+                    {
+                        smtp.Send(_mailMessage);
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                }
+                //populateMailAddresses(pTo, _message.To);
+
+                //if (pCc != null && pCc != "")
+                //    populateMailAddresses(pCc, _message.CC);
+                //if (pBcc != null && pBcc != "")
+                //    populateMailAddresses(pBcc, _message.Bcc);
+                //_message.Body = pBody;
+                //_message.BodyEncoding = System.Text.Encoding.UTF8;
+                //_message.Subject = pSubject;
+                //_message.SubjectEncoding = System.Text.Encoding.UTF8;
+                //_message.IsBodyHtml = pIsHTML;
+                //if (pAttachments != null)
+                //{
+                //    foreach (string _str in pAttachments)
+                //        _message.Attachments.Add(new Attachment(_str));
+                //}
+                //client.Send(_message);
+                //_message.Dispose();
             }
             catch (Exception ex)
             {

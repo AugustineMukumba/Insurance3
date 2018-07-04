@@ -13,19 +13,19 @@
     .display-3 {
         font-size: 4.5rem;
         font-weight: 300;
-        text-align:center;
+        text-align: center;
     }
 
     .lead {
         font-size: 1.25rem;
         font-weight: 300;
-        text-align:center;
+        text-align: center;
     }
 
     p {
         margin-top: 0;
         margin-bottom: 1rem;
-        text-align:center;
+        text-align: center;
     }
 </style>
 
@@ -38,13 +38,14 @@
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-section-col">
                     <div class="jumbotron text-xs-center">
                         <h1 class="display-3">Thank You!</h1>
-                        <p class="lead"><strong>Please check your email</strong> for further instructions on how to complete your account setup.</p>
+                        <p class="lead"><strong>Please check your email for further instructions.</strong></p>
                         <hr>
+                        <p><input type="checkbox" id="checkbox1" /> Want the licence disk to be delivered </p>
                         <p>
                             Having trouble? <a href="">Contact us</a>
                         </p>
                         <p class="lead">
-                            <a class="btn btn-primary btn-sm" href="https://bootstrapcreative.com/" role="button">Continue to homepage</a>
+                            <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="saveAndRedirect()" role="button">Continue</a>
                         </p>
                     </div>
                 </div>
@@ -86,3 +87,26 @@
 
         </div>*@
 </div>
+<script>
+    function saveAndRedirect(){
+
+     debugger
+        //if($(this).is(":checked")) {
+        //    var returnVal = confirm("Are you sure?");
+        //    $(this).attr("checked", returnVal);
+        //}
+       var isCheck=$(this).is(':checked');
+      var id= "@Model.SummaryDetailId"
+       $.ajax({
+       url:"/Paypal/SaveDeleverLicence",
+       method:"post",
+       data:{IsCheck:isCheck,Id:id},
+       success:function(data){
+       if(data==true){
+       window.location.href="/InsuranceHome/Index"
+       }
+       }
+
+    })}
+
+</script>
