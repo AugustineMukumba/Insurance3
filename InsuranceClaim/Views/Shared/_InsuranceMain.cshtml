@@ -19,8 +19,8 @@
     <script src="~/Scripts/jquery.validate.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
     <style>
-        .input-group-addon{
-            border:none !important;
+        .input-group-addon {
+            border: none !important;
         }
     </style>
 </head>
@@ -151,7 +151,23 @@
             <h4>Online Chat <span class="online-dot"></span></h4>
         </div>
     </div>
+    <script>
 
+        $(document).ready(function () { // will trigger when the document is ready
+            debugger;
+    
+            $('.date input').keypress(function () { 
+                return false;
+            
+            });
+
+            $('.date').datetimepicker({
+                format: 'MM/D/YYYY',
+            })
+        });
+
+    </script>
 
 </body>
+
 </html>
