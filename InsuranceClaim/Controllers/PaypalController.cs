@@ -452,11 +452,11 @@ namespace InsuranceClaim.Controllers
             objSaveDetailListModel.ProductId = product.Id;
 
             Insurance.Service.PaymentInformationService objPaymentInformationService = new Insurance.Service.PaymentInformationService();
-            //objPaymentInformationService.Insert(objSaveDetailListModel);
+            objPaymentInformationService.Insert(objSaveDetailListModel);
 
             Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
-            objEmailService.SendPaymentConfirmationEmail("Payment trasacted successfully", "Payment Confirmation", "ankit.dhiman@kindlebit.com", "");
-            objEmailService.SendAccountCreationEmail("Account Created successfully", "Account Creation", "ankit.dhiman@kindlebit.com", "");           
+            //objEmailService.SendEmail("ankit.dhiman@kindlebit.com", "testing1.kindlebit@gmail.com", "", "", "Payment Confirmation", "test body", null, false);
+            //objEmailService.SendAccountCreationEmail("Account Created successfully", "Account Creation", "ankit.dhiman@kindlebit.com", "");           
 
 
             return View(objSaveDetailListModel);
