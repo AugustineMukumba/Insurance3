@@ -492,12 +492,20 @@ namespace InsuranceClaim.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveDeleverLicence(bool IsCheck,int Id)
+        public ActionResult SaveDeleverLicence(bool IsCheck, int Id)
         {
-            var paymentInformations = InsuranceContext.PaymentInformations.SingleCustome(Id);
-            paymentInformations.DeleverLicence = IsCheck;
-            InsuranceContext.PaymentInformations.Update(paymentInformations);
-            return Json(true, JsonRequestBehavior.AllowGet);
+            try
+            {
+                var paymentInformations = InsuranceContext.PaymentInformations.SingleCustome(Id);
+                paymentInformations.DeleverLicence = IsCheck;
+                InsuranceContext.PaymentInformations.Update(paymentInformations);
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+
         }
     }
 }
