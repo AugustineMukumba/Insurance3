@@ -496,6 +496,7 @@ namespace InsuranceClaim.Controllers
             // }
             if (paymentInformations == null)
             {
+
                 InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
                 Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
                 string emailTemplatePath = "/Views/Shared/EmaiTemplates/UserRegisteration.cshtml";
