@@ -175,14 +175,17 @@ namespace InsuranceClaim.Controllers
             //pymnt.payer = payr;
             //pymnt.transactions = transactions;
 
-            var _Amount = "99";
+
+
 
             Item item = new Item();
-            item.name = "foo";
-            item.currency = "USD";
-            item.price = _Amount;
+            item.name = product.ProductName;
+            item.currency = currency.Name;
+            item.price = totalPremium.ToString() + zeros;
             item.quantity = "1";
-            item.sku = "fooSku";
+            item.sku = "sku";
+
+
 
             List<Item> itms = new List<Item>();
             itms.Add(item);
@@ -190,31 +193,45 @@ namespace InsuranceClaim.Controllers
             itemList.items = itms;
 
             Address billingAddress = new Address();
-            billingAddress.city = "San Mateo";
+            billingAddress.city = customer.City;
             billingAddress.country_code = "US";
-            billingAddress.line1 = "SO TEST";
-            billingAddress.line2 = "";
-            billingAddress.postal_code = "94002";
-            billingAddress.state = "CA";
+            billingAddress.line1 = customer.AddressLine1 == string.Empty ? customer.AddressLine2 : customer.AddressLine1;
+            billingAddress.line2 = customer.AddressLine2 == string.Empty ? customer.AddressLine1 : customer.AddressLine2;
+            billingAddress.postal_code = customer.Zipcode;
+            billingAddress.state = customer.State;
 
             PayPal.Api.CreditCard crdtCard = new PayPal.Api.CreditCard();
             crdtCard.billing_address = billingAddress;
-            crdtCard.cvv2 = "123";
-            crdtCard.expire_month = 1;
-            crdtCard.expire_year = 2022;
-            crdtCard.first_name = "Stack";
-            crdtCard.last_name = "Overflow";
-            crdtCard.number = "4012888888881881"; //use some other test number if it fails
-            crdtCard.type = "visa";
+            crdtCard.cvv2 = model.CVC;
+            crdtCard.expire_month = Convert.ToInt32(model.ExpiryDate.Split('/')[0]);
+            crdtCard.expire_year = Convert.ToInt32(model.ExpiryDate.Split('/')[1]);
+
+            //crdtCard.first_name = "fgdfg";
+            //crdtCard.last_name = "rffd";
+
+            var name = model.NameOnCard.Split(' ');
+            if (name.Length == 1)
+            {
+                crdtCard.first_name = name[0];
+                crdtCard.last_name = null;
+            }
+            if (name.Length == 2)
+            {
+                crdtCard.first_name = name[0];
+                crdtCard.last_name = name[1];
+            }
+
+            crdtCard.number = model.CardNumber; //use some other test number if it fails
+            crdtCard.type = CreditCardUtility.GetTypeName(model.CardNumber).ToLower();
 
             Details details = new Details();
             details.tax = "0";
             details.shipping = "0";
-            details.subtotal = _Amount;
+            details.subtotal = totalPremium.ToString() + zeros;
 
             Amount amont = new Amount();
             amont.currency = "USD";
-            amont.total = _Amount;
+            amont.total = totalPremium.ToString() + zeros;
             amont.details = details;
 
             Transaction tran = new Transaction();
@@ -231,19 +248,24 @@ namespace InsuranceClaim.Controllers
             List<FundingInstrument> fundingInstrumentList = new List<FundingInstrument>();
             fundingInstrumentList.Add(fundInstrument);
 
+
+
+            var User = UserManager.FindById(customer.UserID);
             PayerInfo pi = new PayerInfo();
-            pi.email = "noemail@noemail.com";
-            pi.first_name = "Stack";
-            pi.last_name = "Overflow";
+            pi.email = User.Email;
+            pi.first_name = customer.FirstName;
+            pi.last_name = customer.LastName;
             pi.shipping_address = new ShippingAddress
             {
-                city = "San Mateo",
+                city = customer.City,
                 country_code = "US",
-                line1 = "SO TEST",
-                line2 = "",
-                postal_code = "94002",
-                state = "CA",
+                line1 = customer.AddressLine1 == string.Empty ? customer.AddressLine2 : customer.AddressLine1,
+                line2 = customer.AddressLine2 == string.Empty ? customer.AddressLine1 : customer.AddressLine2,
+                postal_code = customer.Zipcode,
+                state = customer.State,
             };
+
+
 
             Payer payr = new Payer();
             payr.funding_instruments = fundingInstrumentList;
