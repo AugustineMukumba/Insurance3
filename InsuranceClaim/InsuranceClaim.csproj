@@ -224,6 +224,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\style.css" />
+    <Content Include="Content\toastr.css" />
     <Content Include="CustomerRegistration\PaymentDetail\images\amex.png" />
     <Content Include="CustomerRegistration\PaymentDetail\images\diners.png" />
     <Content Include="CustomerRegistration\PaymentDetail\images\discover.png" />
@@ -285,6 +286,7 @@
     <Content Include="Scripts\npm.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\toastr.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -344,6 +346,7 @@
     <Content Include="Views\VehicleUsage\VehicalUsageList.cshtml" />
     <Content Include="Views\VehicleUsage\EditVehicalUsege.cshtml" />
     <Content Include="Views\Paypal\SaveDetailList.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\UserRegisteration.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -428,5 +428,7 @@ namespace Insurance.Domain
         public string DebitNote { get; set; }
         public int ProductId { get; set; }
         public bool DeleverLicence { get; set; }
+        public string PaymentId { get; set; }
+        public string InvoiceId { get; set; }
     }
 }

@@ -46,6 +46,8 @@ namespace InsuranceClaim.Controllers
             var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
             var currency = InsuranceContext.Currencies.Single(policy.CurrencyId);
 
+            var paymentInformations = InsuranceContext.PaymentInformations.SingleCustome(model.SummaryDetailId);
+
             double totalPremium = Convert.ToDouble(summaryDetail.TotalPremium);
             var term = summaryDetail.PaymentTermId;
             if (term == Convert.ToInt32(ePaymentTerm.Monthly))
@@ -184,9 +186,9 @@ namespace InsuranceClaim.Controllers
             item.price = totalPremium.ToString() + zeros;
             item.quantity = "1";
             item.sku = "sku";
+            //item.currency = "USD";
 
-
-
+            Session["itemData"] = item;
             List<Item> itms = new List<Item>();
             itms.Add(item);
             ItemList itemList = new ItemList();
@@ -230,7 +232,7 @@ namespace InsuranceClaim.Controllers
             details.subtotal = totalPremium.ToString() + zeros;
 
             Amount amont = new Amount();
-            amont.currency = "USD";
+            amont.currency = currency.Name;
             amont.total = totalPremium.ToString() + zeros;
             amont.details = details;
 
@@ -291,9 +293,11 @@ namespace InsuranceClaim.Controllers
                 // Create is a Payment class function which actually sends the payment details to the paypal API for the payment. The function is passed with the ApiContext which we received above.
 
                 Payment createdPayment = pymnt.Create(apiContext);
+                //paymentInformations.PaymentTransctionId = createdPayment.id;
+                Session["PaymentId"] = createdPayment.id;
 
                 //if the createdPayment.State is "approved" it means the payment was successfull else not
-
+                creatInvoice(User, customer);
                 if (createdPayment.state.ToLower() != "approved")
                 {
                     ModelState.AddModelError("PaymentError", "Payment not approved");
@@ -309,7 +313,88 @@ namespace InsuranceClaim.Controllers
 
             return RedirectToAction("SaveDetailList", "Paypal", new { id = model.SummaryDetailId });
         }
+        private ActionResult creatInvoice(ApplicationUser User, Customer customer)
+        {
+            APIContext apiContext = Configuration.GetAPIContext();
 
+            var data = (Item)Session["itemData"];
+
+            var invoice = new Invoice()
+            {
+
+                merchant_info = new MerchantInfo()
+                {
+                    email = "ankit.dhiman-facilitator@kindlebit.com",
+                    first_name = "Genetic Financial Services",
+                    last_name = "11 Routledge Street Milton Park",
+                    business_name = "Insurance Claim",
+                    website = "insuranceclaim.com",
+                    //tax_id = "47-4559942",
+
+                    phone = new Phone()
+                    {
+                        country_code = "001",
+                        national_number = "08677007491"
+                    },
+                    address = new InvoiceAddress()
+                    {
+                        line1 = customer.AddressLine1,
+                        city = customer.AddressLine2,
+                        state = customer.City + ", " + customer.State,
+                        postal_code = customer.Zipcode,
+                        country_code = "US"
+
+                    }
+                },
+
+                billing_info = new List<BillingInfo>()
+                            {
+                                new BillingInfo()
+                                {
+
+                                    email = User.Email,//"amit.kamal@kindlebit.com",
+                                    first_name=customer.FirstName,
+                                    last_name=customer.LastName
+                                }
+                            },
+
+                items = new List<InvoiceItem>()
+                            {
+                                new InvoiceItem()
+                                {
+                                    name = data.name,
+                                    quantity = 1,
+                                    unit_price = new PayPal.Api.Currency()
+                                    {
+                                        currency = "USD",
+                                        value =data.price
+
+                                    },
+                                },
+                            },
+                note = "Your  Invoce has been created successfully.",
+
+                shipping_info = new ShippingInfo()
+                {
+                    first_name = customer.FirstName,
+                    last_name = customer.LastName,
+                    business_name = "InsuranceClaim",
+                    address = new InvoiceAddress()
+                    {
+                        //line1 = userdata.State.ToString(),
+                        city = customer.City,
+                        state = customer.State,
+                        postal_code = customer.Zipcode,
+                        country_code = "US"
+                    }
+                }
+            };
+            var createdInvoice = invoice.Create(apiContext);
+            Session["InvoiceId"] = createdInvoice.id;
+            createdInvoice.Send(apiContext);
+
+            return null;
+        }
         public ActionResult PaymentWithPaypal()
         {
             //getting the apiContext as earlier
@@ -468,7 +553,8 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult SaveDetailList(Int32 id)
         {
-
+            var PaymentId = Session["PaymentId"];
+            var InvoiceId = Session["InvoiceId"];
             var summaryDetail = InsuranceContext.SummaryDetails.Single(id);
             var vehicle = InsuranceContext.VehicleDetails.Single(summaryDetail.VehicleDetailId);
             var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
@@ -487,6 +573,8 @@ namespace InsuranceClaim.Controllers
             objSaveDetailListModel.SummaryDetailId = id;
             objSaveDetailListModel.DebitNote = summaryDetail.DebitNote;
             objSaveDetailListModel.ProductId = product.Id;
+            objSaveDetailListModel.PaymentId = PaymentId == null ? "" : PaymentId.ToString();
+            objSaveDetailListModel.InvoiceId = InvoiceId == null ? "" : InvoiceId.ToString();
 
             // Insurance.Service.PaymentInformationService objPaymentInformationService = new Insurance.Service.PaymentInformationService();
             //var isExist= objPaymentInformationService.GetById(id);
@@ -515,7 +603,7 @@ namespace InsuranceClaim.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveDeleverLicence(bool IsCheck,int Id)
+        public ActionResult SaveDeleverLicence(bool IsCheck, int Id)
         {
             try
             {
@@ -529,7 +617,7 @@ namespace InsuranceClaim.Controllers
 
                 throw;
             }
-     
+
         }
     }
 }

@@ -1,12 +1,16 @@
 ﻿$(document).ready(function () {
 })
 
-function GoToProductDetail(json) { 
-    if (json == true) {
+function GoToProductDetail(json) {
+    debugger
+    if (json.IsError == true) {
         window.location.href = '/CustomerRegistration/ProductDetail';
     }
     else {
-
+        var errorMessage = json.error;
+        if (errorMessage != null && errorMessage != '') {
+            toastr.error(errorMessage)
+        }
     }
 }
 
@@ -16,7 +20,7 @@ function GoToRiskDetail(json) {
         window.location.href = '/CustomerRegistration/RiskDetail/' + json.Id;
     }
     else {
-        alert(json.Message);
+        toastr.error(json.Message);
     }
 }
 

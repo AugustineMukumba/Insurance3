@@ -395,7 +395,7 @@
                 $("#StampDuty").val(data.StamDuty);
                 $("#ZTSCLevy").val(data.ZtscLevy);
                 if (data.Status == false) {
-                    alert(data.Message);
+                    toastr.warning(data.Message);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
