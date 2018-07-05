@@ -344,6 +344,7 @@
     <Content Include="Views\VehicleUsage\VehicalUsageList.cshtml" />
     <Content Include="Views\VehicleUsage\EditVehicalUsege.cshtml" />
     <Content Include="Views\Paypal\SaveDetailList.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\UserRegisteration.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
