@@ -20,11 +20,14 @@ namespace InsuranceClaim.Models
         [MaxLength(25,ErrorMessage ="Policy number must be less than 25 characters long.")]
         public string PolicyNumber { get; set; }
         public int? InsurerId { get; set; }
+        [Required(ErrorMessage = "Please Select policy Term.")]
+        public int? PaymentTermId { get; set; }
         public int PolicyStatusId { get; set; }
         public int CurrencyId { get; set; }
         [Display(Name ="Start Date")]
         [Required(ErrorMessage ="Please enter policy start date")]        
         public DateTime? StartDate { get; set; }
+        [Required(ErrorMessage = "Please enter policy End date.")]
         public DateTime? EndDate { get; set; }
         public DateTime? RenewalDate { get; set; }
         public DateTime? TransactionDate { get; set; }
@@ -34,5 +37,6 @@ namespace InsuranceClaim.Models
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
         public bool? IsActive { get; set; }
+        public int PolicyTerm { get; set; }
     }
 }

@@ -1,0 +1,8 @@
+packages/
+*/bin
+*/obj
+/.vs/WorryFree/v15/Server/sqlite3
+/WorryFree/Properties/PublishProfiles
+/.vs/ProjectSettings.json
+/.vs/slnx.sqlite
+/.vs/VSWorkspaceState.json

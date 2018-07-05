@@ -99,9 +99,15 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12 form-group-select">
+                                    <div class="col-md-6 form-group-select">
                                         <div class="form-group">
                                             @Html.DropDownListFor(x => x.CurrencyId, new SelectList(ViewBag.Currency, "Id", "Name"), new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 form-group-select">
+                                        <div class="form-group">
+                                            @Html.DropDownListFor(x => x.PaymentTermId, ViewBag.ePaymentTermData as SelectList, "Select Payment Term", new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(x => x.PaymentTermId, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                 </div>
@@ -127,6 +133,7 @@
                                                     <span class="glyphicon glyphicon-calendar"></span>
                                                 </span>
                                             </div>
+                                            @Html.ValidationMessageFor(x => x.EndDate, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                 </div>
@@ -146,7 +153,7 @@
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                            <div class='input-group date' id='datetimepicker4'>
+                                            <div class='input-group' id='datetimepicker4'>
                                                 @Html.TextBoxFor(x => x.TransactionDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Transaction/Effective Date" })
                                                 <span class="input-group-addon">
                                                     <span class="glyphicon glyphicon-calendar"></span>
@@ -193,7 +200,7 @@
 
 @*<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
-<link href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">*@
+    <link href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">*@
 
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
@@ -201,17 +208,70 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
 <![endif]-->
 @*<script type="text/javascript" src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="~/Scripts/CustomerRegistration/CustomerRegistration.js"></script>
-<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
-<script src="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>*@
+    <script src="~/Scripts/CustomerRegistration/CustomerRegistration.js"></script>
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+    <script src="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>*@
 
 
-@*<script type="text/javascript">
-    $(function () { // will trigger when the document is ready
-        $('#datetimepicker1,#datetimepicker2,#datetimepicker3,#datetimepicker4').datetimepicker({
-            format: 'MM/D/YYYY'
+<script type="text/javascript">
+    var today;
+
+    function setPolicyEndDate(numberOfMonth) {
+        today = new Date();
+        today.setMonth(today.getMonth() + numberOfMonth);
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        var today = dd + '/' + mm + '/' + yyyy;
+        $("#EndDate").val(today);
+    }
+
+    $(document).ready(function () { // will trigger when the document is ready
+        today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        var today = dd + '/' + mm + '/' + yyyy;
+
+        $("#StartDate").val(today);
+        $("#TransactionDate").val(today).css("background-color", "lightgray");
+
+
+        $("#PaymentTermId").change(function () {
+
+            var selectedTerm = $("#PaymentTermId option:selected").val();
+            debugger;
+            switch (parseInt(selectedTerm)) {
+                case 1:
+                    setPolicyEndDate(12);
+                    break;
+                case 2:
+                    setPolicyEndDate(4)
+                    break;
+                case 3:
+                    setPolicyEndDate(3);
+                    break;
+                case 4:
+                    setPolicyEndDate(1);
+                    break;
+            }
+
         });
 
     });
-</script>*@
+</script>

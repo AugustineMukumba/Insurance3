@@ -1,10 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{ 
+    Layout = null;
+}
 
-@*@{
-    var ErrorMessage = TempData["ErrorMessage"];
-    var SuccessMessage = TempData["SuccessMessage"];
-    var WarningMessage = TempData["WarningMessage"];
-}*@
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -13,7 +11,6 @@
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <link href="~/Content/style.css" rel="stylesheet" />
     <link href="~/Content/font-awesome.css" rel="stylesheet" />
-    <link href="~/Content/toastr.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -31,7 +28,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
     <script src="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-    <script src="~/Scripts/toastr.js"></script>
+
     <link href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
     <style>
         .input-group-addon {
@@ -57,7 +54,7 @@
                                 </div>
                                 <div class="login-btn">
                                     <ul class="list-inline">
-                                        <li><a href="">Login</a></li>
+                                        <li><a href="/Account/Login">Login</a></li>
                                         <li><a href="">Register</a></li>
                                     </ul>
                                 </div>
@@ -167,28 +164,18 @@
         </div>
     </div>
     <script>
-        //var errorMessage = $('#ErrorMessage').val();
-        //if (errorMessage != null && errorMessage != '') {
-        //    toastr.error(errorMessage)
-        //}
-        //var successMessage = $('#SuccessMessage').val();
-        //if (successMessage != null && successMessage != '') {
-        //    toastr.success(successMessage)
-        //}
-        //var warningMessage = $('#WarningMessage').val();
-        //if (warningMessage != null && warningMessage != '') {
-        //    toastr.warning(warningMessage)
-        //}
+
         $(document).ready(function () { // will trigger when the document is ready
             debugger;
-            $('.date input').keypress(function () {
-                return false;
-            });
+    
+            //$('.date input').keypress(function () { 
+            //    return false;
+            
+            //});
+
             $('.date').datetimepicker({
                 format: 'MM/D/YYYY',
             })
-
-          
         });
 
     </script>

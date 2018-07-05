@@ -79,6 +79,7 @@ namespace InsuranceClaim.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    returnUrl = "/CustomerRegistration/ProductDetail";
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");

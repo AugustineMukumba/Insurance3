@@ -68,10 +68,10 @@
                         <div class="choose-plan">
                             <div class="row">
                                 <div class="col-sm-12 col-md-12 choose-plan-heading">
-                                    <h4>Choose your plan</h4>
+                                    <h4>Your plan</h4>
                                 </div>
                                 <div class="Choose-sections">
-                                    <div class="col-sm-3 col-md-3 choose-plan-blocl">
+                                    <div class="col-sm-3 col-md-3 choose-plan-blocl" style="@(Convert.ToString(Session["policytermid"]) == "1" ? "display:block;" : "display:none;")">
                                         <div class="choose-plan-box active" planpurchase="1" style="cursor:pointer" onclick="SelectPlan(this);">
                                             <h4>Annual</h4>
                                             <div class="plan-white-box">
@@ -81,7 +81,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-3 col-md-3 choose-plan-blocl">
+                                    <div class="col-sm-3 col-md-3 choose-plan-blocl" style="@(Convert.ToString(Session["policytermid"]) == "2" ? "display:block;" : "display:none;")">
                                         <div class="choose-plan-box" planpurchase="2" style="cursor:pointer" onclick="SelectPlan(this);">
                                             <h4>Quarterly</h4>
                                             <div class="plan-white-box">
@@ -91,7 +91,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-3 col-md-3 choose-plan-blocl">
+                                    <div class="col-sm-3 col-md-3 choose-plan-blocl" style="@(Convert.ToString(Session["policytermid"]) == "3" ? "display:block;" : "display:none;")">
                                         <div class="choose-plan-box" planpurchase="3" style="cursor:pointer" onclick="SelectPlan(this);">
                                             <h4>Termly</h4>
                                             <div class="plan-white-box">
@@ -101,7 +101,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-3 col-md-3 choose-plan-blocl">
+                                    <div class="col-sm-3 col-md-3 choose-plan-blocl" style="@(Convert.ToString(Session["policytermid"]) == "4" ? "display:block;" : "display:none;")">
                                         <div class="choose-plan-box" planpurchase="4" style="cursor:pointer" onclick="SelectPlan(this);">
                                             <h4>Monthly</h4>
                                             <div class="plan-white-box">

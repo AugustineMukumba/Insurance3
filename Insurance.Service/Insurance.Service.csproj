@@ -50,6 +50,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuoteLogic.cs" />
     <Compile Include="RiskDetailService.cs" />
+    <Compile Include="smsService.cs" />
     <Compile Include="SummaryDetailService.cs" />
     <Compile Include="VehicleService.cs" />
   </ItemGroup>

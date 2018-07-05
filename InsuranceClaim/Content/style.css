@@ -242,6 +242,37 @@ button.btn-sm.btn-danger {
         top: 100%;
         font-size: 12px;
     }
+
+
+    .login-block {
+    max-width: 400px;
+    width: 100%;
+    margin: 50px auto 50px;
+    background: #f2f2f2;
+    border: 1px solid #ddd;
+    padding: 15px;
+}
+
+.login-block label.control-label {
+    text-align: left;
+}
+
+.login-block .form-group input{height:40px; border-radius:0;}
+.login-block .form-group input[type="checkbox"]{height:auto; margin-left:0;}
+
+.login-sbt-btn input[type="submit"] {
+    background: #16909d;
+    color: #fff;
+    border-color: #16909d;
+    padding: 0 30px;
+}
+.login-block h4 {
+    text-align: center;
+    font-weight: bold;
+}
+.login-title{margin:50px 0 0}
+.login-title h2{text-transform:uppercase; color:#000; text-align:center; font-weight:bold; font-size:27px;}
+.register-link{text-align:center;}
 /**15 june css end**/
 
 @media(max-width:767px){
