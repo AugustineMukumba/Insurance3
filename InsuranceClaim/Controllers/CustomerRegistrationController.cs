@@ -40,7 +40,7 @@ namespace InsuranceClaim.Controllers
         }
 
         public ActionResult ProductDetail()
-        {           
+        {
 
             var InsService = new InsurerService();
             ViewBag.Currency = InsuranceContext.Currencies.All().ToList();
@@ -139,7 +139,7 @@ namespace InsuranceClaim.Controllers
         public ActionResult SummaryDetail(int id)
         {
             SummaryDetailService SummaryDetailServiceObj = new SummaryDetailService();
-            
+
             var model = new SummaryDetailModel();
             var summary = new SummaryDetailService();
             var vehicle = summary.GetVehicleInformation(id);
@@ -192,17 +192,17 @@ namespace InsuranceClaim.Controllers
                         var customer = Mapper.Map<CustomerModel, Customer>(model);
                         InsuranceContext.Customers.Insert(customer);
                         Session["CustomerId"] = customer.Id;
-                        return Json(true, JsonRequestBehavior.AllowGet);
+                        return Json(new { IsError = true, error = "" }, JsonRequestBehavior.AllowGet);
                     }
+                    TempData["ErrorMessage"] = result.Errors.FirstOrDefault();
                 }
                 catch (Exception ex)
                 {
-
-                    return Json(false, JsonRequestBehavior.AllowGet);
+                    return Json(new { IsError = false, error = ex.Message }, JsonRequestBehavior.AllowGet);
                 }
 
             }
-            return Json(false, JsonRequestBehavior.AllowGet);
+            return Json(new { IsError = false, error = TempData["ErrorMessage"].ToString() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -220,27 +220,40 @@ namespace InsuranceClaim.Controllers
                 var endDate = Request.Form["EndDate"];
                 var renewDate = Request.Form["RenewalDate"];
                 var transactionDate = Request.Form["TransactionDate"];
-                if (startDate != null)
+                if (startDate != null && startDate != "")
                 {
                     model.StartDate = Convert.ToDateTime(startDate, usDtfi);
                 }
-                if (endDate != null)
+                if (endDate != null && endDate != "")
                 {
                     model.EndDate = Convert.ToDateTime(endDate, usDtfi);
                 }
-                if (renewDate != null)
+                if (renewDate != null && renewDate != "")
                 {
                     model.RenewalDate = Convert.ToDateTime(renewDate, usDtfi);
                 }
-                if (transactionDate != null)
+                if (transactionDate != null && transactionDate != "")
                 {
                     model.TransactionDate = Convert.ToDateTime(transactionDate, usDtfi);
                 }
 
                 var policy = Mapper.Map<PolicyDetailModel, PolicyDetail>(model);
                 policy.CustomerId = Session["CustomerId"] == null ? 0 : Convert.ToInt32(Session["CustomerId"]);
-                InsuranceContext.PolicyDetails.Insert(policy);
+                if (Session["PolicyId"].ToString() != "")
+                {
+                    var id = Convert.ToInt32(Session["PolicyId"].ToString());
+                    //var data = InsuranceContext.PolicyDetails.Single(Convert.ToInt32(id));
+                    policy.Id = id;
+
+                    InsuranceContext.PolicyDetails.Update(policy);
+
+                }
+                else
+                {
+                    InsuranceContext.PolicyDetails.Insert(policy);
+                }
                 response.Id = policy.Id;
+                Session["PolicyId"] = policy.Id;
                 response.Message = "Success";
                 response.Status = true;
                 json.Data = response;
@@ -280,8 +293,22 @@ namespace InsuranceClaim.Controllers
             {
                 var policy = TempData["Policy"] as PolicyDetail;
                 model.CustomerId = policy.CustomerId;
-                var Id = service.AddVehicleInformation(model);
-                return RedirectToAction("SummaryDetail", new { id = Id });
+                if (Session["VehicalId"] == null)
+                {
+                    var Id = service.AddVehicleInformation(model);
+                    Session["VehicalId"] = Id;
+                }
+                else
+                {
+                    var id = Convert.ToInt32(Session["VehicalId"]);
+
+                    var vehical = Mapper.Map<RiskDetailModel, VehicleDetail>(model);
+                    //var data = InsuranceContext.VehicleDetails.Single(id);
+                    vehical.Id = id;
+                    InsuranceContext.VehicleDetails.Update(vehical);
+                }
+
+                return RedirectToAction("SummaryDetail", new { id = Session["VehicalId"].ToString() });
             }
 
             return View("RiskDetail");
@@ -298,6 +325,6 @@ namespace InsuranceClaim.Controllers
             InsuranceContext.SummaryDetails.Insert(DbEntry);
             return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
         }
-      
+
     }
 }
