@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{ 
+    Layout = null;
+}
+
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -50,7 +54,7 @@
                                 </div>
                                 <div class="login-btn">
                                     <ul class="list-inline">
-                                        <li><a href="">Login</a></li>
+                                        <li><a href="/Account/Login">Login</a></li>
                                         <li><a href="">Register</a></li>
                                     </ul>
                                 </div>
@@ -164,10 +168,10 @@
         $(document).ready(function () { // will trigger when the document is ready
             debugger;
     
-            $('.date input').keypress(function () { 
-                return false;
+            //$('.date input').keypress(function () { 
+            //    return false;
             
-            });
+            //});
 
             $('.date').datetimepicker({
                 format: 'MM/D/YYYY',

@@ -73,6 +73,17 @@ namespace InsuranceClaim.Controllers
                 ViewBag.InsurerId = objCustomerData.FirstOrDefault().Id;
                 ViewBag.InsurerName = objCustomerData.FirstOrDefault().FirstName;
             }
+
+            var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm))
+                           select new
+                           {
+                               ID = (int)e,
+                               Name = e.ToString()
+                           };            
+
+            ViewBag.ePaymentTermData = new SelectList(ePaymentTermData, "ID", "Name");
+
+
             return View();
         }
 
@@ -197,6 +208,9 @@ namespace InsuranceClaim.Controllers
         [HttpPost]
         public JsonResult SavePolicyData(PolicyDetailModel model)
         {
+
+            Session["policytermid"] = model.PaymentTermId;
+
             JsonResult json = new JsonResult();
             var response = new Response();
             try
@@ -278,6 +292,7 @@ namespace InsuranceClaim.Controllers
             var vehicle = TempData["VehicleDetail"] as VehicleDetail;
 
             var DbEntry = Mapper.Map<SummaryDetailModel, SummaryDetail>(model);
+            DbEntry.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
             DbEntry.VehicleDetailId = vehicle.Id;
             DbEntry.CustomerId = vehicle.CustomerId;
             InsuranceContext.SummaryDetails.Insert(DbEntry);
