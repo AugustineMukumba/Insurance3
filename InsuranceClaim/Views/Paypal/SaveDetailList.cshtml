@@ -88,25 +88,18 @@
         </div>*@
 </div>
 <script>
-    function saveAndRedirect(){
-
-     debugger
-        //if($(this).is(":checked")) {
-        //    var returnVal = confirm("Are you sure?");
-        //    $(this).attr("checked", returnVal);
-        //}
-       var isCheck=$(this).is(':checked');
-      var id= "@Model.SummaryDetailId"
-       $.ajax({
-       url:"/Paypal/SaveDeleverLicence",
-       method:"post",
-       data:{IsCheck:isCheck,Id:id},
-       success:function(data){
-       if(data==true){
-       window.location.href="/InsuranceHome/Index"
-       }
-       }
-
-    })}
-
+    function saveAndRedirect() {
+        var isCheck = $(this).is(':checked');
+        var id = "@Model.SummaryDetailId"
+        $.ajax({
+            url: "/Paypal/SaveDeleverLicence",
+            method: "post",
+            data: { IsCheck: isCheck, Id: id },
+            success: function (data) {
+                if (data == true) {
+                    window.location.href = "/InsuranceHome/Index"
+                }
+            }
+        })
+    }
 </script>

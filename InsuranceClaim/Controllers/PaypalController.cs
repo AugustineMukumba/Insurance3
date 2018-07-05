@@ -515,7 +515,7 @@ namespace InsuranceClaim.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveDeleverLicence(bool IsCheck, int Id)
+        public ActionResult SaveDeleverLicence(bool IsCheck,int Id)
         {
             try
             {
@@ -526,9 +526,10 @@ namespace InsuranceClaim.Controllers
             }
             catch (Exception)
             {
-                return Json(false, JsonRequestBehavior.AllowGet);
-            }
 
+                throw;
+            }
+     
         }
     }
 }
