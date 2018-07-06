@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using InsuranceClaim.Models;
+using Insurance.Domain;
 
 namespace InsuranceClaim.Controllers
 {
@@ -79,8 +80,8 @@ namespace InsuranceClaim.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    returnUrl = "/CustomerRegistration/ProductDetail";
-                    return RedirectToLocal(returnUrl);
+                    var customer = InsuranceContext.Customers.All(where: $"UserId ='{User.Identity.GetUserId().ToString()}'").FirstOrDefault();
+                    return RedirectToAction("index", "CustomerRegistration", new { id = customer.Id });
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
