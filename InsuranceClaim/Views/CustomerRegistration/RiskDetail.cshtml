@@ -108,7 +108,7 @@
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
 
-                                                @Html.TextBoxFor(m => m.CubicCapacity, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cubic Capacity", @maxlength = "3" })
+                                                @Html.TextBoxFor(m => m.CubicCapacity, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cubic Capacity", @maxlength = "4" })
                                                 @Html.ValidationMessageFor(m => m.CubicCapacity, "", new { @class = "text-danger" })
                                                 @*@Html.ValidationMessageFor(m => m.CubicCapacity, "", new { @class = "text-danger" })*@
                                             </div>
@@ -213,11 +213,13 @@
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.TextBoxFor(m => m.StampDuty, new { @class = "form-control", @autocomplete = "off", @placeholder = "Stamp Duty", @readonly = "readonly" })
+                                                @Html.ValidationMessageFor(m => m.StampDuty, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.TextBoxFor(m => m.ZTSCLevy, new { @class = "form-control", @autocomplete = "off", @placeholder = "ZTSC Levy", @readonly = "readonly" })
+                                                @Html.ValidationMessageFor(m => m.ZTSCLevy, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
@@ -226,12 +228,14 @@
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.TextBoxFor(m => m.RadioLicenseCost, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Radio Licence Cost", @maxlength = "5" })
+                                                @Html.ValidationMessageFor(m => m.RadioLicenseCost, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
 
                                                 @Html.TextBoxFor(m => m.OptionalCovers, new { @class = "form-control", @autocomplete = "off", @placeholder = "Additional/Optional Covers", @maxlength = "5" })
+                                                @Html.ValidationMessageFor(m => m.OptionalCovers, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
@@ -257,7 +261,8 @@
                                             <div class="row">
                                                 <div class="col-sm-6 col-md-6">
                                                     <div class="text-left">
-                                                        <div class="back-left"><button type="submit" class="btn">Back</button></div>
+                                                        <div class="back-left"><button type="button" onclick="gotoPeriviouse()" class="btn">Back</button></div>
+                                                        <a style="display:none" id="previouselink" href="/CustomerRegistration/ProductDetail?Id=@Session["PolicyId"]" class="back"></a>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6 col-md-6">
@@ -280,7 +285,12 @@
         </div>
     </div>
 </div>
+<script>
+    function gotoPeriviouse() {
+        $("#previouselink")[0].click();
 
+    }
+</script>
 @*<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
 <link href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">*@

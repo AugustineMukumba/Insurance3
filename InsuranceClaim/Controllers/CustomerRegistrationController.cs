@@ -34,12 +34,32 @@ namespace InsuranceClaim.Controllers
             }
         }
         // GET: CustomerRegistration
-        public ActionResult Index()
+        public ActionResult Index(int Id = 0)
         {
-            return View();
+            //var customerId = Session["CustomerId"];
+            var customerModel = new CustomerModel();
+            if (Id != 0)
+            {
+                var customer = InsuranceContext.Customers.Single(Id);
+                var User = UserManager.FindById(customer.UserID);
+                customerModel.AddressLine1 = customer.AddressLine1;
+                customerModel.AddressLine2 = customer.AddressLine2;
+                customerModel.City = customer.City;
+                customerModel.Id = customer.Id;
+                customerModel.Country = customer.Country;
+                customerModel.Zipcode = customer.Zipcode;
+                customerModel.Gender = customer.Gender;
+                customerModel.PhoneNumber = User.PhoneNumber;
+                customerModel.State = customer.State;
+                customerModel.DateOfBirth = customer.DateOfBirth;
+                customerModel.EmailAddress = User.Email;
+                customerModel.FirstName = customer.FirstName;
+                customerModel.LastName = customer.LastName;
+            }
+            return View(customerModel);
         }
 
-        public ActionResult ProductDetail()
+        public ActionResult ProductDetail(int Id = 0)
         {
 
             var InsService = new InsurerService();
@@ -75,16 +95,29 @@ namespace InsuranceClaim.Controllers
             }
 
             var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm))
-                           select new
-                           {
-                               ID = (int)e,
-                               Name = e.ToString()
-                           };            
+                                   select new
+                                   {
+                                       ID = (int)e,
+                                       Name = e.ToString()
+                                   };
 
             ViewBag.ePaymentTermData = new SelectList(ePaymentTermData, "ID", "Name");
-
-
-            return View();
+            var model = new PolicyDetailModel();
+            if (Id != 0)
+            {
+                var data = InsuranceContext.PolicyDetails.Single(Id);
+                model.EndDate = data.EndDate;
+                model.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
+                model.StartDate = data.StartDate;
+                model.PolicyName = data.PolicyName;
+                model.RenewalDate = data.RenewalDate;
+                model.RenewalDate = data.RenewalDate;
+                model.PolicyNumber = data.PolicyNumber;
+                model.PolicyStatusId = data.PolicyStatusId;
+                model.BusinessSourceId = data.BusinessSourceId;
+                model.CurrencyId = data.CurrencyId;
+            }
+            return View(model);
         }
 
         public ActionResult RiskDetail(int id)
@@ -103,8 +136,47 @@ namespace InsuranceClaim.Controllers
             {
                 var model = service.GetModel(makers.FirstOrDefault().MakeCode);
                 ViewBag.Model = model;
+
             }
             service = null;
+            if (id != 0)
+            {
+                var data = InsuranceContext.VehicleDetails.Single(id);
+                if (data != null)
+                {
+                    viewModel.AgentCommissionId = data.AgentCommissionId;
+                    viewModel.ChasisNumber = data.ChasisNumber;
+                    viewModel.CoverEndDate = data.CoverEndDate;
+                    viewModel.CoverNoteNo = data.CoverNoteNo;
+                    viewModel.CoverStartDate = data.CoverStartDate;
+                    viewModel.CoverTypeId = data.CoverTypeId;
+                    viewModel.CubicCapacity = (int)Math.Round(data.CubicCapacity.Value, 0);
+                    viewModel.CustomerId = data.CustomerId;
+                    viewModel.EngineNumber = data.EngineNumber;
+                    //viewModel.Equals = data.Equals;
+                    viewModel.Excess = (int)Math.Round(data.Excess, 0);
+                    viewModel.ExcessType = data.ExcessType;
+                    viewModel.MakeId = data.MakeId;
+                    viewModel.ModelId = data.ModelId;
+                    viewModel.NoOfCarsCovered = data.NoOfCarsCovered;
+                    viewModel.OptionalCovers = data.OptionalCovers;
+                    viewModel.PolicyId = data.PolicyId;
+                    viewModel.Premium = data.Premium;
+                    viewModel.RadioLicenseCost = (int)Math.Round(data.RadioLicenseCost == null ? 0 : data.RadioLicenseCost.Value, 0);
+                    viewModel.Rate = data.Rate;
+                    viewModel.RegistrationNo = data.RegistrationNo;
+                    viewModel.StampDuty = data.StampDuty;
+                    viewModel.SumInsured = (int)Math.Round(data.SumInsured == null ? 0 : data.SumInsured.Value, 0);
+                    viewModel.VehicleColor = data.VehicleColor;
+                    viewModel.VehicleUsage = data.VehicleUsage;
+                    viewModel.VehicleYear = data.VehicleYear;
+                    viewModel.ZTSCLevy = data.ZTSCLevy;
+                    var ser = new VehicleService();
+                    var model = ser.GetModel(data.MakeId);
+                    ViewBag.Model = model;
+
+                }
+            }
             return View(viewModel);
         }
         [HttpPost]
@@ -239,7 +311,7 @@ namespace InsuranceClaim.Controllers
 
                 var policy = Mapper.Map<PolicyDetailModel, PolicyDetail>(model);
                 policy.CustomerId = Session["CustomerId"] == null ? 0 : Convert.ToInt32(Session["CustomerId"]);
-                if (Session["PolicyId"]!= null)
+                if (Session["PolicyId"] != null)
                 {
                     var id = Convert.ToInt32(Session["PolicyId"].ToString());
                     //var data = InsuranceContext.PolicyDetails.Single(Convert.ToInt32(id));

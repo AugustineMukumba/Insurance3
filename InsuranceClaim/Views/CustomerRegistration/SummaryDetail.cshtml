@@ -180,7 +180,8 @@
                                             <div class="row">
                                                 <div class="col-sm-6 col-md-6">
                                                     <div class="text-left">
-                                                        <div class="back-left"><button type="submit" class="btn">Back</button></div>
+                                                        <div class="back-left"><button type="button" onclick="gotoPeriviouse()" class="btn">Back</button></div>
+                                                        <a style="display:none" id="previouselink" href="/CustomerRegistration/RiskDetail?Id=@Session["VehicalId"]" class="back"></a>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6 col-md-6">
@@ -204,9 +205,10 @@
 </div>
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script>
-    $(document).ready(function () {
+    function gotoPeriviouse() {
+        $("#previouselink")[0].click();
 
-    });
+    }
     function Replacable() {
         window.location.href = "@Url.Action("PaymentDetail", "CustomerRegistration")";
     }
