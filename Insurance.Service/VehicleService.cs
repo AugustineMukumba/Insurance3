@@ -34,10 +34,9 @@ namespace Insurance.Service
             var list = InsuranceContext.AgentCommissions.All().ToList();
             return list;
         }
-        public List<VehicleUsage> GetVehicleUsage(int policyId)
+        public List<VehicleUsage> GetVehicleUsage(string PolicyName)
         {
-            var policy = GetPolicy(policyId);
-            var list = InsuranceContext.VehicleUsages.All(where: $"ProductId='{policy.PolicyName}'").ToList();
+            var list = InsuranceContext.VehicleUsages.All(where: $"ProductId='{PolicyName}'").ToList();
             return list;
         }
         public PolicyDetail GetPolicy(int policyId)
