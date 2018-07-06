@@ -431,4 +431,15 @@ namespace Insurance.Domain
         public string PaymentId { get; set; }
         public string InvoiceId { get; set; }
     }
+
+    public partial class SmsLog : Entity<SmsLog>
+    {
+        public SmsLog() { }
+        public SmsLog(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public string Sendto { get; set; }
+        public string Body { get; set; }
+        public string Response { get; set; }
+
+    }
 }

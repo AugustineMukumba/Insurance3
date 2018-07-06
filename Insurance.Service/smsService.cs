@@ -11,7 +11,7 @@ namespace Insurance.Service
     public class smsService
     {      
 
-        public async Task<string> ApiCall(string numberTO)
+        public async Task<string> SendSMS(string numberTO,string body)
         {
 
             using (var client = new HttpClient())
@@ -31,7 +31,7 @@ namespace Insurance.Service
                 string destinations = numberTO;
 
                 // SMS Message to send
-                string message = "Testing C# to BulkSMS Webservice";
+                string message = body;
 
                 // send via BulkSMS HTTP API
 
