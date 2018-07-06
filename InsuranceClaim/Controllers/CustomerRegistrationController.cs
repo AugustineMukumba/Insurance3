@@ -239,7 +239,7 @@ namespace InsuranceClaim.Controllers
 
                 var policy = Mapper.Map<PolicyDetailModel, PolicyDetail>(model);
                 policy.CustomerId = Session["CustomerId"] == null ? 0 : Convert.ToInt32(Session["CustomerId"]);
-                if (Session["PolicyId"].ToString() != "")
+                if (Session["PolicyId"]!= null)
                 {
                     var id = Convert.ToInt32(Session["PolicyId"].ToString());
                     //var data = InsuranceContext.PolicyDetails.Single(Convert.ToInt32(id));

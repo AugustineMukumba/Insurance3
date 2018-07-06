@@ -591,6 +591,13 @@ namespace InsuranceClaim.Controllers
                 string EmailBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(emailTemplatePath));
                 var Body = EmailBody.Replace(" #PolicyNumber#", policy.PolicyNumber).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2);
                 objEmailService.SendEmail(user.Email, "", "", "Account Creation", Body, null);
+
+
+
+                string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserRegisterationEmail.cshtml";
+                string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
+                var Body2 = EmailBody2.Replace("#PayPalPaymetId#", Session["PaymentId"].ToString()).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2);
+                objEmailService.SendEmail(user.Email, "", "", "Payment", Body2, null);
             }
 
             return View(objSaveDetailListModel);
