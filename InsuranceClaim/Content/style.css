@@ -58,6 +58,7 @@ ol,ul{margin:0; padding:0; list-style:none;}
 .form-group-textarea .form-group {  margin-bottom: 30px;}
 
 .next-btn button{background:#16909d; padding:20px 0; width:200px; text-transform:uppercase; color:#fff; font-size:17px; font-weight:600}
+.back a{background:#16909d; padding:20px 0; width:200px; text-transform:uppercase; color:#fff; font-size:17px; font-weight:600}
 
 .outside {display: inline-block;position: absolute; left: 0;  top: 50%;  margin-top: -10px;  width:30px;  height:30px;  border: 2px solid #cdcdcd;  border-radius: 50%;
   -webkit-box-sizing: border-box;         box-sizing: border-box;  background: none;}

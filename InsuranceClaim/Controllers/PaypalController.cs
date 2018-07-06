@@ -182,7 +182,7 @@ namespace InsuranceClaim.Controllers
 
             Item item = new Item();
             item.name = product.ProductName;
-            item.currency = currency.Name;
+            item.currency = "USD";
             item.price = totalPremium.ToString() + zeros;
             item.quantity = "1";
             item.sku = "sku";
@@ -232,7 +232,7 @@ namespace InsuranceClaim.Controllers
             details.subtotal = totalPremium.ToString() + zeros;
 
             Amount amont = new Amount();
-            amont.currency = currency.Name;
+            amont.currency = "USD";
             amont.total = totalPremium.ToString() + zeros;
             amont.details = details;
 
@@ -592,11 +592,14 @@ namespace InsuranceClaim.Controllers
                 var Body = EmailBody.Replace(" #PolicyNumber#", policy.PolicyNumber).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2);
                 objEmailService.SendEmail(user.Email, "", "", "Account Creation", Body, null);
 
+                //var apiContext = Configuration.GetAPIContext();
 
 
-                string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserRegisterationEmail.cshtml";
+                var data = (Item)Session["itemData"];
+
+                string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentEmail.cshtml";
                 string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
-                var Body2 = EmailBody2.Replace("#PayPalPaymetId#", Session["PaymentId"].ToString()).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2);
+                var Body2 = EmailBody2.Replace("#PayPalPaymetId#", Session["PaymentId"].ToString()).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Make#",vehicle.MakeId).Replace("#Model#",vehicle.ModelId).Replace("#PolicyStartDate#",policy.StartDate.Value.ToString("dd/MM/yyyy")).Replace("#PolicyEndDate#", policy.EndDate.Value.ToString("dd/MM/yyyy")).Replace("#Quantity#", data.quantity).Replace("#Price#", data.price).Replace("#Amount#", data.price).Replace("#Subtotal#", data.price).Replace("#Discount#", "0.00").Replace("#Total#", data.price);
                 objEmailService.SendEmail(user.Email, "", "", "Payment", Body2, null);
             }
 
