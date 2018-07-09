@@ -10,6 +10,7 @@ using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace InsuranceClaim.Controllers
 {
@@ -38,6 +39,7 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult PaymentWithCreditCard(CardDetailModel model)
         {
+            Session["CardDetail"] = model;
             //create and item for which you are taking payment
             //if you need to add more items in the list
             //Then you will need to create multiple item objects or use some loop to instantiate object
@@ -314,10 +316,23 @@ namespace InsuranceClaim.Controllers
             {
                 Logger.Log("Error: " + ex.Message);
                 ModelState.AddModelError("PaymentError", ex.Message);
+                TempData["ErrorMessage"] = ex.Message;
+                JavaScriptSerializer json_serializer = new JavaScriptSerializer();
+
+               var error = json_serializer.DeserializeObject(((PayPal.ConnectionException)ex).Response);
                 return RedirectToAction("PaymentDetail", "CustomerRegistration", new { id = model.SummaryDetailId });
             }
 
             return RedirectToAction("SaveDetailList", "Paypal", new { id = model.SummaryDetailId });
+        }
+        class Test
+        {
+
+            String test;
+
+            String getTest() { return test; }
+            void setTest(String test) { this.test = test; }
+
         }
         private ActionResult creatInvoice(ApplicationUser User, Customer customer)
         {

@@ -469,7 +469,10 @@ namespace InsuranceClaim.Controllers
             DbEntry.VehicleDetailId = Id;
             DbEntry.CustomerId = vehicle.CustomerId;
             InsuranceContext.SummaryDetails.Insert(DbEntry);
-            return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
+            if (model.PaymentMethodId == 2)
+                return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id });
+            else
+                return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
         }
 
 
@@ -573,9 +576,13 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult PaymentDetail(int id)
         {
-            var model = new CardDetailModel();
-            model.SummaryDetailId = id;
-            return View(model);
+            var cardDetails = (CardDetailModel)Session["CardDetail"];
+            if (cardDetails == null)
+            {
+                cardDetails = new CardDetailModel();
+            }
+            cardDetails.SummaryDetailId = id;
+            return View(cardDetails);
         }
 
 
