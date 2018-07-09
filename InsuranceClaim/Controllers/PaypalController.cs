@@ -621,7 +621,7 @@ namespace InsuranceClaim.Controllers
 
                 string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentEmail.cshtml";
                 string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
-                var Body2 = EmailBody2.Replace("#PayPalPaymetId#", Session["PaymentId"].ToString()).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Make#", vehicle.MakeId).Replace("#Model#", vehicle.ModelId).Replace("#PolicyStartDate#", policy.StartDate.Value.ToString("dd/MM/yyyy")).Replace("#PolicyEndDate#", policy.EndDate.Value.ToString("dd/MM/yyyy")).Replace("#Quantity#", data.quantity).Replace("#Price#", data.price).Replace("#Amount#", data.price).Replace("#Subtotal#", data.price).Replace("#Discount#", "0.00").Replace("#Total#", data.price);
+                var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#AccountName#", customer.FirstName + ", " + customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Amount#", data.price).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Bank" : (summaryDetail.PaymentMethodId == 2 ? "Cash" : "Visa")));
                 objEmailService.SendEmail(user.Email, "", "", "Payment", Body2, null);
             }
 
