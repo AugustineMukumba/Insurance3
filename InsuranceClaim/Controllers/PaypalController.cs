@@ -623,6 +623,23 @@ namespace InsuranceClaim.Controllers
                 string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
                 var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#AccountName#", customer.FirstName + ", " + customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Amount#", data.price).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Bank" : (summaryDetail.PaymentMethodId == 2 ? "Cash" : "Visa")));
                 objEmailService.SendEmail(user.Email, "", "", "Payment", Body2, null);
+
+
+                string Summeryofcover = "";
+                for (int i = 0; i < vehicle.NoOfCarsCovered; i++)
+                {
+                    Summeryofcover += "<tr><td>" + vehicle.NoOfCarsCovered + "</td><td>" + vehicle.SumInsured + "</td><td>" + vehicle.CoverTypeId + "</td><td>" + vehicle.VehicleUsage + "</td><td>" + vehicle.Excess + "</td><td>" + vehicle.Premium + "</td></tr>";
+
+                }
+
+                //TempData["Summeryofcover"] = Summeryofcover;
+
+                var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
+                var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == summaryDetail.PaymentTermId);
+                string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/SeheduleMotor.cshtml";
+                string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
+                var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", policy.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", policy.StartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover);
+                objEmailService.SendEmail(user.Email, "", "", "Sehedule-motor", Bodyy, null);
             }
 
             return View(objSaveDetailListModel);

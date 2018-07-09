@@ -73,12 +73,14 @@
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
+                                            @Html.LabelFor(x => x.FirstName, new { @class = "gender-label" })
                                             @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", @name = "FirstName", @autocomplete = "off", @id = "FirstName", @placeholder = "First Name" })
                                             @Html.ValidationMessageFor(x => x.FirstName, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
+                                            @Html.LabelFor(x => x.LastName, new { @class = "gender-label" })
                                             @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", @name = "LastName", @autocomplete = "off", @id = "LastName", @placeholder = "Last Name" })
                                             @Html.ValidationMessageFor(x => x.LastName, "", new { @class = "text-danger" })
                                         </div>
@@ -87,12 +89,14 @@
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
+                                            @Html.LabelFor(x => x.EmailAddress, new { @class = "gender-label" })
                                             @Html.TextBoxFor(x => x.EmailAddress, new { @class = "form-control", @name = "EmailAddress", @autocomplete = "off", @id = "EmailAddress", @placeholder = "Email Address" })
                                             @Html.ValidationMessageFor(x => x.EmailAddress, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
+                                            @Html.LabelFor(x => x.PhoneNumber, new { @class = "gender-label" })
                                             @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control", @name = "PhoneNumber", @autocomplete = "off", @id = "PhoneNumber", @placeholder = "Phone Number" })
                                             @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
                                         </div>
@@ -127,12 +131,14 @@
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
+                                            @Html.LabelFor(x => x.AddressLine1, new { @class = "gender-label" })
                                             @Html.TextBoxFor(x => x.AddressLine1, new { @class = "form-control", @name = "AddressLine1", @autocomplete = "off", @id = "AddressLine1", @placeholder = "AddressLine1" })
                                             @Html.ValidationMessageFor(x => x.AddressLine1, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
+                                            @Html.LabelFor(x => x.AddressLine2, new { @class = "gender-label" })
                                             @Html.TextBoxFor(x => x.AddressLine2, new { @class = "form-control", @name = "AddressLine2", @autocomplete = "off", @id = "AddressLine2", @placeholder = "AddressLine2" })
                                             @Html.ValidationMessageFor(x => x.AddressLine2, "", new { @class = "text-danger" })
                                         </div>
@@ -156,12 +162,14 @@
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
+                                            @Html.LabelFor(x => x.City, new { @class = "gender-label" })
                                             @Html.TextBoxFor(x => x.City, new { @class = "form-control", @name = "City", @autocomplete = "off", @id = "City", @placeholder = "City" })
                                             @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
+                                            @Html.LabelFor(x => x.State, new { @class = "gender-label" })
                                             @Html.TextBoxFor(x => x.State, new { @class = "form-control", @name = "State", @autocomplete = "off", @id = "State", @placeholder = "State" })
                                             @Html.ValidationMessageFor(x => x.State, "", new { @class = "text-danger" })
                                         </div>
@@ -170,6 +178,7 @@
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
+                                            @Html.LabelFor(x => x.Zipcode, new { @class = "gender-label" })
                                             @Html.TextBoxFor(x => x.Zipcode, new { @class = "form-control", @name = "Zipcode", @autocomplete = "off", @id = "Zipcode", @placeholder = "Zip Code" })
                                             @Html.ValidationMessageFor(x => x.Zipcode, "", new { @class = "text-danger" })
                                         </div>

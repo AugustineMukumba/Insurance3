@@ -19,8 +19,8 @@ namespace InsuranceClaim.Models
     public enum ePaymentTerm
     {
         Annual = 1,
-        Quarterly = 2,
-        Termly = 3,
-        Monthly = 4
+        Monthly = 2,
+        Quarterly = 3,
+        Termly = 4
     }
 }

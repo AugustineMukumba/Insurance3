@@ -47,7 +47,7 @@ namespace InsuranceClaim.Models
         public string State { get; set; }
         [Display(Name = "ZipCode")]
         //[Required(ErrorMessage = "Please enter zip code.")]
-        [RegularExpression(@"^\d{5}(-\d{4})?$", ErrorMessage = "Invalid Zip.")]
+        //[RegularExpression(@"^\d{5}(-\d{4})?$", ErrorMessage = "Invalid Zip.")]
         public string Zipcode { get; set; }
         [Display(Name = "Country")]
         //[Required(ErrorMessage = "Please enter country.")]

@@ -121,37 +121,26 @@ namespace InsuranceClaim.Controllers
         {
             if (ModelState.IsValid)
             {
-                //var user = new ApplicationUser { UserName = model.EmailAddress, Email = model.EmailAddress, PhoneNumber = model.PhoneNumber };
-                //var result = await UserManager.CreateAsync(user, "Kindle@123");
-                //if (result.Succeeded)
-                //{
-                //    var objCustomer = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).FirstOrDefault();
-                //    if (objCustomer != null)
-                //    {
-                //        custId = objCustomer.CustomerId + 1;
-                //    }
-                //    else
-                //    {
-                //        custId = Convert.ToDecimal(ConfigurationManager.AppSettings["CustomerId"]);
-                //    }
-
-                //    model.UserID = user.Id;
-                //    model.CustomerId = custId;
-                //    var customer = Mapper.Map<CustomerModel, Customer>(model);
-                //    InsuranceContext.Customers.Insert(customer);
-                //    Session["CustomerId"] = customer.Id;
-                //    return Json(new { IsError = true, error = "" }, JsonRequestBehavior.AllowGet);
-                //}
-                var AllUsers = UserManager.Users.ToList();//.FirstOrDefault(p=>p.Email== model.EmailAddress);
-                var isExist = AllUsers.Any(p => p.Email.ToLower() == model.EmailAddress.ToLower() || p.UserName.ToLower() == model.EmailAddress);
-                if (isExist)
-                {
-                    return Json(new { IsError = false, error = "Email " + model.EmailAddress + " already exists." }, JsonRequestBehavior.AllowGet);
-                }
-                else
+                bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+                if (userLoggedin)
                 {
                     Session["CustomerDataModal"] = model;
                     return Json(new { IsError = true, error = "" }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+
+                    var AllUsers = UserManager.Users.ToList();//.FirstOrDefault(p=>p.Email== model.EmailAddress);
+                    var isExist = AllUsers.Any(p => p.Email.ToLower() == model.EmailAddress.ToLower() || p.UserName.ToLower() == model.EmailAddress);
+                    if (isExist)
+                    {
+                        return Json(new { IsError = false, error = "Email " + model.EmailAddress + " already exists." }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        Session["CustomerDataModal"] = model;
+                        return Json(new { IsError = true, error = "" }, JsonRequestBehavior.AllowGet);
+                    }
                 }
 
             }
@@ -202,6 +191,8 @@ namespace InsuranceClaim.Controllers
             ViewBag.ePaymentTermData = new SelectList(ePaymentTermData, "ID", "Name");
 
             var model = new PolicyDetailModel();
+            model.BusinessSourceId = 3;
+
             var data = (PolicyDetail)Session["PolicyData"];
             if (data != null)
             {
@@ -286,7 +277,8 @@ namespace InsuranceClaim.Controllers
             var PolicyData = (PolicyDetail)Session["PolicyData"];
             //Id is policyid from Policy detail table
             var viewModel = new RiskDetailModel();
-            //viewModel.PolicyId = id;
+            viewModel.CoverStartDate = PolicyData.StartDate;
+            viewModel.CoverEndDate = PolicyData.EndDate;
             var service = new VehicleService();
             var makers = service.GetMakers();
             ViewBag.CoverType = service.GetCoverType();
@@ -429,7 +421,7 @@ namespace InsuranceClaim.Controllers
                     {
                         decimal custId = 0;
                         var user = new ApplicationUser { UserName = customer.EmailAddress, Email = customer.EmailAddress, PhoneNumber = customer.PhoneNumber };
-                        var result = await UserManager.CreateAsync(user, CreateRandomPassword());
+                        var result = await UserManager.CreateAsync(user, "Geninsure@123");
                         if (result.Succeeded)
                         {
                             var objCustomer = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).FirstOrDefault();

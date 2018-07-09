@@ -80,8 +80,8 @@ namespace InsuranceClaim.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    var customer = InsuranceContext.Customers.All(where: $"UserId ='{User.Identity.GetUserId().ToString()}'").FirstOrDefault();
-                    return RedirectToAction("index", "CustomerRegistration", new { id = customer.Id });
+                    //var customer = InsuranceContext.Customers.All(where: $"UserId ='{User.Identity.GetUserId().ToString()}'").FirstOrDefault();
+                    return RedirectToAction("index", "CustomerRegistration");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -91,6 +91,16 @@ namespace InsuranceClaim.Controllers
                     ModelState.AddModelError("", "Invalid login attempt.");
                     return View(model);
             }
+        }
+
+        public ActionResult Logout()
+        {
+            Session.Abandon();
+            Session.Clear();
+            var AuthenticationManager = HttpContext.GetOwinContext().Authentication;
+            AuthenticationManager.SignOut();
+
+            return RedirectToAction("Index", "CustomerRegistration");
         }
 
         //
