@@ -63,7 +63,6 @@ namespace InsuranceClaim.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 //var user = new ApplicationUser { UserName = model.EmailAddress, Email = model.EmailAddress, PhoneNumber = model.PhoneNumber };
                 //var result = await UserManager.CreateAsync(user, "Kindle@123");
                 //if (result.Succeeded)
@@ -85,9 +84,17 @@ namespace InsuranceClaim.Controllers
                 //    Session["CustomerId"] = customer.Id;
                 //    return Json(new { IsError = true, error = "" }, JsonRequestBehavior.AllowGet);
                 //}
-                Session["CustomerDataModal"] = model;
-
-                return Json(new { IsError = true, error = "" }, JsonRequestBehavior.AllowGet);
+                var AllUsers = UserManager.Users.ToList();//.FirstOrDefault(p=>p.Email== model.EmailAddress);
+                var isExist = AllUsers.Any(p => p.Email.ToLower() == model.EmailAddress.ToLower() || p.UserName.ToLower() == model.EmailAddress);
+                if (isExist)
+                {
+                    return Json(new { IsError = false, error = "Email " + model.EmailAddress + " already exists." }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    Session["CustomerDataModal"] = model;
+                    return Json(new { IsError = true, error = "" }, JsonRequestBehavior.AllowGet);
+                }
 
             }
             return Json(new { IsError = false, error = TempData["ErrorMessage"].ToString() }, JsonRequestBehavior.AllowGet);
@@ -341,6 +348,7 @@ namespace InsuranceClaim.Controllers
         {
             //var vehicle = (RiskDetailModel)Session["VehicleDetail"];
             Session["SummaryDetailed"] = model;
+            var DbEntry = new SummaryDetail();
             var customer = (CustomerModel)Session["CustomerDataModal"];
             if (customer != null)
             {
@@ -368,33 +376,34 @@ namespace InsuranceClaim.Controllers
                         customer.Id = customerdata.Id;
                     }
                 }
-            }
-            var policy = (PolicyDetail)Session["PolicyData"];
-            if (policy != null)
-            {
-                if (policy.Id == null || policy.Id == 0)
+                var policy = (PolicyDetail)Session["PolicyData"];
+                if (policy != null)
                 {
-                    policy.CustomerId = customer.Id;
-                    InsuranceContext.PolicyDetails.Insert(policy);
+                    if (policy.Id == null || policy.Id == 0)
+                    {
+                        policy.CustomerId = customer.Id;
+                        InsuranceContext.PolicyDetails.Insert(policy);
+                    }
                 }
-            }
-            var Id = 0;
-            var vehicle = (RiskDetailModel)Session["VehicleDetail"];
-            if (vehicle != null)
-            {
-                var service = new RiskDetailService();
-                vehicle.CustomerId = customer.Id;
-                vehicle.PolicyId = policy.Id;
-                //var vehical = Mapper.Map<RiskDetailModel, RiskDetailModel>(vehicle);
-                 Id = service.AddVehicleInformation(vehicle);
+                var Id = 0;
+                var vehicle = (RiskDetailModel)Session["VehicleDetail"];
+                if (vehicle != null)
+                {
+                    var service = new RiskDetailService();
+                    vehicle.CustomerId = customer.Id;
+                    vehicle.PolicyId = policy.Id;
+                    //var vehical = Mapper.Map<RiskDetailModel, RiskDetailModel>(vehicle);
+                    Id = service.AddVehicleInformation(vehicle);
 
+                }
+
+                DbEntry = Mapper.Map<SummaryDetailModel, SummaryDetail>(model);
+                DbEntry.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
+                DbEntry.VehicleDetailId = Id;
+                DbEntry.CustomerId = vehicle.CustomerId;
+                InsuranceContext.SummaryDetails.Insert(DbEntry);
             }
 
-            var DbEntry = Mapper.Map<SummaryDetailModel, SummaryDetail>(model);
-            DbEntry.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
-            DbEntry.VehicleDetailId = Id;
-            DbEntry.CustomerId = vehicle.CustomerId;
-            InsuranceContext.SummaryDetails.Insert(DbEntry);
             return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
         }
         [HttpPost]
