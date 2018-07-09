@@ -1,7 +1,10 @@
 ﻿@{ 
     Layout = null;
 }
+@{ 
+    var ErrorMessage = TempData["ErrorMessage"];
 
+}
 <!DOCTYPE html>
 
 <html>
@@ -38,6 +41,7 @@
     </style>
 </head>
 <body>
+    <input type="hidden" id="ErrorMessage" value="@ErrorMessage" />
     <div class="top-header-section">
         <div class="logo-section-details">
             <div class="container">
@@ -169,6 +173,11 @@
             $('.date').datetimepicker({
                 format: 'MM/D/YYYY',
             })
+            debugger
+            var errorMessage = $('#ErrorMessage').val();
+            if (errorMessage != null && errorMessage != '') {
+                toastr.error(errorMessage)
+            }
         });
 
     </script>
