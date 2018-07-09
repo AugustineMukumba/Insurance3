@@ -36,27 +36,59 @@ namespace InsuranceClaim.Controllers
         // GET: CustomerRegistration
         public ActionResult Index()
         {
-            var customerData = (CustomerModel)Session["CustomerDataModal"];
-
-            var customerModel = new CustomerModel();
-            if (customerData != null)
+            bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            if (userLoggedin)
             {
-                var User = UserManager.FindById(customerData.UserID);
-                customerModel.AddressLine1 = customerData.AddressLine1;
-                customerModel.AddressLine2 = customerData.AddressLine2;
-                customerModel.City = customerData.City;
-                customerModel.Id = customerData.Id;
-                customerModel.Country = customerData.Country;
-                customerModel.Zipcode = customerData.Zipcode;
-                customerModel.Gender = customerData.Gender;
-                customerModel.PhoneNumber = customerData.PhoneNumber;
-                customerModel.State = customerData.State;
-                customerModel.DateOfBirth = customerData.DateOfBirth;
-                customerModel.EmailAddress = customerData.EmailAddress;
-                customerModel.FirstName = customerData.FirstName;
-                customerModel.LastName = customerData.LastName;
+                var customerModel = new CustomerModel();
+                var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
+                var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{User.Identity.GetUserId().ToString()}'").FirstOrDefault();
+
+                if (_customerData != null)
+                {                    
+                    customerModel.AddressLine1 = _customerData.AddressLine1;
+                    customerModel.AddressLine2 = _customerData.AddressLine2;
+                    customerModel.City = _customerData.City;
+                    customerModel.Id = _customerData.Id;
+                    customerModel.Country = _customerData.Country;
+                    customerModel.Zipcode = _customerData.Zipcode;
+                    customerModel.Gender = _customerData.Gender;
+                    customerModel.PhoneNumber = _User.PhoneNumber;
+                    customerModel.State = _customerData.State;
+                    customerModel.DateOfBirth = _customerData.DateOfBirth;
+                    customerModel.EmailAddress = _User.Email;
+                    customerModel.FirstName = _customerData.FirstName;
+                    customerModel.LastName = _customerData.LastName;
+                }
+
+                return View(customerModel);
             }
-            return View(customerModel);
+            else
+            {
+                var customerData = (CustomerModel)Session["CustomerDataModal"];
+                var customerModel = new CustomerModel();
+                if (customerData != null)
+                {
+                    var User = UserManager.FindById(customerData.UserID);
+                    customerModel.AddressLine1 = customerData.AddressLine1;
+                    customerModel.AddressLine2 = customerData.AddressLine2;
+                    customerModel.City = customerData.City;
+                    customerModel.Id = customerData.Id;
+                    customerModel.Country = customerData.Country;
+                    customerModel.Zipcode = customerData.Zipcode;
+                    customerModel.Gender = customerData.Gender;
+                    customerModel.PhoneNumber = customerData.PhoneNumber;
+                    customerModel.State = customerData.State;
+                    customerModel.DateOfBirth = customerData.DateOfBirth;
+                    customerModel.EmailAddress = customerData.EmailAddress;
+                    customerModel.FirstName = customerData.FirstName;
+                    customerModel.LastName = customerData.LastName;
+                }
+                return View(customerModel);
+            }
+          
+
+                
+            
         }
         [HttpPost]
         public async Task<JsonResult> SaveCustomerData(CustomerModel model)
@@ -336,39 +368,56 @@ namespace InsuranceClaim.Controllers
             return View(model);
         }
 
+        public static string CreateRandomPassword()
+        {
+            string _allowedChars = "0123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ";
+            Random randNum = new Random();
+            char[] chars = new char[8];
+            int allowedCharCount = _allowedChars.Length;
+            for (int i = 0; i < 8; i++)
+            {
+                chars[i] = _allowedChars[(int)((_allowedChars.Length) * randNum.NextDouble())];
+            }
+            return new string(chars);
+        }
+
         [HttpPost]
         public async Task<ActionResult> SubmitPlan(SummaryDetailModel model)
         {
             //var vehicle = (RiskDetailModel)Session["VehicleDetail"];
             Session["SummaryDetailed"] = model;
+            bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             var customer = (CustomerModel)Session["CustomerDataModal"];
-            if (customer != null)
-            {
-                if (customer.Id == null || customer.Id == 0)
+            if (!userLoggedin)
+            {                
+                if (customer != null)
                 {
-                    decimal custId = 0;
-                    var user = new ApplicationUser { UserName = customer.EmailAddress, Email = customer.EmailAddress, PhoneNumber = customer.PhoneNumber };
-                    var result = await UserManager.CreateAsync(user, "Kindle@123");
-                    if (result.Succeeded)
+                    if (customer.Id == null || customer.Id == 0)
                     {
-                        var objCustomer = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).FirstOrDefault();
-                        if (objCustomer != null)
+                        decimal custId = 0;
+                        var user = new ApplicationUser { UserName = customer.EmailAddress, Email = customer.EmailAddress, PhoneNumber = customer.PhoneNumber };
+                        var result = await UserManager.CreateAsync(user, CreateRandomPassword());
+                        if (result.Succeeded)
                         {
-                            custId = objCustomer.CustomerId + 1;
-                        }
-                        else
-                        {
-                            custId = Convert.ToDecimal(ConfigurationManager.AppSettings["CustomerId"]);
-                        }
+                            var objCustomer = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).FirstOrDefault();
+                            if (objCustomer != null)
+                            {
+                                custId = objCustomer.CustomerId + 1;
+                            }
+                            else
+                            {
+                                custId = Convert.ToDecimal(ConfigurationManager.AppSettings["CustomerId"]);
+                            }
 
-                        customer.UserID = user.Id;
-                        customer.CustomerId = custId;
-                        var customerdata = Mapper.Map<CustomerModel, Customer>(customer);
-                        InsuranceContext.Customers.Insert(customerdata);
-                        customer.Id = customerdata.Id;
+                            customer.UserID = user.Id;
+                            customer.CustomerId = custId;
+                            var customerdata = Mapper.Map<CustomerModel, Customer>(customer);
+                            InsuranceContext.Customers.Insert(customerdata);
+                            customer.Id = customerdata.Id;
+                        }
                     }
                 }
-            }
+            }            
             var policy = (PolicyDetail)Session["PolicyData"];
             if (policy != null)
             {
