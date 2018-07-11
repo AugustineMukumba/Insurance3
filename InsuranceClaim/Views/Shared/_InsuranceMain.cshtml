@@ -185,7 +185,14 @@
             if (errorMessage != null && errorMessage != '') {
                 toastr.error(errorMessage)
             }
+
+            $('.non-editable').keyup(function () {
+                $('.non-editable').attr("disable", true)
+
+            })
+
         });
+        
 
     </script>
 

@@ -122,8 +122,10 @@ namespace InsuranceClaim.Controllers
             if (ModelState.IsValid)
             {
                 bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+
                 if (userLoggedin)
                 {
+
                     Session["CustomerDataModal"] = model;
                     return Json(new { IsError = true, error = "" }, JsonRequestBehavior.AllowGet);
                 }
@@ -322,6 +324,7 @@ namespace InsuranceClaim.Controllers
                 viewModel.VehicleColor = data.VehicleColor;
                 viewModel.VehicleUsage = data.VehicleUsage;
                 viewModel.VehicleYear = data.VehicleYear;
+                viewModel.Id = data.Id;
                 viewModel.ZTSCLevy = data.ZTSCLevy;
                 var ser = new VehicleService();
                 var model = ser.GetModel(data.MakeId);
@@ -374,8 +377,13 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult SummaryDetail()
         {
+            var summarydetail = (SummaryDetailModel)Session["SummaryDetailed"];
             SummaryDetailService SummaryDetailServiceObj = new SummaryDetailService();
 
+            if (summarydetail != null)
+            {
+                return View(summarydetail);
+            }
             var model = new SummaryDetailModel();
             var summary = new SummaryDetailService();
             var vehicle = (RiskDetailModel)Session["VehicleDetail"];// summary.GetVehicleInformation(id);
@@ -385,7 +393,7 @@ namespace InsuranceClaim.Controllers
             model.PaymentTermId = 1;
             model.ReceiptNumber = "";
             model.SMSConfirmation = false;
-            model.TotalPremium = vehicle.Premium + vehicle.StampDuty + vehicle.ZTSCLevy;
+            model.TotalPremium = vehicle.Premium;// + vehicle.StampDuty + vehicle.ZTSCLevy;
             model.TotalRadioLicenseCost = vehicle.RadioLicenseCost;
             model.TotalStampDuty = vehicle.StampDuty;
             model.TotalSumInsured = vehicle.SumInsured;
@@ -443,6 +451,8 @@ namespace InsuranceClaim.Controllers
                     }
                 }
             }
+
+
             var policy = (PolicyDetail)Session["PolicyData"];
             if (policy != null)
             {
@@ -450,25 +460,98 @@ namespace InsuranceClaim.Controllers
                 {
                     policy.CustomerId = customer.Id;
                     InsuranceContext.PolicyDetails.Insert(policy);
+                    Session["PolicyData"] = policy;
                 }
+                else
+                {
+                    PolicyDetail policydata = InsuranceContext.PolicyDetails.All(policy.Id.ToString()).FirstOrDefault();
+                    policydata.BusinessSourceId = policy.BusinessSourceId;
+                    policydata.CurrencyId = policy.CurrencyId;
+                    policydata.CustomerId = policy.CustomerId;
+                    policydata.EndDate = policy.EndDate;
+                    policydata.InsurerId = policy.InsurerId;
+                    policydata.IsActive = policy.IsActive;
+                    policydata.PolicyName = policy.PolicyName;
+                    policydata.PolicyNumber = policy.PolicyNumber;
+                    policydata.PolicyStatusId = policy.PolicyStatusId;
+                    policydata.RenewalDate = policy.RenewalDate;
+                    policydata.StartDate = policy.StartDate;
+                    policydata.TransactionDate = policy.TransactionDate;
+                    InsuranceContext.PolicyDetails.Update(policydata);
+                }
+
             }
             var Id = 0;
             var vehicle = (RiskDetailModel)Session["VehicleDetail"];
             if (vehicle != null)
             {
-                var service = new RiskDetailService();
-                vehicle.CustomerId = customer.Id;
-                vehicle.PolicyId = policy.Id;
-                //var vehical = Mapper.Map<RiskDetailModel, RiskDetailModel>(vehicle);
-                Id = service.AddVehicleInformation(vehicle);
+                if (vehicle.Id == null || vehicle.Id == 0)
+                {
+                    var service = new RiskDetailService();
+                    vehicle.CustomerId = customer.Id;
+                    vehicle.PolicyId = policy.Id;
+                    //var vehical = Mapper.Map<RiskDetailModel, RiskDetailModel>(vehicle);
+                    vehicle.Id = service.AddVehicleInformation(vehicle);
+                    Session["VehicleDetail"] = vehicle;
+                }
+                else
+                {
+                    VehicleDetail Vehicledata = InsuranceContext.VehicleDetails.All(vehicle.Id.ToString()).FirstOrDefault();
+                    Vehicledata.AgentCommissionId = vehicle.AgentCommissionId;
+                    Vehicledata.ChasisNumber = vehicle.ChasisNumber;
+                    Vehicledata.CoverEndDate = vehicle.CoverEndDate;
+                    Vehicledata.CoverNoteNo = vehicle.CoverNoteNo;
+                    Vehicledata.CoverStartDate = vehicle.CoverStartDate;
+                    Vehicledata.CoverTypeId = vehicle.CoverTypeId;
+                    Vehicledata.CubicCapacity = vehicle.CubicCapacity;
+                    Vehicledata.EngineNumber = vehicle.EngineNumber;
+                    Vehicledata.Excess = vehicle.Excess;
+                    Vehicledata.ExcessType = vehicle.ExcessType;
+                    Vehicledata.MakeId = vehicle.MakeId;
+                    Vehicledata.ModelId = vehicle.ModelId;
+                    Vehicledata.NoOfCarsCovered = vehicle.NoOfCarsCovered;
+                    Vehicledata.OptionalCovers = vehicle.OptionalCovers;
+                    Vehicledata.PolicyId = vehicle.PolicyId;
+                    Vehicledata.Premium = vehicle.Premium;
+                    Vehicledata.RadioLicenseCost = vehicle.RadioLicenseCost;
+                    Vehicledata.Rate = vehicle.Rate;
+                    Vehicledata.RegistrationNo = vehicle.RegistrationNo;
+                    Vehicledata.StampDuty = vehicle.StampDuty;
+                    Vehicledata.SumInsured = vehicle.SumInsured;
+                    Vehicledata.VehicleColor = vehicle.VehicleColor;
+                    Vehicledata.VehicleUsage = vehicle.VehicleUsage;
+                    Vehicledata.VehicleYear = vehicle.VehicleYear;
+                    Vehicledata.ZTSCLevy = vehicle.ZTSCLevy;
 
+                    InsuranceContext.VehicleDetails.Update(Vehicledata);
+                }
             }
 
+            var summary = (SummaryDetailModel)Session["SummaryDetailed"];
             var DbEntry = Mapper.Map<SummaryDetailModel, SummaryDetail>(model);
-            DbEntry.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
-            DbEntry.VehicleDetailId = Id;
-            DbEntry.CustomerId = vehicle.CustomerId;
-            InsuranceContext.SummaryDetails.Insert(DbEntry);
+
+            if (summary != null)
+            {
+                if (summary.Id == null || summary.Id == 0)
+                {
+                    DbEntry.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
+                    DbEntry.VehicleDetailId = vehicle.Id;
+                    DbEntry.CustomerId = vehicle.CustomerId;
+                    InsuranceContext.SummaryDetails.Insert(DbEntry);
+                    model.Id = DbEntry.Id;
+                    Session["SummaryDetailed"] = model;
+                }
+                else
+                {
+                    SummaryDetail summarydata = InsuranceContext.SummaryDetails.All(summary.Id.ToString()).FirstOrDefault();
+
+                    summarydata.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
+                    summarydata.VehicleDetailId = vehicle.Id;
+                    summarydata.CustomerId = vehicle.CustomerId;
+
+                    InsuranceContext.SummaryDetails.Update(summarydata);
+                }
+            }
             if (model.PaymentMethodId == 2)
                 return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id });
             else

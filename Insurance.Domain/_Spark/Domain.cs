@@ -87,6 +87,7 @@ namespace Insurance.Domain
         public bool? IsOTPConfirmed { get; set; }
 
         public bool? IsActive { get; set; }
+        public string Countrycode { get; set; }
     }
 
     public partial class LicenseDelivery : Entity<LicenseDelivery>

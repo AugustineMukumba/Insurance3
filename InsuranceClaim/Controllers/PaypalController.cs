@@ -319,7 +319,7 @@ namespace InsuranceClaim.Controllers
                 TempData["ErrorMessage"] = ex.Message;
                 JavaScriptSerializer json_serializer = new JavaScriptSerializer();
 
-               var error = json_serializer.DeserializeObject(((PayPal.ConnectionException)ex).Response);
+                var error = json_serializer.DeserializeObject(((PayPal.ConnectionException)ex).Response);
                 return RedirectToAction("PaymentDetail", "CustomerRegistration", new { id = model.SummaryDetailId });
             }
 
@@ -605,32 +605,36 @@ namespace InsuranceClaim.Controllers
             // }
             if (paymentInformations == null)
             {
-
-                InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
                 Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
-                string emailTemplatePath = "/Views/Shared/EmaiTemplates/UserRegisteration.cshtml";
                 string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                string EmailBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(emailTemplatePath));
-                var Body = EmailBody.Replace(" #PolicyNumber#", policy.PolicyNumber).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Email#", user.Email).Replace("#change#", callbackUrl);
-                objEmailService.SendEmail(user.Email, "", "", "Account Creation", Body, null);
+                bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
 
-                //string Emailbody = "Hello " + customer.FirstName + "\nWelcome to the GENE-INSURE family, we would like to simplify your life." + "\nYour policy number is : " + policy.PolicyNumber + "\nUsername is : " + user.Email + "\nYour Password : geneinsure@123" + "\nPlease reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>" + "\nThank you once again.";
 
-                Insurance.Service.smsService objsmsService = new Insurance.Service.smsService();
-
-                string body = "Hello " + customer.FirstName + "\nWelcome to the GENE-INSURE family, we would like to simplify your life." + "\nYour policy number is : " + policy.PolicyNumber + "\nUsername is : " + user.Email + "\nYour Password : Geneinsure@123" + "\nPlease reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>" + "\nThank you once again.";
-                var result = await objsmsService.SendSMS(user.PhoneNumber, body);
-
-                SmsLog objsmslog = new SmsLog()
+                if (!userLoggedin)
                 {
-                    Sendto = user.PhoneNumber,
-                    Body = body,
-                    Response = result
-                };
+                    InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
+                    string emailTemplatePath = "/Views/Shared/EmaiTemplates/UserRegisteration.cshtml";
+                    string EmailBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(emailTemplatePath));
+                    var Body = EmailBody.Replace(" #PolicyNumber#", policy.PolicyNumber).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Email#", user.Email).Replace("#change#", callbackUrl);
+                    objEmailService.SendEmail(user.Email, "", "", "Account Creation", Body, null);
 
-                InsuranceContext.SmsLogs.Insert(objsmslog);
 
+
+                    Insurance.Service.smsService objsmsService = new Insurance.Service.smsService();
+
+                    string body = "Hello " + customer.FirstName + "\nWelcome to the GENE-INSURE family, we would like to simplify your life." + "\nYour policy number is : " + policy.PolicyNumber + "\nUsername is : " + user.Email + "\nYour Password : Geneinsure@123" + "\nPlease reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>" + "\nThank you once again.";
+                    var result = await objsmsService.SendSMS(user.PhoneNumber, body);
+
+                    SmsLog objsmslog = new SmsLog()
+                    {
+                        Sendto = user.PhoneNumber,
+                        Body = body,
+                        Response = result
+                    };
+
+                    InsuranceContext.SmsLogs.Insert(objsmslog);
+                }
 
                 var data = (Item)Session["itemData"];
                 if (data != null)

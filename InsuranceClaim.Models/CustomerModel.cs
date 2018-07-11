@@ -18,7 +18,7 @@ namespace InsuranceClaim.Models
         [EmailAddress(ErrorMessage = "Invalid email address.")]
         public string EmailAddress { get; set; }
         [Display(Name = "Phone Number")]
-        [Required(ErrorMessage = "Please enter phone number.")]
+        [Required(ErrorMessage = "Please enter Country Code and phone number.")]
         [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Not a valid phone number.")]
         public string PhoneNumber { get; set; }
         [Display(Name = "First Name")]
@@ -66,5 +66,8 @@ namespace InsuranceClaim.Models
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
         public bool? IsActive { get; set; }
+        [Required(ErrorMessage = "Please enter Country Code and phone number.")]
+        //[RegularExpression(@"^\+[1-9]{1}[0-9]{3,14}$/", ErrorMessage = "Not a valid Country Code .")]
+        public string CountryCode { get; set; }
     }
 }

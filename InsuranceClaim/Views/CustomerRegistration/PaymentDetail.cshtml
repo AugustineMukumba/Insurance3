@@ -68,8 +68,8 @@
                         <div class="form-group-input">
                             @using (Html.BeginForm("PaymentWithCreditCard", "Paypal"))
                             {<div>
-                                    @Html.HiddenFor(m => m.SummaryDetailId)
-                                </div>
+                                @Html.HiddenFor(m => m.SummaryDetailId)
+                            </div>
 
                                 <div class="row">
                                     <div class="col-md-12 form-group-text">
@@ -106,22 +106,24 @@
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-
+                                            @Html.Label("Expiry Date", new { @class = "gender-label" })
                                             <div class='input-group date' id='datetimepicker1'>
-                                                @Html.Label("Expiry Date", new { @class = "gender-label" })
                                                 @Html.TextBoxFor(m => m.ExpiryDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Expiry Date" })
-                                                @Html.ValidationMessageFor(m => m.ExpiryDate, "", new { @class = "text-danger" })
+                                                
                                                 <span class="input-group-addon">
                                                     <span class="glyphicon glyphicon-calendar"></span>
                                                 </span>
                                             </div>
+                                            <div>@Html.ValidationMessageFor(m => m.ExpiryDate, "", new { @class = "text-danger" })</div>
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
                                             @Html.Label("CVC", new { @class = "gender-label" })
                                             @Html.TextBoxFor(m => m.CVC, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cvc Number" })
-                                            @Html.ValidationMessageFor(m => m.CVC, "", new { @class = "text-danger" })
+                                            <div>
+                                                @Html.ValidationMessageFor(m => m.CVC, "", new { @class = "text-danger" })
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -144,7 +146,7 @@
                                         <div class="row">
                                             <div class="col-sm-6 col-md-6">
                                                 <div class="text-left">
-                                                    <div class="back-left"><button type="button" onclick="gotoPeriviouse()"  class="btn">Back</button></div>
+                                                    <div class="back-left"><button type="button" onclick="gotoPeriviouse()" class="btn">Back</button></div>
                                                     <a style="display:none" id="previouselink" href="/CustomerRegistration/SummaryDetail" class="back"></a>
                                                 </div>
                                             </div>
@@ -169,7 +171,7 @@
 </div>
 @*<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
-<link href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">*@
+    <link href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">*@
 
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
@@ -177,12 +179,12 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
 <![endif]-->
 @*<script type="text/javascript" src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
-<script src="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>*@
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+    <script src="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>*@
 <script src="~/Scripts/jquery.creditCardValidator.js"></script>
 <script type="text/javascript">
-   
+
     function gotoPeriviouse() {
         $("#previouselink")[0].click();
 

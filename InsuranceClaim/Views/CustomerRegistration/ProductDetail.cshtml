@@ -70,6 +70,7 @@
                             @using (Ajax.BeginForm("SavePolicyData", "CustomerRegistration", null, new AjaxOptions() { OnSuccess = "GoToRiskDetail" }, null))
                             {
                                 @*@Html.HiddenFor(x => x.InsurerId, new { @Value = ViewBag.InsurerId });*@
+                                @Html.HiddenFor(m => m.Id)
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
@@ -229,13 +230,14 @@
 
 
 <script type="text/javascript">
+
     var today;
 
     function setPolicyEndDate(numberOfMonth) {
         debugger;
         today = new Date();
         today.setMonth(today.getMonth() + numberOfMonth);
-        var dd = today.getDate();
+        var dd = today.getDate()-1;
         var mm = today.getMonth() + 1; //January is 0!
 
         var yyyy = today.getFullYear();
