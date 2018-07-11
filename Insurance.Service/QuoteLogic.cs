@@ -83,11 +83,11 @@ namespace Insurance.Service
             }
 
             var ztscLevy = (premium * 12) / 100;
-            this.StamDuty = stampDuty;
-            this.ZtscLevy = ztscLevy;
+            this.StamDuty =Math.Round(stampDuty,2);
+            this.ZtscLevy =Math.Round(ztscLevy,2);
 
             premium = premium + stampDuty + ztscLevy;
-            this.Premium = premium;
+            this.Premium =Math.Round(premium,2);
             return this;
         }
     }
