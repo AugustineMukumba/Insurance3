@@ -74,14 +74,14 @@
                                     <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
                                             @*@Html.TextBoxFor(x => x.PolicyName, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Name" })*@
-                                            @Html.LabelFor(x => x.PolicyName, new { @class = "gender-label" })
+                                            @Html.Label("Policy Name", new { @class = "gender-label" })
                                             @Html.DropDownListFor(x => x.PolicyName, new SelectList(ViewBag.Products, "Id", "ProductName"), new { @class = "form-control" })
                                             @Html.ValidationMessageFor(x => x.PolicyName, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                            @Html.LabelFor(x => x.PolicyNumber, new { @class = "gender-label" })
+                                            @Html.Label("Policy Number", new { @class = "gender-label" })
                                             @Html.TextBoxFor(x => x.PolicyNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Number", @Value = ViewBag.Policynumber, @readonly = "readonly" })
                                             @Html.ValidationMessageFor(x => x.PolicyNumber, "", new { @class = "text-danger" })
                                         </div>
@@ -90,13 +90,13 @@
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
-                                            @Html.LabelFor(x => x.InsurerId, new { @class = "gender-label" })
+                                            @Html.Label("Insurer", new { @class = "gender-label" })
                                             @Html.DropDownListFor(x => x.InsurerId, new SelectList(ViewBag.Insurer, "Id", "InsurerName"), new { @class = "form-control" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
-                                            @Html.LabelFor(x => x.PolicyStatusId, new { @class = "gender-label" })
+                                            @Html.Label("Policy Status", new { @class = "gender-label" })
                                             @Html.DropDownListFor(x => x.PolicyStatusId, new SelectList(ViewBag.PoliCyStatus, "Id", "Status"), new { @class = "form-control" })
                                         </div>
                                     </div>
@@ -104,13 +104,13 @@
                                 <div class="row">
                                     <div class="col-md-6 form-group-select">
                                         <div class="form-group">
-                                            @Html.LabelFor(x => x.CurrencyId, new { @class = "gender-label" })
+                                            @Html.Label("Currency", new { @class = "gender-label" })
                                             @Html.DropDownListFor(x => x.CurrencyId, new SelectList(ViewBag.Currency, "Id", "Name"), new { @class = "form-control" })
                                         </div>
                                     </div>
                                     <div class="col-md-6 form-group-select">
                                         <div class="form-group">
-                                            @Html.LabelFor(x => x.PaymentTermId, new { @class = "gender-label" })
+                                            @Html.Label("Payment Term", new { @class = "gender-label" })
                                             @Html.DropDownListFor(x => x.PaymentTermId, ViewBag.ePaymentTermData as SelectList, "Select Payment Term", new { @class = "form-control" })
                                             @Html.ValidationMessageFor(x => x.PaymentTermId, "", new { @class = "text-danger" })
                                         </div>
@@ -132,7 +132,7 @@
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                            @Html.LabelFor(x => x.EndDate, new { @class = "gender-label" })
+                                            @Html.Label("End Date", new { @class = "gender-label" })
                                             <div class='input-group date' id='datetimepicker2'>
                                                 @Html.TextBoxFor(x => x.EndDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy end date" })
                                                 <span class="input-group-addon">
@@ -147,7 +147,7 @@
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                            @Html.LabelFor(x => x.RenewalDate, new { @class = "gender-label" })
+                                            @Html.Label("Renewal Date", new { @class = "gender-label" })
                                             <div class='input-group date' id='datetimepicker3'>
                                                 @Html.TextBoxFor(x => x.RenewalDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Renewal Date" })
                                                 <span class="input-group-addon">
@@ -159,7 +159,7 @@
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                            @Html.LabelFor(x => x.TransactionDate, new { @class = "gender-label" })
+                                            @Html.Label("Transaction Date", new { @class = "gender-label" })
                                             <div class='input-group' id='datetimepicker4'>
                                                 @Html.TextBoxFor(x => x.TransactionDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Transaction/Effective Date" })
                                                 <span class="input-group-addon">
@@ -174,7 +174,7 @@
                                 <div class="row">
                                     <div class="col-md-12 form-group-select">
                                         <div class="form-group">
-                                            @Html.LabelFor(x => x.BusinessSourceId, new { @class = "gender-label" })
+                                            @Html.Label("Business Source", new { @class = "gender-label" })
                                             @Html.DropDownListFor(x => x.BusinessSourceId, new SelectList(ViewBag.BusinessSource, "Id", "Source"), new { @class = "form-control" })
                                         </div>
                                     </div>
@@ -232,6 +232,7 @@
     var today;
 
     function setPolicyEndDate(numberOfMonth) {
+        debugger;
         today = new Date();
         today.setMonth(today.getMonth() + numberOfMonth);
         var dd = today.getDate();
@@ -246,6 +247,7 @@
         }
         var today = dd + '/' + mm + '/' + yyyy;
         $("#EndDate").val(today);
+        debugger;
         var dateParts = today.split("/");        
         today = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
         today.setDate(today.getDate() + 1);
@@ -265,6 +267,7 @@
 
     $(document).ready(function () { // will trigger when the document is ready
         today = new Date();
+        debugger;
         var dd = today.getDate();
         var mm = today.getMonth() + 1; //January is 0!
 
@@ -282,7 +285,7 @@
 
 
         $("#PaymentTermId").change(function () {
-
+            debugger;
             var selectedTerm = $("#PaymentTermId option:selected").val();
             debugger;
             switch (parseInt(selectedTerm)) {
@@ -290,13 +293,13 @@
                     setPolicyEndDate(12);
                     break;
                 case 2:
-                    setPolicyEndDate(4)
+                    setPolicyEndDate(1)
                     break;
                 case 3:
                     setPolicyEndDate(3);
                     break;
                 case 4:
-                    setPolicyEndDate(1);
+                    setPolicyEndDate(4);
                     break;
             }
 

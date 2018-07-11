@@ -546,6 +546,7 @@ namespace InsuranceClaim.Controllers
         [HttpPost]
         public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess)
         {
+            var policytermid = (int)Session["policytermid"];
             JsonResult json = new JsonResult();
             var quote = new QuoteLogic();
             var typeCover = eCoverType.Comprehensive;
@@ -558,7 +559,7 @@ namespace InsuranceClaim.Controllers
             {
                 eexcessType = eExcessType.FixedAmount;
             }
-            var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover, eexcessType, excess);
+            var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover, eexcessType, excess, policytermid);
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             json.Data = premium;
             return json;

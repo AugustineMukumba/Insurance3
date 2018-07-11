@@ -53,9 +53,9 @@ ol,ul{margin:0; padding:0; list-style:none;}
 .form-group-textarea textarea{height:120px; border-radius: 0;  box-shadow: inherit;  border: none; box-shadow:inherit !important;}
 
 .form-title { padding: 0 0 20px;  border-bottom: 1px solid #ccc;  margin: 0 0 40px;}
-.form-group-text .form-group {  margin-bottom: 30px;}
-.form-group-select .form-group {  margin-bottom: 30px;}
-.form-group-textarea .form-group {  margin-bottom: 30px;}
+.form-group-text .form-group {  margin-bottom: 30px; position:relative;}
+.form-group-select .form-group {  margin-bottom: 30px; position:relative;}
+.form-group-textarea .form-group {  margin-bottom: 30px; position:relative;}
 
 .next-btn button{background:#16909d; padding:20px 0; width:200px; text-transform:uppercase; color:#fff; font-size:17px; font-weight:600}
 .back a{background:#16909d; padding:20px 0; width:200px; text-transform:uppercase; color:#fff; font-size:17px; font-weight:600}
@@ -274,6 +274,13 @@ button.btn-sm.btn-danger {
 .login-title{margin:50px 0 0}
 .login-title h2{text-transform:uppercase; color:#000; text-align:center; font-weight:bold; font-size:27px;}
 .register-link{text-align:center;}
+
+.form-group-text .form-group span.text-danger {  position: absolute;}
+.form-group-select .form-group span.text-danger{ position: absolute;}
+.form-group-textarea .form-group span.text-danger {position: absolute;}
+
+
+
 /**15 june css end**/
 
 @media(max-width:767px){

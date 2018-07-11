@@ -75,7 +75,7 @@
                                     <div class="col-md-12 form-group-text">
                                         <div class="form-group">
                                             <div class="controls">
-
+                                                @Html.Label("Card Number", new { @class = "gender-label" })
                                                 @Html.TextBoxFor(m => m.CardNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Card Number" })
                                                 @Html.ValidationMessageFor(m => m.CardNumber, "", new { @class = "text-danger" })
                                                 <span id="credit-card-type-text" style="color:red" class="help-inline"></span>
@@ -96,6 +96,7 @@
                                 <div class="row">
                                     <div class="col-md-12 form-group-text">
                                         <div class="form-group">
+                                            @*@Html.Label("Name On Card", new { @class = "gender-label" })*@
                                             @Html.TextBoxFor(m => m.NameOnCard, new { @class = "form-control", @autocomplete = "off", @placeholder = "Name on Card" })
                                             @Html.ValidationMessageFor(m => m.NameOnCard, "", new { @class = "text-danger" })
                                         </div>
@@ -107,6 +108,7 @@
                                         <div class="form-group">
 
                                             <div class='input-group date' id='datetimepicker1'>
+                                                @Html.Label("Expiry Date", new { @class = "gender-label" })
                                                 @Html.TextBoxFor(m => m.ExpiryDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Expiry Date" })
                                                 @Html.ValidationMessageFor(m => m.ExpiryDate, "", new { @class = "text-danger" })
                                                 <span class="input-group-addon">
@@ -117,6 +119,7 @@
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
+                                            @Html.Label("CVC", new { @class = "gender-label" })
                                             @Html.TextBoxFor(m => m.CVC, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cvc Number" })
                                             @Html.ValidationMessageFor(m => m.CVC, "", new { @class = "text-danger" })
                                         </div>
