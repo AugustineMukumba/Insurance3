@@ -36,11 +36,15 @@ namespace Insurance.Service
                 InsuranceRate = InsuranceRate + float.Parse(excess.ToString());
             }
 
-            var premium = (sumInsured * Convert.ToDecimal(InsuranceRate)) / 100;
+            var premium = 0.00m;
 
             if (coverType == eCoverType.ThirdParty)
             {
                 premium = (decimal)InsuranceRate;
+            }
+            else
+            {
+                premium = (sumInsured * Convert.ToDecimal(InsuranceRate)) / 100;
             }
 
             if (sumInsured > 10000)
@@ -49,14 +53,21 @@ namespace Insurance.Service
                 var additionalcharge = ((0.5 * (double)extraamount) / 100);
                 premium = premium + (decimal)additionalcharge;
             }
-
-            if (premium < InsuranceMinAmount)
+            if (premium < InsuranceMinAmount && coverType == eCoverType.Comprehensive)
             {
                 Status = false;
                 //premium = premium + InsuranceMinAmount.Value;
                 premium = InsuranceMinAmount.Value;
                 this.Message = "Insurance minimum amount $" + InsuranceMinAmount + " Charge is applicable.";
             }
+
+            //if (premium < InsuranceMinAmount)
+            //{
+            //    Status = false;
+            //    //premium = premium + InsuranceMinAmount.Value;
+            //    premium = InsuranceMinAmount.Value;
+            //    this.Message = "Insurance minimum amount $" + InsuranceMinAmount + " Charge is applicable.";
+            //}
 
             switch (PaymentTermid)
             {                

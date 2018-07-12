@@ -41,7 +41,7 @@
                         <!-- active -->
                         <div class="progress"><div class="progress-bar"></div></div>
                         <a href="#" class="bs-wizard-dot"></a>
-                        <div class="text-center bs-wizard-stepnum">Summay Details</div>
+                        <div class="text-center bs-wizard-stepnum">Summary Details</div>
                     </div>
 
                     <div class="col-xs-2 bs-wizard-step disabled">
@@ -207,7 +207,8 @@
                                             <div class="form-group">
                                                 @Html.Label("Sum Insured", new { @class = "gender-label" })
                                                 @Html.TextBoxFor(m => m.SumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insured", @maxlength = "11" })
-                                                @Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })
+                                                <span class="text-danger" id="validationSumIns">Please Enter Sum Insured</span>
+                                                @*@Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
                                                 @*@Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
                                             </div>
                                         </div>
@@ -290,7 +291,7 @@
                                                 </div>
                                                 <div class="col-sm-6 col-md-6">
                                                     <div class="text-right">
-                                                        <button type="submit" class="btn">Generate Quote</button>
+                                                        <button type="submit" id="btnGenerateQuote" class="btn">Generate Quote</button>
                                                     </div>
                                                 </div>
 
@@ -330,6 +331,32 @@
 
 
 <script type="text/javascript">
+
+
+    $(document).ready(function(){
+
+    $("#validationSumIns").css("display","none");
+    
+    $("#btnGenerateQuote").click(function(){
+    
+        var coverselected = $("#CoverTypeId option:selected").val();
+        if (coverselected == "1" && $("#SumInsured").val() == "") {
+            $("#validationSumIns").css("display","block");
+            return false;
+        }
+        else
+        {
+            $("#validationSumIns").css("display","none");
+        }
+    
+    });
+    
+    
+    });
+
+
+
+
     $(function () { // will trigger when the document is ready
         debugger;
         //$('#datetimepicker1,#datetimepicker2,#datetimepicker3,#datetimepicker4').datetimepicker({
@@ -397,9 +424,13 @@
     }
     function QuoteCalculation() {
         debugger;
+        if($("#SumInsured").val() == "")
+        {
+        $("#SumInsured").val("0");
+        }
         var sumInsured = parseFloat($("#SumInsured").val());
         if (sumInsured < 1) {
-            return false;
+            //return false;
         }
         var vehicleUsageId = parseInt($("#VehicleUsage").val());
         if (vehicleUsageId < 1) {

@@ -36,7 +36,7 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please Enter Cover End Date")]
 
         public DateTime? CoverEndDate { get; set; }
-        [Required(ErrorMessage = "Please Enter Sum Insured")]
+       
 
         public decimal? SumInsured { get; set; }
         public decimal? Premium { get; set; }

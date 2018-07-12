@@ -20,6 +20,7 @@ namespace Insurance.Service
         public List<ClsVehicleModel> GetModel(string makeCode)
         {
             var list = InsuranceContext.VehicleModels.All(where: $"MakeCode='{makeCode}'").ToList();
+            
             var map = Mapper.Map<List<VehicleModel>, List<ClsVehicleModel>>(list);
             return map;
 
