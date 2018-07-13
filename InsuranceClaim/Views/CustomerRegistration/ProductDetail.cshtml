@@ -247,7 +247,7 @@
         if (mm < 10) {
             mm = '0' + mm;
         }
-        var today = dd + '/' + mm + '/' + yyyy;
+        var today = mm + '/' + dd + '/' + yyyy;
         $("#EndDate").val(today);
         debugger;
         var dateParts = today.split("/");        
@@ -263,7 +263,7 @@
         if (mm < 10) {
             mm = '0' + mm;
         }
-        var today = dd + '/' + mm + '/' + yyyy;
+        var today = mm + '/' + dd + '/' + yyyy;
         $("#RenewalDate").val(today);
     }
 
@@ -280,7 +280,7 @@
         if (mm < 10) {
             mm = '0' + mm;
         }
-        var today = dd + '/' + mm + '/' + yyyy;
+        var today = mm + '/' + dd + '/' + yyyy;
 
         $("#StartDate").val(today);
         $("#TransactionDate").val(today).css("background-color", "lightgray");

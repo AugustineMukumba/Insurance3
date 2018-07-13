@@ -255,8 +255,6 @@
             format: 'MM/D/YYYY',
             maxDate: new Date()
         });
-
-
         debugger
         var errorMessage = $('#ErrorMessage').val();
         if (errorMessage != null && errorMessage != '') {
@@ -282,7 +280,7 @@
             mm = '0' + mm;
         }
 
-        var today = dd + '/' + mm + '/' + yyyy;
+        var today = mm + '/' + dd + '/' + yyyy;
 
         $("#DateOfBirth").val(today);
 

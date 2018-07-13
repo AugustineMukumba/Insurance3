@@ -165,6 +165,28 @@
                                         </div>
                                     </div>
 
+
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.Label("Suggested Value", new { @class = "gender-label" })
+                                                @Html.TextBox("VehicleSumInsures", null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Suggested Value", @maxlength = "5" })
+                                                @*@Html.ValidatiVehicleSumInsuresonMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
+                                                @* @Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.Label("Sum Insured", new { @class = "gender-label" })
+                                                @Html.TextBoxFor(m => m.SumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insured", @maxlength = "11" })
+                                                <span class="text-danger" id="validationSumIns">Please Enter Sum Insured</span>
+                                                @*@Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
+                                                @*@Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
+                                            </div>
+                                        </div>
+
+                                    </div>
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
@@ -193,27 +215,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Suggested Value", new { @class = "gender-label" })
-                                                @Html.TextBox("VehicleSumInsures",null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Suggested Value", @maxlength = "5" })
-                                                @*@Html.ValidatiVehicleSumInsuresonMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
-                                               @* @Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
-
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Sum Insured", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.SumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insured", @maxlength = "11" })
-                                                <span class="text-danger" id="validationSumIns">Please Enter Sum Insured</span>
-                                                @*@Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
-                                                @*@Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
-                                            </div>
-                                        </div>
-
-                                    </div>
+                                    
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
@@ -281,6 +283,12 @@
                                     </div>
 
                                     <div class="row">
+                                        <div class="col-sm-12 col-md-12 form-group-select">
+                                            <div class="form-group">@Html.Label("Want the licence disk to be delivered", new { @class = "gender-label" })</div>
+                                            @*@Html.CheckBoxFor(x=>x.IsLicenseDiskNeeded,)*@
+                                            </div>
+                                        </div>
+                                    <div class="row">
                                         <div class="col-md-12 next-btn">
                                             <div class="row">
                                                 <div class="col-sm-6 col-md-6">
@@ -289,6 +297,7 @@
                                                         <a style="display:none" id="previouselink" href="/CustomerRegistration/ProductDetail" class="back"></a>
                                                     </div>
                                                 </div>
+
                                                 <div class="col-sm-6 col-md-6">
                                                     <div class="text-right">
                                                         <button type="submit" id="btnGenerateQuote" class="btn">Generate Quote</button>

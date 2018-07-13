@@ -86,7 +86,7 @@ namespace InsuranceClaim.Controllers
                     customerModel.EmailAddress = customerData.EmailAddress;
                     customerModel.FirstName = customerData.FirstName;
                     customerModel.LastName = customerData.LastName;
-                    customerModel.CountryCode =customerData.CountryCode;
+                    customerModel.CountryCode = customerData.CountryCode;
                 }
                 return View(customerModel);
             }
@@ -577,122 +577,122 @@ namespace InsuranceClaim.Controllers
                 return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
         }
 
-  
 
 
 
 
-    //[HttpPost]
-    //public async Task<ActionResult> SubmitPlan(SummaryDetailModel model)
-    //{
-    //    //var vehicle = (RiskDetailModel)Session["VehicleDetail"];
-    //    Session["SummaryDetailed"] = model;
-    //    var DbEntry = new SummaryDetail();
-    //    var customer = (CustomerModel)Session["CustomerDataModal"];
-    //    if (customer != null)
-    //    {
-    //        if (customer.Id == null || customer.Id == 0)
-    //        {
-    //            decimal custId = 0;
-    //            var user = new ApplicationUser { UserName = customer.EmailAddress, Email = customer.EmailAddress, PhoneNumber = customer.PhoneNumber };
-    //            var result = await UserManager.CreateAsync(user, "Kindle@123");
-    //            if (result.Succeeded)
-    //            {
-    //                var objCustomer = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).FirstOrDefault();
-    //                if (objCustomer != null)
-    //                {
-    //                    custId = objCustomer.CustomerId + 1;
-    //                }
-    //                else
-    //                {
-    //                    custId = Convert.ToDecimal(ConfigurationManager.AppSettings["CustomerId"]);
-    //                }
 
-    //                customer.UserID = user.Id;
-    //                customer.CustomerId = custId;
-    //                var customerdata = Mapper.Map<CustomerModel, Customer>(customer);
-    //                InsuranceContext.Customers.Insert(customerdata);
-    //                customer.Id = customerdata.Id;
-    //            }
-    //        }
-    //        var policy = (PolicyDetail)Session["PolicyData"];
-    //        if (policy != null)
-    //        {
-    //            if (policy.Id == null || policy.Id == 0)
-    //            {
-    //                policy.CustomerId = customer.Id;
-    //                InsuranceContext.PolicyDetails.Insert(policy);
-    //            }
-    //        }
-    //        var Id = 0;
-    //        var vehicle = (RiskDetailModel)Session["VehicleDetail"];
-    //        if (vehicle != null)
-    //        {
-    //            var service = new RiskDetailService();
-    //            vehicle.CustomerId = customer.Id;
-    //            vehicle.PolicyId = policy.Id;
-    //            //var vehical = Mapper.Map<RiskDetailModel, RiskDetailModel>(vehicle);
-    //            Id = service.AddVehicleInformation(vehicle);
+        //[HttpPost]
+        //public async Task<ActionResult> SubmitPlan(SummaryDetailModel model)
+        //{
+        //    //var vehicle = (RiskDetailModel)Session["VehicleDetail"];
+        //    Session["SummaryDetailed"] = model;
+        //    var DbEntry = new SummaryDetail();
+        //    var customer = (CustomerModel)Session["CustomerDataModal"];
+        //    if (customer != null)
+        //    {
+        //        if (customer.Id == null || customer.Id == 0)
+        //        {
+        //            decimal custId = 0;
+        //            var user = new ApplicationUser { UserName = customer.EmailAddress, Email = customer.EmailAddress, PhoneNumber = customer.PhoneNumber };
+        //            var result = await UserManager.CreateAsync(user, "Kindle@123");
+        //            if (result.Succeeded)
+        //            {
+        //                var objCustomer = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).FirstOrDefault();
+        //                if (objCustomer != null)
+        //                {
+        //                    custId = objCustomer.CustomerId + 1;
+        //                }
+        //                else
+        //                {
+        //                    custId = Convert.ToDecimal(ConfigurationManager.AppSettings["CustomerId"]);
+        //                }
 
-    //        }
+        //                customer.UserID = user.Id;
+        //                customer.CustomerId = custId;
+        //                var customerdata = Mapper.Map<CustomerModel, Customer>(customer);
+        //                InsuranceContext.Customers.Insert(customerdata);
+        //                customer.Id = customerdata.Id;
+        //            }
+        //        }
+        //        var policy = (PolicyDetail)Session["PolicyData"];
+        //        if (policy != null)
+        //        {
+        //            if (policy.Id == null || policy.Id == 0)
+        //            {
+        //                policy.CustomerId = customer.Id;
+        //                InsuranceContext.PolicyDetails.Insert(policy);
+        //            }
+        //        }
+        //        var Id = 0;
+        //        var vehicle = (RiskDetailModel)Session["VehicleDetail"];
+        //        if (vehicle != null)
+        //        {
+        //            var service = new RiskDetailService();
+        //            vehicle.CustomerId = customer.Id;
+        //            vehicle.PolicyId = policy.Id;
+        //            //var vehical = Mapper.Map<RiskDetailModel, RiskDetailModel>(vehicle);
+        //            Id = service.AddVehicleInformation(vehicle);
 
-    //        DbEntry = Mapper.Map<SummaryDetailModel, SummaryDetail>(model);
-    //        DbEntry.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
-    //        DbEntry.VehicleDetailId = Id;
-    //        DbEntry.CustomerId = vehicle.CustomerId;
-    //        InsuranceContext.SummaryDetails.Insert(DbEntry);
-    //    }
+        //        }
 
-    //    return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
-    //}
-    [HttpPost]
-    public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess)
-    {
-        var policytermid = (int)Session["policytermid"];
-        JsonResult json = new JsonResult();
-        var quote = new QuoteLogic();
-        var typeCover = eCoverType.Comprehensive;
-        if (coverType == 2)
+        //        DbEntry = Mapper.Map<SummaryDetailModel, SummaryDetail>(model);
+        //        DbEntry.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
+        //        DbEntry.VehicleDetailId = Id;
+        //        DbEntry.CustomerId = vehicle.CustomerId;
+        //        InsuranceContext.SummaryDetails.Insert(DbEntry);
+        //    }
+
+        //    return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
+        //}
+        [HttpPost]
+        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess)
         {
-            typeCover = eCoverType.ThirdParty;
+            var policytermid = (int)Session["policytermid"];
+            JsonResult json = new JsonResult();
+            var quote = new QuoteLogic();
+            var typeCover = eCoverType.Comprehensive;
+            if (coverType == 2)
+            {
+                typeCover = eCoverType.ThirdParty;
+            }
+            var eexcessType = eExcessType.Percentage;
+            if (excessType == 2)
+            {
+                eexcessType = eExcessType.FixedAmount;
+            }
+            var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover, eexcessType, excess, policytermid);
+            json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            json.Data = premium;
+            return json;
         }
-        var eexcessType = eExcessType.Percentage;
-        if (excessType == 2)
+        public JsonResult GetVehicleModel(string makeCode)
         {
-            eexcessType = eExcessType.FixedAmount;
+            var service = new VehicleService();
+            var model = service.GetModel(makeCode);
+            JsonResult jsonResult = new JsonResult();
+            jsonResult.Data = model;
+            jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            return jsonResult;
         }
-        var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover, eexcessType, excess, policytermid);
-        json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
-        json.Data = premium;
-        return json;
-    }
-    public JsonResult GetVehicleModel(string makeCode)
-    {
-        var service = new VehicleService();
-        var model = service.GetModel(makeCode);
-        JsonResult jsonResult = new JsonResult();
-        jsonResult.Data = model;
-        jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
-        return jsonResult;
-    }
 
 
-    public ActionResult PaymentDetail(int id)
-    {
-        var cardDetails = (CardDetailModel)Session["CardDetail"];
-        if (cardDetails == null)
+        public ActionResult PaymentDetail(int id)
         {
-            cardDetails = new CardDetailModel();
+            var cardDetails = (CardDetailModel)Session["CardDetail"];
+            if (cardDetails == null)
+            {
+                cardDetails = new CardDetailModel();
+            }
+            cardDetails.SummaryDetailId = id;
+            return View(cardDetails);
         }
-        cardDetails.SummaryDetailId = id;
-        return View(cardDetails);
+        public PartialViewResult Addvehicle( int id = 0)
+        {
+
+
+
+            return PartialView();
+        }
     }
-
-
-
-
-
-
-
-}
 }

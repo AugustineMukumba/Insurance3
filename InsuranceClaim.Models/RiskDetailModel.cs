@@ -49,5 +49,6 @@ namespace InsuranceClaim.Models
         public int ExcessType { get; set; }
         public decimal Excess { get; set; }
         public string CoverNoteNo { get; set; }
+        public bool? IsLicenseDiskNeeded { get; set; }
     }
 }
