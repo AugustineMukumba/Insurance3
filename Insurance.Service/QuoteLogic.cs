@@ -16,9 +16,15 @@ namespace Insurance.Service
         public bool Status { get; set; } = true;
         public string Message { get; set; }
 
-        public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType, eExcessType excessType, decimal excess,int PaymentTermid)
+        public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType, eExcessType excessType, decimal excess, int PaymentTermid, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses)
         {
             var vehicleUsage = InsuranceContext.VehicleUsages.Single(vehicleUsageId);
+            var Setting = InsuranceContext.Settings.All();
+            var additionalchargeatp = 0.0m;
+            var additionalchargepac = 0.0m;
+            var additionalchargeebb = 0.0m;
+            var additionalchargersa = 0.0m;
+            var additionalchargeme = 0.0m;
             float? InsuranceRate = 0;
             decimal? InsuranceMinAmount = 0;
             if (coverType == eCoverType.Comprehensive)
@@ -31,7 +37,7 @@ namespace Insurance.Service
                 InsuranceRate = (float)vehicleUsage.AnnualTPAmount;
                 InsuranceMinAmount = vehicleUsage.MinThirdAmount;
             }
-            if (excessType == eExcessType.Percentage && excess > 0) 
+            if (excessType == eExcessType.Percentage && excess > 0)
             {
                 InsuranceRate = InsuranceRate + float.Parse(excess.ToString());
             }
@@ -47,12 +53,67 @@ namespace Insurance.Service
                 premium = (sumInsured * Convert.ToDecimal(InsuranceRate)) / 100;
             }
 
-            if (sumInsured > 10000)
+
+
+            if (Addthirdparty)
             {
-                var extraamount = sumInsured - 10000m;
-                var additionalcharge = ((0.5 * (double)extraamount) / 100);
-                premium = premium + (decimal)additionalcharge;
+                var AddThirdPartyAmountADD = AddThirdPartyAmount;
+
+                if (AddThirdPartyAmountADD > 10000)
+                {
+                    var settingAddThirdparty = Convert.ToDecimal(Setting.Where(x => x.key == "Addthirdparty").Select(x => x.value).FirstOrDefault());
+                    var Amount = AddThirdPartyAmountADD - 10000;
+                    premium += Convert.ToDecimal((Amount * settingAddThirdparty) / 100);
+
+                }
             }
+            if (PassengerAccidentCover)
+            {
+                int additionalAmountPerPerson = Convert.ToInt32(Setting.Where(x => x.key == "PassengerAccidentCover").Select(x => x.value).FirstOrDefault());
+
+                int totalAdditionalPACcharge = NumberofPersons * additionalAmountPerPerson;
+
+                additionalchargepac = totalAdditionalPACcharge;
+
+            }
+            if (ExcessBuyBack)
+            {
+
+                int additionalAmountExcessBuyBack = Convert.ToInt32(Setting.Where(x => x.key == "ExcessBuyBack").Select(x => x.value).FirstOrDefault());
+
+
+                additionalchargeebb = (premium * additionalAmountExcessBuyBack) / 100;
+
+
+            }
+            if (RoadsideAssistance)
+            {
+                decimal additionalAmountRoadsideAssistance = Convert.ToDecimal(Setting.Where(x => x.key == "RoadsideAssistance").Select(x => x.value).FirstOrDefault());
+
+
+                additionalchargersa = (premium * additionalAmountRoadsideAssistance) / 100;
+
+
+            }
+            if (MedicalExpenses)
+            {
+
+                decimal additionalAmountMedicalExpenses = Convert.ToDecimal(Setting.Where(x => x.key == "MedicalExpenses").Select(x => x.value).FirstOrDefault());
+
+
+                additionalchargeme = (premium * additionalAmountMedicalExpenses) / 100;
+
+            }
+
+
+
+
+            //if (sumInsured > 10000)
+            //{
+            //    var extraamount = sumInsured - 10000m;
+            //    var additionalcharge = ((0.5 * (double)extraamount) / 100);
+            //    premium = premium + (decimal)additionalcharge;
+            //}
             if (premium < InsuranceMinAmount && coverType == eCoverType.Comprehensive)
             {
                 Status = false;
@@ -69,21 +130,13 @@ namespace Insurance.Service
             //    this.Message = "Insurance minimum amount $" + InsuranceMinAmount + " Charge is applicable.";
             //}
 
-            switch (PaymentTermid)
-            {                
-                case 3:
-                    premium = premium / 4;
-                    break;
-                case 4:
-                    premium = premium / 3;
-                    break;
-            }
+            
 
             if (excessType == eExcessType.FixedAmount && excess > 0)
             {
                 premium = premium + excess;
             }
-          
+
             this.Premium = premium;
             var stampDuty = (premium * 5) / 100;
             if (stampDuty > 2000000)
@@ -94,11 +147,22 @@ namespace Insurance.Service
             }
 
             var ztscLevy = (premium * 12) / 100;
-            this.StamDuty =Math.Round(stampDuty,2);
-            this.ZtscLevy =Math.Round(ztscLevy,2);
+            this.StamDuty = Math.Round(stampDuty, 2);
+            this.ZtscLevy = Math.Round(ztscLevy, 2);
 
-            premium = premium + stampDuty + ztscLevy;
-            this.Premium =Math.Round(premium,2);
+            premium = premium + stampDuty + ztscLevy + additionalchargeebb + additionalchargeme + additionalchargepac + additionalchargersa;
+
+            switch (PaymentTermid)
+            {
+                case 3:
+                    premium = premium / 4;
+                    break;
+                case 4:
+                    premium = premium / 3;
+                    break;
+            }
+
+            this.Premium = Math.Round(premium, 2);
             return this;
         }
     }

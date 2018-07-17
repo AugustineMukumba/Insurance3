@@ -55,7 +55,9 @@ namespace Insurance.Domain
         public static VehicleCoverTypes VehicleCoverTypes { get { return new VehicleCoverTypes(); } }
         public static VehicleUsages VehicleUsages { get { return new VehicleUsages(); } }
         public static SmsLogs SmsLogs { get { return new SmsLogs(); } }
+        public static Settings Settings { get { return new Settings(); } }
         public static PaymentInformations PaymentInformations { get { return new PaymentInformations(); } }
+
 
         // general purpose operations
 

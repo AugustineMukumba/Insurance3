@@ -75,7 +75,7 @@
                                     <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
                                             @*@Html.TextBoxFor(x => x.PolicyName, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Name" })*@
-                                            @Html.Label("Policy Name", new { @class = "gender-label" })
+                                            @Html.Label("Product Name", new { @class = "gender-label" })
                                             @Html.DropDownListFor(x => x.PolicyName, new SelectList(ViewBag.Products, "Id", "ProductName"), new { @class = "form-control" })
                                             @Html.ValidationMessageFor(x => x.PolicyName, "", new { @class = "text-danger" })
                                         </div>
@@ -91,7 +91,7 @@
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
-                                            @Html.Label("Insurer", new { @class = "gender-label" })
+                                            @Html.Label("GeneInsure", new { @class = "gender-label" })
                                             @Html.DropDownListFor(x => x.InsurerId, new SelectList(ViewBag.Insurer, "Id", "InsurerName"), new { @class = "form-control" })
                                         </div>
                                     </div>
@@ -145,7 +145,7 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
+                                <div class="row" style="display:none">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
                                             @Html.Label("Renewal Date", new { @class = "gender-label" })
@@ -251,7 +251,7 @@
         $("#EndDate").val(today);
         debugger;
         var dateParts = today.split("/");        
-        today = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+        today = new Date(dateParts[2], dateParts[0] - 1, dateParts[1]);
         today.setDate(today.getDate() + 1);
         dd = today.getDate();
         mm = today.getMonth() + 1; //January is 0!

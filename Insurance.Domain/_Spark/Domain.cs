@@ -241,6 +241,13 @@ namespace Insurance.Domain
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
         public bool? IsActive { get; set; }
+        public Boolean Addthirdparty { get; set; }
+        public decimal? AddThirdPartyAmount { get; set; }
+        public Boolean PassengerAccidentCover { get; set; }
+        public Boolean ExcessBuyBack { get; set; }
+        public Boolean RoadsideAssistance { get; set; }
+        public Boolean MedicalExpenses { get; set; }
+        public int? NumberofPersons { get; set; }
     }
 
     public partial class VehicleMake : Entity<VehicleMake>
@@ -441,6 +448,15 @@ namespace Insurance.Domain
         public string Sendto { get; set; }
         public string Body { get; set; }
         public string Response { get; set; }
+
+    }
+    public partial class Setting : Entity<Setting>
+    {
+        public Setting() { }
+        public Setting(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public string key { get; set; }
+        public string value { get; set; }
 
     }
 }

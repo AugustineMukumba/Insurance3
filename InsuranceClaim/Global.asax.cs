@@ -40,6 +40,7 @@ namespace InsuranceClaim
                 cfg.CreateMap<InsurerModel, PolicyInsurer>().ReverseMap();
                 cfg.CreateMap<SummaryDetail, SummaryDetailModel>().ReverseMap();
                 cfg.CreateMap<SmsLog, SmsLogModel>().ReverseMap();
+                cfg.CreateMap<Setting, SettingModel>().ReverseMap();
             });
         }
     }

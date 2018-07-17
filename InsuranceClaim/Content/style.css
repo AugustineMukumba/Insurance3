@@ -893,7 +893,30 @@ button.btn-sm.btn-danger {
 .form-group-text .form-group span.text-danger[data-valmsg-for="PhoneNumber"] {
     width: 100%;
     top: 100%;
-    left: 0;
+    left: 0; 
+}
+
+.form-group-list ul li {
+    width: 50%;
+    float: left;
+    height: 43px;
+    position: relative;
+    padding: 0 0 0 22px;
+}
+
+.form-group-list ul li label {
+    float: left;
+    width: auto;
+    font-size: 13px;
+}
+.form-group-list ul li input[type="checkbox"] {
+    height: auto;
+    float: left;
+    position: absolute;
+    left: 5px;
+}
+.form-group-text .form-group.margin-0 {
+    margin: 0;
 }
 
 /**15 june css end**/

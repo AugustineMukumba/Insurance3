@@ -49,6 +49,15 @@ namespace InsuranceClaim.Models
         public int ExcessType { get; set; }
         public decimal Excess { get; set; }
         public string CoverNoteNo { get; set; }
-        public bool? IsLicenseDiskNeeded { get; set; }
+        public bool IsLicenseDiskNeeded { get; set; }
+        public Boolean Addthirdparty { get; set; }
+        public decimal? AddThirdPartyAmount { get; set; }
+
+        public Boolean PassengerAccidentCover { get; set; }
+        public Boolean ExcessBuyBack { get; set; }
+        public Boolean RoadsideAssistance { get; set; }
+        public Boolean MedicalExpenses { get; set; }
+        public int? NumberofPersons { get; set; }
+
     }
 }

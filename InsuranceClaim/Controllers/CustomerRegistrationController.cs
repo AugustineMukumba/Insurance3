@@ -286,6 +286,9 @@ namespace InsuranceClaim.Controllers
             var viewModel = new RiskDetailModel();
             viewModel.CoverStartDate = PolicyData.StartDate;
             viewModel.CoverEndDate = PolicyData.EndDate;
+
+            viewModel.NumberofPersons = 0 ;
+            viewModel.AddThirdPartyAmount = 0.00m;
             var service = new VehicleService();
             var makers = service.GetMakers();
             ViewBag.CoverType = service.GetCoverType();
@@ -331,6 +334,15 @@ namespace InsuranceClaim.Controllers
                 viewModel.VehicleYear = data.VehicleYear;
                 viewModel.Id = data.Id;
                 viewModel.ZTSCLevy = data.ZTSCLevy;
+                viewModel.NumberofPersons = data.NumberofPersons;
+                viewModel.PassengerAccidentCover = data.PassengerAccidentCover;
+                viewModel.IsLicenseDiskNeeded = data.IsLicenseDiskNeeded;
+                viewModel.ExcessBuyBack = data.ExcessBuyBack;
+                viewModel.RoadsideAssistance = data.RoadsideAssistance;
+                viewModel.MedicalExpenses = data.MedicalExpenses;
+                viewModel.Addthirdparty = data.Addthirdparty;
+                viewModel.AddThirdPartyAmount = data.AddThirdPartyAmount;
+                 
                 var ser = new VehicleService();
                 var model = ser.GetModel(data.MakeId);
                 ViewBag.Model = model;
@@ -541,6 +553,15 @@ namespace InsuranceClaim.Controllers
                     Vehicledata.VehicleUsage = vehicle.VehicleUsage;
                     Vehicledata.VehicleYear = vehicle.VehicleYear;
                     Vehicledata.ZTSCLevy = vehicle.ZTSCLevy;
+                    Vehicledata.Addthirdparty = vehicle.Addthirdparty;
+                    Vehicledata.AddThirdPartyAmount = vehicle.AddThirdPartyAmount;
+                    vehicle.PassengerAccidentCover = vehicle.PassengerAccidentCover;
+                    vehicle.ExcessBuyBack = vehicle.ExcessBuyBack;
+                    vehicle.RoadsideAssistance = vehicle.RoadsideAssistance;
+                    vehicle.MedicalExpenses = vehicle.MedicalExpenses;
+                    vehicle.NumberofPersons = vehicle.NumberofPersons;
+
+                   
 
                     InsuranceContext.VehicleDetails.Update(Vehicledata);
                 }
@@ -571,8 +592,10 @@ namespace InsuranceClaim.Controllers
                     InsuranceContext.SummaryDetails.Update(summarydata);
                 }
             }
-            if (model.PaymentMethodId == 2)
+            if (model.PaymentMethodId == 1)
                 return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id });
+            if (model.PaymentMethodId == 3)
+                return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremium = Convert.ToString(summary.TotalPremium), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
             else
                 return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
         }
@@ -646,7 +669,7 @@ namespace InsuranceClaim.Controllers
         //    return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
         //}
         [HttpPost]
-        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess)
+        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess,decimal? AddThirdPartyAmount,int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses)
         {
             var policytermid = (int)Session["policytermid"];
             JsonResult json = new JsonResult();
@@ -661,7 +684,7 @@ namespace InsuranceClaim.Controllers
             {
                 eexcessType = eExcessType.FixedAmount;
             }
-            var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover, eexcessType, excess, policytermid);
+            var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover, eexcessType, excess, policytermid, AddThirdPartyAmount, NumberofPersons, Addthirdparty, PassengerAccidentCover, ExcessBuyBack, RoadsideAssistance, MedicalExpenses);
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             json.Data = premium;
             return json;

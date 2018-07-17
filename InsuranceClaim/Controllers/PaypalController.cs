@@ -728,6 +728,26 @@ namespace InsuranceClaim.Controllers
             }
 
         }
+        public async Task<ActionResult> InitiatePaynowTransaction(Int32 id, string TotalPremium, string PolicyNumber, string Email)
+        {
+            Insurance.Service.PaynowService paynowservice = new Insurance.Service.PaynowService();
+            PaynowResponse paynowresponse = new PaynowResponse();
+
+            paynowresponse = await paynowservice.initiateTransaction("reference", TotalPremium, PolicyNumber, Email);
+
+            if (paynowresponse.status == "Ok")
+            {
+                string strScript = "window.open('" + paynowresponse.browserurl + "', 'Confirm Payment','width = 800, height = 800','_blank');";
+                ViewBag.strScript = "<script type='text/javascript'>$(document).ready(function(){" + strScript + "});</script>";
+            }
+            else
+            {
+                ViewBag.strScript = "<script type='text/javascript'>$(document).ready(function(){$('#errormsg').text('" + paynowresponse.error + "');});</script>";
+            }
+
+            return View();
+            //return RedirectToAction("SaveDetailList", "Paypal", new { id = id });
+        }
     }
 }
 
