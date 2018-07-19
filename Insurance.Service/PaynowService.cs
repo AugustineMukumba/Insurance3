@@ -28,8 +28,8 @@ namespace Insurance.Service
             var values = new Dictionary<string, string>
             {
 
-               { "resulturl", "http://geneinsureclaim.kindlebit.com/Paypal/SaveDetailList/" + id},
-               { "returnurl", "http://geneinsureclaim.kindlebit.com/Paypal/SaveDetailList/" + id },
+               { "resulturl", "http://localhost:49872/Paypal/SaveDetailList/" + id},
+               { "returnurl", "http://localhost:49872/Paypal/SaveDetailList/" + id },
                { "reference", PaymentId },
                { "amount", "5.00" },
                { "id", IntegrationID },
@@ -42,8 +42,8 @@ namespace Insurance.Service
 
             var _values = new Dictionary<string, string>
             {
-               { "resulturl", "http://geneinsureclaim.kindlebit.com/Paypal/SaveDetailList/" + id},
-               { "returnurl", "http://geneinsureclaim.kindlebit.com/Paypal/SaveDetailList/" + id },
+               { "resulturl", "http://localhost:49872/Paypal/SaveDetailList/" + id},
+               { "returnurl", "http://localhost:49872/Paypal/SaveDetailList/" + id },
                { "reference", PaymentId },
                { "amount", "5.00" },
                { "id", IntegrationID },

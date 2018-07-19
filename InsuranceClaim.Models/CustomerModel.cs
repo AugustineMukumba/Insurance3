@@ -66,8 +66,8 @@ namespace InsuranceClaim.Models
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
         public bool? IsActive { get; set; }
-        [Required(ErrorMessage = "Please enter Country Code and phone number.")]
-        [RegularExpression(@"^\+\d{1,3}$", ErrorMessage = "Not a valid Country Code .")]
+        //[Required(ErrorMessage = "Please enter Country Code and phone number.")]
+        //[RegularExpression(@"^\+\d{1,3}$", ErrorMessage = "Not a valid Country Code .")]
         public string CountryCode { get; set; }
         public string role { get; set; }
     }

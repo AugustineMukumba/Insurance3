@@ -40,6 +40,12 @@ namespace Insurance.Service
             var list = InsuranceContext.VehicleUsages.All(where: $"ProductId='{PolicyName}'").ToList();
             return list;
         }
+        public List<VehicleUsage> GetAllVehicleUsage()
+        {
+            var list = InsuranceContext.VehicleUsages.All().ToList();
+            return list;
+        }
+
         public PolicyDetail GetPolicy(int policyId)
         {
             var policy = InsuranceContext.PolicyDetails.Single(policyId);

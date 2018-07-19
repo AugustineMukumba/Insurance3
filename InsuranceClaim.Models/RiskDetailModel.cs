@@ -58,6 +58,9 @@ namespace InsuranceClaim.Models
         public Boolean RoadsideAssistance { get; set; }
         public Boolean MedicalExpenses { get; set; }
         public int? NumberofPersons { get; set; }
+        public bool chkAddVehicles { get; set; }
+        public bool isUpdate { get; set; }
+        public int vehicleindex { get; set; }
 
     }
 }
