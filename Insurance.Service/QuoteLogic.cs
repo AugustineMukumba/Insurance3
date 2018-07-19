@@ -150,7 +150,7 @@ namespace Insurance.Service
             this.StamDuty = Math.Round(stampDuty, 2);
             this.ZtscLevy = Math.Round(ztscLevy, 2);
 
-            premium = premium + stampDuty + ztscLevy + additionalchargeebb + additionalchargeme + additionalchargepac + additionalchargersa;
+            premium = premium + stampDuty + ztscLevy ;
 
             switch (PaymentTermid)
             {
@@ -161,6 +161,8 @@ namespace Insurance.Service
                     premium = premium / 3;
                     break;
             }
+
+            premium = premium + additionalchargeebb + additionalchargeme + additionalchargepac + additionalchargersa;
 
             this.Premium = Math.Round(premium, 2);
             return this;

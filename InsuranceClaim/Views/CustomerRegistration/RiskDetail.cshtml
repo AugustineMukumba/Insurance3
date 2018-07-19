@@ -190,7 +190,7 @@
                                     <div id="thridparty" class="row">
                                         <div class="col-sm-6 col-md-6 form-group-select">
                                             <div id="thirdpartycheck" class="form-group">
-                                                @Html.Label("ADD THIRD PARTY INSURANCE", new { @class = "gender-label" })
+                                                @Html.Label("Add Third Party Insurance", new { @class = "gender-label" })
                                                 @Html.CheckBoxFor(x => x.Addthirdparty)
                                             </div>
                                         </div>
@@ -298,7 +298,7 @@
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.Label("Radio License Cost", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.RadioLicenseCost, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Radio Licence Cost", @maxlength = "5" })
+                                                @Html.TextBoxFor(m => m.RadioLicenseCost, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Radio Licence Cost", @maxlength = "5", @disabled="disabled" })
                                                 @Html.ValidationMessageFor(m => m.RadioLicenseCost, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
@@ -523,13 +523,19 @@
             });
 
             $("#RoadsideAssistance").click(function () {
+                
                 QuoteCalculation();
             });
 
             $("#MedicalExpenses").click(function () {
                 QuoteCalculation();
             });
-           
+            $("#PassengerAccidentCover").click(function () {
+                QuoteCalculation();
+            });
+            $("#Addthirdparty").click(function () {
+                QuoteCalculation();
+            });
             
 
             //called when key is pressed in textbox

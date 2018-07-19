@@ -618,11 +618,11 @@ namespace InsuranceClaim.Controllers
                 string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                 bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-
+                InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
 
                 if (!userLoggedin)
                 {
-                    InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
+
                     string emailTemplatePath = "/Views/Shared/EmaiTemplates/UserRegisteration.cshtml";
                     string EmailBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(emailTemplatePath));
                     var Body = EmailBody.Replace(" #PolicyNumber#", policy.PolicyNumber).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Email#", user.Email).Replace("#change#", callbackUrl);
@@ -652,14 +652,14 @@ namespace InsuranceClaim.Controllers
 
                     string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentEmail.cshtml";
                     string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
-                    var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#AccountName#", customer.FirstName + ", " + customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Amount#",Convert.ToString(summaryDetail.TotalPremium)).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Bank" : (summaryDetail.PaymentMethodId == 2 ? "Cash" : "Visa")));
+                    var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#AccountName#", customer.FirstName + ", " + customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Amount#", Convert.ToString(summaryDetail.TotalPremium)).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Cash" : (summaryDetail.PaymentMethodId == 2 ? "Credit Card" : "Pay Now")));
                     objEmailService.SendEmail(user.Email, "", "", "Payment", Body2, null);
                 }
-                
+
                 Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
                 VehicleModel model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{vehicle.ModelId}'");
                 VehicleMake make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{vehicle.MakeId}'");
-                
+
                 string vehicledescription = model.ModelDescription + " / " + make.MakeDescription;
 
                 decimal totalpaymentdue = 0.00m;
@@ -690,10 +690,9 @@ namespace InsuranceClaim.Controllers
                 var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == summaryDetail.PaymentTermId);
                 string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/SeheduleMotor.cshtml";
                 string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
-                var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", policy.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", policy.StartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (summaryDetail.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + summaryDetail.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(totalpaymentdue)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty)).Replace("##MotorLevy##",Convert.ToString(summaryDetail.TotalZTSCLevies)).Replace("##PremiumDue##",Convert.ToString(summaryDetail.TotalPremium)).Replace("##PostalAddress##",customer.Zipcode);
-                objEmailService.SendEmail(user.Email, "", "", "Sehedule-motor", Bodyy, null);
+                var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", policy.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", policy.StartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (summaryDetail.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + summaryDetail.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(totalpaymentdue)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty)).Replace("##MotorLevy##", Convert.ToString(summaryDetail.TotalZTSCLevies)).Replace("##PremiumDue##", Convert.ToString(summaryDetail.TotalPremium)).Replace("##PostalAddress##", customer.Zipcode);
+                objEmailService.SendEmail(user.Email, "", "", "Schedule-motor", Bodyy, null);
             }
-
 
 
             Session.Remove("PolicyData");
@@ -728,22 +727,41 @@ namespace InsuranceClaim.Controllers
             }
 
         }
-        public async Task<ActionResult> InitiatePaynowTransaction(Int32 id, string TotalPremium, string PolicyNumber, string Email)
+       public async Task<ActionResult> InitiatePaynowTransaction(Int32 id, string TotalPremium, string PolicyNumber, string Email)
         {
+            var summaryDetail = InsuranceContext.SummaryDetails.Single(id);
+            var vehicle = InsuranceContext.VehicleDetails.Single(summaryDetail.VehicleDetailId);
+            var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);          
+            var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+
+
+            Item item = new Item();
+            item.name = product.ProductName;
+            item.currency = "USD";
+            item.price = vehicle.Premium.ToString();
+            item.quantity = "1";
+            item.sku = "sku";
+            //item.currency = "USD";
+
+            Session["itemData"] = item;
+
+
             Insurance.Service.PaynowService paynowservice = new Insurance.Service.PaynowService();
             PaynowResponse paynowresponse = new PaynowResponse();
 
-            paynowresponse = await paynowservice.initiateTransaction("reference", TotalPremium, PolicyNumber, Email);
+            paynowresponse = await paynowservice.initiateTransaction(Convert.ToString(id), TotalPremium, PolicyNumber, Email);
 
             if (paynowresponse.status == "Ok")
             {
-                string strScript = "window.open('" + paynowresponse.browserurl + "', 'Confirm Payment','width = 800, height = 800','_blank');";
+                string strScript = "location.href = '" + paynowresponse.browserurl + "';";
                 ViewBag.strScript = "<script type='text/javascript'>$(document).ready(function(){" + strScript + "});</script>";
             }
             else
             {
                 ViewBag.strScript = "<script type='text/javascript'>$(document).ready(function(){$('#errormsg').text('" + paynowresponse.error + "');});</script>";
             }
+
+           
 
             return View();
             //return RedirectToAction("SaveDetailList", "Paypal", new { id = id });

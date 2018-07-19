@@ -459,4 +459,24 @@ namespace Insurance.Domain
         public string value { get; set; }
 
     }
+    public partial class UserManagementView : Entity<UserManagementView>
+    {
+        public UserManagementView() { }
+        public UserManagementView(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Role { get; set; }
+        public string EmailAddress { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public string Gender { get; set; }
+        public string Country { get; set; }
+        public string Zipcode { get; set; }
+        public string State { get; set; }
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
+        public string PhoneNumber { get; set; }
+        public string City { get; set; }
+
+    }
 }

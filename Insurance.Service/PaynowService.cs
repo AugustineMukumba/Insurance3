@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Insurance.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -17,7 +18,7 @@ namespace Insurance.Service
         private static String IntegrationID = "5623";
         private static string IntegrationKey = "7c1cd190-5046-4292-806a-0dbb85b949f6";
 
-        public async Task<InsuranceClaim.Models.PaynowResponse> initiateTransaction(string reference, string amount, string additionalinfo, string authemail)
+        public async Task<InsuranceClaim.Models.PaynowResponse> initiateTransaction(string id, string amount, string additionalinfo, string authemail)
         {
             InsuranceClaim.Models.PaynowResponse paynowresponse = new InsuranceClaim.Models.PaynowResponse();
 
@@ -27,8 +28,8 @@ namespace Insurance.Service
             var values = new Dictionary<string, string>
             {
 
-               { "resulturl", "http://localhost:49872/PayNow/Index"},
-               { "returnurl", "http://localhost:49872/PayNow/Index" },
+               { "resulturl", "http://geneinsureclaim.kindlebit.com/Paypal/SaveDetailList/" + id},
+               { "returnurl", "http://geneinsureclaim.kindlebit.com/Paypal/SaveDetailList/" + id },
                { "reference", PaymentId },
                { "amount", "5.00" },
                { "id", IntegrationID },
@@ -37,12 +38,12 @@ namespace Insurance.Service
                { "status", "Message" }
             };
 
-            var generatedhash = GenerateTwoWayHash(values, new Guid(IntegrationKey));            
+            var generatedhash = GenerateTwoWayHash(values, new Guid(IntegrationKey));
 
             var _values = new Dictionary<string, string>
             {
-               { "resulturl", "http://localhost:49872/PayNow/Index"},
-               { "returnurl", "http://localhost:49872/PayNow/Index" },
+               { "resulturl", "http://geneinsureclaim.kindlebit.com/Paypal/SaveDetailList/" + id},
+               { "returnurl", "http://geneinsureclaim.kindlebit.com/Paypal/SaveDetailList/" + id },
                { "reference", PaymentId },
                { "amount", "5.00" },
                { "id", IntegrationID },
@@ -64,7 +65,14 @@ namespace Insurance.Service
 
             Uri responseUri = new Uri(decodedUrl);
 
+            SmsLog objsmslog = new SmsLog()
+            {
+                Sendto = "PAYNOW",
+                Body = content.ToString(),
+                Response = decodedUrl
+            };
 
+            InsuranceContext.SmsLogs.Insert(objsmslog);
 
             if (decodedUrl.Contains("Status=Error"))
             {

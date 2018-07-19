@@ -69,5 +69,6 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please enter Country Code and phone number.")]
         [RegularExpression(@"^\+\d{1,3}$", ErrorMessage = "Not a valid Country Code .")]
         public string CountryCode { get; set; }
+        public string role { get; set; }
     }
 }

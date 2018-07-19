@@ -281,6 +281,7 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult RiskDetail()
         {
+            int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.key == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
             var PolicyData = (PolicyDetail)Session["PolicyData"];
             //Id is policyid from Policy detail table
             var viewModel = new RiskDetailModel();
@@ -294,7 +295,7 @@ namespace InsuranceClaim.Controllers
             ViewBag.CoverType = service.GetCoverType();
             ViewBag.AgentCommission = service.GetAgentCommission();
             ViewBag.Makers = makers;
-
+            viewModel.RadioLicenseCost = Convert.ToDecimal(RadioLicenseCosts);
             ViewBag.VehicleUsage = service.GetVehicleUsage(PolicyData.PolicyName);
             //TempData["Policy"] = service.GetPolicy(id);
             if (makers.Count > 0)
@@ -324,7 +325,7 @@ namespace InsuranceClaim.Controllers
                 viewModel.OptionalCovers = data.OptionalCovers;
                 viewModel.PolicyId = data.PolicyId;
                 viewModel.Premium = data.Premium;
-                viewModel.RadioLicenseCost = (int)Math.Round(data.RadioLicenseCost == null ? 0 : data.RadioLicenseCost.Value, 0);
+                //viewModel.RadioLicenseCost = (int)Math.Round(data.RadioLicenseCost == null ? 0 : data.RadioLicenseCost.Value, 0);
                 viewModel.Rate = data.Rate;
                 viewModel.RegistrationNo = data.RegistrationNo;
                 viewModel.StampDuty = data.StampDuty;

@@ -10,6 +10,10 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using InsuranceClaim.Models;
 using Insurance.Domain;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Collections.Generic;
+using AutoMapper;
+using System.Configuration;
 
 namespace InsuranceClaim.Controllers
 {
@@ -18,7 +22,7 @@ namespace InsuranceClaim.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-
+        RoleManager<IdentityRole> roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
         public AccountController()
         {
         }
@@ -494,5 +498,398 @@ namespace InsuranceClaim.Controllers
             }
         }
         #endregion
+        public ActionResult RoleManagement(string id = "0")
+        {
+
+            bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            if (userLoggedin)
+            {
+                var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                var roles = UserManager.GetRoles(userid).FirstOrDefault();
+                if (roles != "SuperAdmin")
+                {
+                    return RedirectToAction("Index", "CustomerRegistration");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "CustomerRegistration");
+            }
+
+
+            if (id != "0")
+            {
+                var test = roleManager.Roles.Where(x => x.Id == id).FirstOrDefault();
+
+                RoleViewModel rolemodel = new RoleViewModel();
+                rolemodel.Id = test.Id;
+                rolemodel.RoleName = test.Name;
+
+                return View(rolemodel);
+            }
+            else
+            {
+                return View(new RoleViewModel());
+            }
+        }
+        [HttpPost]
+        public ActionResult AddRole(RoleViewModel model)
+        {
+            bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            if (userLoggedin)
+            {
+                var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                var roles = UserManager.GetRoles(userid).FirstOrDefault();
+                if (roles != "SuperAdmin")
+                {
+                    return RedirectToAction("Index", "CustomerRegistration");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "CustomerRegistration");
+            }
+
+
+            if (model.Id == "0")
+            {
+                if (!roleManager.RoleExists(model.RoleName))
+                {
+                    //alert user that role already exist
+                }
+                else
+                {
+                    var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+                    role.Name = model.RoleName;
+                    roleManager.Create(role);
+                }
+            }
+            else
+            {
+                var test = roleManager.Roles.Where(x => x.Id == model.Id).FirstOrDefault();
+
+                test.Name = model.RoleName;
+                roleManager.Update(test);
+            }
+
+
+
+            return RedirectToAction("RoleManagementList");
+        }
+
+        public ActionResult RoleManagementList()
+        {
+            bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            if (userLoggedin)
+            {
+                var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                var role = UserManager.GetRoles(userid).FirstOrDefault();
+                if (role != "SuperAdmin")
+                {
+                    return RedirectToAction("Index", "CustomerRegistration");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "CustomerRegistration");
+            }
+
+
+
+            List<IdentityRole> roles = roleManager.Roles.ToList();
+
+            InsuranceClaim.Models.RoleManagementListViewModel _roles = new RoleManagementListViewModel();
+
+            _roles.RoleList = roles;
+
+            return View(_roles);
+        }
+
+        public ActionResult DeleteRoleManagement(RoleViewModel model)
+        {
+
+            //Task<IdentityResult> RemoveFromRolesAsync(Id, params string[] roles);
+
+            var test = roleManager.Roles.Where(x => x.Id == model.Id).FirstOrDefault();
+            test.Name = model.RoleName;
+            roleManager.Delete(test);
+
+
+
+            return RedirectToAction("RoleManagementList");
+        }
+
+        public ActionResult UserManagement(int id = 0)
+        {
+            bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            if (userLoggedin)
+            {
+                var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                var role = UserManager.GetRoles(userid).FirstOrDefault();
+                if (role != "SuperAdmin")
+                {
+                    return RedirectToAction("Index", "CustomerRegistration");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "CustomerRegistration");
+            }
+
+
+
+
+
+            CustomerModel obj = new CustomerModel();
+            List<IdentityRole> roles = roleManager.Roles.ToList();
+            InsuranceClaim.Models.RoleManagementListViewModel _roles = new RoleManagementListViewModel();
+
+            _roles.RoleList = roles;
+
+            ViewBag.Adduser = _roles.RoleList;
+
+
+
+
+
+            if (id != 0)
+            {
+                var data = InsuranceContext.Customers.Single(id);
+                var user = UserManager.FindById(data.UserID);
+                var email = user.Email;
+                var phone = user.PhoneNumber;
+                var role = UserManager.GetRoles(data.UserID).FirstOrDefault();
+
+
+
+
+                obj.FirstName = data.FirstName;
+                obj.LastName = data.LastName;
+                obj.AddressLine1 = data.AddressLine1;
+                obj.AddressLine2 = data.AddressLine2;
+                obj.City = data.City;
+                obj.CountryCode = data.Countrycode;
+                obj.Gender = data.Gender;
+                obj.Id = data.Id;
+                obj.DateOfBirth = data.DateOfBirth;
+                obj.State = data.State;
+                obj.Zipcode = data.Zipcode;
+                obj.role = role;
+                obj.PhoneNumber = Convert.ToString(phone);
+                obj.EmailAddress = Convert.ToString(email);
+
+
+
+            }
+            return View(obj);
+
+
+        }
+        [HttpPost]
+        public async Task<ActionResult> AddUserManagement(UserManagementViewModel model)
+        {
+
+            bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            if (userLoggedin)
+            {
+                var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                var roles = UserManager.GetRoles(userid).FirstOrDefault();
+                if (roles != "SuperAdmin")
+                {
+                    return RedirectToAction("Index", "CustomerRegistration");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "CustomerRegistration");
+            }
+
+
+
+            if (model.Id == 0)
+            {
+
+                try
+                {
+                    decimal custId = 0.00m;
+                    var user = new ApplicationUser { UserName = model.EmailAddress, Email = model.EmailAddress, PhoneNumber = model.PhoneNumber };
+                    var result = await UserManager.CreateAsync(user, "Geninsure@123");
+                    if (result.Succeeded)
+                    {
+                        var currentUser = UserManager.FindByName(user.UserName);
+
+                        var roleresult = UserManager.AddToRole(currentUser.Id, model.role);
+
+                        var objCustomer = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).FirstOrDefault();
+                        if (objCustomer != null)
+                        {
+                            custId = objCustomer.CustomerId + 1;
+                        }
+                        else
+                        {
+                            custId = Convert.ToDecimal(ConfigurationManager.AppSettings["CustomerId"]);
+                        }
+
+
+
+
+                        model.UserID = user.Id;
+                        model.CustomerId = custId;
+
+                        Customer cstmr = new Customer();
+                        cstmr.Id = model.Id;
+                        cstmr.CustomerId = model.CustomerId;
+                        cstmr.AddressLine1 = model.AddressLine1;
+                        cstmr.AddressLine2 = model.AddressLine2;
+                        cstmr.City = model.City;
+                        cstmr.Countrycode = model.CountryCode;
+                        cstmr.DateOfBirth = model.DateOfBirth;
+                        cstmr.FirstName = model.FirstName;
+                        cstmr.LastName = model.LastName;
+                        cstmr.State = model.State;
+                        cstmr.Zipcode = model.Zipcode;
+                        cstmr.Gender = model.Gender;
+                        cstmr.Country = model.Country;
+                        cstmr.IsActive = model.IsActive;
+                        cstmr.IsLicenseDiskNeeded = model.IsLicenseDiskNeeded;
+                        cstmr.IsOTPConfirmed = model.IsOTPConfirmed;
+                        cstmr.IsPolicyDocSent = model.IsPolicyDocSent;
+                        cstmr.IsWelcomeNoteSent = model.IsWelcomeNoteSent;
+                        cstmr.UserID = user.Id;
+                        InsuranceContext.Customers.Insert(cstmr);
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+
+            }
+            else
+            {
+
+
+                Customer ctems = InsuranceContext.Customers.Single(model.Id);
+
+                var user = UserManager.FindById(ctems.UserID);
+                var role = UserManager.GetRoles(ctems.UserID).FirstOrDefault();
+                user.PhoneNumber = model.PhoneNumber;
+
+                if (role != model.role)
+                {
+                    UserManager.RemoveFromRole(user.Id, role);
+                    UserManager.AddToRole(user.Id, model.role);
+                    //update role                    
+                }
+
+
+                ctems.CustomerId = model.CustomerId;
+                ctems.Id = ctems.Id;
+                ctems.AddressLine1 = model.AddressLine1;
+                ctems.AddressLine2 = model.AddressLine2;
+                ctems.City = model.City;
+                ctems.Countrycode = model.CountryCode;
+                ctems.DateOfBirth = model.DateOfBirth;
+                ctems.FirstName = model.FirstName;
+                ctems.LastName = model.LastName;
+                ctems.State = model.State;
+                ctems.Zipcode = model.Zipcode;
+                ctems.Gender = model.Gender;
+                ctems.Country = model.Country;
+                ctems.IsActive = model.IsActive;
+                ctems.IsLicenseDiskNeeded = model.IsLicenseDiskNeeded;
+                ctems.IsOTPConfirmed = model.IsOTPConfirmed;
+                ctems.IsPolicyDocSent = model.IsPolicyDocSent;
+                ctems.IsWelcomeNoteSent = model.IsWelcomeNoteSent;
+
+
+
+                InsuranceContext.Customers.Update(ctems);
+                UserManager.Update(user);
+
+            }
+
+
+            return RedirectToAction("UserManagementList");
+        }
+        public ActionResult UserManagementList()
+        {
+
+            bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            if (userLoggedin)
+            {
+                var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                var roles = UserManager.GetRoles(userid).FirstOrDefault();
+                if (roles != "SuperAdmin")
+                {
+                    return RedirectToAction("Index", "CustomerRegistration");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "CustomerRegistration");
+            }
+
+
+            List<CustomerModel> ListUserViewModel = new List<CustomerModel>();
+            var user = InsuranceContext.Customers.All().ToList();
+
+
+            foreach (var item in user)
+            {
+                CustomerModel cstmrModel = new CustomerModel();
+                cstmrModel.Id = item.Id;
+                cstmrModel.CustomerId = item.CustomerId;
+                cstmrModel.FirstName = item.FirstName;
+                cstmrModel.LastName = item.LastName;
+                cstmrModel.Gender = item.Gender;
+                cstmrModel.DateOfBirth = item.DateOfBirth;
+                cstmrModel.CountryCode = item.Countrycode;
+                cstmrModel.City = item.City;
+                cstmrModel.Country = item.Country;
+                cstmrModel.IsActive = item.IsActive;
+                cstmrModel.IsLicenseDiskNeeded = item.IsLicenseDiskNeeded;
+                cstmrModel.IsPolicyDocSent = item.IsPolicyDocSent;
+                cstmrModel.AddressLine1 = item.AddressLine1;
+                cstmrModel.AddressLine1 = item.AddressLine2;
+                cstmrModel.State = item.State;
+                cstmrModel.IsOTPConfirmed = item.IsOTPConfirmed;
+                cstmrModel.IsWelcomeNoteSent = item.IsWelcomeNoteSent;
+
+                cstmrModel.PhoneNumber = UserManager.GetPhoneNumber(item.UserID);
+                cstmrModel.EmailAddress = UserManager.GetEmail(item.UserID);
+                cstmrModel.role = Convert.ToString(UserManager.GetRoles(item.UserID).Count > 0 ? Convert.ToString(UserManager.GetRoles(item.UserID)[0]) : "");
+
+                ListUserViewModel.Add(cstmrModel);
+            }
+
+            ListUserViewModel lstUserModel = new ListUserViewModel();
+            lstUserModel.ListUsers = ListUserViewModel;
+
+            return View(lstUserModel);
+
+
+        
+
+
     }
+    public ActionResult DeleteUserManagement(int id)
+    {
+
+
+
+        var data = InsuranceContext.Customers.Single(id);
+
+        var userid = data.UserID;
+        InsuranceContext.Customers.Delete(data);
+
+        var currentUser = UserManager.FindById(userid);
+        UserManager.Delete(currentUser);
+
+
+
+        return RedirectToAction("UserManagementList");
+    }
+
+}
 }

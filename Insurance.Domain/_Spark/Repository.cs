@@ -57,6 +57,7 @@ namespace Insurance.Domain
         public static SmsLogs SmsLogs { get { return new SmsLogs(); } }
         public static Settings Settings { get { return new Settings(); } }
         public static PaymentInformations PaymentInformations { get { return new PaymentInformations(); } }
+        public static UserManagementViews UserManagementViews { get { return new UserManagementViews(); } }
 
 
         // general purpose operations

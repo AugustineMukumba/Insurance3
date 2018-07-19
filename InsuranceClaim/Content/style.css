@@ -919,6 +919,10 @@ button.btn-sm.btn-danger {
     margin: 0;
 }
 
+.modal .modal-dialog {
+    z-index: 99999;
+}
+
 /**15 june css end**/
 
 @media(max-width:767px) {
