@@ -447,18 +447,44 @@ namespace InsuranceClaim.Controllers
                         listriskdetailmodel.Add(model);
                         Session["VehicleDetails"] = listriskdetailmodel;
 
-
-                        //Session["VehicleDetail"] = model;
-                        //return RedirectToAction("SummaryDetail");
                     }
-
-
-
 
                     return RedirectToAction("RiskDetail");
                 }
                 else
                 {
+
+                    DateTimeFormatInfo usDtfi = new CultureInfo("en-US", false).DateTimeFormat;
+                    var service = new RiskDetailService();
+                    var startDate = Request.Form["CoverStartDate"];
+                    var endDate = Request.Form["CoverEndDate"];
+                    if (!string.IsNullOrEmpty(startDate))
+                    {
+                        ModelState.Remove("CoverStartDate");
+                        model.CoverStartDate = Convert.ToDateTime(startDate, usDtfi);
+                    }
+                    if (!string.IsNullOrEmpty(endDate))
+                    {
+                        ModelState.Remove("CoverEndDate");
+                        model.CoverEndDate = Convert.ToDateTime(endDate, usDtfi);
+                    }
+                    if (ModelState.IsValid)
+                    {
+                        List<RiskDetailModel> listriskdetailmodel = new List<RiskDetailModel>();
+                        if (Session["VehicleDetails"] != null)
+                        {
+                            List<RiskDetailModel> listriskdetails = (List<RiskDetailModel>)Session["VehicleDetails"];
+                            if (listriskdetails != null && listriskdetails.Count > 0)
+                            {
+                                listriskdetailmodel = listriskdetails;
+                            }
+                        }
+
+                        listriskdetailmodel.Add(model);
+                        Session["VehicleDetails"] = listriskdetailmodel;
+                  
+                    }
+
                     return RedirectToAction("SummaryDetail");
                 }
             }
