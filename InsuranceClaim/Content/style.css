@@ -16,6 +16,11 @@ ol, ul {
     list-style: none;
 }
 
+.btnDisabled {
+    pointer-events: none;
+    background: #acacac !important;
+}
+
 /****************************************************************************/
 .top-header-section {
     font-family: 'Poppins', sans-serif;
@@ -77,17 +82,16 @@ ol, ul {
     pointer-events: none;
 }
 
-.form-group-text .form-group .countrycode
-{
-    width : 20%;
+.form-group-text .form-group .countrycode {
+    width : 22%;
     margin-right: 10px;
     float:left;
+    height:    51px;
 }
 
-.form-group-text .form-group .phonenumber
-{
-    width : 75%;
-    float:right;
+.form-group-text .form-group .phonenumber {
+    width: 75%;
+    float: right;
 }
 
 .top-banner-section {
@@ -893,7 +897,7 @@ button.btn-sm.btn-danger {
 .form-group-text .form-group span.text-danger[data-valmsg-for="PhoneNumber"] {
     width: 100%;
     top: 100%;
-    left: 0; 
+    left: 0;
 }
 
 .form-group-list ul li {
@@ -904,17 +908,19 @@ button.btn-sm.btn-danger {
     padding: 0 0 0 22px;
 }
 
-.form-group-list ul li label {
-    float: left;
-    width: auto;
-    font-size: 13px;
-}
-.form-group-list ul li input[type="checkbox"] {
-    height: auto;
-    float: left;
-    position: absolute;
-    left: 5px;
-}
+    .form-group-list ul li label {
+        float: left;
+        width: auto;
+        font-size: 13px;
+    }
+
+    .form-group-list ul li input[type="checkbox"] {
+        height: auto;
+        float: left;
+        position: absolute;
+        left: 5px;
+    }
+
 .form-group-text .form-group.margin-0 {
     margin: 0;
 }

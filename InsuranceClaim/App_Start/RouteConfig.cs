@@ -13,17 +13,20 @@ namespace InsuranceClaim
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            routes.MapRoute(
-               name: "",
-               url: "Payment/{controller}/{action}/{id}/{TotalPremium}/{Email}/{PolicyNumber}",
-               defaults: new { controller = "Paypal", action = "InitiatePaynowTransaction", id = UrlParameter.Optional, Email = UrlParameter.Optional, TotalPremium = UrlParameter.Optional, PolicyNumber = UrlParameter.Optional }
-           );
+          
 
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "CustomerRegistration", action = "Index", id = UrlParameter.Optional }
             );
+
+
+            routes.MapRoute(
+             name: "",
+             url: "Payment/{controller}/{action}/{id}/{TotalPremium}/{Email}/{PolicyNumber}",
+             defaults: new { controller = "Paypal", action = "InitiatePaynowTransaction", id = UrlParameter.Optional, Email = UrlParameter.Optional, TotalPremium = UrlParameter.Optional, PolicyNumber = UrlParameter.Optional }
+         );
         }
     }
 }
