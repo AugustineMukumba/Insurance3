@@ -58,6 +58,7 @@ namespace Insurance.Domain
         public static Settings Settings { get { return new Settings(); } }
         public static PaymentInformations PaymentInformations { get { return new PaymentInformations(); } }
         public static UserManagementViews UserManagementViews { get { return new UserManagementViews(); } }
+        public static SummaryVehicleDetails SummaryVehicleDetails { get { return new SummaryVehicleDetails(); } }
 
 
         // general purpose operations

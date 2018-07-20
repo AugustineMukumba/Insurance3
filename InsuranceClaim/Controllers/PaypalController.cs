@@ -44,7 +44,8 @@ namespace InsuranceClaim.Controllers
             //if you need to add more items in the list
             //Then you will need to create multiple item objects or use some loop to instantiate object
             var summaryDetail = InsuranceContext.SummaryDetails.Single(model.SummaryDetailId);
-            var vehicle = InsuranceContext.VehicleDetails.Single(summaryDetail.VehicleDetailId);
+            var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={model.SummaryDetailId}").ToList();
+            var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
             var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
             var customer = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
             //var summaryDetail = (SummaryDetailModel)Session["SummaryDetailed"];
@@ -57,19 +58,19 @@ namespace InsuranceClaim.Controllers
             //var paymentInformations = InsuranceContext.PaymentInformations.SingleCustome(model.SummaryDetailId);
 
             double totalPremium = Convert.ToDouble(summaryDetail.TotalPremium);
-            var term = summaryDetail.PaymentTermId;
-            if (term == Convert.ToInt32(ePaymentTerm.Monthly))
-            {
-                totalPremium = Math.Round(totalPremium / 12, 2);
-            }
-            else if (term == Convert.ToInt32(ePaymentTerm.Quarterly))
-            {
-                totalPremium = Math.Round(totalPremium / 4, 2);
-            }
-            else if (term == Convert.ToInt32(ePaymentTerm.Termly))
-            {
-                totalPremium = Math.Round(totalPremium / 3, 2);
-            }
+            //var term = summaryDetail.PaymentTermId;
+            //if (term == Convert.ToInt32(ePaymentTerm.Monthly))
+            //{
+            //    totalPremium = Math.Round(totalPremium / 12, 2);
+            //}
+            //else if (term == Convert.ToInt32(ePaymentTerm.Quarterly))
+            //{
+            //    totalPremium = Math.Round(totalPremium / 4, 2);
+            //}
+            //else if (term == Convert.ToInt32(ePaymentTerm.Termly))
+            //{
+            //    totalPremium = Math.Round(totalPremium / 3, 2);
+            //}
             //check if single decimal place
             string zeros = string.Empty;
             try
@@ -189,18 +190,29 @@ namespace InsuranceClaim.Controllers
 
             #endregion
 
-
-            Item item = new Item();
-            item.name = product.ProductName;
-            item.currency = "USD";
-            item.price = totalPremium.ToString() + zeros;
-            item.quantity = "1";
-            item.sku = "sku";
-            //item.currency = "USD";
-
-            Session["itemData"] = item;
             List<Item> itms = new List<Item>();
-            itms.Add(item);
+            foreach (var vehicledetail in SummaryVehicleDetails.ToList())
+            {
+                var _vehicle = InsuranceContext.VehicleDetails.Single(vehicledetail.VehicleDetailsId);
+                Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
+                VehicleModel _model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{_vehicle.ModelId}'");
+                VehicleMake make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{_vehicle.MakeId}'");
+                
+                Item item = new Item();
+                item.name = make.MakeDescription + "/" + _model.ModelDescription;
+                item.currency = "USD";
+                item.price = Convert.ToString(_vehicle.Premium) ;
+                item.quantity = "1";
+                item.sku = _vehicle.RegistrationNo;
+
+                itms.Add(item);
+            }
+            
+            
+
+            Session["itemData"] = itms;
+           
+            
             ItemList itemList = new ItemList();
             itemList.items = itms;
 
@@ -349,7 +361,7 @@ namespace InsuranceClaim.Controllers
         {
             APIContext apiContext = Configuration.GetAPIContext();
 
-            var data = (Item)Session["itemData"];
+            var data = (List<Item>)Session["itemData"];
 
             var invoice = new Invoice()
             {
@@ -394,12 +406,12 @@ namespace InsuranceClaim.Controllers
                             {
                                 new InvoiceItem()
                                 {
-                                    name = data.name,
+                                    name = data[0].name,
                                     quantity = 1,
                                     unit_price = new PayPal.Api.Currency()
                                     {
                                         currency = "USD",
-                                        value =data.price
+                                        value =data[0].price
 
                                     },
                                 },
@@ -588,7 +600,8 @@ namespace InsuranceClaim.Controllers
             var PaymentId = Session["PaymentId"];
             var InvoiceId = Session["InvoiceId"];
             var summaryDetail = InsuranceContext.SummaryDetails.Single(id);
-            var vehicle = InsuranceContext.VehicleDetails.Single(summaryDetail.VehicleDetailId);
+            var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={id}").ToList();
+            var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
             var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
             var customer = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
             var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
@@ -600,7 +613,7 @@ namespace InsuranceClaim.Controllers
             PaymentInformation objSaveDetailListModel = new PaymentInformation();
             objSaveDetailListModel.CurrencyId = policy.CurrencyId;
             objSaveDetailListModel.PolicyId = vehicle.PolicyId;
-            objSaveDetailListModel.VehicleDetailId = summaryDetail.VehicleDetailId.Value;
+            //objSaveDetailListModel.VehicleDetailId = summaryDetail.VehicleDetailId.Value;
             objSaveDetailListModel.CustomerId = summaryDetail.CustomerId.Value;
             objSaveDetailListModel.SummaryDetailId = id;
             objSaveDetailListModel.DebitNote = summaryDetail.DebitNote;
@@ -647,22 +660,19 @@ namespace InsuranceClaim.Controllers
                     InsuranceContext.SmsLogs.Insert(objsmslog);
                 }
 
-                var data = (Item)Session["itemData"];
+                var data = (List<Item>)Session["itemData"];
                 if (data != null)
                 {
-
+                    var totalprem = data.Sum(x => Convert.ToDecimal(x.price));
+                    
 
                     string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentEmail.cshtml";
                     string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
-                    var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#AccountName#", customer.FirstName + ", " + customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Amount#",Convert.ToString(summaryDetail.TotalPremium)).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Bank" : (summaryDetail.PaymentMethodId == 2 ? "Cash" : "Visa")));
+                    var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#AccountName#", customer.FirstName + ", " + customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Amount#",Convert.ToString(totalprem)).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Bank" : (summaryDetail.PaymentMethodId == 2 ? "Cash" : "Visa")));
                     objEmailService.SendEmail(user.Email, "", "", "Payment", Body2, null);
                 }
                 
-                Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
-                VehicleModel model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{vehicle.ModelId}'");
-                VehicleMake make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{vehicle.MakeId}'");
-                
-                string vehicledescription = model.ModelDescription + " / " + make.MakeDescription;
+               
 
                 decimal totalpaymentdue = 0.00m;
 
@@ -681,9 +691,17 @@ namespace InsuranceClaim.Controllers
 
 
                 string Summeryofcover = "";
-                for (int i = 0; i < vehicle.NoOfCarsCovered; i++)
+                for (int i = 0; i < SummaryVehicleDetails.Count; i++)
                 {
-                    Summeryofcover += "<tr><td>" + vehicledescription + "</td><td>$" + vehicle.SumInsured + "</td><td>" + (vehicle.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</td><td>" + InsuranceContext.VehicleUsages.All(vehicle.VehicleUsage).Select(x => x.VehUsage).FirstOrDefault() + "</td><td>$0.00</td><td>$" + Convert.ToString(vehicle.Excess) + "</td><td>$" + Convert.ToString(summaryDetail.TotalPremium) + "</td></tr>";
+                    var _vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[i].VehicleDetailsId);
+                    Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
+                    VehicleModel model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{_vehicle.ModelId}'");
+                    VehicleMake make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{_vehicle.MakeId}'");
+
+                    string vehicledescription = model.ModelDescription + " / " + make.MakeDescription;
+
+
+                    Summeryofcover += "<tr><td>" + vehicledescription + "</td><td>$" + _vehicle.SumInsured + "</td><td>" + (_vehicle.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</td><td>" + InsuranceContext.VehicleUsages.All(_vehicle.VehicleUsage).Select(x => x.VehUsage).FirstOrDefault() + "</td><td>$0.00</td><td>$" + Convert.ToString(_vehicle.Excess) + "</td><td>$" + Convert.ToString(_vehicle.Premium) + "</td></tr>";
                 }
 
                 //TempData["Summeryofcover"] = Summeryofcover;
@@ -699,7 +717,7 @@ namespace InsuranceClaim.Controllers
 
 
             Session.Remove("PolicyData");
-            Session.Remove("VehicleDetail");
+            Session.Remove("VehicleDetails");
             Session.Remove("policytermid");
             Session.Remove("SummaryDetailed");
             Session.Remove("CardDetail");
@@ -733,21 +751,45 @@ namespace InsuranceClaim.Controllers
         public async Task<ActionResult> InitiatePaynowTransaction(Int32 id, string TotalPremium, string PolicyNumber, string Email)
         {
             var summaryDetail = InsuranceContext.SummaryDetails.Single(id);
-            var vehicle = InsuranceContext.VehicleDetails.Single(summaryDetail.VehicleDetailId);
+            var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={id}").ToList();
+            //var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+            var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
             var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);          
             var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
 
+            List<Item> itms = new List<Item>();
 
-            Item item = new Item();
-            item.name = product.ProductName;
-            item.currency = "USD";
-            item.price = vehicle.Premium.ToString();
-            item.quantity = "1";
-            item.sku = "sku";
+
+
+
+            foreach (var vehicledetail in SummaryVehicleDetails.ToList())
+            {
+                var _vehicle = InsuranceContext.VehicleDetails.Single(vehicledetail.VehicleDetailsId);
+                Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
+                VehicleModel _model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{_vehicle.ModelId}'");
+                VehicleMake make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{_vehicle.MakeId}'");
+
+                Item item = new Item();
+                item.name = make.MakeDescription + "/" + _model.ModelDescription;
+                item.currency = "USD";
+                item.price = Convert.ToString(_vehicle.Premium);
+                item.quantity = "1";
+                item.sku = _vehicle.RegistrationNo;
+
+                itms.Add(item);
+            }
+
+            //Item item = new Item();
+            //item.name = product.ProductName;
+            //item.currency = "USD";
+            //item.price = vehicle.Premium.ToString();
+            //item.quantity = "1";
+            //item.sku = "sku";
             //item.currency = "USD";
 
-            Session["itemData"] = item;
+            
 
+            Session["itemData"] = itms;
 
             Insurance.Service.PaynowService paynowservice = new Insurance.Service.PaynowService();
             PaynowResponse paynowresponse = new PaynowResponse();
