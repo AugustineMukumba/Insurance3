@@ -47,7 +47,7 @@ namespace InsuranceClaim.Controllers
                 var customerModel = new CustomerModel();
                 var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
 
-               
+
                 var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{User.Identity.GetUserId().ToString()}'").FirstOrDefault();
                 var customerData = (CustomerModel)Session["CustomerDataModal"];
 
@@ -414,7 +414,7 @@ namespace InsuranceClaim.Controllers
             }
             else
             {
-                
+
                 if (model.chkAddVehicles)
                 {
 
@@ -482,7 +482,7 @@ namespace InsuranceClaim.Controllers
 
                         listriskdetailmodel.Add(model);
                         Session["VehicleDetails"] = listriskdetailmodel;
-                  
+
                     }
 
                     return RedirectToAction("SummaryDetail");
@@ -565,7 +565,7 @@ namespace InsuranceClaim.Controllers
                 {
                     return Json(false, JsonRequestBehavior.AllowGet);
                 }
-                
+
             }
             catch (Exception)
             {
@@ -596,8 +596,8 @@ namespace InsuranceClaim.Controllers
             model.SMSConfirmation = false;
             model.TotalPremium = vehicle.Sum(item => item.Premium);// + vehicle.StampDuty + vehicle.ZTSCLevy;
             model.TotalRadioLicenseCost = vehicle.Sum(item => item.RadioLicenseCost);
-            model.TotalStampDuty = vehicle.Sum(item => item.StampDuty); 
-            model.TotalSumInsured = vehicle.Sum(item => item.SumInsured); 
+            model.TotalStampDuty = vehicle.Sum(item => item.StampDuty);
+            model.TotalSumInsured = vehicle.Sum(item => item.SumInsured);
             model.TotalZTSCLevies = vehicle.Sum(item => item.ZTSCLevy);
             return View(model);
         }
@@ -700,32 +700,20 @@ namespace InsuranceClaim.Controllers
             var vehicle = (List<RiskDetailModel>)Session["VehicleDetails"];
             if (vehicle != null && vehicle.Count > 0)
             {
-                foreach (var item in vehicle)
+                foreach (var item in vehicle.ToList())
                 {
+                    var _item = item;
+
                     if (item.Id == null || item.Id == 0)
                     {
                         var service = new RiskDetailService();
-                        item.CustomerId = customer.Id;
-                        item.PolicyId = policy.Id;
+                        _item.CustomerId = customer.Id;
+                        _item.PolicyId = policy.Id;
                         //var vehical = Mapper.Map<RiskDetailModel, RiskDetailModel>(vehicle);
-                        item.Id = service.AddVehicleInformation(item);
-                        vehicle[item.vehicleindex] = item;
-
-
-
-                        if (item.SumInsured > 100000)
-                        {
-                            var defaultReInsureanceBroker = InsuranceContext.ReinsuranceBrokers.All(where: $"ReinsuranceBrokerCode='{ConfigurationManager.AppSettings["DefaultReinsuranceBrokerCode"]}'").FirstOrDefault();
-
-                            var reinsurance = new ReinsuranceTransaction();
-                            reinsurance.ReinsuranceAmount = item.SumInsured - 100000;
-                            reinsurance.ReinsurancePremium = ((reinsurance.ReinsuranceAmount / item.SumInsured) * item.Premium);
-                            reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(defaultReInsureanceBroker.Commission);
-                            reinsurance.ReinsuranceCommission = ((reinsurance.ReinsurancePremium * reinsurance.ReinsuranceCommissionPercentage) / 100);//Convert.ToDecimal(defaultReInsureanceBroker.Commission);
-                            reinsurance.VehicleId = item.Id;
-
-                            InsuranceContext.ReinsuranceTransactions.Insert(reinsurance);
-                        }
+                        _item.Id = service.AddVehicleInformation(_item);
+                        var vehicles = (List<RiskDetailModel>)Session["VehicleDetails"];
+                        vehicles[Convert.ToInt32(_item.NoOfCarsCovered) - 1] = _item;
+                        Session["VehicleDetails"] = vehicles;
                     }
                     else
                     {
@@ -773,12 +761,14 @@ namespace InsuranceClaim.Controllers
             var summary = (SummaryDetailModel)Session["SummaryDetailed"];
             var DbEntry = Mapper.Map<SummaryDetailModel, SummaryDetail>(model);
 
+
             if (summary != null)
             {
+
                 if (summary.Id == null || summary.Id == 0)
                 {
                     DbEntry.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
-                    DbEntry.VehicleDetailId = vehicle[0].Id;
+                    //DbEntry.VehicleDetailId = vehicle[0].Id;
                     DbEntry.CustomerId = vehicle[0].CustomerId;
                     InsuranceContext.SummaryDetails.Insert(DbEntry);
                     model.Id = DbEntry.Id;
@@ -789,14 +779,40 @@ namespace InsuranceClaim.Controllers
                     SummaryDetail summarydata = InsuranceContext.SummaryDetails.All(summary.Id.ToString()).FirstOrDefault();
 
                     summarydata.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
-                    summarydata.VehicleDetailId = vehicle[0].Id;
+                    //summarydata.VehicleDetailId = vehicle[0].Id;
                     summarydata.CustomerId = vehicle[0].CustomerId;
 
                     InsuranceContext.SummaryDetails.Update(summarydata);
                 }
             }
 
-            
+
+            if (vehicle != null && vehicle.Count > 0 && summary.Id != null && summary.Id > 0)
+            {
+                var SummaryDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={summary.Id}").ToList();
+
+                if (SummaryDetails != null && SummaryDetails.Count> 0)
+                {
+                    foreach (var item in SummaryDetails)
+                    {
+                        InsuranceContext.SummaryVehicleDetails.Delete(item);
+                    }
+                }
+
+                foreach (var item in vehicle.ToList())
+                {
+
+                    var summarydetails = new SummaryVehicleDetail();
+                    summarydetails.SummaryDetailId = summary.Id;
+                    summarydetails.VehicleDetailsId = item.Id;
+                    InsuranceContext.SummaryVehicleDetails.Insert(summarydetails);
+
+
+                }
+
+            }
+
+
 
             if (model.PaymentMethodId == 1)
                 return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id });
@@ -807,7 +823,7 @@ namespace InsuranceClaim.Controllers
         }
 
         [HttpPost]
-        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses,int SummaryDetailId)
+        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses)
         {
             var policytermid = (int)Session["policytermid"];
             JsonResult json = new JsonResult();

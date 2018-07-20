@@ -557,7 +557,7 @@
         //});
 
         $("#chkAddVehicles").click(function () {
-
+            debugger;
             if ($("#chkAddVehicles").is(":checked")) {
                 $("#btnAddVehicle").removeClass("btnDisabled"); $("#btnGenerateQuote").addClass("btnDisabled");
             }
@@ -665,7 +665,12 @@
         $("#MedicalExpenses").click(function () {
             QuoteCalculation();
         });
-
+        $("#Addthirdparty").click(function () {
+            QuoteCalculation();
+        });
+        $("#PassengerAccidentCover").click(function () {
+            QuoteCalculation();
+        });
 
 
         //called when key is pressed in textbox

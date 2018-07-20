@@ -479,4 +479,13 @@ namespace Insurance.Domain
         public string City { get; set; }
 
     }
+    public partial class SummaryVehicleDetail : Entity<SummaryVehicleDetail>
+    {
+        public SummaryVehicleDetail() { }
+        public SummaryVehicleDetail(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public int SummaryDetailId { get; set; }
+        public int VehicleDetailsId { get; set; }
+
+    }
 }
