@@ -385,7 +385,7 @@
                                             </div>
                                             <div class="col-sm-6 col-md-6">
                                                 <div class="form-group text-right">
-                                                    <button type="submit" id="btnAddVehicle" class="btn btnDisabled @(Model.isUpdate ? "btnDisabled" : "")" style="padding:5px;">+ Add More Vehicle</button>
+                                                    <button type="submit" id="btnAddVehicle" class="btn btnDisabled @(Model.isUpdate ? "btnDisabled" : "")" style="padding:5px 10px;width: auto;">Submit & Add More Vehicle</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -421,7 +421,7 @@
 
                                                 <div class="col-sm-6 col-md-6">
                                                     <div class="text-right">
-                                                        <button type="submit" id="btnGenerateQuote" class="btn @(Model.isUpdate ? "btnDisabled" : "")">Generate Quote</button>
+                                                        <button type="submit" id="btnGenerateQuote" class="btn @(Model.isUpdate ? "btnDisabled" : "")" style="padding:20px 10px;width: auto;">Submit & Generate Quote</button>
                                                     </div>
                                                 </div>
 
@@ -715,6 +715,7 @@
         var RoadsideAssistance = $("#RoadsideAssistance").is(":checked");
         var MedicalExpenses = $("#MedicalExpenses").is(":checked");
         var Addthirdparty = $("#Addthirdparty").is(":checked");
+        
 
         if (NumberofPersons == undefined || NumberofPersons == null || NumberofPersons == "") {
             NumberofPersons = 0;
@@ -723,7 +724,7 @@
         $.ajax({
             type: "POST",
             url: "@Url.Action("CalculatePremium", "CustomerRegistration")",
-            data: { vehicleUsageId: vehicleUsageId, sumInsured: sumInsured, coverType: coverType, excessType: excessType, excess: excess, AddThirdPartyAmount: AddThirdPartyAmount, NumberofPersons: NumberofPersons, Addthirdparty: Addthirdparty, PassengerAccidentCover: PassengerAccidentCover, ExcessBuyBack: ExcessBuyBack, RoadsideAssistance: RoadsideAssistance, MedicalExpenses: MedicalExpenses },
+            data: { vehicleUsageId: vehicleUsageId, sumInsured: sumInsured, coverType: coverType, excessType: excessType, excess: excess, AddThirdPartyAmount: AddThirdPartyAmount, NumberofPersons: NumberofPersons, Addthirdparty: Addthirdparty, PassengerAccidentCover: PassengerAccidentCover, ExcessBuyBack: ExcessBuyBack, RoadsideAssistance: RoadsideAssistance, MedicalExpenses: MedicalExpenses},
             success: function (data) {
                 debugger;
                 $("#Premium").val(data.Premium);

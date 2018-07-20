@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Insurance.Domain;
 using InsuranceClaim.Models;
+using System.Configuration;
 
 namespace Insurance.Service
 {
@@ -150,6 +151,8 @@ namespace Insurance.Service
             this.StamDuty = Math.Round(stampDuty, 2);
             this.ZtscLevy = Math.Round(ztscLevy, 2);
 
+           
+
             premium = premium + stampDuty + ztscLevy ;
 
             switch (PaymentTermid)
@@ -165,6 +168,11 @@ namespace Insurance.Service
             premium = premium + additionalchargeebb + additionalchargeme + additionalchargepac + additionalchargersa;
 
             this.Premium = Math.Round(premium, 2);
+
+
+           
+
+
             return this;
         }
     }

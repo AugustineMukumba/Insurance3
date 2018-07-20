@@ -710,6 +710,22 @@ namespace InsuranceClaim.Controllers
                         //var vehical = Mapper.Map<RiskDetailModel, RiskDetailModel>(vehicle);
                         item.Id = service.AddVehicleInformation(item);
                         vehicle[item.vehicleindex] = item;
+
+
+
+                        if (item.SumInsured > 100000)
+                        {
+                            var defaultReInsureanceBroker = InsuranceContext.ReinsuranceBrokers.All(where: $"ReinsuranceBrokerCode='{ConfigurationManager.AppSettings["DefaultReinsuranceBrokerCode"]}'").FirstOrDefault();
+
+                            var reinsurance = new ReinsuranceTransaction();
+                            reinsurance.ReinsuranceAmount = item.SumInsured - 100000;
+                            reinsurance.ReinsurancePremium = ((reinsurance.ReinsuranceAmount / item.SumInsured) * item.Premium);
+                            reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(defaultReInsureanceBroker.Commission);
+                            reinsurance.ReinsuranceCommission = ((reinsurance.ReinsurancePremium * reinsurance.ReinsuranceCommissionPercentage) / 100);//Convert.ToDecimal(defaultReInsureanceBroker.Commission);
+                            reinsurance.VehicleId = item.Id;
+
+                            InsuranceContext.ReinsuranceTransactions.Insert(reinsurance);
+                        }
                     }
                     else
                     {
@@ -779,6 +795,9 @@ namespace InsuranceClaim.Controllers
                     InsuranceContext.SummaryDetails.Update(summarydata);
                 }
             }
+
+            
+
             if (model.PaymentMethodId == 1)
                 return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id });
             if (model.PaymentMethodId == 3)
@@ -788,7 +807,7 @@ namespace InsuranceClaim.Controllers
         }
 
         [HttpPost]
-        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses)
+        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses,int SummaryDetailId)
         {
             var policytermid = (int)Session["policytermid"];
             JsonResult json = new JsonResult();
