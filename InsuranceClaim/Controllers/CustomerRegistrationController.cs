@@ -774,7 +774,8 @@ namespace InsuranceClaim.Controllers
                         Vehicledata.RoadsideAssistance = item.RoadsideAssistance;
                         Vehicledata.MedicalExpenses = item.MedicalExpenses;
                         Vehicledata.NumberofPersons = item.NumberofPersons;
-
+                        Vehicledata.IsLicenseDiskNeeded = item.IsLicenseDiskNeeded;
+                        
 
 
                         InsuranceContext.VehicleDetails.Update(Vehicledata);
@@ -888,7 +889,7 @@ namespace InsuranceClaim.Controllers
         }
 
         [HttpPost]
-        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses)
+        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses , decimal? RadioLicenseCost,int? AgentCommissionId)
         {
             var policytermid = (int)Session["policytermid"];
             JsonResult json = new JsonResult();
@@ -907,7 +908,7 @@ namespace InsuranceClaim.Controllers
             {
                 eexcessType = eExcessType.FixedAmount;
             }
-            var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover, eexcessType, excess, policytermid, AddThirdPartyAmount, NumberofPersons, Addthirdparty, PassengerAccidentCover, ExcessBuyBack, RoadsideAssistance, MedicalExpenses);
+            var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover, eexcessType, excess, policytermid, AddThirdPartyAmount, NumberofPersons, Addthirdparty, PassengerAccidentCover, ExcessBuyBack, RoadsideAssistance, MedicalExpenses, RadioLicenseCost, AgentCommissionId);
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             json.Data = premium;
             return json;

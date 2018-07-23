@@ -299,7 +299,7 @@
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.Label("Radio License Cost", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.RadioLicenseCost, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Radio Licence Cost", @maxlength = "5" })
+                                                @Html.TextBoxFor(m => m.RadioLicenseCost, new { @class = "form-control inputDisabled", @autocomplete = "off", @placeholder = "Vehicle Radio Licence Cost", @maxlength = "5" })
                                                 @Html.ValidationMessageFor(m => m.RadioLicenseCost, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
@@ -684,7 +684,7 @@
         $("#PassengerAccidentCover").click(function () {
             QuoteCalculation();
         });
-
+        
 
         //called when key is pressed in textbox
         $("#NoOfCarsCovered,#CubicCapacity,#VehicleYear,#VehicleSumInsures,#SumInsured,#RadioLicenseCost,#OptionalCovers,#Excess").keypress(function (e) {
@@ -733,6 +733,9 @@
         var RoadsideAssistance = $("#RoadsideAssistance").is(":checked");
         var MedicalExpenses = $("#MedicalExpenses").is(":checked");
         var Addthirdparty = $("#Addthirdparty").is(":checked");
+        var RadioLicenseCost = ($("#RadioLicenseCost").val());
+        var AgentCommissionId = ($("#AgentCommissionId").val());
+
 
 
         if (NumberofPersons == undefined || NumberofPersons == null || NumberofPersons == "") {
@@ -742,7 +745,7 @@
         $.ajax({
             type: "POST",
             url: "@Url.Action("CalculatePremium", "CustomerRegistration")",
-            data: { vehicleUsageId: vehicleUsageId, sumInsured: sumInsured, coverType: coverType, excessType: excessType, excess: excess, AddThirdPartyAmount: AddThirdPartyAmount, NumberofPersons: NumberofPersons, Addthirdparty: Addthirdparty, PassengerAccidentCover: PassengerAccidentCover, ExcessBuyBack: ExcessBuyBack, RoadsideAssistance: RoadsideAssistance, MedicalExpenses: MedicalExpenses },
+            data: { vehicleUsageId: vehicleUsageId, sumInsured: sumInsured, coverType: coverType, excessType: excessType, excess: excess, AddThirdPartyAmount: AddThirdPartyAmount, NumberofPersons: NumberofPersons, Addthirdparty: Addthirdparty, PassengerAccidentCover: PassengerAccidentCover, ExcessBuyBack: ExcessBuyBack, RoadsideAssistance: RoadsideAssistance, MedicalExpenses: MedicalExpenses, RadioLicenseCost: RadioLicenseCost, AgentCommissionId: AgentCommissionId },
             success: function (data) {
                 debugger;
                 $("#Premium").val(data.Premium);

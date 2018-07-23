@@ -248,6 +248,7 @@ namespace Insurance.Domain
         public Boolean RoadsideAssistance { get; set; }
         public Boolean MedicalExpenses { get; set; }
         public int? NumberofPersons { get; set; }
+        public bool? IsLicenseDiskNeeded { get; set; }
     }
 
     public partial class VehicleMake : Entity<VehicleMake>

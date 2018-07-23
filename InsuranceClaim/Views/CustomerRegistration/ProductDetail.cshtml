@@ -80,35 +80,6 @@
                                             @Html.ValidationMessageFor(x => x.PolicyName, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.Label("Policy Number", new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.PolicyNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Number", @Value = ViewBag.Policynumber, @readonly = "readonly" })
-                                            @Html.ValidationMessageFor(x => x.PolicyNumber, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6 col-md-6 form-group-select">
-                                        <div class="form-group">
-                                            @Html.Label("GeneInsure", new { @class = "gender-label" })
-                                            @Html.DropDownListFor(x => x.InsurerId, new SelectList(ViewBag.Insurer, "Id", "InsurerName"), new { @class = "form-control" })
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-6 form-group-select">
-                                        <div class="form-group">
-                                            @Html.Label("Policy Status", new { @class = "gender-label" })
-                                            @Html.DropDownListFor(x => x.PolicyStatusId, new SelectList(ViewBag.PoliCyStatus, "Id", "Status"), new { @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 form-group-select">
-                                        <div class="form-group">
-                                            @Html.Label("Currency", new { @class = "gender-label" })
-                                            @Html.DropDownListFor(x => x.CurrencyId, new SelectList(ViewBag.Currency, "Id", "Name"), new { @class = "form-control" })
-                                        </div>
-                                    </div>
                                     <div class="col-md-6 form-group-select">
                                         <div class="form-group">
                                             @Html.Label("Payment Term", new { @class = "gender-label" })
@@ -116,6 +87,25 @@
                                             @Html.ValidationMessageFor(x => x.PaymentTermId, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
+                                    
+                                </div>
+                               
+                                <div class="row" style="display:none">
+                                    <div class="col-md-6 form-group-select">
+                                        <div class="form-group">
+                                            @Html.Label("Currency", new { @class = "gender-label" })
+                                            @Html.DropDownListFor(x => x.CurrencyId, new SelectList(ViewBag.Currency, "Id", "Name"), new { @class = "form-control inputDisabled" })
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group" >
+                                            @Html.Label("Policy Number", new { @class = "gender-label" })
+                                            @Html.TextBoxFor(x => x.PolicyNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Number", @Value = ViewBag.Policynumber, @readonly = "readonly" })
+                                            @Html.ValidationMessageFor(x => x.PolicyNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    
                                 </div>
 
                                 <div class="row">
@@ -172,11 +162,26 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
+                                <div class="row" style="display:none">
                                     <div class="col-md-12 form-group-select">
                                         <div class="form-group">
                                             @Html.Label("Business Source", new { @class = "gender-label" })
                                             @Html.DropDownListFor(x => x.BusinessSourceId, new SelectList(ViewBag.BusinessSource, "Id", "Source"), new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="display:none">
+                                    
+                                    <div class="col-sm-6 col-md-6 form-group-select"  >
+                                        <div class="form-group">
+                                            @Html.Label("Policy Status", new { @class = "gender-label" })
+                                            @Html.DropDownListFor(x => x.PolicyStatusId, new SelectList(ViewBag.PoliCyStatus, "Id", "Status"), new { @class = "form-control " })
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 form-group-select"  >
+                                        <div class="form-group">
+                                            @Html.Label("GeneInsure", new { @class = "gender-label" })
+                                            @Html.DropDownListFor(x => x.InsurerId, new SelectList(ViewBag.Insurer, "Id", "InsurerName"), new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>

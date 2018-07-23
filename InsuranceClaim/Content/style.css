@@ -21,6 +21,11 @@ ol, ul {
     background: #acacac !important;
 }
 
+.inputDisabled {
+    pointer-events: none;
+    background: lightgray !important;
+}
+
 /****************************************************************************/
 .top-header-section {
     font-family: 'Poppins', sans-serif;
