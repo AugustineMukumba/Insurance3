@@ -23,35 +23,35 @@ namespace InsuranceClaim
             var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
 
 
-            // In Startup iam creating first Admin Role and creating a default Admin User     
-            if (!roleManager.RoleExists("SuperAdmin"))
-            {
+            //// In Startup iam creating first Admin Role and creating a default Admin User     
+            //if (!roleManager.RoleExists("SuperAdmin"))
+            //{
 
-                // first we create Admin rool    
-                var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
-                role.Name = "SuperAdmin";
-                roleManager.Create(role);
+            //    // first we create Admin rool    
+            //    var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+            //    role.Name = "SuperAdmin";
+            //    roleManager.Create(role);
 
-                //Here we create a Admin super user who will maintain the website                   
+            //    //Here we create a Admin super user who will maintain the website                   
 
-                var user = new ApplicationUser();
-                user.UserName = "admin@kindlebit.com";
-                user.Email = "admin@kindlebit.com";
+            //    var user = new ApplicationUser();
+            //    user.UserName = "admin@kindlebit.com";
+            //    user.Email = "admin@kindlebit.com";
 
-                string userPWD = "Kindle@123";
+            //    string userPWD = "Kindle@123";
 
-                var chkUser = UserManager.Create(user, userPWD);
+            //    var chkUser = UserManager.Create(user, userPWD);
 
-                //Add default User to Role Admin    
-                if (chkUser.Succeeded)
-                {
-                    var result1 = UserManager.AddToRole(user.Id, "SuperAdmin");
+            //    //Add default User to Role Admin    
+            //    if (chkUser.Succeeded)
+            //    {
+            //        var result1 = UserManager.AddToRole(user.Id, "SuperAdmin");
 
-                }
-            }
+            //    }
+            //}
 
             // creating employee role     
-            if (!roleManager.RoleExists("AdministratorStaff"))
+            if (!roleManager.RoleExists("Administrator"))
             {
                 var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
                 role.Name = "AdministratorStaff";
@@ -60,7 +60,7 @@ namespace InsuranceClaim
             }
 
             // creating Agent role     
-            if (!roleManager.RoleExists("Service_Provider"))
+            if (!roleManager.RoleExists("Staff"))
             {
                 var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
                 role.Name = "Service_Provider";

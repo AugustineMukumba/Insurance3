@@ -84,8 +84,18 @@ namespace InsuranceClaim.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    var _user = UserManager.FindByEmail(model.Email);
+                    var role = UserManager.GetRoles(_user.Id.ToString()).FirstOrDefault();
                     //var customer = InsuranceContext.Customers.All(where: $"UserId ='{User.Identity.GetUserId().ToString()}'").FirstOrDefault();
-                    return RedirectToAction("index", "CustomerRegistration");
+                    if (role == "Administrator" || role == "Staff")
+                    {
+                        return RedirectToAction("Dashboard", "Account");
+                    }
+                    else
+                    {
+                        return RedirectToAction("index", "CustomerRegistration");
+                    }
+                    
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -498,6 +508,8 @@ namespace InsuranceClaim.Controllers
             }
         }
         #endregion
+
+       
         public ActionResult RoleManagement(string id = "0")
         {
 
@@ -532,6 +544,8 @@ namespace InsuranceClaim.Controllers
                 return View(new RoleViewModel());
             }
         }
+
+       
         [HttpPost]
         public ActionResult AddRole(RoleViewModel model)
         {
@@ -577,6 +591,7 @@ namespace InsuranceClaim.Controllers
             return RedirectToAction("RoleManagementList");
         }
 
+     
         public ActionResult RoleManagementList()
         {
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
@@ -605,6 +620,7 @@ namespace InsuranceClaim.Controllers
             return View(_roles);
         }
 
+       
         public ActionResult DeleteRoleManagement(RoleViewModel model)
         {
 
@@ -619,6 +635,7 @@ namespace InsuranceClaim.Controllers
             return RedirectToAction("RoleManagementList");
         }
 
+       
         public ActionResult UserManagement(int id = 0)
         {
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
@@ -626,10 +643,10 @@ namespace InsuranceClaim.Controllers
             {
                 var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
                 var role = UserManager.GetRoles(userid).FirstOrDefault();
-                if (role != "SuperAdmin")
-                {
-                    return RedirectToAction("Index", "CustomerRegistration");
-                }
+                //if (role != "SuperAdmin")
+                //{
+                //    return RedirectToAction("Index", "CustomerRegistration");
+                //}
             }
             else
             {
@@ -685,6 +702,7 @@ namespace InsuranceClaim.Controllers
 
 
         }
+
         [HttpPost]
         public async Task<ActionResult> AddUserManagement(UserManagementViewModel model)
         {
@@ -694,10 +712,10 @@ namespace InsuranceClaim.Controllers
             {
                 var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
                 var roles = UserManager.GetRoles(userid).FirstOrDefault();
-                if (roles != "SuperAdmin")
-                {
-                    return RedirectToAction("Index", "CustomerRegistration");
-                }
+                //if (roles != "SuperAdmin")
+                //{
+                //    return RedirectToAction("Index", "CustomerRegistration");
+                //}
             }
             else
             {
@@ -775,7 +793,11 @@ namespace InsuranceClaim.Controllers
                 var role = UserManager.GetRoles(ctems.UserID).FirstOrDefault();
                 user.PhoneNumber = model.PhoneNumber;
 
-                if (role != model.role)
+                if (role == null)
+                {
+                    UserManager.AddToRole(user.Id, model.role);
+                }
+                else if (role != model.role)
                 {
                     UserManager.RemoveFromRole(user.Id, role);
                     UserManager.AddToRole(user.Id, model.role);
@@ -812,6 +834,8 @@ namespace InsuranceClaim.Controllers
 
             return RedirectToAction("UserManagementList");
         }
+
+        
         public ActionResult UserManagementList()
         {
 
@@ -820,10 +844,10 @@ namespace InsuranceClaim.Controllers
             {
                 var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
                 var roles = UserManager.GetRoles(userid).FirstOrDefault();
-                if (roles != "SuperAdmin")
-                {
-                    return RedirectToAction("Index", "CustomerRegistration");
-                }
+                //if (roles != "SuperAdmin")
+                //{
+                //    return RedirectToAction("Index", "CustomerRegistration");
+                //}
             }
             else
             {
@@ -832,7 +856,7 @@ namespace InsuranceClaim.Controllers
 
 
             List<CustomerModel> ListUserViewModel = new List<CustomerModel>();
-            var user = InsuranceContext.Customers.All().ToList();
+            var user = InsuranceContext.Customers.All().ToList().Take(10);
 
 
             foreach (var item in user)
@@ -873,6 +897,7 @@ namespace InsuranceClaim.Controllers
 
 
         }
+
         public ActionResult DeleteUserManagement(int id)
         {
 
@@ -944,6 +969,13 @@ namespace InsuranceClaim.Controllers
 
 
             return View(policylist);
+        }
+
+  
+        // GET: Dashboard
+        public ActionResult Dashboard()
+        {
+            return View();
         }
 
     }

@@ -232,6 +232,65 @@ ol, ul {
     margin-bottom: 50px;
 }
 
+.hvr-overline-from-center {
+      cursor:pointer;
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    position: relative;
+    overflow: hidden;
+}
+
+.hvr-float-shadow {
+     cursor:pointer;
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    position: relative;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-property: transform;
+    transition-property: transform;
+}
+
+.hvr-float-shadow:hover, .hvr-float-shadow:focus, .hvr-float-shadow:active {
+    -webkit-transform: translateY(-5px);
+    transform: translateY(-5px);
+}
+
+.hvr-grow-shadow {
+    cursor:pointer;
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-property: box-shadow, transform;
+    transition-property: box-shadow, transform;
+}
+
+.hvr-grow-shadow:hover, .hvr-grow-shadow:focus, .hvr-grow-shadow:active {
+    box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+.dashboard-section {
+    
+    margin: auto;
+    width: 100%;
+    /*background: #3b3b3b;*/
+    padding: 30px;
+    border:1px solid #ddd;
+    margin-bottom: 50px;
+}
+
 .form-title h4 {
     text-transform: uppercase;
     color: #16909d;
@@ -954,6 +1013,25 @@ tr.policynumber-tr {
 
 table.policy-table-grid{margin:0 0 20px;}
 
+
+.color-box {
+    /*background: #118ae1;
+    height: 100px;
+    vertical-align: middle;
+    display: table-cell;
+    width: 200px;
+    text-align: center; border-radius:4px;*/
+    background: #118ae1 !important;
+    height: 100px;
+    vertical-align: middle;
+    display: table-cell;
+       width: 247px;
+    text-align: center;
+    border-radius: 4px;
+    box-shadow: -3px 2px 2px #cccc
+}
+.color-box h4{color:#fff;}
+.width-auto{width:auto}
 
 /**15 june css end**/
 
