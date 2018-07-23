@@ -578,6 +578,7 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult SummaryDetail()
         {
+            Session["issummaryformvisited"] = true;
             var summarydetail = (SummaryDetailModel)Session["SummaryDetailed"];
             SummaryDetailService SummaryDetailServiceObj = new SummaryDetailService();
 
@@ -697,6 +698,7 @@ namespace InsuranceClaim.Controllers
 
             }
             var Id = 0;
+            var listReinsuranceTransaction = new List<ReinsuranceTransaction>();
             var vehicle = (List<RiskDetailModel>)Session["VehicleDetails"];
             if (vehicle != null && vehicle.Count > 0)
             {
@@ -714,6 +716,28 @@ namespace InsuranceClaim.Controllers
                         var vehicles = (List<RiskDetailModel>)Session["VehicleDetails"];
                         vehicles[Convert.ToInt32(_item.NoOfCarsCovered) - 1] = _item;
                         Session["VehicleDetails"] = vehicles;
+
+                        if (item.SumInsured > 100000)
+                        {
+                            var ReInsureanceBroker = InsuranceContext.ReinsuranceBrokers.All();
+                            var defaultReInsureanceBroker = ReInsureanceBroker.Where(x => x.ReinsuranceBrokerCode == ConfigurationManager.AppSettings["DefaultReinsuranceBrokerCode"].ToString()).FirstOrDefault();
+
+                            var reinsurance = new ReinsuranceTransaction();
+                            reinsurance.ReinsuranceAmount = _item.SumInsured - 100000;
+                            reinsurance.ReinsurancePremium = ((reinsurance.ReinsuranceAmount / item.SumInsured) * item.Premium);
+                            reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(defaultReInsureanceBroker.Commission);
+                            reinsurance.ReinsuranceCommission = ((reinsurance.ReinsurancePremium * reinsurance.ReinsuranceCommissionPercentage) / 100);//Convert.ToDecimal(defaultReInsureanceBroker.Commission);
+                            reinsurance.VehicleId = item.Id;
+                            reinsurance.ReinsuranceBrokerId = defaultReInsureanceBroker.Id;
+
+                            InsuranceContext.ReinsuranceTransactions.Insert(reinsurance);
+                            //reinsurance.Id = InsuranceContext.ReinsuranceTransactions.Max()
+
+                            listReinsuranceTransaction.Add(reinsurance);
+                        }
+                        
+
+
                     }
                     else
                     {
@@ -754,6 +778,34 @@ namespace InsuranceClaim.Controllers
 
 
                         InsuranceContext.VehicleDetails.Update(Vehicledata);
+                        var _summary = (SummaryDetailModel)Session["SummaryDetailed"];
+                        if (item.SumInsured > 100000)
+                        {
+                            var ReInsureanceBroker = InsuranceContext.ReinsuranceBrokers.All();
+                            var defaultReInsureanceBroker = ReInsureanceBroker.Where(x => x.ReinsuranceBrokerCode == ConfigurationManager.AppSettings["DefaultReinsuranceBrokerCode"].ToString()).FirstOrDefault();
+                           
+                            var summaryid = _summary.Id;
+                            var vehicleid = item.Id;
+                            var ReinsuranceTransactions = InsuranceContext.ReinsuranceTransactions.All(where: $"col={_summary.Id} and col2={item.Id}");
+                            var _reinsurance = new ReinsuranceTransaction();
+                            _reinsurance.ReinsuranceAmount = _item.SumInsured - 100000;
+                            _reinsurance.ReinsurancePremium = ((_reinsurance.ReinsuranceAmount / item.SumInsured) * item.Premium);
+                            _reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(defaultReInsureanceBroker.Commission);
+                            _reinsurance.ReinsuranceCommission = ((_reinsurance.ReinsurancePremium * _reinsurance.ReinsuranceCommissionPercentage) / 100);//Convert.ToDecimal(defaultReInsureanceBroker.Commission);
+                            _reinsurance.ReinsuranceBrokerId = defaultReInsureanceBroker.Id;
+
+
+                            InsuranceContext.ReinsuranceTransactions.Update(_reinsurance);
+                        }
+                        else
+                        {
+                            var ReinsuranceTransactions = InsuranceContext.ReinsuranceTransactions.Single(where: $"col={_summary.Id} and col2={item.Id}");
+
+                            InsuranceContext.ReinsuranceTransactions.Delete(ReinsuranceTransactions);
+
+                        }
+
+
                     }
                 }
             }
@@ -784,6 +836,19 @@ namespace InsuranceClaim.Controllers
 
                     InsuranceContext.SummaryDetails.Update(summarydata);
                 }
+
+
+
+                if (listReinsuranceTransaction != null && listReinsuranceTransaction.Count > 0)
+                {
+                    foreach (var item in listReinsuranceTransaction)
+                    {
+                        var InsTransac = InsuranceContext.ReinsuranceTransactions.Single(item.Id);
+                        InsTransac.SummaryDetailId = summary.Id;
+                        InsuranceContext.ReinsuranceTransactions.Update(InsTransac);
+                    }
+                }
+
             }
 
 
@@ -832,6 +897,10 @@ namespace InsuranceClaim.Controllers
             if (coverType == 2)
             {
                 typeCover = eCoverType.ThirdParty;
+            }
+            if (coverType == 3)
+            {
+                typeCover = eCoverType.FullThirdParty;
             }
             var eexcessType = eExcessType.Percentage;
             if (excessType == 2)

@@ -506,10 +506,10 @@ namespace InsuranceClaim.Controllers
             {
                 var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
                 var roles = UserManager.GetRoles(userid).FirstOrDefault();
-                if (roles != "SuperAdmin")
-                {
-                    return RedirectToAction("Index", "CustomerRegistration");
-                }
+                //if (roles != "SuperAdmin")
+                //{
+                   // return RedirectToAction("Index", "CustomerRegistration");
+                //}
             }
             else
             {
@@ -540,10 +540,10 @@ namespace InsuranceClaim.Controllers
             {
                 var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
                 var roles = UserManager.GetRoles(userid).FirstOrDefault();
-                if (roles != "SuperAdmin")
-                {
-                    return RedirectToAction("Index", "CustomerRegistration");
-                }
+                //if (roles != "SuperAdmin")
+                //{
+                //    return RedirectToAction("Index", "CustomerRegistration");
+                //}
             }
             else
             {
@@ -584,10 +584,10 @@ namespace InsuranceClaim.Controllers
             {
                 var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
                 var role = UserManager.GetRoles(userid).FirstOrDefault();
-                if (role != "SuperAdmin")
-                {
-                    return RedirectToAction("Index", "CustomerRegistration");
-                }
+                //if (role != "SuperAdmin")
+                //{
+                //    return RedirectToAction("Index", "CustomerRegistration");
+                //}
             }
             else
             {
@@ -869,27 +869,82 @@ namespace InsuranceClaim.Controllers
             return View(lstUserModel);
 
 
-        
 
+
+
+        }
+        public ActionResult DeleteUserManagement(int id)
+        {
+
+
+
+            var data = InsuranceContext.Customers.Single(id);
+
+            var userid = data.UserID;
+            InsuranceContext.Customers.Delete(data);
+
+            var currentUser = UserManager.FindById(userid);
+            UserManager.Delete(currentUser);
+
+
+
+            return RedirectToAction("UserManagementList");
+        }
+
+        public ActionResult PolicyList()
+        {
+            ListPolicy policylist = new ListPolicy();
+            policylist.listpolicy = new List<PolicyListViewModel>();
+            var SummaryList = InsuranceContext.SummaryDetails.All().ToList();
+
+            foreach (var item in SummaryList)
+            {
+                PolicyListViewModel policylistviewmodel = new PolicyListViewModel();
+
+                policylistviewmodel.Vehicles = new List<VehicleReinsuranceViewModel>();
+                policylistviewmodel.TotalPremium = Convert.ToDecimal(item.TotalPremium);
+                policylistviewmodel.TotalSumInsured = Convert.ToDecimal(item.TotalSumInsured);
+                policylistviewmodel.PaymentMethodId = Convert.ToInt32(item.PaymentMethodId);
+                policylistviewmodel.CustomerId = Convert.ToInt32(item.CustomerId);
+                policylistviewmodel.SummaryId = item.Id;
+
+                var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={item.Id}").ToList();
+                var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+                var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
+                var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+                
+                policylistviewmodel.PolicyNumber = policy.PolicyNumber;
+
+                foreach (var _item in SummaryVehicleDetails)
+                {
+                    VehicleReinsuranceViewModel obj = new VehicleReinsuranceViewModel();
+                    var _vehicle = InsuranceContext.VehicleDetails.Single(_item.VehicleDetailsId);
+                    var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.Single(where: $"SummaryDetailId={item.Id} and VehicleId={_item.VehicleDetailsId}");
+
+                    obj.CoverType = Convert.ToInt32(_vehicle.CoverTypeId);
+                    obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
+                    obj.MakeId = _vehicle.MakeId;
+                    obj.ModelId = _vehicle.ModelId;
+                    obj.Premium = Convert.ToDecimal(_vehicle.Premium);
+                    obj.RegisterationNumber = _vehicle.RegistrationNo;
+                    obj.SumInsured = Convert.ToDecimal(_vehicle.SumInsured);
+                    obj.VehicleId = _vehicle.Id;
+                    if (_reinsurenaceTrans != null)
+                    {
+                        obj.ReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans.ReinsuranceAmount);
+                        obj.ReinsurerBrokerId = _reinsurenaceTrans.ReinsuranceBrokerId;
+                    }
+                   
+                    
+                    policylistviewmodel.Vehicles.Add(obj);
+                }
+
+                policylist.listpolicy.Add(policylistviewmodel);
+            }
+
+
+            return View(policylist);
+        }
 
     }
-    public ActionResult DeleteUserManagement(int id)
-    {
-
-
-
-        var data = InsuranceContext.Customers.Single(id);
-
-        var userid = data.UserID;
-        InsuranceContext.Customers.Delete(data);
-
-        var currentUser = UserManager.FindById(userid);
-        UserManager.Delete(currentUser);
-
-
-
-        return RedirectToAction("UserManagementList");
-    }
-
-}
 }

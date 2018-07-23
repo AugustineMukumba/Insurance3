@@ -85,7 +85,7 @@
                                                @placeholder = "Vehicle Number",
                                                @autocomplete = "off",
                                                @class = "form-control",
-                                               @maxlength = "2",                                              
+                                               @maxlength = "2",
                                                @readonly = "readonly"
                                            })
                                                 @Html.ValidationMessageFor(m => m.NoOfCarsCovered, "", new { @class = "text-danger" })
@@ -380,7 +380,7 @@
                                             <div class="col-sm-6 col-md-6">
                                                 <div class="form-group">
                                                     @Html.Label("Add More Vehicles ?", new { @class = "gender-label" })
-                                                    @Html.CheckBoxFor(m => m.chkAddVehicles)
+                                                    @Html.CheckBoxFor(m => m.chkAddVehicles, new { @class = (Model.isUpdate ? "btnDisabled" : "") })
                                                 </div>
                                             </div>
                                             <div class="col-sm-6 col-md-6">
@@ -412,18 +412,27 @@
                                     <div class="row">
                                         <div class="col-md-12 next-btn">
                                             <div class="row">
-                                                <div class="col-sm-6 col-md-6">
+                                                <div class=@(Session["issummaryformvisited"] != null && (bool)Session["issummaryformvisited"] ? "col-sm-4 col-md-4" : "col-sm-6 col-md-6")>
                                                     <div class="text-left">
                                                         <div class="back-left"><button type="button" onclick="gotoPeriviouse()" class="btn">Back</button></div>
                                                         <a style="display:none" id="previouselink" href="/CustomerRegistration/ProductDetail" class="back"></a>
                                                     </div>
                                                 </div>
 
-                                                <div class="col-sm-6 col-md-6">
+                                                <div class=@(Session["issummaryformvisited"] != null && (bool)Session["issummaryformvisited"] ? "col-sm-4 col-md-4" : "col-sm-6 col-md-6")>
                                                     <div class="text-right">
                                                         <button type="submit" id="btnGenerateQuote" class="btn @(Model.isUpdate ? "btnDisabled" : "")" style="padding:20px 10px;width: auto;">Submit & Generate Quote</button>
                                                     </div>
                                                 </div>
+
+                                                @if (Session["issummaryformvisited"] != null && (bool)Session["issummaryformvisited"])
+                                                {
+                                                    <div class="col-sm-4 col-md-4">
+                                                        <div class="text-right">
+                                                            <button type="button" id="btnSkip" onclick="redirectToSummary();" class="btn" style="padding:20px 10px;width: 170px;">Skip</button>
+                                                        </div>
+                                                    </div>
+                                                }
 
                                             </div>
                                         </div>
@@ -446,6 +455,10 @@
     }
     function cancelUpdate() {
         location.href = '@Url.Action("RiskDetail", "CustomerRegistration", new { id=0 })';
+    }
+
+    function redirectToSummary() {
+        location.href = '@Url.Action("SummaryDetail", "CustomerRegistration")';
     }
 </script>
 @*<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -720,7 +733,7 @@
         var RoadsideAssistance = $("#RoadsideAssistance").is(":checked");
         var MedicalExpenses = $("#MedicalExpenses").is(":checked");
         var Addthirdparty = $("#Addthirdparty").is(":checked");
-        
+
 
         if (NumberofPersons == undefined || NumberofPersons == null || NumberofPersons == "") {
             NumberofPersons = 0;
@@ -729,7 +742,7 @@
         $.ajax({
             type: "POST",
             url: "@Url.Action("CalculatePremium", "CustomerRegistration")",
-            data: { vehicleUsageId: vehicleUsageId, sumInsured: sumInsured, coverType: coverType, excessType: excessType, excess: excess, AddThirdPartyAmount: AddThirdPartyAmount, NumberofPersons: NumberofPersons, Addthirdparty: Addthirdparty, PassengerAccidentCover: PassengerAccidentCover, ExcessBuyBack: ExcessBuyBack, RoadsideAssistance: RoadsideAssistance, MedicalExpenses: MedicalExpenses},
+            data: { vehicleUsageId: vehicleUsageId, sumInsured: sumInsured, coverType: coverType, excessType: excessType, excess: excess, AddThirdPartyAmount: AddThirdPartyAmount, NumberofPersons: NumberofPersons, Addthirdparty: Addthirdparty, PassengerAccidentCover: PassengerAccidentCover, ExcessBuyBack: ExcessBuyBack, RoadsideAssistance: RoadsideAssistance, MedicalExpenses: MedicalExpenses },
             success: function (data) {
                 debugger;
                 $("#Premium").val(data.Premium);

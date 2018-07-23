@@ -9,7 +9,8 @@ namespace InsuranceClaim.Models
     public enum eCoverType
     {
         Comprehensive = 1,
-        ThirdParty = 2
+        ThirdParty = 2,
+        FullThirdParty = 3
     }
     public enum eExcessType
     {

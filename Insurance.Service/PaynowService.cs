@@ -1,6 +1,7 @@
 ﻿using Insurance.Domain;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -22,14 +23,16 @@ namespace Insurance.Service
         {
             InsuranceClaim.Models.PaynowResponse paynowresponse = new InsuranceClaim.Models.PaynowResponse();
 
+            
+
             string PaymentId = "PAYNOW-" + Guid.NewGuid().ToString();
             HttpContext.Current.Session["PaymentId"] = PaymentId;
 
             var values = new Dictionary<string, string>
             {
 
-               { "resulturl", "http://localhost:49872/Paypal/SaveDetailList/" + id},
-               { "returnurl", "http://localhost:49872/Paypal/SaveDetailList/" + id },
+               { "resulturl", "http://geneinsureclaim2.kindlebit.com/Paypal/SaveDetailList/" + id},
+               { "returnurl", "http://geneinsureclaim2.kindlebit.com/Paypal/SaveDetailList/" + id},
                { "reference", PaymentId },
                { "amount",Convert.ToString(amount)},
                { "id", IntegrationID },
@@ -42,8 +45,8 @@ namespace Insurance.Service
 
             var _values = new Dictionary<string, string>
             {
-               { "resulturl", "http://localhost:49872/Paypal/SaveDetailList/" + id},
-               { "returnurl", "http://localhost:49872/Paypal/SaveDetailList/" + id },
+               { "resulturl", "http://geneinsureclaim2.kindlebit.com/Paypal/SaveDetailList/" + id},
+               { "returnurl", "http://geneinsureclaim2.kindlebit.com/Paypal/SaveDetailList/" + id},
                { "reference", PaymentId },
                { "amount",Convert.ToString(amount)},
                { "id", IntegrationID },

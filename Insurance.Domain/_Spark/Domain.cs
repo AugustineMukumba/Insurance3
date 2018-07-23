@@ -336,7 +336,7 @@ namespace Insurance.Domain
         public int Id { get; set; }
         public string ReinsuranceBrokerCode { get; set; }
         public string ReinsuranceBrokerName { get; set; }
-        public Single? Commission { get; set; }
+        public decimal? Commission { get; set; }
 
     }
     public partial class ReinsurerDetail : Entity<ReinsurerDetail>
@@ -371,8 +371,12 @@ namespace Insurance.Domain
         public string TreatyCode { get; set; }
         public string TreatyName { get; set; }
         public decimal? ReinsuranceAmount { get; set; }
-        public Single? ReinsuranceCommission { get; set; }
+        public decimal? ReinsuranceCommission { get; set; }
         public decimal? ReinsurancePremium { get; set; }
+        public decimal? ReinsuranceCommissionPercentage { get; set; }
+        public int VehicleId { get; set; }
+        public int SummaryDetailId { get; set; }
+        public int ReinsuranceBrokerId { get; set; }
 
     }
     public partial class Product : Entity<Product>
