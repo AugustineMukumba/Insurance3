@@ -20,19 +20,19 @@ namespace InsuranceClaim.Controllers
             return View(obj);
         }
         [HttpPost]
-        public ActionResult SaveVehicalUsage(VehicleUsageModel model)
+        public ActionResult SaveVehicleUsage(VehicleUsageModel model)
         {
             var dbModel = Mapper.Map<VehicleUsageModel, VehicleUsage>(model);
             InsuranceContext.VehicleUsages.Insert(dbModel);
-            return RedirectToAction("VehicalUsageList");
+            return RedirectToAction("VehicleUsageList");
         }
-        public ActionResult VehicalUsageList()
+        public ActionResult VehicleUsageList()
         {
             var UserList = InsuranceContext.VehicleUsages.All(where: "IsActive='True' or IsActive is null").ToList();
             return View(UserList);
 
         }
-        public ActionResult EditVehicalUsege(int Id)
+        public ActionResult EditVehicleUsage(int Id)
         {
             var record = InsuranceContext.VehicleUsages.All(where: $"Id ={Id}").FirstOrDefault();
             ViewBag.Products = InsuranceContext.Products.All().ToList();
@@ -40,7 +40,7 @@ namespace InsuranceClaim.Controllers
             return View(data);
         }
         [HttpPost]
-        public ActionResult EditVehicalUsege(VehicleUsageModel model)
+        public ActionResult EditVehicleUsage(VehicleUsageModel model)
         {
             if (ModelState.IsValid)
             {
@@ -50,9 +50,9 @@ namespace InsuranceClaim.Controllers
                 InsuranceContext.VehicleUsages.Update(data);
             }
 
-            return RedirectToAction("VehicalUsageList");
+            return RedirectToAction("VehicleUsageList");
         }
-        public ActionResult DeleteVehicalUsage(int Id)
+        public ActionResult DeleteVehicleUsage(int Id)
         {
 
             //var record = InsuranceContext.VehicleUsages.All(where: $"Id ={Id}").FirstOrDefault();
@@ -60,7 +60,7 @@ namespace InsuranceClaim.Controllers
             string query = $"update VehicleUsage set IsActive=0 where Id={Id}";
 
             InsuranceContext.VehicleUsages.Execute(query);
-            return RedirectToAction("VehicalUsageList");
+            return RedirectToAction("VehicleUsageList");
         }
     }
 }
