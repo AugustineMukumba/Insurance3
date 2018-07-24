@@ -992,6 +992,63 @@ namespace InsuranceClaim.Controllers
             return View();
         }
 
+        // Setting Methods
+
+       // GET: Setting
+        public ActionResult Index()
+        {
+            InsuranceClaim.Models.SettingModel obj = new InsuranceClaim.Models.SettingModel();
+            List<Insurance.Domain.Setting> objList = new List<Insurance.Domain.Setting>();
+            objList = InsuranceContext.Settings.All().ToList();
+            return View(obj);
+        }
+
+        [HttpPost]
+        public ActionResult SaveSetting(SettingModel model)
+        {
+
+            model.CreatedBy = 1;
+            model.CreatedDate = DateTime.Now;
+            var dbModel = Mapper.Map<SettingModel, Setting>(model);
+            InsuranceContext.Settings.Insert(dbModel);
+
+            return RedirectToAction("SettingList");
+        }
+
+        public ActionResult SettingList()
+        {
+            var db = InsuranceContext.Settings.All().ToList();
+
+            return View(db);
+        }
+
+        public ActionResult EditSetting(int Id)
+        {
+            var record = InsuranceContext.Settings.All(where: $"Id ={Id}").FirstOrDefault();
+            var model = Mapper.Map<Setting, SettingModel>(record);
+            return View(model);
+        }
+        [HttpPost]
+        public ActionResult EditSetting(SettingModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                model.ModifiedBy = 2;
+                model.ModifiedDate = DateTime.Now;
+                var data = Mapper.Map<SettingModel, Setting>(model);
+                InsuranceContext.Settings.Update(data);
+            }
+            return RedirectToAction("SettingList");
+        }
+
+        public ActionResult DeleteSetting(int Id)
+        {
+            string query = $"Delete Setting  where Id = {Id}";
+            InsuranceContext.Settings.Execute(query);
+
+            return RedirectToAction("SettingList");
+        }
     }
 
 }
