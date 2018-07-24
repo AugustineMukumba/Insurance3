@@ -31,7 +31,7 @@
                 @Html.Label("Veh Usage", new { @class = "col-md-3 control-label" })
                 <div class="col-md-5">
                     <div class="form-group-inputs">
-                        @Html.TextBoxFor(m => m.VehUsage, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.VehUsage, new { @class = "form-control",@placeholder= "Veh Usage" })
                         @Html.ValidationMessageFor(x => x.VehUsage, "", new { @class = "text-danger" })
                     </div>
 
@@ -42,7 +42,7 @@
                 @Html.Label("Comprehensive Rate", new { @class = "col-md-3 control-label" })
                 <div class="col-md-5">
                     <div class="form-group-inputs">
-                        @Html.TextBoxFor(m => m.ComprehensiveRate, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.ComprehensiveRate, new { @class = "form-control",@placeholder="Comprehensive Rate" })
                         @Html.ValidationMessageFor(x => x.ComprehensiveRate, "", new { @class = "text-danger" })
                     </div>
 
@@ -53,7 +53,7 @@
                 @Html.Label("Min Comp Amount", new { @class = "col-md-3 control-label" })
                 <div class="col-md-5">
                     <div class="form-group-inputs">
-                        @Html.TextBoxFor(m => m.MinCompAmount, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.MinCompAmount, new { @class = "form-control",@placeholder="Min Comp Amount" })
                         @Html.ValidationMessageFor(x => x.MinCompAmount, "", new { @class = "text-danger" })
                     </div>
 
@@ -64,7 +64,7 @@
                 @Html.Label("Third Party Rate", new { @class = "col-md-3 control-label" })
                 <div class="col-md-5">
                     <div class="form-group-inputs">
-                        @Html.TextBoxFor(m => m.ThirdPartyRate, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.ThirdPartyRate, new { @class = "form-control",@placeholder="Third Party Rate" })
                         @Html.ValidationMessageFor(x => x.ThirdPartyRate, "", new { @class = "text-danger" })
                     </div>
 
@@ -75,7 +75,7 @@
                 @Html.Label("Min Third Amount", new { @class = "col-md-3 control-label" })
                 <div class="col-md-5">
                     <div class="form-group-inputs">
-                        @Html.TextBoxFor(m => m.MinThirdAmount, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.MinThirdAmount, new { @class = "form-control",@placeholder="Min Third Amount" })
                         @Html.ValidationMessageFor(x => x.MinThirdAmount, "", new { @class = "text-danger" })
                     </div>
 
@@ -86,7 +86,7 @@
                 @Html.Label("FTP Amount", new { @class = "col-md-3 control-label" })
                 <div class="col-md-5">
                     <div class="form-group-inputs">
-                        @Html.TextBoxFor(m => m.FTPAmount, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.FTPAmount, new { @class = "form-control",@placeholder="FTP Amount" })
                         @Html.ValidationMessageFor(x => x.FTPAmount, "", new { @class = "text-danger" })
                     </div>
 
@@ -97,7 +97,7 @@
                 @Html.Label("Annual TP Amount", new { @class = "col-md-3 control-label" })
                 <div class="col-md-5">
                     <div class="form-group-inputs">
-                        @Html.TextBoxFor(m => m.AnnualTPAmount, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.AnnualTPAmount, new { @class = "form-control",@placeholder="Annual TP Amount" })
                         @Html.ValidationMessageFor(x => x.AnnualTPAmount, "", new { @class = "text-danger" })
                     </div>
 

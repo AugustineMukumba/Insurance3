@@ -284,7 +284,7 @@ namespace InsuranceClaim.Controllers
         public ActionResult RiskDetail(int? id = 0)
         {
 
-            int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.key == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
+            int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
             var PolicyData = (PolicyDetail)Session["PolicyData"];
             //Id is policyid from Policy detail table
             var viewModel = new RiskDetailModel();

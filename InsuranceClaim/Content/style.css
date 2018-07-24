@@ -1038,6 +1038,12 @@ table.policy-table-grid{margin:0 0 20px;}
 .color-box h4{color:#fff;}
 .width-auto{width:auto}
 
+.search-btn button {
+    padding: 6px 0;
+    border-color: #16909d;
+    font-size: 15px;
+}
+
 /**15 june css end**/
 
 @media(max-width:767px) {

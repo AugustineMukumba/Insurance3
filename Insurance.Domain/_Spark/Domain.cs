@@ -460,7 +460,7 @@ namespace Insurance.Domain
         public Setting() { }
         public Setting(bool defaults) : base(defaults) { }
         public int Id { get; set; }
-        public string key { get; set; }
+        public string keyname { get; set; }
         public string value { get; set; }
 
     }

@@ -23,7 +23,10 @@ namespace Insurance.Service
         {
             InsuranceClaim.Models.PaynowResponse paynowresponse = new InsuranceClaim.Models.PaynowResponse();
 
-            
+
+            Uri myuri = new Uri(System.Web.HttpContext.Current.Request.Url.AbsoluteUri);
+            string pathQuery = myuri.PathAndQuery;
+            string hostName = myuri.ToString().Replace(pathQuery, "");
 
             string PaymentId = "PAYNOW-" + Guid.NewGuid().ToString();
             HttpContext.Current.Session["PaymentId"] = PaymentId;
@@ -31,8 +34,8 @@ namespace Insurance.Service
             var values = new Dictionary<string, string>
             {
 
-               { "resulturl", "http://geneinsureclaim2.kindlebit.com/Paypal/SaveDetailList/" + id},
-               { "returnurl", "http://geneinsureclaim2.kindlebit.com/Paypal/SaveDetailList/" + id},
+               { "resulturl", hostName + "/Paypal/SaveDetailList/" + id},
+               { "returnurl", hostName + "/Paypal/SaveDetailList/" + id},
                { "reference", PaymentId },
                { "amount",Convert.ToString(amount)},
                { "id", IntegrationID },
@@ -45,8 +48,8 @@ namespace Insurance.Service
 
             var _values = new Dictionary<string, string>
             {
-               { "resulturl", "http://geneinsureclaim2.kindlebit.com/Paypal/SaveDetailList/" + id},
-               { "returnurl", "http://geneinsureclaim2.kindlebit.com/Paypal/SaveDetailList/" + id},
+               { "resulturl", hostName + "/Paypal/SaveDetailList/" + id},
+               { "returnurl", hostName + "/Paypal/SaveDetailList/" + id},
                { "reference", PaymentId },
                { "amount",Convert.ToString(amount)},
                { "id", IntegrationID },

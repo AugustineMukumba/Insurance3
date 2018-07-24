@@ -53,7 +53,7 @@
 
                                             <div class="form-group">
                                                 @Html.LabelFor(x => x.PhoneNumber, new { @class = "gender-label" })
-                                                @Html.TextBoxFor(x => x.CountryCode, new { @class = "form-control countrycode", @name = "CountryCode", @autocomplete = "off", @id = "CountryCode", @placeholder = "Code", @maxlength = "4" })
+                                                @Html.DropDownListFor(x => x.CountryCode, new SelectList(ViewBag.Countries, "code", "code"), new { @class = "form-control countrycode" })
                                                 @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control phonenumber", @name = "PhoneNumber", @autocomplete = "off", @id = "PhoneNumber", @placeholder = "Phone Number" })
                                                 @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
                                                 @Html.ValidationMessageFor(x => x.CountryCode, "", new { @class = "text-danger" })
@@ -91,14 +91,14 @@
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.LabelFor(x => x.AddressLine1, new { @class = "gender-label" })
-                                                @Html.TextBoxFor(x => x.AddressLine1, new { @class = "form-control", @name = "AddressLine1", @autocomplete = "off", @id = "AddressLine1", @placeholder = "AddressLine1" })
+                                                @Html.TextBoxFor(x => x.AddressLine1, new { @class = "form-control", @name = "AddressLine1", @autocomplete = "off", @id = "AddressLine1", @placeholder = "Address Line 1" })
                                                 @Html.ValidationMessageFor(x => x.AddressLine1, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.LabelFor(x => x.AddressLine2, new { @class = "gender-label" })
-                                                @Html.TextBoxFor(x => x.AddressLine2, new { @class = "form-control", @name = "AddressLine2", @autocomplete = "off", @id = "AddressLine2", @placeholder = "AddressLine2" })
+                                                @Html.TextBoxFor(x => x.AddressLine2, new { @class = "form-control", @name = "AddressLine2", @autocomplete = "off", @id = "AddressLine2", @placeholder = "Address Line 2" })
                                                 @Html.ValidationMessageFor(x => x.AddressLine2, "", new { @class = "text-danger" })
                                             </div>
                                         </div>

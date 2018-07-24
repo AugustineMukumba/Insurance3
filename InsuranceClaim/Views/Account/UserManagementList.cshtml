@@ -62,7 +62,11 @@
                                         <ul class="list-inline">
                                             <li>@Html.ActionLink("Edit", "UserManagement", "Account", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
                                             @*<a href="/Account/AddUserManagement/123">link text</a>*@
-                                            <li><button type="button" class="btn-sm btn-danger" onclick="showPopupp('@item.Id')">Delete</button></li>
+                                            @if (item.role != "Administrator")
+                                            {
+                                                <li><button type="button" class="btn-sm btn-danger" onclick="showPopupp('@item.Id')">Delete</button></li>
+                                            }
+                                           
                                         </ul>
                                     </div>
                                 </td>

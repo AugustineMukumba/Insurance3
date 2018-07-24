@@ -1,8 +1,9 @@
-﻿@{ 
+﻿@{
     Layout = null;
     bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+    var role = Session["LoggedInUserRole"];
 }
-@{ 
+@{
     var ErrorMessage = TempData["ErrorMessage"];
 
 }
@@ -66,8 +67,8 @@
                                 </div>
                                 <div class="login-btn" style="@(userLoggedin ? "display:block;" : "display:none;")">
                                     <ul class="list-inline">
-                                        <li>Welcome @User.Identity.Name</li>   
-                                        <li><a href="/Account/Logout">Logout</a></li>                                    
+                                        <li>Welcome @User.Identity.Name</li>
+                                        <li><a href="/Account/Logout">Logout</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -100,6 +101,14 @@
                             <li><a href="#">Social Responsibility</a></li>
                             <li><a href="#">News</a></li>
                             <li><a href="#">Contact</a></li>
+                            @if (role!=null && role != "")
+                            {
+                            
+                            if (role.ToString() == "Administrator" || role.ToString() == "Staff")
+                            {
+                                <li><a href="@Url.Action("Dashboard","Account")">Dashboard</a></li>
+                            }
+                            }
                         </ul>
                     </div><!-- /.navbar-collapse -->
                 </div><!-- /.container-fluid -->
@@ -177,7 +186,7 @@
     </div>
     <script>
         $(document).ready(function () { // will trigger when the document is ready
-        debugger;
+            debugger;
             $('.date').datetimepicker({
                 format: 'MM/D/YYYY',
             })
@@ -193,7 +202,7 @@
             })
 
         });
-        
+
 
     </script>
 

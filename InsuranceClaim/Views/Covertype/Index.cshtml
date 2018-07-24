@@ -20,7 +20,7 @@
                 <div class="col-md-5">
 
                     <div class="form-group-inputs">
-                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @placeholder=" Name" })
                         @Html.ValidationMessageFor(x => x.Name, "", new { @class = "text-danger" })
                         @*@Html.ValidationMessageFor(x => x.ProductName, "", new { @class = "text-danger" })*@
                     </div>

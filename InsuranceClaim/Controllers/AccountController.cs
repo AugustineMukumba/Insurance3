@@ -86,6 +86,7 @@ namespace InsuranceClaim.Controllers
                 case SignInStatus.Success:
                     var _user = UserManager.FindByEmail(model.Email);
                     var role = UserManager.GetRoles(_user.Id.ToString()).FirstOrDefault();
+                    Session["LoggedInUserRole"] = role;
                     //var customer = InsuranceContext.Customers.All(where: $"UserId ='{User.Identity.GetUserId().ToString()}'").FirstOrDefault();
                     if (role == "Administrator" || role == "Staff")
                     {
@@ -639,6 +640,12 @@ namespace InsuranceClaim.Controllers
         public ActionResult UserManagement(int id = 0)
         {
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            string path = Server.MapPath("~/Content/Countries.txt");
+            var _countries = System.IO.File.ReadAllText(path);
+            var resultt = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObject>(_countries);
+            ViewBag.Countries = resultt.countries;
+
+
             if (userLoggedin)
             {
                 var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
@@ -920,7 +927,7 @@ namespace InsuranceClaim.Controllers
         {
             ListPolicy policylist = new ListPolicy();
             policylist.listpolicy = new List<PolicyListViewModel>();
-            var SummaryList = InsuranceContext.SummaryDetails.All().ToList();
+            var SummaryList = InsuranceContext.SummaryDetails.All().ToList().Take(50);
 
             foreach (var item in SummaryList)
             {
@@ -977,6 +984,14 @@ namespace InsuranceClaim.Controllers
         {
             return View();
         }
+        public ActionResult SearchPolicy()
+        {
+
+
+
+            return View();
+        }
 
     }
+
 }
