@@ -89,7 +89,7 @@ namespace Insurance.Service
 
                 if (AddThirdPartyAmountADD > 10000)
                 {
-                    var settingAddThirdparty = Convert.ToDecimal(Setting.Where(x => x.key == "Addthirdparty").Select(x => x.value).FirstOrDefault());
+                    var settingAddThirdparty = Convert.ToDecimal(Setting.Where(x => x.keyname == "Addthirdparty").Select(x => x.value).FirstOrDefault());
                     var Amount = AddThirdPartyAmountADD - 10000;
                     premium += Convert.ToDecimal((Amount * settingAddThirdparty) / 100);
 
@@ -97,7 +97,7 @@ namespace Insurance.Service
             }
             if (PassengerAccidentCover)
             {
-                int additionalAmountPerPerson = Convert.ToInt32(Setting.Where(x => x.key == "PassengerAccidentCover").Select(x => x.value).FirstOrDefault());
+                int additionalAmountPerPerson = Convert.ToInt32(Setting.Where(x => x.keyname == "PassengerAccidentCover").Select(x => x.value).FirstOrDefault());
 
                 int totalAdditionalPACcharge = NumberofPersons * additionalAmountPerPerson;
 
@@ -107,7 +107,7 @@ namespace Insurance.Service
             if (ExcessBuyBack)
             {
 
-                int additionalAmountExcessBuyBack = Convert.ToInt32(Setting.Where(x => x.key == "ExcessBuyBack").Select(x => x.value).FirstOrDefault());
+                int additionalAmountExcessBuyBack = Convert.ToInt32(Setting.Where(x => x.keyname == "ExcessBuyBack").Select(x => x.value).FirstOrDefault());
 
 
                 additionalchargeebb = (premium * additionalAmountExcessBuyBack) / 100;
@@ -116,7 +116,7 @@ namespace Insurance.Service
             }
             if (RoadsideAssistance)
             {
-                decimal additionalAmountRoadsideAssistance = Convert.ToDecimal(Setting.Where(x => x.key == "RoadsideAssistance").Select(x => x.value).FirstOrDefault());
+                decimal additionalAmountRoadsideAssistance = Convert.ToDecimal(Setting.Where(x => x.keyname == "RoadsideAssistance").Select(x => x.value).FirstOrDefault());
 
 
                 additionalchargersa = (premium * additionalAmountRoadsideAssistance) / 100;
@@ -126,7 +126,7 @@ namespace Insurance.Service
             if (MedicalExpenses)
             {
 
-                decimal additionalAmountMedicalExpenses = Convert.ToDecimal(Setting.Where(x => x.key == "MedicalExpenses").Select(x => x.value).FirstOrDefault());
+                decimal additionalAmountMedicalExpenses = Convert.ToDecimal(Setting.Where(x => x.keyname == "MedicalExpenses").Select(x => x.value).FirstOrDefault());
 
 
                 additionalchargeme = (premium * additionalAmountMedicalExpenses) / 100;
