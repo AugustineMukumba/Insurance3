@@ -24,4 +24,10 @@ namespace InsuranceClaim.Models
         Quarterly = 3,
         Termly = 4
     }
+
+    public enum eSettingValueType
+    {
+        percentage = 1,
+        amount = 2
+    }
 }

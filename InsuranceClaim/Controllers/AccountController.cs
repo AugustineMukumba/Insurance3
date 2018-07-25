@@ -1017,8 +1017,8 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult SettingList()
         {
+            
             var db = InsuranceContext.Settings.All().ToList();
-
             return View(db);
         }
 
@@ -1029,13 +1029,14 @@ namespace InsuranceClaim.Controllers
             return View(model);
         }
         [HttpPost]
-        public ActionResult EditSetting(SettingModel model)
+        public ActionResult EditSetting(SettingModel model,int Id)
         {
 
             if (ModelState.IsValid)
             {
                 model.ModifiedBy = 2;
                 model.ModifiedDate = DateTime.Now;
+
                 var data = Mapper.Map<SettingModel, Setting>(model);
                 InsuranceContext.Settings.Update(data);
             }

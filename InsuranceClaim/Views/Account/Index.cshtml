@@ -34,7 +34,16 @@
                     </div>
                 </div>
             </div>
-           
+            <div class="form-group">
+                @Html.Label("Type", new { @class = "col-md-3 control-label" })
+                <div class="col-md-5">
+                    <select name="ValueType" class="form-control" id="ValueType">
+                        <option value="1">Percentage</option>
+                        <option value="2">Amount</option>
+                    </select>
+                </div>
+            </div>
+
 
             <div class="form-group">
                 <div class="col-sm-3"></div>
