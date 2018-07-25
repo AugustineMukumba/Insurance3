@@ -15,27 +15,27 @@
         @using (Html.BeginForm("SaveSetting", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
             <div class="form-group">
-                @Html.Label("Keyname", new { @class = "col-md-3 control-label" })
+                @Html.LabelFor(x=>x.keyname, new { @class = "col-md-3 control-label" })
                 <div class="col-md-5">
 
                     <div class="form-group-inputs">
-                        @Html.TextBoxFor(m => m.keyname, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.keyname, new { @class = "form-control" ,@placeholder= "Enter Key Name" })
                         @Html.ValidationMessageFor(x => x.keyname, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                @Html.Label("Value", new { @class = "col-md-3 control-label" })
+                @Html.LabelFor(x=>x.value, new { @class = "col-md-3 control-label" })
                 <div class="col-md-5">
 
                     <div class="form-group-inputs">
-                        @Html.TextBoxFor(m => m.value, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.value, new { @class = "form-control", @placeholder = "Enter Value" })
                         @Html.ValidationMessageFor(x => x.value, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                @Html.Label("Type", new { @class = "col-md-3 control-label" })
+                @Html.LabelFor(x=>x.ValueType, new { @class = "col-md-3 control-label" })
                 <div class="col-md-5">
                     <select name="ValueType" class="form-control" id="ValueType">
                         <option value="1">Percentage</option>

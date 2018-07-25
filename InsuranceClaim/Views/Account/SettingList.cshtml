@@ -44,11 +44,6 @@
                     </thead>
                     <tbody>
 
-                        @*@{
-                            var percentage = InsuranceClaim.Models.eSettingValueType.percentage;
-
-                            var amount = 0;
-                        }*@
 
                         @foreach (Insurance.Domain.Setting item in Model)
                         {
@@ -59,7 +54,7 @@
                                     @{
                                         if (item.ValueType==1)
                                         {
-                                            <span>percentage</span>
+                                            <span>@eSettingValueType.percentage</span>
                                         }
                                     }
 
@@ -67,7 +62,7 @@
 
                                         if (item.ValueType == 2)
                                         {
-                                            <span>amount</span>
+                                            <span>@eSettingValueType.amount</span>
                                         }
 
 

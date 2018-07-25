@@ -89,7 +89,7 @@ namespace InsuranceClaim.Controllers
                     customerModel.IsActive = _customerData.IsActive;
                     customerModel.UserID = _customerData.UserID;
                 }
-
+                customerModel.Zipcode = "00263";
                 return View(customerModel);
             }
             else

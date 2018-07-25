@@ -1010,7 +1010,10 @@ namespace InsuranceClaim.Controllers
         public ActionResult SaveSetting(SettingModel model)
         {
 
-            model.CreatedBy = 1;
+            //model.CreatedBy = 1;
+            //model.CreatedDate = DateTime.Now;
+            var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{User.Identity.GetUserId().ToString()}'").FirstOrDefault();
+            model.CreatedBy = _customerData.Id;
             model.CreatedDate = DateTime.Now;
             var dbModel = Mapper.Map<SettingModel, Setting>(model);
             InsuranceContext.Settings.Insert(dbModel);
@@ -1109,6 +1112,90 @@ namespace InsuranceClaim.Controllers
 
 
             return RedirectToAction("ListReinsuranceBroker");
+        }
+        public ActionResult RenewPolicy(int Id)
+        {
+            var summaryDetail = InsuranceContext.SummaryDetails.Single(Id);
+            var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={Id}").ToList();
+            var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+            var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
+            var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+            var Cusotmer = InsuranceContext.Customers.Single(vehicle.CustomerId);
+
+            CustomerModel custModel = Mapper.Map<Customer, CustomerModel>(Cusotmer);
+            Session["CustomerDataModal"] = custModel;
+
+            Session["PolicyData"] = policy;
+
+            List<RiskDetailModel> listRiskDetail = new List<RiskDetailModel>();
+            foreach (var item in SummaryVehicleDetails)
+            {
+                var _vehicle = InsuranceContext.VehicleDetails.Single(item.VehicleDetailsId);
+                RiskDetailModel riskDetail = Mapper.Map<VehicleDetail, RiskDetailModel>(_vehicle);
+                listRiskDetail.Add(riskDetail);
+            }
+            Session["VehicleDetails"] = listRiskDetail;
+
+            SummaryDetailModel summarymodel = Mapper.Map<SummaryDetail, SummaryDetailModel>(summaryDetail);
+            Session["SummaryDetailed"] = summarymodel;
+
+            return RedirectToAction("RiskDetail", "CustomerRegistration");
+        }
+        public ActionResult MyPolicies()
+        {
+            ListPolicy policylist = new ListPolicy();
+            policylist.listpolicy = new List<PolicyListViewModel>();
+            var customerID = InsuranceContext.Customers.Single(where: $"userid='{User.Identity.GetUserId().ToString()}'").Id;
+            var SummaryList = InsuranceContext.SummaryDetails.All(where: $"customerid={customerID}").ToList().Take(50);
+
+
+            foreach (var item in SummaryList)
+            {
+                PolicyListViewModel policylistviewmodel = new PolicyListViewModel();
+
+                policylistviewmodel.Vehicles = new List<VehicleReinsuranceViewModel>();
+                policylistviewmodel.TotalPremium = Convert.ToDecimal(item.TotalPremium);
+                policylistviewmodel.TotalSumInsured = Convert.ToDecimal(item.TotalSumInsured);
+                policylistviewmodel.PaymentMethodId = Convert.ToInt32(item.PaymentMethodId);
+                policylistviewmodel.CustomerId = Convert.ToInt32(item.CustomerId);
+                policylistviewmodel.SummaryId = item.Id;
+
+                var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={item.Id}").ToList();
+                var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+                var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
+                var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+
+                policylistviewmodel.PolicyNumber = policy.PolicyNumber;
+
+                foreach (var _item in SummaryVehicleDetails)
+                {
+                    VehicleReinsuranceViewModel obj = new VehicleReinsuranceViewModel();
+                    var _vehicle = InsuranceContext.VehicleDetails.Single(_item.VehicleDetailsId);
+                    var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.Single(where: $"SummaryDetailId={item.Id} and VehicleId={_item.VehicleDetailsId}");
+
+                    obj.CoverType = Convert.ToInt32(_vehicle.CoverTypeId);
+                    obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
+                    obj.MakeId = _vehicle.MakeId;
+                    obj.ModelId = _vehicle.ModelId;
+                    obj.Premium = Convert.ToDecimal(_vehicle.Premium);
+                    obj.RegisterationNumber = _vehicle.RegistrationNo;
+                    obj.SumInsured = Convert.ToDecimal(_vehicle.SumInsured);
+                    obj.VehicleId = _vehicle.Id;
+                    if (_reinsurenaceTrans != null)
+                    {
+                        obj.ReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans.ReinsuranceAmount);
+                        obj.ReinsurerBrokerId = _reinsurenaceTrans.ReinsuranceBrokerId;
+                    }
+
+
+                    policylistviewmodel.Vehicles.Add(obj);
+                }
+
+                policylist.listpolicy.Add(policylistviewmodel);
+            }
+
+
+            return View(policylist);
         }
     }
 

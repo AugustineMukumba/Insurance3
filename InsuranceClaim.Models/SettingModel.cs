@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +10,12 @@ namespace InsuranceClaim.Models
    public class SettingModel
     {
         public int Id { get; set; }
+        [Display(Name = "Key Name")]
+        [Required(ErrorMessage = "Please Enter Key Name.")]
         public string keyname { get; set; }
-        public string value { get; set; }
+        [Display(Name = "Value")]
+        [Required(ErrorMessage = "Please Enter value.")]
+        public decimal? value { get; set; }
         public int? ValueType { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? CreatedDate { get; set; }
