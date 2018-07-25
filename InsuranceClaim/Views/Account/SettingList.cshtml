@@ -1,4 +1,5 @@
 ﻿@model List<Insurance.Domain.Setting>
+    @using InsuranceClaim.Models;
 @{
     ViewBag.Title = "SettingList";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
@@ -33,8 +34,7 @@
                         <tr>
                             <th>keyname</th>
                             <th>Value</th>
-                            <th>CreatedBy</th>
-                            <th>CreatedDate</th>
+                            <th>Type</th>
                             <th>ModifiedBy</th>
                             <th>ModifiedDate</th>
                             
@@ -43,16 +43,39 @@
                         
                     </thead>
                     <tbody>
+
+                        @*@{
+                            var percentage = InsuranceClaim.Models.eSettingValueType.percentage;
+
+                            var amount = 0;
+                        }*@
+
                         @foreach (Insurance.Domain.Setting item in Model)
                         {
                             <tr>
                                 <td>@item.keyname</td>
                                 <td>@item.value</td>
-                                <td>@item.CreatedBy</td>
-                                <td>@item.CreatedDate</td>
+                                <td>
+                                    @{
+                                        if (item.ValueType==1)
+                                        {
+                                            <span>percentage</span>
+                                        }
+                                    }
+
+                                    @{
+
+                                        if (item.ValueType == 2)
+                                        {
+                                            <span>amount</span>
+                                        }
+
+
+                                    }
+
+                                </td>
                                 <td>@item.ModifiedBy</td>
                                 <td>@item.ModifiedDate</td>
-
                                 <td>
                                     <div class="tbl-btn-list">
                                         <ul class="list-inline">
