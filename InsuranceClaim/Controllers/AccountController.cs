@@ -696,7 +696,7 @@ namespace InsuranceClaim.Controllers
                 obj.Gender = data.Gender;
                 obj.Id = data.Id;
                 obj.DateOfBirth = data.DateOfBirth;
-                obj.State = data.State;
+                obj.NationalIdentificationNumber = data.NationalIdentificationNumber;
                 obj.Zipcode = data.Zipcode;
                 obj.role = role;
                 obj.PhoneNumber = Convert.ToString(phone);
@@ -771,7 +771,7 @@ namespace InsuranceClaim.Controllers
                         cstmr.DateOfBirth = model.DateOfBirth;
                         cstmr.FirstName = model.FirstName;
                         cstmr.LastName = model.LastName;
-                        cstmr.State = model.State;
+                        cstmr.NationalIdentificationNumber = model.NationalIdentificationNumber;
                         cstmr.Zipcode = model.Zipcode;
                         cstmr.Gender = model.Gender;
                         cstmr.Country = model.Country;
@@ -781,6 +781,8 @@ namespace InsuranceClaim.Controllers
                         cstmr.IsPolicyDocSent = model.IsPolicyDocSent;
                         cstmr.IsWelcomeNoteSent = model.IsWelcomeNoteSent;
                         cstmr.UserID = user.Id;
+                        cstmr.PhoneNumber = model.PhoneNumber;
+                        
                         InsuranceContext.Customers.Insert(cstmr);
 
                     }
@@ -821,7 +823,7 @@ namespace InsuranceClaim.Controllers
                 ctems.DateOfBirth = model.DateOfBirth;
                 ctems.FirstName = model.FirstName;
                 ctems.LastName = model.LastName;
-                ctems.State = model.State;
+                ctems.NationalIdentificationNumber = model.NationalIdentificationNumber;
                 ctems.Zipcode = model.Zipcode;
                 ctems.Gender = model.Gender;
                 ctems.Country = model.Country;
@@ -830,6 +832,7 @@ namespace InsuranceClaim.Controllers
                 ctems.IsOTPConfirmed = model.IsOTPConfirmed;
                 ctems.IsPolicyDocSent = model.IsPolicyDocSent;
                 ctems.IsWelcomeNoteSent = model.IsWelcomeNoteSent;
+                ctems.PhoneNumber = model.PhoneNumber;
 
 
 
@@ -883,7 +886,7 @@ namespace InsuranceClaim.Controllers
                 cstmrModel.IsPolicyDocSent = item.IsPolicyDocSent;
                 cstmrModel.AddressLine1 = item.AddressLine1;
                 cstmrModel.AddressLine1 = item.AddressLine2;
-                cstmrModel.State = item.State;
+                cstmrModel.NationalIdentificationNumber = item.NationalIdentificationNumber;
                 cstmrModel.IsOTPConfirmed = item.IsOTPConfirmed;
                 cstmrModel.IsWelcomeNoteSent = item.IsWelcomeNoteSent;
 
@@ -1049,6 +1052,64 @@ namespace InsuranceClaim.Controllers
 
             return RedirectToAction("SettingList");
         }
+        public ActionResult ListReinsuranceBroker()
+        {
+
+
+            var list = InsuranceContext.ReinsuranceBrokers.All().ToList();
+            return View(list);
+        }
+        public ActionResult AddReinsuranceBroker( int? id = 0 )
+        {
+            InsuranceClaim.Models.ReinsuranceBrokerModel obj = new ReinsuranceBrokerModel();
+            if (id > 0)
+            {
+
+                var model = InsuranceContext.ReinsuranceBrokers.Single(id);
+                obj = Mapper.Map< ReinsuranceBroker, ReinsuranceBrokerModel>(model);
+                
+
+            }
+          
+            return View(obj);
+
+
+        }
+        [HttpPost]
+        public ActionResult SaveReinsuranceBroker(ReinsuranceBrokerModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.Id ==0 ||model.Id==null)
+            {
+
+                var dbModel = Mapper.Map<ReinsuranceBrokerModel, ReinsuranceBroker>(model);
+                InsuranceContext.ReinsuranceBrokers.Insert(dbModel);
+                return RedirectToAction("ListReinsuranceBroker");
+            }
+            else
+            {
+               
+
+
+                    var data = Mapper.Map<ReinsuranceBrokerModel, ReinsuranceBroker>(model);
+                    InsuranceContext.ReinsuranceBrokers.Update(data);
+                }
+              
+            }
+            return RedirectToAction("ListReinsuranceBroker");
+
+        }
+        public ActionResult DeleteReinsuranceBroker(int Id)
+        {
+
+            string query = $"Delete ReinsuranceBroker  where Id = {Id}";
+            InsuranceContext.ReinsuranceBrokers.Execute(query);
+
+
+            return RedirectToAction("ListReinsuranceBroker");
+        }
     }
+
 
 }

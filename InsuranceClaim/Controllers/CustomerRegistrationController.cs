@@ -62,7 +62,7 @@ namespace InsuranceClaim.Controllers
                     customerModel.Zipcode = customerData.Zipcode;
                     customerModel.Gender = customerData.Gender;
                     customerModel.PhoneNumber = customerData.PhoneNumber;
-                    customerModel.State = customerData.State;
+                    customerModel.NationalIdentificationNumber = customerData.NationalIdentificationNumber;
                     customerModel.DateOfBirth = customerData.DateOfBirth;
                     customerModel.EmailAddress = customerData.EmailAddress;
                     customerModel.FirstName = customerData.FirstName;
@@ -79,7 +79,7 @@ namespace InsuranceClaim.Controllers
                     customerModel.Zipcode = _customerData.Zipcode;
                     customerModel.Gender = _customerData.Gender;
                     customerModel.PhoneNumber = _User.PhoneNumber;
-                    customerModel.State = _customerData.State;
+                    customerModel.NationalIdentificationNumber = _customerData.NationalIdentificationNumber;
                     customerModel.DateOfBirth = _customerData.DateOfBirth;
                     customerModel.EmailAddress = _User.Email;
                     customerModel.FirstName = _customerData.FirstName;
@@ -107,7 +107,7 @@ namespace InsuranceClaim.Controllers
                     customerModel.Zipcode = customerData.Zipcode;
                     customerModel.Gender = customerData.Gender;
                     customerModel.PhoneNumber = customerData.PhoneNumber;
-                    customerModel.State = customerData.State;
+                    customerModel.NationalIdentificationNumber = customerData.NationalIdentificationNumber;
                     customerModel.DateOfBirth = customerData.DateOfBirth;
                     customerModel.EmailAddress = customerData.EmailAddress;
                     customerModel.FirstName = customerData.FirstName;

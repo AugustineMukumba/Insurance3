@@ -43,6 +43,7 @@ namespace InsuranceClaim
                 cfg.CreateMap<Setting, SettingModel>().ReverseMap();
                 cfg.CreateMap<UserManagementView, UserManagementViewModel>().ReverseMap();
                 cfg.CreateMap<SummaryVehicleDetail, SummaryVehicleDetailsModel>().ReverseMap();
+                cfg.CreateMap<ReinsuranceBroker, ReinsuranceBrokerModel>().ReverseMap();
 
 
             });

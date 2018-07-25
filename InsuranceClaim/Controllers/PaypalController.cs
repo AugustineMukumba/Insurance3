@@ -231,7 +231,7 @@ namespace InsuranceClaim.Controllers
                 billingAddress.postal_code = customer.Zipcode;
             }
 
-            billingAddress.state = customer.State;
+            billingAddress.state = customer.NationalIdentificationNumber;
 
             PayPal.Api.CreditCard crdtCard = new PayPal.Api.CreditCard();
             crdtCard.billing_address = billingAddress;
@@ -295,7 +295,7 @@ namespace InsuranceClaim.Controllers
                 line1 = customer.AddressLine1 == string.Empty ? customer.AddressLine2 : customer.AddressLine1,
                 line2 = customer.AddressLine2 == string.Empty ? customer.AddressLine1 : customer.AddressLine2,
                 postal_code = customer.Zipcode,
-                state = customer.State,
+                state = customer.NationalIdentificationNumber,
             };
 
 
@@ -384,7 +384,7 @@ namespace InsuranceClaim.Controllers
                     {
                         line1 = customer.AddressLine1,
                         city = customer.AddressLine2,
-                        state = customer.City + ", " + customer.State,
+                        state = customer.City + "/ " + customer.NationalIdentificationNumber,
                         postal_code = customer.Zipcode,
                         country_code = "US"
 
@@ -427,7 +427,7 @@ namespace InsuranceClaim.Controllers
                     {
                         //line1 = userdata.State.ToString(),
                         city = customer.City,
-                        state = customer.State,
+                        state = customer.City +"/"+ customer.NationalIdentificationNumber,
                         postal_code = customer.Zipcode,
                         country_code = "US"
                     }

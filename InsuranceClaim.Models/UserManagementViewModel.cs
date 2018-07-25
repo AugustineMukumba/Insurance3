@@ -40,10 +40,10 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please enter city.")]
         [MaxLength(25, ErrorMessage = "City must be less than 25 characters long.")]
         public string City { get; set; }
-        [Display(Name = "State")]
-        [Required(ErrorMessage = "Please enter state.")]
+        [Display(Name = "National Identification Number")]
+        [Required(ErrorMessage = "Please enter National Identification Number.")]
         [MaxLength(25, ErrorMessage = "State must be less than 25 characters long.")]
-        public string State { get; set; }
+        public string NationalIdentificationNumber { get; set; }
         [Display(Name = "ZipCode")]
         //[Required(ErrorMessage = "Please enter zip code.")]
         //[RegularExpression(@"^\d{5}(-\d{4})?$", ErrorMessage = "Invalid Zip.")]

@@ -76,7 +76,7 @@ namespace Insurance.Domain
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public string City { get; set; }
-        public string State { get; set; }
+        public string NationalIdentificationNumber { get; set; }
         public string Zipcode { get; set; }
         public string Country { get; set; }
         public DateTime? DateOfBirth { get; set; }
@@ -85,6 +85,7 @@ namespace Insurance.Domain
         public bool? IsPolicyDocSent { get; set; }
         public bool? IsLicenseDiskNeeded { get; set; }
         public bool? IsOTPConfirmed { get; set; }
+        public string PhoneNumber { get; set; }
 
         public bool? IsActive { get; set; }
         public string Countrycode { get; set; }
