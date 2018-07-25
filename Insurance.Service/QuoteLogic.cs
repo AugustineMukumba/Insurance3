@@ -22,7 +22,7 @@ namespace Insurance.Service
 
 
 
-        public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType, eExcessType excessType, decimal excess, int PaymentTermid, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses,decimal? RadioLicenseCost ,int? AgentCommissionId)
+        public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType, eExcessType excessType, decimal excess, int PaymentTermid, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, int? AgentCommissionId)
         {
             var vehicleUsage = InsuranceContext.VehicleUsages.Single(vehicleUsageId);
             var Setting = InsuranceContext.Settings.All();
@@ -61,13 +61,22 @@ namespace Insurance.Service
             {
                 premium = (decimal)InsuranceRate;
             }
-            else if(coverType == eCoverType.FullThirdParty)
+            else if (coverType == eCoverType.FullThirdParty)
             {
                 premium = (decimal)InsuranceRate;
             }
             else
             {
                 premium = (sumInsured * Convert.ToDecimal(InsuranceRate)) / 100;
+            }
+
+
+            if (premium < InsuranceMinAmount && coverType == eCoverType.Comprehensive)
+            {
+                Status = false;
+                //premium = premium + InsuranceMinAmount.Value;
+                premium = InsuranceMinAmount.Value;
+                this.Message = "Insurance minimum amount $" + InsuranceMinAmount + " Charge is applicable.";
             }
 
             switch (PaymentTermid)
@@ -80,8 +89,6 @@ namespace Insurance.Service
                     break;
             }
 
-
-           
 
             if (Addthirdparty)
             {
@@ -133,33 +140,6 @@ namespace Insurance.Service
 
             }
 
-
-
-
-            //if (sumInsured > 10000)
-            //{
-            //    var extraamount = sumInsured - 10000m;
-            //    var additionalcharge = ((0.5 * (double)extraamount) / 100);
-            //    premium = premium + (decimal)additionalcharge;
-            //}
-            if (premium < InsuranceMinAmount && coverType == eCoverType.Comprehensive)
-            {
-                Status = false;
-                //premium = premium + InsuranceMinAmount.Value;
-                premium = InsuranceMinAmount.Value;
-                this.Message = "Insurance minimum amount $" + InsuranceMinAmount + " Charge is applicable.";
-            }
-
-            //if (premium < InsuranceMinAmount)
-            //{
-            //    Status = false;
-            //    //premium = premium + InsuranceMinAmount.Value;
-            //    premium = InsuranceMinAmount.Value;
-            //    this.Message = "Insurance minimum amount $" + InsuranceMinAmount + " Charge is applicable.";
-            //}
-
-            
-
             if (excessType == eExcessType.FixedAmount && excess > 0)
             {
                 premium = premium + excess;
@@ -178,18 +158,18 @@ namespace Insurance.Service
             this.StamDuty = Math.Round(stampDuty, 2);
             this.ZtscLevy = Math.Round(ztscLevy, 2);
 
-           
 
-            premium = premium + stampDuty + ztscLevy ;
 
-          
+            premium = premium + stampDuty + ztscLevy;
 
-            premium = premium + additionalchargeebb + additionalchargeme + additionalchargepac + additionalchargersa +Convert.ToDecimal(RadioLicenseCost) +Convert.ToDecimal(AgentCommission);
+
+
+            premium = premium + additionalchargeebb + additionalchargeme + additionalchargepac + additionalchargersa + Convert.ToDecimal(RadioLicenseCost);// + Convert.ToDecimal(AgentCommission);
 
             this.Premium = Math.Round(premium, 2);
 
 
-           
+
 
 
             return this;
@@ -312,7 +292,7 @@ namespace Insurance.Service
         //    //    this.Message = "Insurance minimum amount $" + InsuranceMinAmount + " Charge is applicable.";
         //    //}
 
-            
+
 
         //    if (excessType == eExcessType.FixedAmount && excess > 0)
         //    {
@@ -332,7 +312,7 @@ namespace Insurance.Service
         //    this.StamDuty = Math.Round(stampDuty, 2);
         //    this.ZtscLevy = Math.Round(ztscLevy, 2);
 
-           
+
 
         //    premium = premium + stampDuty + ztscLevy ;
 
@@ -351,7 +331,7 @@ namespace Insurance.Service
         //    this.Premium = Math.Round(premium, 2);
 
 
-           
+
 
 
         //    return this;

@@ -45,7 +45,7 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please enter state.")]
         [MaxLength(25, ErrorMessage = "State must be less than 25 characters long.")]
         public string State { get; set; }
-        [Display(Name = "ZipCode")]
+        [Display(Name = "Zip Code")]
         //[Required(ErrorMessage = "Please enter zip code.")]
         //[RegularExpression(@"^\d{5}(-\d{4})?$", ErrorMessage = "Invalid Zip.")]
         public string Zipcode { get; set; }

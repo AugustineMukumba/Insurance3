@@ -22,17 +22,17 @@ namespace InsuranceClaim.Models
         [Display(Name = "Insurer")]
         public int? InsurerId { get; set; }
         //[Display(Name = "Payment Term")]
-        [Required(ErrorMessage = "Please Select policy Term.")]
+        [Required(ErrorMessage = "Please Select Payment Term.")]
         public int? PaymentTermId { get; set; }
         //[Display(Name = "Policy Status")]
         public int PolicyStatusId { get; set; }
         //[Display(Name = "Currency")]
         public int CurrencyId { get; set; }
-        //[Display(Name ="Start Date")]
-        [Required(ErrorMessage ="Please enter policy start date")]        
+        [Display(Name ="Start Date")]
+        [Required(ErrorMessage ="Please enter policy Start Date")]        
         public DateTime? StartDate { get; set; }
         //[Display(Name = "End Date")]
-        [Required(ErrorMessage = "Please enter policy End date.")]
+        [Required(ErrorMessage = "Please Enter Policy End date.")]
         public DateTime? EndDate { get; set; }
         //[Display(Name = "Renewal Date")]
         public DateTime? RenewalDate { get; set; }
