@@ -866,7 +866,7 @@ namespace InsuranceClaim.Controllers
 
 
             List<CustomerModel> ListUserViewModel = new List<CustomerModel>();
-            var user = InsuranceContext.Customers.All().ToList().Take(10);
+            var user = InsuranceContext.Customers.All().ToList();
 
 
             foreach (var item in user)
@@ -930,7 +930,7 @@ namespace InsuranceClaim.Controllers
         {
             ListPolicy policylist = new ListPolicy();
             policylist.listpolicy = new List<PolicyListViewModel>();
-            var SummaryList = InsuranceContext.SummaryDetails.All().ToList().Take(50);
+            var SummaryList = InsuranceContext.SummaryDetails.All().ToList();
 
             foreach (var item in SummaryList)
             {
@@ -1146,7 +1146,7 @@ namespace InsuranceClaim.Controllers
             ListPolicy policylist = new ListPolicy();
             policylist.listpolicy = new List<PolicyListViewModel>();
             var customerID = InsuranceContext.Customers.Single(where: $"userid='{User.Identity.GetUserId().ToString()}'").Id;
-            var SummaryList = InsuranceContext.SummaryDetails.All(where: $"customerid={customerID}").ToList().Take(50);
+            var SummaryList = InsuranceContext.SummaryDetails.All(where: $"customerid={customerID}").ToList();
 
 
             foreach (var item in SummaryList)
