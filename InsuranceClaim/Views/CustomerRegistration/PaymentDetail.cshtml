@@ -120,7 +120,7 @@
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
                                             @Html.Label("CVC", new { @class = "gender-label" })
-                                            @Html.TextBoxFor(m => m.CVC, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cvc Number" })
+                                            @Html.TextBoxFor(m => m.CVC, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cvc Number" ,@maxlength="3"})
                                             <div>
                                                 @Html.ValidationMessageFor(m => m.CVC, "", new { @class = "text-danger" })
                                             </div>

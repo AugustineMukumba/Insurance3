@@ -26,6 +26,7 @@ namespace InsuranceClaim.Controllers
             InsuranceContext.PolicyInsurers.Insert(data);
             return RedirectToAction("PolicyInsurerList");
         }
+        [Authorize(Roles = "Staff,Administrator")]
         public ActionResult PolicyInsurerList()
         {
             var db = InsuranceContext.PolicyInsurers.All(where:"IsActive = 'True' or IsActive is null").ToList();

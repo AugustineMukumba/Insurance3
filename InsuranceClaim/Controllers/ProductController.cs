@@ -32,6 +32,7 @@ namespace InsuranceClaim.Controllers
             InsuranceContext.Products.Insert(dbModel);
             return RedirectToAction("ProductList");
         }
+        [Authorize(Roles = "Staff,Administrator")]
         public ActionResult ProductList()
         {
             var db = InsuranceContext.Products.All(where:"Active ='True' or Active is null").ToList();

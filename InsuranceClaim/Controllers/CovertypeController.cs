@@ -9,6 +9,7 @@ using AutoMapper;
 
 namespace InsuranceClaim.Controllers
 {
+    
     public class CovertypeController : Controller
     {
         // GET: Covertype
@@ -19,6 +20,7 @@ namespace InsuranceClaim.Controllers
             objList = InsuranceContext.CoverTypes.All().ToList();
             return View(obj);
         }
+
         [HttpPost]
         public ActionResult SaveCover(CovertypeModel model)
         {
@@ -27,6 +29,8 @@ namespace InsuranceClaim.Controllers
 
             return RedirectToAction("CoverList");
         }
+
+        [Authorize(Roles = "Staff,Administrator")]
         public ActionResult CoverList()
         {
             var db = InsuranceContext.CoverTypes.All(where: "IsActive = 'True' or IsActive is null").ToList();
@@ -41,7 +45,7 @@ namespace InsuranceClaim.Controllers
             return View(model);
         }
         [HttpPost]
-        public ActionResult EditCovertype(CovertypeModel model )
+        public ActionResult EditCovertype(CovertypeModel model)
         {
 
             if (ModelState.IsValid)

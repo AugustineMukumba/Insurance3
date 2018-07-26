@@ -10,11 +10,11 @@ namespace InsuranceClaim.Models
   public class PolicyInsurerModel
     {
         public int Id { get; set; }
-        [Required(ErrorMessage = "Please enter Insurer Name.")]
+        [Required(ErrorMessage = "Please Enter Insurer Name.")]
         public string InsurerName { get; set; }
-        [Required(ErrorMessage = "Please enter Insurer Code.")]
+        [Required(ErrorMessage = "Please Enter Insurer Code.")]
         public string InsurerCode { get; set; }
-        [Required(ErrorMessage = "Please enter Insurer Address.")]
+        [Required(ErrorMessage = "Please Enter Insurer Address.")]
         public string InsurerAddress { get; set; }
         public bool? IsActive { get; set; }
 

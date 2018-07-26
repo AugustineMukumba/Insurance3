@@ -12,11 +12,11 @@ namespace InsuranceClaim.Models
     {
         public int Id { get; set; }
         //[Display(Name = "Policy Name")]
-        [Required(ErrorMessage = "Please enter policy name.")]
+        [Required(ErrorMessage = "Please Enter Policy Name.")]
         [MaxLength(50,ErrorMessage ="Policy name must be less than 50 characters long.")]
         public string PolicyName { get; set; }
         //[Display(Name ="Policy Number")]
-        [Required(ErrorMessage ="Please enter policy number.")]
+        [Required(ErrorMessage ="Please Enter Policy Number.")]
         [MaxLength(25,ErrorMessage ="Policy number must be less than 25 characters long.")]
         public string PolicyNumber { get; set; }
         [Display(Name = "Insurer")]
@@ -29,10 +29,10 @@ namespace InsuranceClaim.Models
         //[Display(Name = "Currency")]
         public int CurrencyId { get; set; }
         [Display(Name ="Start Date")]
-        [Required(ErrorMessage ="Please enter policy Start Date")]        
+        [Required(ErrorMessage ="Please Enter Policy Start Date")]        
         public DateTime? StartDate { get; set; }
         //[Display(Name = "End Date")]
-        [Required(ErrorMessage = "Please Enter Policy End date.")]
+        [Required(ErrorMessage = "Please Enter Policy End Date.")]
         public DateTime? EndDate { get; set; }
         //[Display(Name = "Renewal Date")]
         public DateTime? RenewalDate { get; set; }
