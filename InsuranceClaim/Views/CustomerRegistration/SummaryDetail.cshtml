@@ -129,6 +129,7 @@
                                         <div class="col-sm-6 col-md-6 form-group-select">
 
                                             <div class="form-group">
+                                                @Html.Label("Payment Type", new { @class = "gender-label" })
                                                 <select id="PaymentMethodId" name="PaymentMethodId" class="form-control">
                                                     <option value="1">Cash</option>
                                                     <option value="2">Credit Card</option>
@@ -138,6 +139,7 @@
                                         </div>
                                         <div class="col-md-6 form-group-text">
                                             <div class="form-group">
+                                                @Html.Label("Total Sum Insured", new { @class = "gender-label" })
                                                 @Html.TextBoxFor(m => m.TotalSumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Sum Insured", @readonly = "readonly" })
                                             </div>
                                         </div>

@@ -14,31 +14,31 @@ namespace InsuranceClaim.Models
         public decimal CustomerId { get; set; }
         public string UserID { get; set; }
         [Display(Name = "Email Address")]
-        [Required(ErrorMessage = "Please enter email address.")]
+        [Required(ErrorMessage = "Please Enter Email Address.")]
         [EmailAddress(ErrorMessage = "Invalid email address.")]
         public string EmailAddress { get; set; }
         [Display(Name = "Phone Number")]
-        [Required(ErrorMessage = "Please enter Country Code and phone number.")]
+        [Required(ErrorMessage = "Please Enter Country Code and Phone Number.")]
         [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Not a valid phone number.")]
         public string PhoneNumber { get; set; }
         [Display(Name = "First Name")]
-        [Required(ErrorMessage = "Please enter first name.")]
+        [Required(ErrorMessage = "Please Enter First Name.")]
         [MaxLength(30, ErrorMessage = "First name must be less than 30 characters long.")]
         public string FirstName { get; set; }
         [Display(Name = "Last Name")]
-        [Required(ErrorMessage = "Please enter last name.")]
+        [Required(ErrorMessage = "Please Enter Last Name.")]
         [MaxLength(30, ErrorMessage = "Last name must be less than 30 characters long.")]
         public string LastName { get; set; }
         [Display(Name = "Address1")]
-        [Required(ErrorMessage = "Please enter address 1.")]
+        [Required(ErrorMessage = "Please Enter Address 1.")]
         [MaxLength(100, ErrorMessage = "Address 1 must be less than 100  characters long.")]
         public string AddressLine1 { get; set; }
         [Display(Name = "Address2")]
-        [Required(ErrorMessage = "Please enter address 2.")]
+        [Required(ErrorMessage = "Please Enter Address 2.")]
         [MaxLength(100, ErrorMessage = "Address 2 must be less than 100  characters long.")]
         public string AddressLine2 { get; set; }
         [Display(Name = "City")]
-        [Required(ErrorMessage = "Please enter city.")]
+        [Required(ErrorMessage = "Please Enter City.")]
         [MaxLength(25, ErrorMessage = "City must be less than 25 characters long.")]
         public string City { get; set; }
         [Display(Name = "National Identification Number")]
@@ -54,7 +54,7 @@ namespace InsuranceClaim.Models
         [MaxLength(25, ErrorMessage = "Country must be less than 25 characters long.")]
         public string Country { get; set; }
         [Display(Name = "Date Of Birth")]
-        [Required(ErrorMessage = "Please enter date Of birth .")]
+        [Required(ErrorMessage = "Please Enter Date Of Birth .")]
         public DateTime? DateOfBirth { get; set; }
         public string Gender { get; set; }
         public bool? IsWelcomeNoteSent { get; set; }

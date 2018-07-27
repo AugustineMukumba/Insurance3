@@ -714,13 +714,12 @@ namespace InsuranceClaim.Controllers
                 objEmailService.SendEmail(user.Email, "", "", "Schedule-motor", Bodyy, null);
             }
 
-
-
             Session.Remove("PolicyData");
             Session.Remove("VehicleDetails");
             Session.Remove("policytermid");
             Session.Remove("SummaryDetailed");
             Session.Remove("CardDetail");
+            Session.Remove("issummaryformvisited");
 
             return View(objSaveDetailListModel);
         }

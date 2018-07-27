@@ -720,21 +720,21 @@ namespace InsuranceClaim.Controllers
                         ///Reinsurance                       
 
                         var ReinsuranceCases = InsuranceContext.Reinsurances.All(where: $"Type='Reinsurance'").ToList();
-                        var ownRetention = ReinsuranceCases.Where(x => x.TreatyCode == "OR001").Select(x => x.MaxTreatyCapacity).SingleOrDefault();
+                        var ownRetention = InsuranceContext.Reinsurances.All().Where(x => x.TreatyCode == "OR001").Select(x => x.MaxTreatyCapacity).SingleOrDefault();
                         var ReinsuranceCase = new Reinsurance();
-
+                        
                         foreach (var Reinsurance in ReinsuranceCases)
                         {
-                            if (Reinsurance.MinTreatyCapacity <= item.SumInsured && Reinsurance.MaxTreatyCapacity >= item.SumInsured)
+                            if (Reinsurance.MinTreatyCapacity <= item.SumInsured && item.SumInsured <= Reinsurance.MaxTreatyCapacity)
                             {
                                 ReinsuranceCase = Reinsurance;
                                 break;
                             }
                         }
 
-                        if (ReinsuranceCase != null)
+                        if (ReinsuranceCase != null && ReinsuranceCase.MaxTreatyCapacity != null)
                         {
-                            var ReinsuranceBroker = InsuranceContext.ReinsuranceBrokers.Single(where: $"ReinsuranceBrokerCode='{ReinsuranceCase.ReinsuranceBrokerCode}'");                                                        
+                            var ReinsuranceBroker = InsuranceContext.ReinsuranceBrokers.Single(where: $"ReinsuranceBrokerCode='{ReinsuranceCase.ReinsuranceBrokerCode}'");
 
                             var reinsurance = new ReinsuranceTransaction();
                             reinsurance.ReinsuranceAmount = _item.SumInsured - ownRetention;
@@ -746,7 +746,7 @@ namespace InsuranceClaim.Controllers
                             reinsurance.TreatyName = ReinsuranceCase.TreatyName;
                             reinsurance.TreatyCode = ReinsuranceCase.TreatyCode;
 
-                            InsuranceContext.ReinsuranceTransactions.Insert(reinsurance);                            
+                            InsuranceContext.ReinsuranceTransactions.Insert(reinsurance);
 
                             listReinsuranceTransaction.Add(reinsurance);
                         }
@@ -796,19 +796,19 @@ namespace InsuranceClaim.Controllers
 
 
                         var ReinsuranceCases = InsuranceContext.Reinsurances.All(where: $"Type='Reinsurance'").ToList();
-                        var ownRetention = ReinsuranceCases.Where(x => x.TreatyCode == "OR001").Select(x => x.MaxTreatyCapacity).SingleOrDefault();
+                        var ownRetention = InsuranceContext.Reinsurances.All().Where(x => x.TreatyCode == "OR001").Select(x => x.MaxTreatyCapacity).SingleOrDefault();
                         var ReinsuranceCase = new Reinsurance();
 
                         foreach (var Reinsurance in ReinsuranceCases)
                         {
-                            if (Reinsurance.MinTreatyCapacity <= item.SumInsured && Reinsurance.MaxTreatyCapacity >= item.SumInsured)
+                            if (Reinsurance.MinTreatyCapacity <= item.SumInsured && item.SumInsured <= Reinsurance.MaxTreatyCapacity)
                             {
                                 ReinsuranceCase = Reinsurance;
                                 break;
                             }
                         }
 
-                        if (ReinsuranceCase != null)
+                        if (ReinsuranceCase != null && ReinsuranceCase.MaxTreatyCapacity != null)
                         {
                             var ReinsuranceBroker = InsuranceContext.ReinsuranceBrokers.Single(where: $"ReinsuranceBrokerCode='{ReinsuranceCase.ReinsuranceBrokerCode}'");
 
@@ -821,7 +821,7 @@ namespace InsuranceClaim.Controllers
                             ReinsuranceTransactions.ReinsuranceCommissionPercentage = Convert.ToDecimal(ReinsuranceBroker.Commission);
                             ReinsuranceTransactions.ReinsuranceCommission = ((ReinsuranceTransactions.ReinsurancePremium * ReinsuranceTransactions.ReinsuranceCommissionPercentage) / 100);//Convert.ToDecimal(defaultReInsureanceBroker.Commission);
                             ReinsuranceTransactions.ReinsuranceBrokerId = ReinsuranceBroker.Id;
-                            
+
                             InsuranceContext.ReinsuranceTransactions.Update(ReinsuranceTransactions);
                         }
                         else
