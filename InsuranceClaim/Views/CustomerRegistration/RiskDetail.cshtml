@@ -192,7 +192,7 @@
                                         <div class="col-sm-6 col-md-6 form-group-select">
                                             <div id="thirdpartycheck" class="form-group">
                                                 @Html.Label("Add Third Party Insurance", new { @class = "gender-label" })
-                                                @Html.CheckBoxFor(x => x.Addthirdparty)
+                                                @Html.CheckBoxFor(x => x.Addthirdparty, new { @style = "width: 40px;height: 36px;" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
@@ -200,6 +200,23 @@
                                                 @Html.Label("Add Third Party Amount", new { @class = "gender-label" })
                                                 @Html.TextBoxFor(m => m.AddThirdPartyAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Add Third Party Amount", @disabled = "disabled" })
                                                 @* @Html.TextBoxFor(x => x.AddThirdPartyAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Chassis Number" })*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="thridparty" class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                            <div id="thirdpartycheck" class="form-group">
+                                                @Html.Label("Include Radio License Cost", new { @class = "gender-label" })
+                                                @Html.CheckBoxFor(x => x.IncludeRadioLicenseCost, new { @style = "width: 40px;height: 36px;" })
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.Label("Radio License Cost", new { @class = "gender-label" })
+                                                @Html.TextBoxFor(m => m.RadioLicenseCost, new { @class = "form-control inputDisabled", @autocomplete = "off", @placeholder = "Vehicle Radio Licence Cost", @maxlength = "5" })
+                                                @Html.ValidationMessageFor(m => m.RadioLicenseCost, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
@@ -239,14 +256,12 @@
                                                 @Html.TextBoxFor(m => m.Premium, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Premium", @readonly = "readonly" })
                                             </div>
                                         </div>
-                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                        <div class="col-sm-6 col-md-6 form-group-select" style="display:none;">
                                             <div class="form-group">
                                                 @Html.Label("Agent Commission", new { @class = "gender-label" })
                                                 @Html.DropDownListFor(x => x.AgentCommissionId, new SelectList(ViewBag.AgentCommission, "Id", "CommissionName"), new { @class = "form-control" })
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.Label("Stamp Duty", new { @class = "gender-label" })
@@ -254,11 +269,23 @@
                                                 @Html.ValidationMessageFor(m => m.StampDuty, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="row">
+
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.Label("ZTSC Levy", new { @class = "gender-label" })
                                                 @Html.TextBoxFor(m => m.ZTSCLevy, new { @class = "form-control", @autocomplete = "off", @placeholder = "ZTSC Levy", @readonly = "readonly" })
                                                 @Html.ValidationMessageFor(m => m.ZTSCLevy, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                            <div class="form-group">
+                                                @Html.Label("Excess Type", new { @class = "gender-label" })
+                                                <select name="ExcessType" class="form-control" id="ExcessType">
+                                                    <option value="1">Percentage</option>
+                                                    <option value="2">Fixed Amount</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -277,32 +304,24 @@
                                         </div>*@
 
                                     <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-select">
-                                            <div class="form-group">
-                                                @Html.Label("Excess Type", new { @class = "gender-label" })
-                                                <select name="ExcessType" class="form-control" id="ExcessType">
-                                                    <option value="1">Percentage</option>
-                                                    <option value="2">Fixed Amount</option>
-                                                </select>
-                                            </div>
-                                        </div>
+
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.Label("Excess", new { @class = "gender-label" })
                                                 @Html.TextBoxFor(m => m.Excess, new { @class = "form-control", @autocomplete = "off", @placeholder = "Excess", maxlength = "5" })
                                             </div>
                                         </div>
+                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                            <div class="form-group">
+                                                @Html.Label("Want the licence disk to be delivered ?", new { @class = "gender-label" })
+                                                @Html.CheckBoxFor(x => x.IsLicenseDiskNeeded, new { @style = "width: 40px;height: 36px;" })
+                                            </div>
+                                        </div>
                                     </div>
 
 
                                     <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Radio License Cost", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.RadioLicenseCost, new { @class = "form-control inputDisabled", @autocomplete = "off", @placeholder = "Vehicle Radio Licence Cost", @maxlength = "5" })
-                                                @Html.ValidationMessageFor(m => m.RadioLicenseCost, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
+
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group margin-0">
                                                 @Html.Label("Optional Covers", new { @class = "gender-label" })
@@ -335,15 +354,6 @@
                                             </div>
 
                                         </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-select">
-                                            <div class="form-group">
-                                                @Html.Label("Want the licence disk to be delivered ?", new { @class = "gender-label" })
-                                                @Html.CheckBoxFor(x => x.IsLicenseDiskNeeded)
-                                            </div>
-                                        </div>
                                         <div class="col-sm-6 col-md-6 form-group-text" id="Containernumberofpersons">
                                             <div class="form-group">
                                                 @Html.Label("Number of Persons", new { @class = "gender-label" })
@@ -351,6 +361,8 @@
                                             </div>
                                         </div>
                                     </div>
+
+
                                     @if (Model.isUpdate)
                                     {
                                         <hr />
@@ -451,8 +463,8 @@
 <script>
     function gotoPeriviouse() {
         $("#previouselink")[0].click();
-
     }
+
     function cancelUpdate() {
         location.href = '@Url.Action("RiskDetail", "CustomerRegistration", new { id=0 })';
     }
@@ -684,7 +696,9 @@
         $("#PassengerAccidentCover").click(function () {
             QuoteCalculation();
         });
-        
+        $("#IncludeRadioLicenseCost").click(function () {
+            QuoteCalculation();
+        });
 
         //called when key is pressed in textbox
         $("#NoOfCarsCovered,#CubicCapacity,#VehicleYear,#VehicleSumInsures,#SumInsured,#RadioLicenseCost,#OptionalCovers,#Excess").keypress(function (e) {
@@ -707,6 +721,26 @@
             $("#SumInsured").val("0");
         }
         var sumInsured = parseFloat($("#SumInsured").val());
+
+        if (sumInsured > 100000) {
+            bootbox.confirm("Sum Insured above than 100000 will be considered as Reinsurance case. Are you sure you want to continue ?", function (result) {
+                debugger;
+                if (!result) {
+                    bootbox.hideAll();
+                    return false;
+                }
+                else {
+                    callQuoteCalculation(sumInsured);
+                }
+            });
+        }
+        else {
+            callQuoteCalculation(sumInsured);
+        }
+
+    }
+
+    function callQuoteCalculation(sumInsured) {
         if (sumInsured < 1) {
             //return false;
         }
@@ -735,6 +769,7 @@
         var Addthirdparty = $("#Addthirdparty").is(":checked");
         var RadioLicenseCost = ($("#RadioLicenseCost").val());
         var AgentCommissionId = ($("#AgentCommissionId").val());
+        var IncludeRadioLicenseCost = $("#IncludeRadioLicenseCost").is(":checked");
 
 
 
@@ -745,7 +780,7 @@
         $.ajax({
             type: "POST",
             url: "@Url.Action("CalculatePremium", "CustomerRegistration")",
-            data: { vehicleUsageId: vehicleUsageId, sumInsured: sumInsured, coverType: coverType, excessType: excessType, excess: excess, AddThirdPartyAmount: AddThirdPartyAmount, NumberofPersons: NumberofPersons, Addthirdparty: Addthirdparty, PassengerAccidentCover: PassengerAccidentCover, ExcessBuyBack: ExcessBuyBack, RoadsideAssistance: RoadsideAssistance, MedicalExpenses: MedicalExpenses, RadioLicenseCost: RadioLicenseCost, AgentCommissionId: AgentCommissionId },
+            data: { vehicleUsageId: vehicleUsageId, sumInsured: sumInsured, coverType: coverType, excessType: excessType, excess: excess, AddThirdPartyAmount: AddThirdPartyAmount, NumberofPersons: NumberofPersons, Addthirdparty: Addthirdparty, PassengerAccidentCover: PassengerAccidentCover, ExcessBuyBack: ExcessBuyBack, RoadsideAssistance: RoadsideAssistance, MedicalExpenses: MedicalExpenses, RadioLicenseCost: RadioLicenseCost, IncludeRadioLicenseCost: IncludeRadioLicenseCost },
             success: function (data) {
                 debugger;
                 $("#Premium").val(data.Premium);
@@ -767,10 +802,9 @@
             } //EINDE error
         }); //EINDE ajax
 
-
-
-
     }
+
+
     $("#CoverTypeId").on('change', function () {
         debugger;
         var coverytype = $('#CoverTypeId option:selected').val();

@@ -22,11 +22,11 @@ namespace Insurance.Service
 
 
 
-        public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType, eExcessType excessType, decimal excess, int PaymentTermid, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, int? AgentCommissionId)
+        public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType, eExcessType excessType, decimal excess, int PaymentTermid, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost)
         {
             var vehicleUsage = InsuranceContext.VehicleUsages.Single(vehicleUsageId);
             var Setting = InsuranceContext.Settings.All();
-            var AgentCommission = InsuranceContext.AgentCommissions.Single(AgentCommissionId).CommissionAmount;
+            //var AgentCommission = InsuranceContext.AgentCommissions.Single(AgentCommissionId).CommissionAmount;
             var additionalchargeatp = 0.0m;
             var additionalchargepac = 0.0m;
             var additionalchargeebb = 0.0m;
@@ -157,20 +157,12 @@ namespace Insurance.Service
             var ztscLevy = (premium * 12) / 100;
             this.StamDuty = Math.Round(stampDuty, 2);
             this.ZtscLevy = Math.Round(ztscLevy, 2);
-
-
-
+            
             premium = premium + stampDuty + ztscLevy;
 
-
-
-            premium = premium + additionalchargeebb + additionalchargeme + additionalchargepac + additionalchargersa + Convert.ToDecimal(RadioLicenseCost);// + Convert.ToDecimal(AgentCommission);
+            premium = premium + additionalchargeebb + additionalchargeme + additionalchargepac + additionalchargersa + (IncludeRadioLicenseCost ? Convert.ToDecimal(RadioLicenseCost) : 0.00m );// + Convert.ToDecimal(AgentCommission);
 
             this.Premium = Math.Round(premium, 2);
-
-
-
-
 
             return this;
         }

@@ -6,6 +6,8 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using Insurance.Domain;
+using InsuranceClaim.Models;
 
 namespace Insurance.Service
 {
@@ -73,6 +75,8 @@ namespace Insurance.Service
                 string strMsg = ex.Message;
             }
         }
+
+
         private void populateMailAddresses(string pAddresses, MailAddressCollection pObj)
         {
             if (pAddresses != "")

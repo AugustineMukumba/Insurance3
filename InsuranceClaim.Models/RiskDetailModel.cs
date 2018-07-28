@@ -10,6 +10,7 @@ namespace InsuranceClaim.Models
 {
     public class RiskDetailModel
     {
+        public bool IncludeRadioLicenseCost { get; set; }
         public int Id { get; set; }
         public int PolicyId { get; set; }
         //[Required(ErrorMessage = "Please Enter No Of Cars Covered")]
