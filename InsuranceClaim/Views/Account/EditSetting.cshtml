@@ -30,12 +30,14 @@
                 </div>
             </div>
             <div class="form-group">
-                @Html.Label("Type", new { @class = "col-md-3 control-label" })
+                @Html.LabelFor(x=>x.ValueType, new { @class = "col-md-3 control-label" })
                 <div class="col-md-5">
-                    <select name="ValueType" class="form-control" id="ValueType">
+
+                    @Html.DropDownListFor(x => x.ValueType, ViewBag.eSettingValueType as SelectList, "Select Value Type", new { @class = "form-control" })
+                    @*<select name="ValueType" class="form-control" id="ValueType">
                         <option value="1">Percentage</option>
                         <option value="2">Amount</option>
-                    </select>
+                    </select>*@
                 </div>
             </div>
 

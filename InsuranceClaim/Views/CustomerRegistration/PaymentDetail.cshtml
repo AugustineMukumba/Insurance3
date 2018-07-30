@@ -76,7 +76,7 @@
                                         <div class="form-group">
                                             <div class="controls">
                                                 @Html.Label("Card Number", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.CardNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Card Number" })
+                                                @Html.TextBoxFor(m => m.CardNumber, new { @class = "form-control numeric", @autocomplete = "off", @placeholder = "Card Number",@maxlength="16" })
                                                 @Html.ValidationMessageFor(m => m.CardNumber, "", new { @class = "text-danger" })
                                                 <span id="credit-card-type-text" style="color:red" class="help-inline"></span>
                                             </div>
@@ -119,8 +119,8 @@
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                            @Html.Label("CVC", new { @class = "gender-label" })
-                                            @Html.TextBoxFor(m => m.CVC, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cvc Number" ,@maxlength="3"})
+                                            @Html.Label("CVC", new { @class = "gender-label " })
+                                            @Html.TextBoxFor(m => m.CVC, new { @class = "form-control numeric", @autocomplete = "off", @placeholder = "Cvc Number" ,@maxlength="3"})
                                             <div>
                                                 @Html.ValidationMessageFor(m => m.CVC, "", new { @class = "text-danger" })
                                             </div>
@@ -185,6 +185,7 @@
 <script src="~/Scripts/jquery.creditCardValidator.js"></script>
 <script type="text/javascript">
 
+
     function gotoPeriviouse() {
         $("#previouselink")[0].click();
 
@@ -200,8 +201,6 @@
 
         });
     });
-
-
-
+  
 </script>
 

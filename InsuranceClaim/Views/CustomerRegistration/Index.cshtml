@@ -175,10 +175,10 @@
                                                 </div>*@
 
                                             <div class="row">
-                                                <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="col-sm-6 col-md-6 form-group-select">
                                                     <div class="form-group">
                                                         @Html.LabelFor(x => x.City, new { @class = "gender-label" })
-                                                        @Html.TextBoxFor(x => x.City, new { @class = "form-control", @name = "City", @autocomplete = "off", @id = "City", @placeholder = "City" })
+                                                        @Html.DropDownListFor(x => x.City, new SelectList(ViewBag.Cities, "name", "name"), "----Select City----" , new { @class = "form-control " })
                                                         @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>

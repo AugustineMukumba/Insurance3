@@ -942,6 +942,12 @@ button.btn-sm.btn-danger {
 
 .form-group-text .form-group span.text-danger {
     position: absolute;
+    top: 100%;
+
+}
+.form-group-text .form-group span.help-inline{ position: absolute;
+    top: 100%;
+
 }
 
 .form-group-select .form-group span.text-danger {

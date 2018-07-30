@@ -602,6 +602,7 @@
         $("#validationSumIns").css("display", "none");
 
         $("#btnGenerateQuote").click(function () {
+            debugger;
 
             var coverselected = $("#CoverTypeId option:selected").val();
             if (coverselected == "1" && $("#SumInsured").val() == "") {
@@ -648,8 +649,22 @@
         });
 
 
+        
 
-        $("#SumInsured").blur(function () {
+
+
+
+    $("#SumInsured").blur(function () {
+        debugger;
+
+            var coverselected = $("#CoverTypeId option:selected").val();
+            if (coverselected == "1" && $("#SumInsured").val() == "") {
+                $("#validationSumIns").css("display", "block");
+                return false;
+            }
+            else {
+                $("#validationSumIns").css("display", "none");
+            }
 
             QuoteCalculation();
         });

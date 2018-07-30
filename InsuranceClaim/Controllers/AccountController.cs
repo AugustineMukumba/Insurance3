@@ -14,6 +14,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System.Collections.Generic;
 using AutoMapper;
 using System.Configuration;
+using static InsuranceClaim.Controllers.CustomerRegistrationController;
 
 namespace InsuranceClaim.Controllers
 {
@@ -62,6 +63,10 @@ namespace InsuranceClaim.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            Session.Abandon();
+            Session.Clear();
+
+
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -87,9 +92,15 @@ namespace InsuranceClaim.Controllers
                     var _user = UserManager.FindByEmail(model.Email);
                     var role = UserManager.GetRoles(_user.Id.ToString()).FirstOrDefault();
                     Session["LoggedInUserRole"] = role;
-                    //var customer = InsuranceContext.Customers.All(where: $"UserId ='{User.Identity.GetUserId().ToString()}'").FirstOrDefault();
+
+                    var customer = InsuranceContext.Customers.All(where: $"UserId ='{_user.Id.ToString()}'").FirstOrDefault();
+                    Session["firstname"] = customer.FirstName;
+                    Session["lastname"] = customer.LastName;
+
+
                     if (role == "Administrator" || role == "Staff")
                     {
+                       
                         return RedirectToAction("Dashboard", "Account");
                     }
                     else
@@ -115,7 +126,7 @@ namespace InsuranceClaim.Controllers
             var AuthenticationManager = HttpContext.GetOwinContext().Authentication;
             AuthenticationManager.SignOut();
 
-            return RedirectToAction("Index", "CustomerRegistration");
+            return RedirectToAction("Login", "Account");
         }
 
         //
@@ -646,6 +657,12 @@ namespace InsuranceClaim.Controllers
             ViewBag.Countries = resultt.countries;
 
 
+            string paths = Server.MapPath("~/Content/Cities.txt");
+            var _cities = System.IO.File.ReadAllText(paths);
+            var resultts = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObjects>(_cities);
+            ViewBag.Cities = resultts.cities;
+
+
             if (userLoggedin)
             {
                 var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
@@ -1097,6 +1114,19 @@ namespace InsuranceClaim.Controllers
         {
             InsuranceClaim.Models.SettingModel obj = new InsuranceClaim.Models.SettingModel();
             List<Insurance.Domain.Setting> objList = new List<Insurance.Domain.Setting>();
+
+            var eSettingValueTypedata = from eSettingValueType e in Enum.GetValues(typeof(eSettingValueType))
+                                   select new
+                                   {
+                                       ID = (int)e,
+                                       Name = e.ToString()
+                                   };
+
+            ViewBag.eSettingValueType = new SelectList(eSettingValueTypedata, "ID", "Name");
+
+
+
+
             objList = InsuranceContext.Settings.All().ToList();
             return View(obj);
         }
@@ -1127,6 +1157,18 @@ namespace InsuranceClaim.Controllers
         {
             var record = InsuranceContext.Settings.All(where: $"Id ={Id}").FirstOrDefault();
             var model = Mapper.Map<Setting, SettingModel>(record);
+
+
+
+            var eSettingValueTypedata = from eSettingValueType e in Enum.GetValues(typeof(eSettingValueType))
+                                        select new
+                                        {
+                                            ID = (int)e,
+                                            Name = e.ToString()
+                                        };
+
+            ViewBag.eSettingValueType = new SelectList(eSettingValueTypedata, "ID", "Name");
+
             return View(model);
         }
         [HttpPost]

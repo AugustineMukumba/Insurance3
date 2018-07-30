@@ -42,6 +42,12 @@ namespace InsuranceClaim.Controllers
             var resultt = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObject>(countries);
             ViewBag.Countries = resultt.countries;
 
+            string paths = Server.MapPath("~/Content/Cities.txt");
+            var cities = System.IO.File.ReadAllText(paths);
+            var resultts = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObjects>(cities);
+            ViewBag.Cities = resultts.cities;
+
+
             if (userLoggedin)
             {
                 var customerModel = new CustomerModel();
@@ -724,7 +730,7 @@ namespace InsuranceClaim.Controllers
                         var ReinsuranceCases = InsuranceContext.Reinsurances.All(where: $"Type='Reinsurance'").ToList();
                         var ownRetention = InsuranceContext.Reinsurances.All().Where(x => x.TreatyCode == "OR001").Select(x => x.MaxTreatyCapacity).SingleOrDefault();
                         var ReinsuranceCase = new Reinsurance();
-                        
+
                         foreach (var Reinsurance in ReinsuranceCases)
                         {
                             if (Reinsurance.MinTreatyCapacity <= item.SumInsured && item.SumInsured <= Reinsurance.MaxTreatyCapacity)
@@ -758,10 +764,10 @@ namespace InsuranceClaim.Controllers
                             VehicleMake vehiclemake = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{item.MakeId}'");
 
                             string vehicledescription = vehiclemodel.ModelDescription + " / " + vehiclemake.MakeDescription;
-                            SummeryofReinsurance += "<tr><td>" + Convert.ToString(reinsurance.Id) + "</td><td>" + ReinsuranceCase.TreatyCode + "</td><td>" + ReinsuranceCase.TreatyName + "</td><td>" + Convert.ToString(reinsurance.ReinsuranceAmount) + "</td><td>" + Convert.ToString(ReinsuranceBroker.ReinsuranceBrokerName) + "</td><td>" + Convert.ToString(Math.Round(Convert.ToDecimal(reinsurance.ReinsurancePremium),2)) + "</td><td>" + Convert.ToString(ReinsuranceBroker.Commission) + "</td></tr>";
+                            SummeryofReinsurance += "<tr><td>" + Convert.ToString(reinsurance.Id) + "</td><td>" + ReinsuranceCase.TreatyCode + "</td><td>" + ReinsuranceCase.TreatyName + "</td><td>" + Convert.ToString(reinsurance.ReinsuranceAmount) + "</td><td>" + Convert.ToString(ReinsuranceBroker.ReinsuranceBrokerName) + "</td><td>" + Convert.ToString(Math.Round(Convert.ToDecimal(reinsurance.ReinsurancePremium), 2)) + "</td><td>" + Convert.ToString(ReinsuranceBroker.Commission) + "</td></tr>";
                             SummeryofVehicleInsured += "<tr><td>" + vehicledescription + "</td><td>" + item.RegistrationNo + "</td><td>" + (item.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : (item.CoverTypeId == 2 ? eCoverType.ThirdParty.ToString() : eCoverType.FullThirdParty.ToString())) + "</td><td>" + Convert.ToString(item.SumInsured) + "</td><td>" + Convert.ToString(item.Premium) + "</td><td>" + Convert.ToString(reinsurance.Id) + "</td></tr>";
 
-                           
+
                         }
 
                     }
@@ -854,7 +860,7 @@ namespace InsuranceClaim.Controllers
             var summary = (SummaryDetailModel)Session["SummaryDetailed"];
             var DbEntry = Mapper.Map<SummaryDetailModel, SummaryDetail>(model);
 
-           
+
 
             if (summary != null)
             {
@@ -994,17 +1000,33 @@ namespace InsuranceClaim.Controllers
 
             return PartialView();
         }
-    }
 
 
-    public class Country
-    {
-        public string code { get; set; }
-        public string name { get; set; }
-    }
 
-    public class RootObject
-    {
-        public List<Country> countries { get; set; }
+        public class Country
+        {
+            public string code { get; set; }
+            public string name { get; set; }
+        }
+
+        public class RootObject
+        {
+            public List<Country> countries { get; set; }
+        }
+
+        public class City
+        {
+            public string name { get; set; }
+        }
+
+        public class RootObjects
+        {
+            public List<City> cities { get; set; }
+        }
+
+
     }
 }
+
+
+
