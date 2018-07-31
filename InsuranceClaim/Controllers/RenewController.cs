@@ -12,6 +12,8 @@ using AutoMapper;
 using System.Configuration;
 using System.Globalization;
 using Insurance.Service;
+using PayPal.Api;
+using System.Web.Script.Serialization;
 
 namespace InsuranceClaim.Controllers
 {
@@ -34,61 +36,65 @@ namespace InsuranceClaim.Controllers
             }
         }
 
-        public ActionResult Index(int? Id)
-        {
-            bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+        //public ActionResult Index(int? Id)
+        //{
+        //    bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
 
+
+
+        //    //if (userLoggedin)
+        //    //{
+        //    //    var customerModel = new CustomerModel();
+        //    //    var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
+        //    //    var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{User.Identity.GetUserId().ToString()}'").FirstOrDefault();
+
+        //    //    customerModel.AddressLine1 = _customerData.AddressLine1;
+        //    //    customerModel.AddressLine2 = _customerData.AddressLine2;
+        //    //    customerModel.City = _customerData.City;
+        //    //    customerModel.Id = _customerData.Id;
+        //    //    customerModel.Country = _customerData.Country;
+        //    //    customerModel.Zipcode = _customerData.Zipcode;
+        //    //    customerModel.Gender = _customerData.Gender;
+        //    //    customerModel.PhoneNumber = _User.PhoneNumber;
+        //    //    customerModel.NationalIdentificationNumber = _customerData.NationalIdentificationNumber;
+        //    //    customerModel.DateOfBirth = _customerData.DateOfBirth;
+        //    //    customerModel.EmailAddress = _User.Email;./
+        //    //    customerModel.FirstName = _customerData.FirstName;
+        //    //    customerModel.LastName = _customerData.LastName;
+        //    //    customerModel.CountryCode = _customerData.Countrycode;
+        //    //    customerModel.CustomerId = _customerData.CustomerId;
+        //    //    customerModel.IsActive = _customerData.IsActive;
+        //    //    customerModel.UserID = _customerData.UserID;
+
+        //    //    Session["CustomerData"] = customerModel;
+        //    //}
+
+        //    return RedirectToAction("ProductDetail");
+
+        //}
+
+
+
+        //public ActionResult ProductDetail()
+        //{
+        //    var lapsedvehicleid = (int)Session["LapsedVehicleId"];
+
+
+
+
+
+        //    return RedirectToAction("RiskDetail");
+        //}
+
+        public ActionResult RiskDetail(int? Id)
+        {
             Session["LapsedVehicleId"] = Id;
 
-            //if (userLoggedin)
-            //{
-            //    var customerModel = new CustomerModel();
-            //    var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
-            //    var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{User.Identity.GetUserId().ToString()}'").FirstOrDefault();
-
-            //    customerModel.AddressLine1 = _customerData.AddressLine1;
-            //    customerModel.AddressLine2 = _customerData.AddressLine2;
-            //    customerModel.City = _customerData.City;
-            //    customerModel.Id = _customerData.Id;
-            //    customerModel.Country = _customerData.Country;
-            //    customerModel.Zipcode = _customerData.Zipcode;
-            //    customerModel.Gender = _customerData.Gender;
-            //    customerModel.PhoneNumber = _User.PhoneNumber;
-            //    customerModel.NationalIdentificationNumber = _customerData.NationalIdentificationNumber;
-            //    customerModel.DateOfBirth = _customerData.DateOfBirth;
-            //    customerModel.EmailAddress = _User.Email;
-            //    customerModel.FirstName = _customerData.FirstName;
-            //    customerModel.LastName = _customerData.LastName;
-            //    customerModel.CountryCode = _customerData.Countrycode;
-            //    customerModel.CustomerId = _customerData.CustomerId;
-            //    customerModel.IsActive = _customerData.IsActive;
-            //    customerModel.UserID = _customerData.UserID;
-
-            //    Session["CustomerData"] = customerModel;
-            //}
-
-
-
-            return RedirectToAction("ProductDetail");
-
-        }
-
-
-
-        public ActionResult ProductDetail()
-        {
-            var lapsedvehicleid = (int)Session["LapsedVehicleId"];
-
-            var policyid = InsuranceContext.VehicleDetails.Single(lapsedvehicleid).PolicyId;
+            var policyid = InsuranceContext.VehicleDetails.Single(Id).PolicyId;
             var policy = InsuranceContext.PolicyDetails.Single(policyid);
 
             Session["LapsedVehiclePolicy"] = policy;
 
-            return RedirectToAction("RiskDetail");
-        }
-
-        public ActionResult RiskDetail()
-        {
             var lapsedvehicleid = (int)Session["LapsedVehicleId"];
             var SummaryDetailId = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId = {lapsedvehicleid}").SummaryDetailId;
             var summary = InsuranceContext.SummaryDetails.Single(SummaryDetailId);
@@ -132,211 +138,80 @@ namespace InsuranceClaim.Controllers
             //    //viewModel.NoOfCarsCovered = list.Count + 1;
             //}
 
-            //if (id > 0)
-            //{
-            //    var list = (List<RiskDetailModel>)Session["VehicleDetails"];
-            //    var data = (RiskDetailModel)list[Convert.ToInt32(id - 1)];
-            //    if (data != null)
-            //    {
-            //        viewModel.AgentCommissionId = data.AgentCommissionId;
-            //        viewModel.ChasisNumber = data.ChasisNumber;
-            //        viewModel.CoverEndDate = data.CoverEndDate;
-            //        viewModel.CoverNoteNo = data.CoverNoteNo;
-            //        viewModel.CoverStartDate = data.CoverStartDate;
-            //        viewModel.CoverTypeId = data.CoverTypeId;
-            //        viewModel.CubicCapacity = (int)Math.Round(data.CubicCapacity.Value, 0);
-            //        viewModel.CustomerId = data.CustomerId;
-            //        viewModel.EngineNumber = data.EngineNumber;
-            //        //viewModel.Equals = data.Equals;
-            //        viewModel.Excess = (int)Math.Round(data.Excess, 0);
-            //        viewModel.ExcessType = data.ExcessType;
-            //        viewModel.MakeId = data.MakeId;
-            //        viewModel.ModelId = data.ModelId;
-            //        viewModel.NoOfCarsCovered = id;
-            //        viewModel.OptionalCovers = data.OptionalCovers;
-            //        viewModel.PolicyId = data.PolicyId;
-            //        viewModel.Premium = data.Premium;
-            //        viewModel.RadioLicenseCost = (int)Math.Round(data.RadioLicenseCost == null ? 0 : data.RadioLicenseCost.Value, 0);
-            //        viewModel.Rate = data.Rate;
-            //        viewModel.RegistrationNo = data.RegistrationNo;
-            //        viewModel.StampDuty = data.StampDuty;
-            //        viewModel.SumInsured = (int)Math.Round(data.SumInsured == null ? 0 : data.SumInsured.Value, 0);
-            //        viewModel.VehicleColor = data.VehicleColor;
-            //        viewModel.VehicleUsage = data.VehicleUsage;
-            //        viewModel.VehicleYear = data.VehicleYear;
-            //        viewModel.Id = data.Id;
-            //        viewModel.ZTSCLevy = data.ZTSCLevy;
-            //        viewModel.NumberofPersons = data.NumberofPersons;
-            //        viewModel.PassengerAccidentCover = data.PassengerAccidentCover;
-            //        viewModel.IsLicenseDiskNeeded = data.IsLicenseDiskNeeded;
-            //        viewModel.ExcessBuyBack = data.ExcessBuyBack;
-            //        viewModel.RoadsideAssistance = data.RoadsideAssistance;
-            //        viewModel.MedicalExpenses = data.MedicalExpenses;
-            //        viewModel.Addthirdparty = data.Addthirdparty;
-            //        viewModel.AddThirdPartyAmount = data.AddThirdPartyAmount;
-            //        viewModel.isUpdate = true;
-            //        viewModel.vehicleindex = Convert.ToInt32(id);
+            if (Id > 0)
+            {
+                var data = InsuranceContext.VehicleDetails.Single(Id);
+                //var data = (RiskDetailModel)list[Convert.ToInt32(id - 1)];
+                if (data != null)
+                {
+                    viewModel.AgentCommissionId = data.AgentCommissionId;
+                    viewModel.ChasisNumber = data.ChasisNumber;
+                    viewModel.CoverEndDate = data.CoverEndDate;
+                    viewModel.CoverNoteNo = data.CoverNoteNo;
+                    viewModel.CoverStartDate = data.CoverStartDate;
+                    viewModel.CoverTypeId = data.CoverTypeId;
+                    viewModel.CubicCapacity = (int)Math.Round(data.CubicCapacity.Value, 0);
+                    viewModel.CustomerId = data.CustomerId;
+                    viewModel.EngineNumber = data.EngineNumber;
+                    //viewModel.Equals = data.Equals;
+                    viewModel.Excess = (int)Math.Round(data.Excess, 0);
+                    viewModel.ExcessType = data.ExcessType;
+                    viewModel.MakeId = data.MakeId;
+                    viewModel.ModelId = data.ModelId;
+                    viewModel.NoOfCarsCovered = 0;
+                    viewModel.OptionalCovers = data.OptionalCovers;
+                    viewModel.PolicyId = data.PolicyId;
+                    viewModel.Premium = data.Premium;
+                    viewModel.RadioLicenseCost = (int)Math.Round(data.RadioLicenseCost == null ? 0 : data.RadioLicenseCost.Value, 0);
+                    viewModel.Rate = data.Rate;
+                    viewModel.RegistrationNo = data.RegistrationNo;
+                    viewModel.StampDuty = data.StampDuty;
+                    viewModel.SumInsured = (int)Math.Round(data.SumInsured == null ? 0 : data.SumInsured.Value, 0);
+                    viewModel.VehicleColor = data.VehicleColor;
+                    viewModel.VehicleUsage = data.VehicleUsage;
+                    viewModel.VehicleYear = data.VehicleYear;
+                    viewModel.Id = data.Id;
+                    viewModel.ZTSCLevy = data.ZTSCLevy;
+                    viewModel.NumberofPersons = data.NumberofPersons;
+                    viewModel.PassengerAccidentCover = data.PassengerAccidentCover;
+                    viewModel.IsLicenseDiskNeeded = Convert.ToBoolean(data.IsLicenseDiskNeeded);
+                    viewModel.ExcessBuyBack = data.ExcessBuyBack;
+                    viewModel.RoadsideAssistance = data.RoadsideAssistance;
+                    viewModel.MedicalExpenses = data.MedicalExpenses;
+                    viewModel.Addthirdparty = data.Addthirdparty;
+                    viewModel.AddThirdPartyAmount = data.AddThirdPartyAmount;
+                    viewModel.isUpdate = true;
+                    viewModel.vehicleindex = Convert.ToInt32(0);
 
-            //        var ser = new VehicleService();
-            //        var model = ser.GetModel(data.MakeId);
-            //        ViewBag.Model = model;
-            //    }
-            //}
+                    var ser = new VehicleService();
+                    var model = ser.GetModel(data.MakeId);
+                    ViewBag.Model = model;
+                }
+            }
 
 
             return View(viewModel);
         }
 
-        [HttpPost]
-        public ActionResult GenerateQuote(RiskDetailModel model)
-        {
-
-            if (model.NumberofPersons == null)
-            {
-                model.NumberofPersons = 0;
-            }
-
-            if (model.AddThirdPartyAmount == null)
-            {
-                model.AddThirdPartyAmount = 0.00m;
-            }
-
-            DateTimeFormatInfo usDtfi = new CultureInfo("en-US", false).DateTimeFormat;
-            var service = new RiskDetailService();
-            var startDate = Request.Form["CoverStartDate"];
-            var endDate = Request.Form["CoverEndDate"];
-            if (!string.IsNullOrEmpty(startDate))
-            {
-                ModelState.Remove("CoverStartDate");
-                model.CoverStartDate = Convert.ToDateTime(startDate, usDtfi);
-            }
-            if (!string.IsNullOrEmpty(endDate))
-            {
-                ModelState.Remove("CoverEndDate");
-                model.CoverEndDate = Convert.ToDateTime(endDate, usDtfi);
-            }
-            if (ModelState.IsValid)
-            {
-                //List<RiskDetailModel> listriskdetailmodel = new List<RiskDetailModel>();
-                //if (Session["VehicleDetails"] != null)
-                //{
-                //    List<RiskDetailModel> listriskdetails = (List<RiskDetailModel>)Session["VehicleDetails"];
-                //    if (listriskdetails != null && listriskdetails.Count > 0)
-                //    {
-                //        listriskdetailmodel = listriskdetails;
-                //    }
-                //}
-
-                //listriskdetailmodel.Add(model);
-                Session["VehicleDetail"] = model;
-
-            }
-
-            return RedirectToAction("SummaryDetail");
-
-
-        }
-
-        [HttpPost]
-        public JsonResult DeleteVehicle(int? index)
-        {
-
-            try
-            {
-                if (Session["VehicleDetails"] != null)
-                {
-                    var list = (List<RiskDetailModel>)Session["VehicleDetails"];
-
-                    list.RemoveAt(Convert.ToInt32(index) - 1);
-
-                    return Json(true, JsonRequestBehavior.AllowGet);
-                }
-                return Json(false, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception)
-            {
-
-                return Json(false, JsonRequestBehavior.AllowGet);
-            }
-
-
-        }
-
-        [HttpGet]
-        public JsonResult getVehicleList()
-        {
-            try
-            {
-                if (Session["VehicleDetails"] != null)
-                {
-                    var list = (List<RiskDetailModel>)Session["VehicleDetails"];
-                    List<VehicleListModel> vehiclelist = new List<VehicleListModel>();
-
-                    foreach (var item in list)
-                    {
-                        VehicleListModel obj = new VehicleListModel();
-                        obj.make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{item.MakeId}'").ShortDescription;
-                        obj.model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ShortDescription;
-                        obj.covertype = InsuranceContext.CoverTypes.Single(item.CoverTypeId).Name;
-                        obj.premium = item.Premium.ToString();
-                        obj.suminsured = item.SumInsured.ToString();
-                        vehiclelist.Add(obj);
-                    }
-
-                    return Json(vehiclelist, JsonRequestBehavior.AllowGet);
-                }
-                return Json(false, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception)
-            {
-
-                return Json(false, JsonRequestBehavior.AllowGet);
-            }
-
-        }
-
-
-        [HttpGet]
-        public JsonResult getVehicleListbyID(int index)
-        {
-            try
-            {
-                if (Session["VehicleDetails"] != null)
-                {
-                    var list = (List<RiskDetailModel>)Session["VehicleDetails"];
-                    List<VehicleListModel> vehiclelist = new List<VehicleListModel>();
-
-                    return Json(vehiclelist[index - 1], JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(false, JsonRequestBehavior.AllowGet);
-                }
-
-            }
-            catch (Exception)
-            {
-
-                return Json(false, JsonRequestBehavior.AllowGet);
-            }
-
-        }
-
 
         public ActionResult SummaryDetail()
         {
-           
-           
+            var Id = (int)Session["LapsedVehicleId"];
+            var summaryID = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId={Id}").SummaryDetailId;
+            var summary = InsuranceContext.SummaryDetails.Single(summaryID);
+            Session["LapsedVehicleSummary"] = summary;
+            var vehicle = InsuranceContext.VehicleDetails.Single(Id);
+            Session["LapsedVehicle"] = vehicle;
             SummaryDetailService SummaryDetailServiceObj = new SummaryDetailService();
 
-           
+
             var model = new SummaryDetailModel();
-            var summary = new SummaryDetailService();
-            var vehicle = (RiskDetailModel)Session["VehicleDetail"];// summary.GetVehicleInformation(id);
-            model.CarInsuredCount = vehicle.vehicleindex;
-            model.DebitNote = "INV" + Convert.ToString(SummaryDetailServiceObj.getNewDebitNote());
-            model.PaymentMethodId = 1;
-            model.PaymentTermId = 1;
+            //var summary = new SummaryDetailService();
+            //var vehicle = (RiskDetailModel)Session["VehicleDetail"];// summary.GetVehicleInformation(id);
+            model.CarInsuredCount = 1;
+            model.DebitNote = summary.DebitNote;
+            model.PaymentMethodId = summary.PaymentMethodId;
+            model.PaymentTermId = summary.PaymentTermId;
             model.ReceiptNumber = "";
             model.SMSConfirmation = false;
             model.TotalPremium = vehicle.Premium;// + vehicle.StampDuty + vehicle.ZTSCLevy;
@@ -363,326 +238,19 @@ namespace InsuranceClaim.Controllers
         [HttpPost]
         public async Task<ActionResult> SubmitPlan(SummaryDetailModel model)
         {
-            //var vehicle = (RiskDetailModel)Session["VehicleDetail"];
-            Session["SummaryDetailed"] = model;
-            string SummeryofReinsurance = "";
-            string SummeryofVehicleInsured = "";
-            bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-            var customer = (CustomerModel)Session["CustomerDataModal"];
-            if (!userLoggedin)
-            {
-                if (customer != null)
-                {
-                    if (customer.Id == null || customer.Id == 0)
-                    {
-                        decimal custId = 0;
-                        var user = new ApplicationUser { UserName = customer.EmailAddress, Email = customer.EmailAddress, PhoneNumber = customer.PhoneNumber };
-                        var result = await UserManager.CreateAsync(user, "Geninsure@123");
-                        if (result.Succeeded)
-                        {
-                            var objCustomer = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).FirstOrDefault();
-                            if (objCustomer != null)
-                            {
-                                custId = objCustomer.CustomerId + 1;
-                            }
-                            else
-                            {
-                                custId = Convert.ToDecimal(ConfigurationManager.AppSettings["CustomerId"]);
-                            }
 
-                            customer.UserID = user.Id;
-                            customer.CustomerId = custId;
-                            var customerdata = Mapper.Map<CustomerModel, Customer>(customer);
-                            InsuranceContext.Customers.Insert(customerdata);
-                            customer.Id = customerdata.Id;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-                //var objCustomer = InsuranceContext.Customers.Single(where: $"Userid=@0", parms: new object[] { User.Identity.GetUserId() });
-                var number = user.PhoneNumber;
-                if (number != customer.PhoneNumber)
-                {
-                    user.PhoneNumber = customer.PhoneNumber;
-                    UserManager.Update(user);
-                }
-                customer.UserID = User.Identity.GetUserId().ToString();
-                var customerdata = Mapper.Map<CustomerModel, Customer>(customer);
-                InsuranceContext.Customers.Update(customerdata);
-            }
+            var customer = InsuranceContext.Customers.Single(where: $"UserId='{User.Identity.GetUserId().ToString()}'");
 
-
-            var policy = (PolicyDetail)Session["PolicyData"];
-            if (policy != null)
-            {
-                if (policy.Id == null || policy.Id == 0)
-                {
-                    policy.CustomerId = customer.Id;
-                    InsuranceContext.PolicyDetails.Insert(policy);
-                    Session["PolicyData"] = policy;
-                }
-                else
-                {
-                    PolicyDetail policydata = InsuranceContext.PolicyDetails.All(policy.Id.ToString()).FirstOrDefault();
-                    policydata.BusinessSourceId = policy.BusinessSourceId;
-                    policydata.CurrencyId = policy.CurrencyId;
-                    policydata.CustomerId = policy.CustomerId;
-                    policydata.EndDate = policy.EndDate;
-                    policydata.InsurerId = policy.InsurerId;
-                    policydata.IsActive = policy.IsActive;
-                    policydata.PolicyName = policy.PolicyName;
-                    policydata.PolicyNumber = policy.PolicyNumber;
-                    policydata.PolicyStatusId = policy.PolicyStatusId;
-                    policydata.RenewalDate = policy.RenewalDate;
-                    policydata.StartDate = policy.StartDate;
-                    policydata.TransactionDate = policy.TransactionDate;
-                    InsuranceContext.PolicyDetails.Update(policydata);
-                }
-
-            }
-            var Id = 0;
-            var listReinsuranceTransaction = new List<ReinsuranceTransaction>();
-            var vehicle = (List<RiskDetailModel>)Session["VehicleDetails"];
-            if (vehicle != null && vehicle.Count > 0)
-            {
-                foreach (var item in vehicle.ToList())
-                {
-                    var _item = item;
-
-                    if (item.Id == null || item.Id == 0)
-                    {
-                        var service = new RiskDetailService();
-                        _item.CustomerId = customer.Id;
-                        _item.PolicyId = policy.Id;
-                        //var vehical = Mapper.Map<RiskDetailModel, RiskDetailModel>(vehicle);
-                        _item.Id = service.AddVehicleInformation(_item);
-                        var vehicles = (List<RiskDetailModel>)Session["VehicleDetails"];
-                        vehicles[Convert.ToInt32(_item.NoOfCarsCovered) - 1] = _item;
-                        Session["VehicleDetails"] = vehicles;
-
-                        ///Reinsurance                      
-
-                        var ReinsuranceCases = InsuranceContext.Reinsurances.All(where: $"Type='Reinsurance'").ToList();
-                        var ownRetention = InsuranceContext.Reinsurances.All().Where(x => x.TreatyCode == "OR001").Select(x => x.MaxTreatyCapacity).SingleOrDefault();
-                        var ReinsuranceCase = new Reinsurance();
-
-                        foreach (var Reinsurance in ReinsuranceCases)
-                        {
-                            if (Reinsurance.MinTreatyCapacity <= item.SumInsured && item.SumInsured <= Reinsurance.MaxTreatyCapacity)
-                            {
-                                ReinsuranceCase = Reinsurance;
-                                break;
-                            }
-                        }
-
-                        if (ReinsuranceCase != null && ReinsuranceCase.MaxTreatyCapacity != null)
-                        {
-                            var ReinsuranceBroker = InsuranceContext.ReinsuranceBrokers.Single(where: $"ReinsuranceBrokerCode='{ReinsuranceCase.ReinsuranceBrokerCode}'");
-
-                            var reinsurance = new ReinsuranceTransaction();
-                            reinsurance.ReinsuranceAmount = _item.SumInsured - ownRetention;
-                            reinsurance.ReinsurancePremium = ((reinsurance.ReinsuranceAmount / item.SumInsured) * item.Premium);
-                            reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(ReinsuranceBroker.Commission);
-                            reinsurance.ReinsuranceCommission = ((reinsurance.ReinsurancePremium * reinsurance.ReinsuranceCommissionPercentage) / 100);
-                            reinsurance.VehicleId = item.Id;
-                            reinsurance.ReinsuranceBrokerId = ReinsuranceBroker.Id;
-                            reinsurance.TreatyName = ReinsuranceCase.TreatyName;
-                            reinsurance.TreatyCode = ReinsuranceCase.TreatyCode;
-
-                            InsuranceContext.ReinsuranceTransactions.Insert(reinsurance);
-
-                            listReinsuranceTransaction.Add(reinsurance);
-
-
-                            Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
-                            VehicleModel vehiclemodel = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
-                            VehicleMake vehiclemake = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{item.MakeId}'");
-
-                            string vehicledescription = vehiclemodel.ModelDescription + " / " + vehiclemake.MakeDescription;
-                            SummeryofReinsurance += "<tr><td>" + Convert.ToString(reinsurance.Id) + "</td><td>" + ReinsuranceCase.TreatyCode + "</td><td>" + ReinsuranceCase.TreatyName + "</td><td>" + Convert.ToString(reinsurance.ReinsuranceAmount) + "</td><td>" + Convert.ToString(ReinsuranceBroker.ReinsuranceBrokerName) + "</td><td>" + Convert.ToString(Math.Round(Convert.ToDecimal(reinsurance.ReinsurancePremium), 2)) + "</td><td>" + Convert.ToString(ReinsuranceBroker.Commission) + "</td></tr>";
-                            SummeryofVehicleInsured += "<tr><td>" + vehicledescription + "</td><td>" + item.RegistrationNo + "</td><td>" + (item.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : (item.CoverTypeId == 2 ? eCoverType.ThirdParty.ToString() : eCoverType.FullThirdParty.ToString())) + "</td><td>" + Convert.ToString(item.SumInsured) + "</td><td>" + Convert.ToString(item.Premium) + "</td><td>" + Convert.ToString(reinsurance.Id) + "</td></tr>";
-
-
-                        }
-
-                    }
-                    else
-                    {
-                        VehicleDetail Vehicledata = InsuranceContext.VehicleDetails.All(item.Id.ToString()).FirstOrDefault();
-                        Vehicledata.AgentCommissionId = item.AgentCommissionId;
-                        Vehicledata.ChasisNumber = item.ChasisNumber;
-                        Vehicledata.CoverEndDate = item.CoverEndDate;
-                        Vehicledata.CoverNoteNo = item.CoverNoteNo;
-                        Vehicledata.CoverStartDate = item.CoverStartDate;
-                        Vehicledata.CoverTypeId = item.CoverTypeId;
-                        Vehicledata.CubicCapacity = item.CubicCapacity;
-                        Vehicledata.EngineNumber = item.EngineNumber;
-                        Vehicledata.Excess = item.Excess;
-                        Vehicledata.ExcessType = item.ExcessType;
-                        Vehicledata.MakeId = item.MakeId;
-                        Vehicledata.ModelId = item.ModelId;
-                        Vehicledata.NoOfCarsCovered = item.NoOfCarsCovered;
-                        Vehicledata.OptionalCovers = item.OptionalCovers;
-                        Vehicledata.PolicyId = item.PolicyId;
-                        Vehicledata.Premium = item.Premium;
-                        Vehicledata.RadioLicenseCost = item.RadioLicenseCost;
-                        Vehicledata.Rate = item.Rate;
-                        Vehicledata.RegistrationNo = item.RegistrationNo;
-                        Vehicledata.StampDuty = item.StampDuty;
-                        Vehicledata.SumInsured = item.SumInsured;
-                        Vehicledata.VehicleColor = item.VehicleColor;
-                        Vehicledata.VehicleUsage = item.VehicleUsage;
-                        Vehicledata.VehicleYear = item.VehicleYear;
-                        Vehicledata.ZTSCLevy = item.ZTSCLevy;
-                        Vehicledata.Addthirdparty = item.Addthirdparty;
-                        Vehicledata.AddThirdPartyAmount = item.AddThirdPartyAmount;
-                        Vehicledata.PassengerAccidentCover = item.PassengerAccidentCover;
-                        Vehicledata.ExcessBuyBack = item.ExcessBuyBack;
-                        Vehicledata.RoadsideAssistance = item.RoadsideAssistance;
-                        Vehicledata.MedicalExpenses = item.MedicalExpenses;
-                        Vehicledata.NumberofPersons = item.NumberofPersons;
-                        Vehicledata.IsLicenseDiskNeeded = item.IsLicenseDiskNeeded;
-
-
-
-                        InsuranceContext.VehicleDetails.Update(Vehicledata);
-                        var _summary = (SummaryDetailModel)Session["SummaryDetailed"];
-
-
-                        var ReinsuranceCases = InsuranceContext.Reinsurances.All(where: $"Type='Reinsurance'").ToList();
-                        var ownRetention = InsuranceContext.Reinsurances.All().Where(x => x.TreatyCode == "OR001").Select(x => x.MaxTreatyCapacity).SingleOrDefault();
-                        var ReinsuranceCase = new Reinsurance();
-
-                        foreach (var Reinsurance in ReinsuranceCases)
-                        {
-                            if (Reinsurance.MinTreatyCapacity <= item.SumInsured && item.SumInsured <= Reinsurance.MaxTreatyCapacity)
-                            {
-                                ReinsuranceCase = Reinsurance;
-                                break;
-                            }
-                        }
-
-                        if (ReinsuranceCase != null && ReinsuranceCase.MaxTreatyCapacity != null)
-                        {
-                            var ReinsuranceBroker = InsuranceContext.ReinsuranceBrokers.Single(where: $"ReinsuranceBrokerCode='{ReinsuranceCase.ReinsuranceBrokerCode}'");
-
-                            var summaryid = _summary.Id;
-                            var vehicleid = item.Id;
-                            var ReinsuranceTransactions = InsuranceContext.ReinsuranceTransactions.Single(where: $"SummaryDetailId={_summary.Id} and VehicleId={item.Id}");
-                            //var _reinsurance = new ReinsuranceTransaction();
-                            ReinsuranceTransactions.ReinsuranceAmount = _item.SumInsured - ownRetention;
-                            ReinsuranceTransactions.ReinsurancePremium = ((ReinsuranceTransactions.ReinsuranceAmount / item.SumInsured) * item.Premium);
-                            ReinsuranceTransactions.ReinsuranceCommissionPercentage = Convert.ToDecimal(ReinsuranceBroker.Commission);
-                            ReinsuranceTransactions.ReinsuranceCommission = ((ReinsuranceTransactions.ReinsurancePremium * ReinsuranceTransactions.ReinsuranceCommissionPercentage) / 100);//Convert.ToDecimal(defaultReInsureanceBroker.Commission);
-                            ReinsuranceTransactions.ReinsuranceBrokerId = ReinsuranceBroker.Id;
-
-                            InsuranceContext.ReinsuranceTransactions.Update(ReinsuranceTransactions);
-                        }
-                        else
-                        {
-                            var ReinsuranceTransactions = InsuranceContext.ReinsuranceTransactions.Single(where: $"SummaryDetailId={_summary.Id} and VehicleId={item.Id}");
-                            if (ReinsuranceTransactions != null)
-                            {
-                                InsuranceContext.ReinsuranceTransactions.Delete(ReinsuranceTransactions);
-                            }
-                        }
-
-
-                    }
-                }
-            }
-
-            var summary = (SummaryDetailModel)Session["SummaryDetailed"];
-            var DbEntry = Mapper.Map<SummaryDetailModel, SummaryDetail>(model);
-
-
-
-            if (summary != null)
-            {
-
-                if (summary.Id == null || summary.Id == 0)
-                {
-                    DbEntry.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
-                    //DbEntry.VehicleDetailId = vehicle[0].Id;
-                    DbEntry.CustomerId = vehicle[0].CustomerId;
-                    InsuranceContext.SummaryDetails.Insert(DbEntry);
-                    model.Id = DbEntry.Id;
-                    Session["SummaryDetailed"] = model;
-                }
-                else
-                {
-                    SummaryDetail summarydata = InsuranceContext.SummaryDetails.All(summary.Id.ToString()).FirstOrDefault();
-
-                    summarydata.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
-                    //summarydata.VehicleDetailId = vehicle[0].Id;
-                    summarydata.CustomerId = vehicle[0].CustomerId;
-
-                    InsuranceContext.SummaryDetails.Update(summarydata);
-                }
-
-
-
-                if (listReinsuranceTransaction != null && listReinsuranceTransaction.Count > 0)
-                {
-                    foreach (var item in listReinsuranceTransaction)
-                    {
-                        var InsTransac = InsuranceContext.ReinsuranceTransactions.Single(item.Id);
-                        InsTransac.SummaryDetailId = summary.Id;
-                        InsuranceContext.ReinsuranceTransactions.Update(InsTransac);
-                    }
-                }
-
-            }
-
-
-            if (vehicle != null && vehicle.Count > 0 && summary.Id != null && summary.Id > 0)
-            {
-                var SummaryDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={summary.Id}").ToList();
-
-                if (SummaryDetails != null && SummaryDetails.Count > 0)
-                {
-                    foreach (var item in SummaryDetails)
-                    {
-                        InsuranceContext.SummaryVehicleDetails.Delete(item);
-                    }
-                }
-
-                foreach (var item in vehicle.ToList())
-                {
-
-                    var summarydetails = new SummaryVehicleDetail();
-                    summarydetails.SummaryDetailId = summary.Id;
-                    summarydetails.VehicleDetailsId = item.Id;
-                    InsuranceContext.SummaryVehicleDetails.Insert(summarydetails);
-
-
-                }
-
-            }
-
-            if (listReinsuranceTransaction != null && listReinsuranceTransaction.Count > 0)
-            {
-                var user = UserManager.FindById(customer.UserID);
-                Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
-                var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
-                var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == summary.PaymentTermId);
-                string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/Reinsurance_Admin.cshtml";
-                string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
-                var Body = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", policy.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", policy.StartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##SummeryofReinsurance##", SummeryofReinsurance).Replace("##SummeryofVehicleInsured##", SummeryofVehicleInsured).Replace("##PostalAddress##", customer.Zipcode);
-                objEmailService.SendEmail("ankit.dhiman@kindlebit.com", "", "", "Reinsurance Case: " + policy.PolicyNumber.ToString(), Body, null);
-            }
-
-
+            var policy = (PolicyDetail)Session["LapsedVehiclePolicy"];
+            //var vehicle = (RiskDetailModel)Session["LapsedVehicle"];
+            var summary = (SummaryDetail)Session["LapsedVehicleSummary"];
 
             if (model.PaymentMethodId == 1)
-                return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id });
+                return RedirectToAction("SaveDetailList", "Renew", new { id = summary.Id });
             if (model.PaymentMethodId == 3)
-                return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremium = Convert.ToString(summary.TotalPremium), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
+                return RedirectToAction("InitiatePaynowTransaction", "Renew", new { id = summary.Id, TotalPremium = Convert.ToString(summary.TotalPremium), PolicyNumber = policy.PolicyNumber, Email = User.Identity.GetUserName() });
             else
-                return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
+                return RedirectToAction("PaymentDetail", new { id = summary.Id });
         }
 
         [HttpPost]
@@ -719,8 +287,6 @@ namespace InsuranceClaim.Controllers
             jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             return jsonResult;
         }
-
-
         public ActionResult PaymentDetail(int id)
         {
             var cardDetails = (CardDetailModel)Session["CardDetail"];
@@ -731,12 +297,456 @@ namespace InsuranceClaim.Controllers
             cardDetails.SummaryDetailId = id;
             return View(cardDetails);
         }
-        public PartialViewResult Addvehicle(int id = 0)
+
+        public async Task<ActionResult> SaveDetailList(Int32 id)
         {
+            var vehicleId = (int)Session["LapsedVehicleId"];
+            var PaymentId = Session["PaymentId"];
+            var InvoiceId = Session["InvoiceId"];
+            var summary = (SummaryDetail)Session["LapsedVehicleSummary"];
+            //var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={id}").ToList();
+            //var vehicle = InsuranceContext.VehicleDetails.Single(summary[0].VehicleDetailsId);
+            var policy = (PolicyDetail)Session["LapsedVehiclePolicy"];
+            var customer = InsuranceContext.Customers.Single(summary.CustomerId);
+            var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+            var currency = InsuranceContext.Currencies.Single(policy.CurrencyId);
+            //var paymentInformations = InsuranceContext.PaymentInformations.SingleCustome(id);
+            var user = UserManager.FindById(customer.UserID);
+            //var user = Microsoft.AspNet.Identity.GetUserManager<ApplicationUserManager>();
+            var DebitNote = summary.DebitNote;
+            PaymentInformation objSaveDetailListModel = new PaymentInformation();
+            objSaveDetailListModel.CurrencyId = policy.CurrencyId;
+            objSaveDetailListModel.PolicyId = policy.Id;
+            objSaveDetailListModel.VehicleDetailId = vehicleId;
+            objSaveDetailListModel.CustomerId = summary.CustomerId.Value;
+            objSaveDetailListModel.SummaryDetailId = id;
+            objSaveDetailListModel.DebitNote = summary.DebitNote;
+            objSaveDetailListModel.ProductId = product.Id;
+            objSaveDetailListModel.PaymentId = PaymentId == null ? "" : PaymentId.ToString();
+            objSaveDetailListModel.InvoiceId = InvoiceId == null ? "" : InvoiceId.ToString();
+            InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
+
+            Session.Remove("policytermid");
+            Session.Remove("LapsedVehicleId");
+            Session.Remove("PaymentId");
+            Session.Remove("InvoiceId");
+            Session.Remove("LapsedVehicleSummary");
+            Session.Remove("LapsedVehiclePolicy");
+            Session.Remove("LapsedVehicle");
+            
+            //if (paymentInformations == null)
+            //{
+            //    Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
+            //    string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+            //    var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+            //    bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            //    InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
+
+            //    if (!userLoggedin)
+            //    {
+
+            //        string emailTemplatePath = "/Views/Shared/EmaiTemplates/UserRegisteration.cshtml";
+            //        string EmailBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(emailTemplatePath));
+            //        var Body = EmailBody.Replace(" #PolicyNumber#", policy.PolicyNumber).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Email#", user.Email).Replace("#change#", callbackUrl);
+            //        objEmailService.SendEmail(user.Email, "", "", "Account Creation", Body, null);
 
 
 
-            return PartialView();
+            //        Insurance.Service.smsService objsmsService = new Insurance.Service.smsService();
+
+            //        string body = "Hello " + customer.FirstName + "\nWelcome to the GENE-INSURE family, we would like to simplify your life." + "\nYour policy number is : " + policy.PolicyNumber + "\nUsername is : " + user.Email + "\nYour Password : Geneinsure@123" + "\nPlease reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>" + "\nThank you once again.";
+            //        var result = await objsmsService.SendSMS(customer.Countrycode.Replace("+", "") + user.PhoneNumber, body);
+
+            //        SmsLog objsmslog = new SmsLog()
+            //        {
+            //            Sendto = user.PhoneNumber,
+            //            Body = body,
+            //            Response = result
+            //        };
+
+            //        InsuranceContext.SmsLogs.Insert(objsmslog);
+            //    }
+
+            //    var data = (List<Item>)Session["itemData"];
+            //    if (data != null)
+            //    {
+            //        var totalprem = data.Sum(x => Convert.ToDecimal(x.price));
+
+
+            //        string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentEmail.cshtml";
+            //        string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
+            //        var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#AccountName#", customer.FirstName + ", " + customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Amount#", Convert.ToString(totalprem)).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Cash" : (summaryDetail.PaymentMethodId == 2 ? "PayPal" : "PayNow")));
+            //        objEmailService.SendEmail(user.Email, "", "", "Payment", Body2, null);
+            //    }
+
+
+
+            //    decimal totalpaymentdue = 0.00m;
+
+            //    if (summaryDetail.PaymentTermId == 1)
+            //    {
+            //        totalpaymentdue = (decimal)summaryDetail.TotalPremium;
+            //    }
+            //    else if (summaryDetail.PaymentTermId == 4)
+            //    {
+            //        totalpaymentdue = (decimal)summaryDetail.TotalPremium * 3;
+            //    }
+            //    else if (summaryDetail.PaymentTermId == 3)
+            //    {
+            //        totalpaymentdue = (decimal)summaryDetail.TotalPremium * 4;
+            //    }
+
+
+            //    string Summeryofcover = "";
+            //    for (int i = 0; i < SummaryVehicleDetails.Count; i++)
+            //    {
+            //        var _vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[i].VehicleDetailsId);
+            //        Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
+            //        VehicleModel model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{_vehicle.ModelId}'");
+            //        VehicleMake make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{_vehicle.MakeId}'");
+
+            //        string vehicledescription = model.ModelDescription + " / " + make.MakeDescription;
+
+
+            //        Summeryofcover += "<tr><td>" + vehicledescription + "</td><td>$" + _vehicle.SumInsured + "</td><td>" + (_vehicle.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</td><td>" + InsuranceContext.VehicleUsages.All(_vehicle.VehicleUsage).Select(x => x.VehUsage).FirstOrDefault() + "</td><td>$0.00</td><td>$" + Convert.ToString(_vehicle.Excess) + "</td><td>$" + Convert.ToString(_vehicle.Premium) + "</td></tr>";
+            //    }
+
+            //    //TempData["Summeryofcover"] = Summeryofcover;
+
+            //    var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
+            //    var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == summaryDetail.PaymentTermId);
+            //    string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/SeheduleMotor.cshtml";
+            //    string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
+            //    var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", policy.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", policy.StartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (summaryDetail.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + summaryDetail.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(totalpaymentdue)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty)).Replace("##MotorLevy##", Convert.ToString(summaryDetail.TotalZTSCLevies)).Replace("##PremiumDue##", Convert.ToString(summaryDetail.TotalPremium)).Replace("##PostalAddress##", customer.Zipcode);
+            //    objEmailService.SendEmail(user.Email, "", "", "Schedule-motor", Bodyy, null);
+            //}
+
+
+
+            return View(objSaveDetailListModel);
+        }
+
+        public async Task<ActionResult> InitiatePaynowTransaction(Int32 id, string TotalPremium, string PolicyNumber, string Email)
+        {
+            var summaryDetail = InsuranceContext.SummaryDetails.Single(id);
+            var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={id}").ToList();
+            //var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+            var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+            var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
+            var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+
+            List<Item> itms = new List<Item>();
+
+            foreach (var vehicledetail in SummaryVehicleDetails.ToList())
+            {
+                var _vehicle = InsuranceContext.VehicleDetails.Single(vehicledetail.VehicleDetailsId);
+                Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
+                VehicleModel _model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{_vehicle.ModelId}'");
+                VehicleMake make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{_vehicle.MakeId}'");
+
+                Item item = new Item();
+                item.name = make.MakeDescription + "/" + _model.ModelDescription;
+                item.currency = "USD";
+                item.price = Convert.ToString(_vehicle.Premium);
+                item.quantity = "1";
+                item.sku = _vehicle.RegistrationNo;
+
+                itms.Add(item);
+            }
+
+            Session["itemData"] = itms;
+
+            Insurance.Service.PaynowService paynowservice = new Insurance.Service.PaynowService();
+            PaynowResponse paynowresponse = new PaynowResponse();
+
+            paynowresponse = await paynowservice.initiateTransaction(Convert.ToString(id), TotalPremium, PolicyNumber, Email, true);
+
+            if (paynowresponse.status == "Ok")
+            {
+                string strScript = "location.href = '" + paynowresponse.browserurl + "';";
+                ViewBag.strScript = "<script type='text/javascript'>$(document).ready(function(){" + strScript + "});</script>";
+            }
+            else
+            {
+                ViewBag.strScript = "<script type='text/javascript'>$(document).ready(function(){$('#errormsg').text('" + paynowresponse.error + "');});</script>";
+            }
+
+            return View();
+            //return RedirectToAction("SaveDetailList", "Paypal", new { id = id });
+        }
+
+        public ActionResult PaymentWithCreditCard(CardDetailModel model)
+        {
+            Session["CardDetail"] = model;
+            //create and item for which you are taking payment
+            //if you need to add more items in the list
+            //Then you will need to create multiple item objects or use some loop to instantiate object
+            var summaryDetail = InsuranceContext.SummaryDetails.Single(model.SummaryDetailId);
+            var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={model.SummaryDetailId}").ToList();
+            var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+            var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
+            var customer = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
+            //var summaryDetail = (SummaryDetailModel)Session["SummaryDetailed"];
+            //var vehicle = (RiskDetailModel)Session["VehicleDetail"];
+            //var policy = (PolicyDetail)Session["PolicyData"];
+            //var customer = (CustomerModel)Session["CustomerDataModal"];
+            var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+            var currency = InsuranceContext.Currencies.Single(policy.CurrencyId);
+
+            //var paymentInformations = InsuranceContext.PaymentInformations.SingleCustome(model.SummaryDetailId);
+
+            double totalPremium = Convert.ToDouble(summaryDetail.TotalPremium);
+
+            //check if single decimal place
+            string zeros = string.Empty;
+            try
+            {
+                var percision = totalPremium.ToString().Split('.');
+                var length = 2 - percision[1].Length;
+                for (int i = 0; i < length; i++)
+                {
+                    zeros += "0";
+                }
+            }
+            catch
+            {
+                zeros = ".00";
+
+            }
+
+            List<Item> itms = new List<Item>();
+            foreach (var vehicledetail in SummaryVehicleDetails.ToList())
+            {
+                var _vehicle = InsuranceContext.VehicleDetails.Single(vehicledetail.VehicleDetailsId);
+                Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
+                VehicleModel _model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{_vehicle.ModelId}'");
+                VehicleMake make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{_vehicle.MakeId}'");
+
+                Item item = new Item();
+                item.name = make.MakeDescription + "/" + _model.ModelDescription;
+                item.currency = "USD";
+                item.price = Convert.ToString(_vehicle.Premium);
+                item.quantity = "1";
+                item.sku = _vehicle.RegistrationNo;
+
+                itms.Add(item);
+            }
+
+            Session["itemData"] = itms;
+
+            ItemList itemList = new ItemList();
+            itemList.items = itms;
+
+            Address billingAddress = new Address();
+            billingAddress.city = customer.City;
+            billingAddress.country_code = "US";
+            billingAddress.line1 = customer.AddressLine1 == string.Empty ? customer.AddressLine2 : customer.AddressLine1;
+            billingAddress.line2 = customer.AddressLine2 == string.Empty ? customer.AddressLine1 : customer.AddressLine2;
+
+            if (customer.Zipcode == null)
+            {
+                billingAddress.postal_code = "00263";
+            }
+            else
+            {
+                billingAddress.postal_code = customer.Zipcode;
+            }
+
+            billingAddress.state = customer.NationalIdentificationNumber;
+
+            PayPal.Api.CreditCard crdtCard = new PayPal.Api.CreditCard();
+            crdtCard.billing_address = billingAddress;
+            crdtCard.cvv2 = model.CVC;
+            crdtCard.expire_month = Convert.ToInt32(model.ExpiryDate.Split('/')[0]);
+            crdtCard.expire_year = Convert.ToInt32(model.ExpiryDate.Split('/')[1]);
+
+            //crdtCard.first_name = "fgdfg";
+            //crdtCard.last_name = "rffd";
+
+            var name = model.NameOnCard.Split(' ');
+            if (name.Length == 1)
+            {
+                crdtCard.first_name = name[0];
+                crdtCard.last_name = null;
+            }
+            if (name.Length == 2)
+            {
+                crdtCard.first_name = name[0];
+                crdtCard.last_name = name[1];
+            }
+
+            crdtCard.number = model.CardNumber; //use some other test number if it fails
+            crdtCard.type = CreditCardUtility.GetTypeName(model.CardNumber).ToLower();
+
+            Details details = new Details();
+            details.tax = "0";
+            details.shipping = "0";
+            details.subtotal = totalPremium.ToString() + zeros;
+
+            Amount amont = new Amount();
+            amont.currency = "USD";
+            amont.total = totalPremium.ToString() + zeros;
+            amont.details = details;
+
+            Transaction tran = new Transaction();
+            tran.amount = amont;
+            tran.description = "trnx desc";
+            tran.item_list = itemList;
+
+            List<Transaction> transactions = new List<Transaction>();
+            transactions.Add(tran);
+
+            FundingInstrument fundInstrument = new FundingInstrument();
+            fundInstrument.credit_card = crdtCard;
+
+            List<FundingInstrument> fundingInstrumentList = new List<FundingInstrument>();
+            fundingInstrumentList.Add(fundInstrument);
+
+            var User = UserManager.FindById(customer.UserID);
+            PayerInfo pi = new PayerInfo();
+            pi.email = User.Email;
+            pi.first_name = customer.FirstName;
+            pi.last_name = customer.LastName;
+            pi.shipping_address = new ShippingAddress
+            {
+                city = customer.City,
+                country_code = "US",
+                line1 = customer.AddressLine1 == string.Empty ? customer.AddressLine2 : customer.AddressLine1,
+                line2 = customer.AddressLine2 == string.Empty ? customer.AddressLine1 : customer.AddressLine2,
+                postal_code = customer.Zipcode,
+                state = customer.NationalIdentificationNumber,
+            };
+
+            Payer payr = new Payer();
+            payr.funding_instruments = fundingInstrumentList;
+            payr.payment_method = "credit_card";
+            payr.payer_info = pi;
+
+            Payment pymnt = new Payment();
+            pymnt.intent = "sale";
+            pymnt.payer = payr;
+            pymnt.transactions = transactions;
+
+            try
+            {
+                //getting context from the paypal, basically we are sending the clientID and clientSecret key in this function 
+                //to the get the context from the paypal API to make the payment for which we have created the object above.
+
+                //Code for the configuration class is provided next
+
+                // Basically, apiContext has a accesstoken which is sent by the paypal to authenticate the payment to facilitator account. An access token could be an alphanumeric string
+
+                APIContext apiContext = InsuranceClaim.Models.Configuration.GetAPIContext();
+
+                // Create is a Payment class function which actually sends the payment details to the paypal API for the payment. The function is passed with the ApiContext which we received above.
+
+                Payment createdPayment = pymnt.Create(apiContext);
+                //paymentInformations.PaymentTransctionId = createdPayment.id;
+                Session["PaymentId"] = createdPayment.id;
+
+                //if the createdPayment.State is "approved" it means the payment was successfull else not
+                creatInvoice(User, customer);
+                if (createdPayment.state.ToLower() != "approved")
+                {
+                    ModelState.AddModelError("PaymentError", "Payment not approved");
+                    return RedirectToAction("PaymentDetail", "CustomerRegistration", new { id = model.SummaryDetailId });
+                }
+            }
+            catch (PayPal.PayPalException ex)
+            {
+                Logger.Log("Error: " + ex.Message);
+                ModelState.AddModelError("PaymentError", ex.Message);
+                TempData["ErrorMessage"] = ex.Message;
+                JavaScriptSerializer json_serializer = new JavaScriptSerializer();
+
+                var error = json_serializer.DeserializeObject(((PayPal.ConnectionException)ex).Response);
+                return RedirectToAction("PaymentDetail", "CustomerRegistration", new { id = model.SummaryDetailId });
+            }
+
+            return RedirectToAction("SaveDetailList", "Renew", new { id = model.SummaryDetailId });
+        }
+
+        private ActionResult creatInvoice(ApplicationUser User, Customer customer)
+        {
+            APIContext apiContext = InsuranceClaim.Models.Configuration.GetAPIContext();
+
+            var data = (List<Item>)Session["itemData"];
+
+            var invoice = new Invoice()
+            {
+
+                merchant_info = new MerchantInfo()
+                {
+                    email = "ankit.dhiman-facilitator@kindlebit.com",
+                    first_name = "Genetic Financial Services",
+                    last_name = "11 Routledge Street Milton Park",
+                    business_name = "Insurance Claim",
+                    website = "insuranceclaim.com",
+                    //tax_id = "47-4559942",
+
+                    phone = new Phone()
+                    {
+                        country_code = "001",
+                        national_number = "08677007491"
+                    },
+                    address = new InvoiceAddress()
+                    {
+                        line1 = customer.AddressLine1,
+                        city = customer.AddressLine2,
+                        state = customer.City + "/ " + customer.NationalIdentificationNumber,
+                        postal_code = customer.Zipcode,
+                        country_code = "US"
+
+                    }
+                },
+
+                billing_info = new List<BillingInfo>()
+                            {
+                                new BillingInfo()
+                                {
+
+                                    email = User.Email,//"amit.kamal@kindlebit.com",
+                                    first_name=customer.FirstName,
+                                    last_name=customer.LastName
+                                }
+                            },
+
+                items = new List<InvoiceItem>()
+                            {
+                                new InvoiceItem()
+                                {
+                                    name = data[0].name,
+                                    quantity = 1,
+                                    unit_price = new PayPal.Api.Currency()
+                                    {
+                                        currency = "USD",
+                                        value =data[0].price
+
+                                    },
+                                },
+                            },
+                note = "Your  Invoce has been created successfully.",
+
+                shipping_info = new ShippingInfo()
+                {
+                    first_name = customer.FirstName,
+                    last_name = customer.LastName,
+                    business_name = "InsuranceClaim",
+                    address = new InvoiceAddress()
+                    {
+                        //line1 = userdata.State.ToString(),
+                        city = customer.City,
+                        state = customer.City + "/" + customer.NationalIdentificationNumber,
+                        postal_code = customer.Zipcode,
+                        country_code = "US"
+                    }
+                }
+            };
+            var createdInvoice = invoice.Create(apiContext);
+            Session["InvoiceId"] = createdInvoice.id;
+            createdInvoice.Send(apiContext);
+
+            return null;
         }
     }
 

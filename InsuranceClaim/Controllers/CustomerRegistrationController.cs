@@ -760,7 +760,6 @@ namespace InsuranceClaim.Controllers
                             string vehicledescription = vehiclemodel.ModelDescription + " / " + vehiclemake.MakeDescription;
                             SummeryofReinsurance += "<tr><td>" + Convert.ToString(reinsurance.Id) + "</td><td>" + ReinsuranceCase.TreatyCode + "</td><td>" + ReinsuranceCase.TreatyName + "</td><td>" + Convert.ToString(reinsurance.ReinsuranceAmount) + "</td><td>" + Convert.ToString(ReinsuranceBroker.ReinsuranceBrokerName) + "</td><td>" + Convert.ToString(Math.Round(Convert.ToDecimal(reinsurance.ReinsurancePremium),2)) + "</td><td>" + Convert.ToString(ReinsuranceBroker.Commission) + "</td></tr>";
                             SummeryofVehicleInsured += "<tr><td>" + vehicledescription + "</td><td>" + item.RegistrationNo + "</td><td>" + (item.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : (item.CoverTypeId == 2 ? eCoverType.ThirdParty.ToString() : eCoverType.FullThirdParty.ToString())) + "</td><td>" + Convert.ToString(item.SumInsured) + "</td><td>" + Convert.ToString(item.Premium) + "</td><td>" + Convert.ToString(reinsurance.Id) + "</td></tr>";
-
                            
                         }
 
@@ -784,7 +783,7 @@ namespace InsuranceClaim.Controllers
                         Vehicledata.OptionalCovers = item.OptionalCovers;
                         Vehicledata.PolicyId = item.PolicyId;
                         Vehicledata.Premium = item.Premium;
-                        Vehicledata.RadioLicenseCost = item.RadioLicenseCost;
+                        Vehicledata.RadioLicenseCost = (item.IsLicenseDiskNeeded ? item.RadioLicenseCost : 0.00m);
                         Vehicledata.Rate = item.Rate;
                         Vehicledata.RegistrationNo = item.RegistrationNo;
                         Vehicledata.StampDuty = item.StampDuty;

@@ -84,7 +84,7 @@
                                             <td>@_item.enddate.ToString("dd/MM/yyy")</td>
                                             @if (_item.enddate < DateTime.Now)
                                             {
-                                                <td>@Html.ActionLink("Renew", "Index", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</td>
+                                                <td>@Html.ActionLink("Renew", "RiskDetail", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</td>
                                             }
 
                                         </tr>

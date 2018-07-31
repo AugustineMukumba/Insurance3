@@ -19,11 +19,12 @@ namespace Insurance.Service
         private static String IntegrationID = "5623";
         private static string IntegrationKey = "7c1cd190-5046-4292-806a-0dbb85b949f6";
 
-        public async Task<InsuranceClaim.Models.PaynowResponse> initiateTransaction(string id, string amount, string additionalinfo, string authemail)
+        public async Task<InsuranceClaim.Models.PaynowResponse> initiateTransaction(string id, string amount, string additionalinfo, string authemail, bool isRenew = false)
         {
             InsuranceClaim.Models.PaynowResponse paynowresponse = new InsuranceClaim.Models.PaynowResponse();
 
-
+            var response = new HttpResponseMessage();
+            FormUrlEncodedContent content;
             Uri myuri = new Uri(System.Web.HttpContext.Current.Request.Url.AbsoluteUri);
             string pathQuery = myuri.PathAndQuery;
             string hostName = myuri.ToString().Replace(pathQuery, "");
@@ -31,7 +32,46 @@ namespace Insurance.Service
             string PaymentId = "PAYNOW-" + Guid.NewGuid().ToString();
             HttpContext.Current.Session["PaymentId"] = PaymentId;
 
-            var values = new Dictionary<string, string>
+
+            if (isRenew)
+            {
+                var values = new Dictionary<string, string>
+            {
+
+               { "resulturl", hostName + "/Renew/SaveDetailList/" + id},
+               { "returnurl", hostName + "/Renew/SaveDetailList/" + id},
+               { "reference", PaymentId },
+               { "amount",Convert.ToString(amount)},
+               { "id", IntegrationID },
+               { "additionalinfo", "additional" },
+               { "authemail", "ankit.dhiman@kindlebit.com" },
+               { "status", "Message" }
+            };
+
+                var generatedhash = GenerateTwoWayHash(values, new Guid(IntegrationKey));
+
+                var _values = new Dictionary<string, string>
+            {
+               { "resulturl", hostName + "/Renew/SaveDetailList/" + id},
+               { "returnurl", hostName + "/Renew/SaveDetailList/" + id},
+               { "reference", PaymentId },
+               { "amount",Convert.ToString(amount)},
+               { "id", IntegrationID },
+               { "additionalinfo", "additional" },
+               { "authemail", "ankit.dhiman@kindlebit.com" },
+               { "status", "Message" },
+               { "hash", generatedhash.ToUpper() }
+            };
+
+                paynowresponse.generatedhash = generatedhash.ToUpper();
+
+                content = new FormUrlEncodedContent(_values);
+
+                response = await client.PostAsync("https://www.paynow.co.zw/interface/initiatetransaction", content);
+            }
+            else
+            {
+                var values = new Dictionary<string, string>
             {
 
                { "resulturl", hostName + "/Paypal/SaveDetailList/" + id},
@@ -44,9 +84,9 @@ namespace Insurance.Service
                { "status", "Message" }
             };
 
-            var generatedhash = GenerateTwoWayHash(values, new Guid(IntegrationKey));
+                var generatedhash = GenerateTwoWayHash(values, new Guid(IntegrationKey));
 
-            var _values = new Dictionary<string, string>
+                var _values = new Dictionary<string, string>
             {
                { "resulturl", hostName + "/Paypal/SaveDetailList/" + id},
                { "returnurl", hostName + "/Paypal/SaveDetailList/" + id},
@@ -59,11 +99,14 @@ namespace Insurance.Service
                { "hash", generatedhash.ToUpper() }
             };
 
-            paynowresponse.generatedhash = generatedhash.ToUpper();
+                paynowresponse.generatedhash = generatedhash.ToUpper();
 
-            var content = new FormUrlEncodedContent(_values);
+                content = new FormUrlEncodedContent(_values);
 
-            var response = await client.PostAsync("https://www.paynow.co.zw/interface/initiatetransaction", content);
+                response = await client.PostAsync("https://www.paynow.co.zw/interface/initiatetransaction", content);
+            }
+
+
 
             var responseString = await response.Content.ReadAsStringAsync();
 
