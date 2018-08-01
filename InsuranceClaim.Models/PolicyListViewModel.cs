@@ -30,14 +30,19 @@ namespace InsuranceClaim.Models
         public string MakeId { get; set; }
         public string ModelId { get; set; }
         public bool isReinsurance { get; set; }
-        public decimal ReinsuranceAmount { get; set; }
+        public decimal AutoFacReinsuranceAmount { get; set; }
+        public decimal FacReinsuranceAmount { get; set; }
         public int ReinsurerBrokerId { get; set; }
         public decimal SumInsured { get; set; }
-        public decimal Premium { get; set; }
+        public decimal AutoFacPremium { get; set; }
+        public decimal FacPremium { get; set; }
         public string RegisterationNumber { get; set; }
         public int CoverType { get; set; }
         public DateTime startdate { get; set; }
         public DateTime enddate { get; set; }
+        public decimal BrokerCommission { get; set; }
+
+        public decimal FacultativeCommission { get; set; }
 
 
     }

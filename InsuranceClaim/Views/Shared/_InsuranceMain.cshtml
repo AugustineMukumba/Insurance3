@@ -1,6 +1,11 @@
-﻿@{
+﻿@using System.Security.Claims;
+@using Insurance.Domain;
+@{
     Layout = null;
+
     bool userLoggedin = ((System.Web.HttpContext.Current.User != null) && (System.Web.HttpContext.Current.User.Identity.IsAuthenticated));
+    //var userid = System.Web.HttpContext.Current.User.Identity.Name;
+    //var customer = InsuranceContext.Customers.Single(where: $"userid='{userid}'");
     var role = Session["LoggedInUserRole"];
     var fname = Session["firstname"];
     var lname = Session["lastname"];
@@ -71,29 +76,28 @@
                                 </div>
                                 <div class="login-btn" style="@(userLoggedin ? "display:block;" : "display:none;")">
                                     <ul class="list-inline">
-                                        <li>Welcome @fname @lname </li>
+                                        <li>@(userLoggedin ? "Welcome " + fname + " " + lname : "Welcome Guest")</li>
 
-                                       
-                                           @if (userLoggedin == true)
-                                            {
-                                                <li><a href="/Account/Logout">Logout</a></li>
-                                            }
-                                        
-                                       
-                                        
-                                        
+
+                                        @if (userLoggedin)
+                                        {
+                                            <li><a href="/Account/Logout">Logout</a></li>
+                                        }
+
+
+
+
                                         @if (role != null && role != "")
                                         {
-
                                             if (role.ToString() != "Administrator" && role.ToString() != "Staff")
                                             {
                                                 <li><a href="/Account/MyPolicies">My Policies</a></li>
                                             }
                                         }
-                                        
+
                                     </ul>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -124,13 +128,13 @@
                             <li><a href="#">Social Responsibility</a></li>
                             <li><a href="#">News</a></li>
                             <li><a href="#">Contact</a></li>
-                            @if (role!=null && role != "")
+                            @if (role != null && role != "")
                             {
-                            
-                            if (role.ToString() == "Administrator" || role.ToString() == "Staff")
-                            {
-                                <li><a href="@Url.Action("Dashboard","Account")">Dashboard</a></li>
-                            }
+
+                                if (role.ToString() == "Administrator" || role.ToString() == "Staff")
+                                {
+                                    <li><a href="@Url.Action("Dashboard","Account")">Dashboard</a></li>
+                                }
                             }
                         </ul>
                     </div><!-- /.navbar-collapse -->
@@ -209,7 +213,7 @@
     </div>
     <script>
         $(document).ready(function () { // will trigger when the document is ready
-            
+
 
             $('.numeric').on('input', function (event) {
                 this.value = this.value.replace(/[^0-9]/g, '');

@@ -490,6 +490,7 @@
 
 <script type="text/javascript">
 
+    var isReinsuranceConfirmed = false;
     function getVehicleList() {
         $.ajax({
             url: "@Url.Action("getVehicleList", "CustomerRegistration")",
@@ -550,7 +551,7 @@
 
     $(document).ready(function () {
 
-
+        isReinsuranceConfirmed = false;
         getVehicleList();
 
         if ($("#PassengerAccidentCover").is(":checked")) {
@@ -649,13 +650,13 @@
         });
 
 
-        
 
 
 
 
-    $("#SumInsured").blur(function () {
-        debugger;
+
+        $("#SumInsured").blur(function () {
+            debugger;
 
             var coverselected = $("#CoverTypeId option:selected").val();
             if (coverselected == "1" && $("#SumInsured").val() == "") {
@@ -737,7 +738,7 @@
         }
         var sumInsured = parseFloat($("#SumInsured").val());
 
-        if (sumInsured > 100000) {
+        if (sumInsured > 100000 && !isReinsuranceConfirmed) {
             bootbox.confirm("Sum Insured above than 100000 will be considered as Reinsurance case. Are you sure you want to continue ?", function (result) {
                 debugger;
                 if (!result) {
@@ -745,6 +746,7 @@
                     return false;
                 }
                 else {
+                    isReinsuranceConfirmed = true;
                     callQuoteCalculation(sumInsured);
                 }
             });

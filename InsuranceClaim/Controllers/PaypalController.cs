@@ -701,7 +701,7 @@ namespace InsuranceClaim.Controllers
                     string vehicledescription = model.ModelDescription + " / " + make.MakeDescription;
 
 
-                    Summeryofcover += "<tr><td>" + vehicledescription + "</td><td>$" + _vehicle.SumInsured + "</td><td>" + (_vehicle.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</td><td>" + InsuranceContext.VehicleUsages.All(_vehicle.VehicleUsage).Select(x => x.VehUsage).FirstOrDefault() + "</td><td>$0.00</td><td>$" + Convert.ToString(_vehicle.Excess) + "</td><td>$" + Convert.ToString(_vehicle.Premium) + "</td></tr>";
+                    Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + _vehicle.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + (_vehicle.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(_vehicle.VehicleUsage).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>$0.00</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(_vehicle.Excess) + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(_vehicle.Premium) + "</td></tr>";
                 }
 
                 //TempData["Summeryofcover"] = Summeryofcover;

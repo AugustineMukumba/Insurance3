@@ -51,30 +51,30 @@ namespace InsuranceClaim
             //}
 
             // creating employee role     
-            if (!roleManager.RoleExists("Administrator"))
-            {
-                var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
-                role.Name = "AdministratorStaff";
-                roleManager.Create(role);
+            //if (!roleManager.RoleExists("Administrator"))
+            //{
+            //    var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+            //    role.Name = "AdministratorStaff";
+            //    roleManager.Create(role);
 
-            }
+            //}
 
-            // creating Agent role     
-            if (!roleManager.RoleExists("Staff"))
-            {
-                var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
-                role.Name = "Service_Provider";
-                roleManager.Create(role);
+            //// creating Agent role     
+            //if (!roleManager.RoleExists("Staff"))
+            //{
+            //    var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+            //    role.Name = "Service_Provider";
+            //    roleManager.Create(role);
 
-            }
-            // creating Customer role     
-            if (!roleManager.RoleExists("Customer"))
-            {
-                var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
-                role.Name = "Customer";
-                roleManager.Create(role);
+            //}
+            //// creating Customer role     
+            //if (!roleManager.RoleExists("Customer"))
+            //{
+            //    var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+            //    role.Name = "Customer";
+            //    roleManager.Create(role);
 
-            }
+            //}
         }
     }
 }

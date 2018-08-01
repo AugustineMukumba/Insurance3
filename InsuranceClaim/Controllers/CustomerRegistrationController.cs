@@ -12,6 +12,7 @@ using AutoMapper;
 using System.Configuration;
 using System.Globalization;
 using Insurance.Service;
+using System.Web.Configuration;
 
 namespace InsuranceClaim.Controllers
 {
@@ -744,19 +745,63 @@ namespace InsuranceClaim.Controllers
                         {
                             var ReinsuranceBroker = InsuranceContext.ReinsuranceBrokers.Single(where: $"ReinsuranceBrokerCode='{ReinsuranceCase.ReinsuranceBrokerCode}'");
 
-                            var reinsurance = new ReinsuranceTransaction();
-                            reinsurance.ReinsuranceAmount = _item.SumInsured - ownRetention;
-                            reinsurance.ReinsurancePremium = ((reinsurance.ReinsuranceAmount / item.SumInsured) * item.Premium);
-                            reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(ReinsuranceBroker.Commission);
-                            reinsurance.ReinsuranceCommission = ((reinsurance.ReinsurancePremium * reinsurance.ReinsuranceCommissionPercentage) / 100);
-                            reinsurance.VehicleId = item.Id;
-                            reinsurance.ReinsuranceBrokerId = ReinsuranceBroker.Id;
-                            reinsurance.TreatyName = ReinsuranceCase.TreatyName;
-                            reinsurance.TreatyCode = ReinsuranceCase.TreatyCode;
+                            if (ReinsuranceCase.MinTreatyCapacity > 200000)
+                            {
+                                var autofaccase = ReinsuranceCases.FirstOrDefault();
+                                var autofacSumInsured = autofaccase.MaxTreatyCapacity - ownRetention;
+                                var autofacReinsuranceBroker = InsuranceContext.ReinsuranceBrokers.Single(where: $"ReinsuranceBrokerCode='{autofaccase.ReinsuranceBrokerCode}'");
 
-                            InsuranceContext.ReinsuranceTransactions.Insert(reinsurance);
+                                var _reinsurance = new ReinsuranceTransaction();
+                                _reinsurance.ReinsuranceAmount = autofacSumInsured;
+                                _reinsurance.ReinsurancePremium = ((_reinsurance.ReinsuranceAmount / item.SumInsured) * item.Premium);
+                                _reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(autofacReinsuranceBroker.Commission);
+                                _reinsurance.ReinsuranceCommission = ((_reinsurance.ReinsurancePremium * _reinsurance.ReinsuranceCommissionPercentage) / 100);
+                                _reinsurance.VehicleId = item.Id;
+                                _reinsurance.ReinsuranceBrokerId = autofacReinsuranceBroker.Id;
+                                _reinsurance.TreatyName = autofaccase.TreatyName;
+                                _reinsurance.TreatyCode = autofaccase.TreatyCode;
 
-                            listReinsuranceTransaction.Add(reinsurance);
+                                InsuranceContext.ReinsuranceTransactions.Insert(_reinsurance);
+
+                                SummeryofReinsurance += "<tr><td>" + Convert.ToString(_reinsurance.Id) + "</td><td>" + ReinsuranceCase.TreatyCode + "</td><td>" + ReinsuranceCase.TreatyName + "</td><td>" + Convert.ToString(_reinsurance.ReinsuranceAmount) + "</td><td>" + Convert.ToString(ReinsuranceBroker.ReinsuranceBrokerName) + "</td><td>" + Convert.ToString(Math.Round(Convert.ToDecimal(_reinsurance.ReinsurancePremium), 2)) + "</td><td>" + Convert.ToString(ReinsuranceBroker.Commission) + "</td></tr>";
+
+                                listReinsuranceTransaction.Add(_reinsurance);
+
+                                var __reinsurance = new ReinsuranceTransaction();
+                                __reinsurance.ReinsuranceAmount = _item.SumInsured - ownRetention - autofacSumInsured;
+                                __reinsurance.ReinsurancePremium = ((__reinsurance.ReinsuranceAmount / item.SumInsured) * item.Premium);
+                                __reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(ReinsuranceBroker.Commission);
+                                __reinsurance.ReinsuranceCommission = ((__reinsurance.ReinsurancePremium * __reinsurance.ReinsuranceCommissionPercentage) / 100);
+                                __reinsurance.VehicleId = item.Id;
+                                __reinsurance.ReinsuranceBrokerId = ReinsuranceBroker.Id;
+                                __reinsurance.TreatyName = ReinsuranceCase.TreatyName;
+                                __reinsurance.TreatyCode = ReinsuranceCase.TreatyCode;
+
+                                InsuranceContext.ReinsuranceTransactions.Insert(__reinsurance);
+
+                                SummeryofReinsurance += "<tr><td>" + Convert.ToString(__reinsurance.Id) + "</td><td>" + ReinsuranceCase.TreatyCode + "</td><td>" + ReinsuranceCase.TreatyName + "</td><td>" + Convert.ToString(__reinsurance.ReinsuranceAmount) + "</td><td>" + Convert.ToString(ReinsuranceBroker.ReinsuranceBrokerName) + "</td><td>" + Convert.ToString(Math.Round(Convert.ToDecimal(__reinsurance.ReinsurancePremium), 2)) + "</td><td>" + Convert.ToString(ReinsuranceBroker.Commission) + "</td></tr>";
+
+                                listReinsuranceTransaction.Add(__reinsurance);
+                            }
+                            else
+                            {
+
+                                var reinsurance = new ReinsuranceTransaction();
+                                reinsurance.ReinsuranceAmount = _item.SumInsured - ownRetention;
+                                reinsurance.ReinsurancePremium = ((reinsurance.ReinsuranceAmount / item.SumInsured) * item.Premium);
+                                reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(ReinsuranceBroker.Commission);
+                                reinsurance.ReinsuranceCommission = ((reinsurance.ReinsurancePremium * reinsurance.ReinsuranceCommissionPercentage) / 100);
+                                reinsurance.VehicleId = item.Id;
+                                reinsurance.ReinsuranceBrokerId = ReinsuranceBroker.Id;
+                                reinsurance.TreatyName = ReinsuranceCase.TreatyName;
+                                reinsurance.TreatyCode = ReinsuranceCase.TreatyCode;
+
+                                InsuranceContext.ReinsuranceTransactions.Insert(reinsurance);
+
+                                SummeryofReinsurance += "<tr><td>" + Convert.ToString(reinsurance.Id) + "</td><td>" + ReinsuranceCase.TreatyCode + "</td><td>" + ReinsuranceCase.TreatyName + "</td><td>" + Convert.ToString(reinsurance.ReinsuranceAmount) + "</td><td>" + Convert.ToString(ReinsuranceBroker.ReinsuranceBrokerName) + "</td><td>" + Convert.ToString(Math.Round(Convert.ToDecimal(reinsurance.ReinsurancePremium), 2)) + "</td><td>" + Convert.ToString(ReinsuranceBroker.Commission) + "</td></tr>";
+
+                                listReinsuranceTransaction.Add(reinsurance);
+                            }
 
 
                             Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
@@ -764,8 +809,8 @@ namespace InsuranceClaim.Controllers
                             VehicleMake vehiclemake = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{item.MakeId}'");
 
                             string vehicledescription = vehiclemodel.ModelDescription + " / " + vehiclemake.MakeDescription;
-                            SummeryofReinsurance += "<tr><td>" + Convert.ToString(reinsurance.Id) + "</td><td>" + ReinsuranceCase.TreatyCode + "</td><td>" + ReinsuranceCase.TreatyName + "</td><td>" + Convert.ToString(reinsurance.ReinsuranceAmount) + "</td><td>" + Convert.ToString(ReinsuranceBroker.ReinsuranceBrokerName) + "</td><td>" + Convert.ToString(Math.Round(Convert.ToDecimal(reinsurance.ReinsurancePremium), 2)) + "</td><td>" + Convert.ToString(ReinsuranceBroker.Commission) + "</td></tr>";
-                            SummeryofVehicleInsured += "<tr><td>" + vehicledescription + "</td><td>" + item.RegistrationNo + "</td><td>" + (item.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : (item.CoverTypeId == 2 ? eCoverType.ThirdParty.ToString() : eCoverType.FullThirdParty.ToString())) + "</td><td>" + Convert.ToString(item.SumInsured) + "</td><td>" + Convert.ToString(item.Premium) + "</td><td>" + Convert.ToString(reinsurance.Id) + "</td></tr>";
+
+                            SummeryofVehicleInsured += "<tr><td>" + vehicledescription + "</td><td>" + item.RegistrationNo + "</td><td>" + (item.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : (item.CoverTypeId == 2 ? eCoverType.ThirdParty.ToString() : eCoverType.FullThirdParty.ToString())) + "</td><td>" + Convert.ToString(item.SumInsured) + "</td><td>" + Convert.ToString(item.Premium) + "</td></tr>";
 
 
                         }
@@ -927,6 +972,9 @@ namespace InsuranceClaim.Controllers
 
             if (listReinsuranceTransaction != null && listReinsuranceTransaction.Count > 0)
             {
+                string Email = WebConfigurationManager.AppSettings["AdminEmail"];
+
+
                 var user = UserManager.FindById(customer.UserID);
                 Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
                 var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
@@ -934,7 +982,7 @@ namespace InsuranceClaim.Controllers
                 string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/Reinsurance_Admin.cshtml";
                 string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
                 var Body = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", policy.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", policy.StartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##SummeryofReinsurance##", SummeryofReinsurance).Replace("##SummeryofVehicleInsured##", SummeryofVehicleInsured).Replace("##PostalAddress##", customer.Zipcode);
-                objEmailService.SendEmail("ankit.dhiman@kindlebit.com", "", "", "Reinsurance Case: " + policy.PolicyNumber.ToString(), Body, null);
+                objEmailService.SendEmail(Email, "", "", "Reinsurance Case: " + policy.PolicyNumber.ToString(), Body, null);
             }
 
 

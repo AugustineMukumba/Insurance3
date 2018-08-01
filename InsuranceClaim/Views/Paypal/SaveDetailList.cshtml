@@ -40,7 +40,7 @@
                         <h1 class="display-3">Thank You!</h1>
                         <p class="lead"><strong>Please check your email for further instructions.</strong></p>
                         <hr>
-                        <p><input type="checkbox" id="checkbox1" /> Want the licence disk to be delivered </p>
+                        @*<p><input type="checkbox" id="checkbox1" /> Want the licence disk to be delivered </p>*@
                         <p>
                             Having trouble? <a href="">Contact us</a>
                         </p>
@@ -97,7 +97,7 @@
             data: { IsCheck: isCheck, Id: id },
             success: function (data) {
                 if (data == true) {
-                    window.location.href = "/InsuranceHome/Index"
+                    window.location.href = "/CommissionController/Index"
                 }
             }
         })

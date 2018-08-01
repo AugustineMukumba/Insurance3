@@ -1018,7 +1018,7 @@ button.btn-sm.btn-danger {
     font-size: 13px; color:#444
 }
 tr.policynumber-tr {
-    background: #57c3cf;
+    background: #57c3cf !important;
 }
 .policy-table-grid-main table tbody tr.policynumber-tr td{color:#fff; border:none; padding:10px 5px;} 
 
