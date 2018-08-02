@@ -392,12 +392,12 @@
                                             <div class="col-sm-6 col-md-6">
                                                 <div class="form-group">
                                                     @Html.Label("Add More Vehicles ?", new { @class = "gender-label" })
-                                                    @Html.CheckBoxFor(m => m.chkAddVehicles, new { @class = (Model.isUpdate ? "btnDisabled" : "") })
+                                                    @Html.CheckBoxFor(m => m.chkAddVehicles, new { @class = (Model.isUpdate ? "btnDisabled" : ""), @style = "width: 40px;height: 36px;" })
                                                 </div>
                                             </div>
                                             <div class="col-sm-6 col-md-6">
                                                 <div class="form-group text-right">
-                                                    <button type="submit" id="btnAddVehicle" class="btn btnDisabled @(Model.isUpdate ? "btnDisabled" : "")" style="padding:5px 10px;width: auto;">Submit & Add More Vehicle</button>
+                                                    <button type="submit" id="btnAddVehicle" class="btn btnDisabled @(Model.isUpdate ? "btnDisabled" : "")" style="width: 270px;    margin-top: 8px;">Submit & Add More Vehicle</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -652,8 +652,27 @@
 
 
 
-
-
+        $("#RegistrationNo").blur(function () {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("CheckDuplicateRegisterationNumberExist", "CustomerRegistration")",
+                data: { regNo: $("#RegistrationNo").val() },
+                success: function (data) {
+                    if (data) {
+                        toastr.warning("Vehicle with same Registeration Number already exist.");
+                        $("#RegistrationNo").focus();
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    if (textStatus == 'timeout') {
+                        //doe iets
+                    } else if (textStatus == 'error') {
+                        //doe iets
+                    }
+                } //EINDE error
+            }); //EINDE ajax
+        });
 
         $("#SumInsured").blur(function () {
             debugger;
