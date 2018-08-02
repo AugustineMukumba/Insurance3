@@ -94,7 +94,7 @@
                                             <td>$@_item.BrokerCommission</td>
                                             <td>$@_item.FacultativeCommission</td>
                                             @if (DateTime.Now < _item.enddate)
-                                            {
+                                            {                                                
                                                 <td>In Force</td>
                                             }
                                             else if (DateTime.Now >= _item.enddate && DateTime.Now <= _item.enddate.AddDays(30))

@@ -59,8 +59,8 @@
                 <div class="row">
                     <div class="top-logo-block">
                         <div class="col-xs-12 col-sm-4 col-md-6 col-lg-6 logo-blocks">
-                            <div class="logo-img">
-                                <img src="~/Images/geneinsure-logo.png">
+                            <div class="logo-img" style="@(userLoggedin ? "display:none;" : "display:block;")">
+                               <a href="~/InsuranceHome/Index/Index"><img src="~/Images/geneinsure-logo.png"></a> 
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-4 col-md-6 col-lg-6 renew-blocks">

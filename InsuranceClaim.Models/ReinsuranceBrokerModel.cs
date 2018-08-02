@@ -20,6 +20,10 @@ namespace InsuranceClaim.Models
         [Display(Name = "Commission")]
         [Required(ErrorMessage = "Please Enter Commission.")]
         public decimal? Commission { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
 
     }
 }

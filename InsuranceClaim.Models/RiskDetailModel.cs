@@ -40,7 +40,7 @@ namespace InsuranceClaim.Models
        
 
         public decimal? SumInsured { get; set; }
-        [Required(ErrorMessage = "Please Enter Premium")]
+        [Required(ErrorMessage = "Please Enter Basic Premium")]
         public decimal? Premium { get; set; }
         public int? AgentCommissionId { get; set; }
         public decimal? Rate { get; set; }
@@ -63,6 +63,16 @@ namespace InsuranceClaim.Models
         public bool chkAddVehicles { get; set; }
         public bool isUpdate { get; set; }
         public int vehicleindex { get; set; }
+        public decimal? PassengerAccidentCoverAmount { get; set; }
+        public decimal? ExcessBuyBackAmount { get; set; }
+        public decimal? RoadsideAssistanceAmount { get; set; }
+        public decimal? MedicalExpensesAmount { get; set; }
+        public decimal? PassengerAccidentCoverAmountPerPerson { get; set; }
+        public decimal? ExcessBuyBackPercentage { get; set; }
+        public decimal? RoadsideAssistancePercentage { get; set; }
+        public decimal? MedicalExpensesPercentage { get; set; }
+        public int PaymentTermId { get; set; }
+        public int ProductId { get; set; }
 
     }
 }

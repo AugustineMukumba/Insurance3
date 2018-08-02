@@ -16,7 +16,14 @@ namespace Insurance.Service
         public decimal ZtscLevy { get; set; }
         public bool Status { get; set; } = true;
         public string Message { get; set; }
-
+        public decimal ExcessBuyBackAmount { get; set; }
+        public decimal RoadsideAssistanceAmount { get; set; }
+        public decimal MedicalExpensesAmount{ get; set; }
+        public decimal PassengerAccidentCoverAmount { get; set; }
+        public decimal PassengerAccidentCoverAmountPerPerson { get; set; }
+        public decimal ExcessBuyBackPercentage { get; set; }
+        public decimal RoadsideAssistancePercentage { get; set; }
+        public decimal MedicalExpensesPercentage { get; set; }
 
 
 
@@ -89,6 +96,11 @@ namespace Insurance.Service
                     break;
             }
 
+            var settingAddThirdparty = Convert.ToDecimal(Setting.Where(x => x.keyname == "Addthirdparty").Select(x => x.value).FirstOrDefault());
+            decimal PassengerAccidentCoverAmountPerPerson = Convert.ToInt32(Setting.Where(x => x.keyname == "PassengerAccidentCover").Select(x => x.value).FirstOrDefault());
+            decimal ExcessBuyBackPercentage = Convert.ToInt32(Setting.Where(x => x.keyname == "ExcessBuyBack").Select(x => x.value).FirstOrDefault());
+            decimal RoadsideAssistancePercentage = Convert.ToDecimal(Setting.Where(x => x.keyname == "RoadsideAssistance").Select(x => x.value).FirstOrDefault());
+            decimal MedicalExpensesPercentage = Convert.ToDecimal(Setting.Where(x => x.keyname == "MedicalExpenses").Select(x => x.value).FirstOrDefault());
 
             if (Addthirdparty)
             {
@@ -96,7 +108,7 @@ namespace Insurance.Service
 
                 if (AddThirdPartyAmountADD > 10000)
                 {
-                    var settingAddThirdparty = Convert.ToDecimal(Setting.Where(x => x.keyname == "Addthirdparty").Select(x => x.value).FirstOrDefault());
+                    
                     var Amount = AddThirdPartyAmountADD - 10000;
                     premium += Convert.ToDecimal((Amount * settingAddThirdparty) / 100);
 
@@ -104,9 +116,8 @@ namespace Insurance.Service
             }
             if (PassengerAccidentCover)
             {
-                int additionalAmountPerPerson = Convert.ToInt32(Setting.Where(x => x.keyname == "PassengerAccidentCover").Select(x => x.value).FirstOrDefault());
 
-                int totalAdditionalPACcharge = NumberofPersons * additionalAmountPerPerson;
+                int totalAdditionalPACcharge = NumberofPersons * Convert.ToInt32(PassengerAccidentCoverAmountPerPerson);
 
                 additionalchargepac = totalAdditionalPACcharge;
 
@@ -114,29 +125,26 @@ namespace Insurance.Service
             if (ExcessBuyBack)
             {
 
-                int additionalAmountExcessBuyBack = Convert.ToInt32(Setting.Where(x => x.keyname == "ExcessBuyBack").Select(x => x.value).FirstOrDefault());
 
 
-                additionalchargeebb = (premium * additionalAmountExcessBuyBack) / 100;
+                additionalchargeebb = (premium * ExcessBuyBackPercentage) / 100;
 
 
             }
             if (RoadsideAssistance)
             {
-                decimal additionalAmountRoadsideAssistance = Convert.ToDecimal(Setting.Where(x => x.keyname == "RoadsideAssistance").Select(x => x.value).FirstOrDefault());
 
 
-                additionalchargersa = (premium * additionalAmountRoadsideAssistance) / 100;
+                additionalchargersa = (premium * RoadsideAssistancePercentage) / 100;
 
 
             }
             if (MedicalExpenses)
             {
 
-                decimal additionalAmountMedicalExpenses = Convert.ToDecimal(Setting.Where(x => x.keyname == "MedicalExpenses").Select(x => x.value).FirstOrDefault());
 
 
-                additionalchargeme = (premium * additionalAmountMedicalExpenses) / 100;
+                additionalchargeme = (premium * MedicalExpensesPercentage) / 100;
 
             }
 
@@ -157,10 +165,18 @@ namespace Insurance.Service
             var ztscLevy = (premium * 12) / 100;
             this.StamDuty = Math.Round(stampDuty, 2);
             this.ZtscLevy = Math.Round(ztscLevy, 2);
+            this.PassengerAccidentCoverAmount = Math.Round(additionalchargepac, 2);
+            this.PassengerAccidentCoverAmountPerPerson = Math.Round(PassengerAccidentCoverAmountPerPerson, 2);
+            this.RoadsideAssistanceAmount = Math.Round(additionalchargersa, 2);
+            this.RoadsideAssistancePercentage = Math.Round(RoadsideAssistancePercentage, 2);
+            this.MedicalExpensesAmount = Math.Round(additionalchargeme, 2);
+            this.MedicalExpensesPercentage = Math.Round(MedicalExpensesPercentage, 2);
+            this.ExcessBuyBackAmount = Math.Round(additionalchargeebb, 2);
+            this.ExcessBuyBackPercentage = Math.Round(ExcessBuyBackPercentage, 2);
             
-            premium = premium + stampDuty + ztscLevy;
+            //premium = premium + stampDuty + ztscLevy;
 
-            premium = premium + additionalchargeebb + additionalchargeme + additionalchargepac + additionalchargersa + (IncludeRadioLicenseCost ? Convert.ToDecimal(RadioLicenseCost) : 0.00m );// + Convert.ToDecimal(AgentCommission);
+            //premium = premium + additionalchargeebb + additionalchargeme + additionalchargepac + additionalchargersa + (IncludeRadioLicenseCost ? Convert.ToDecimal(RadioLicenseCost) : 0.00m );// + Convert.ToDecimal(AgentCommission);
 
             this.Premium = Math.Round(premium, 2);
 

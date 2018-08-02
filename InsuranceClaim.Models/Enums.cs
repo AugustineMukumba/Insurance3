@@ -30,4 +30,12 @@ namespace InsuranceClaim.Models
         percentage = 1,
         amount = 2
     }
+    public enum eStatus
+    {
+        Quote = 1,
+        InForce = 2,
+        Lapsed = 3,
+        NTU = 4,
+        Renewed = 5
+    }
 }

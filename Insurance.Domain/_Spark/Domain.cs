@@ -28,6 +28,10 @@ namespace Insurance.Domain
 
         public int Id { get; set; }
         public string Name { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
 
     }
 
@@ -40,6 +44,10 @@ namespace Insurance.Domain
         public string CommissionName { get; set; }
         public double? CommissionAmount { get; set; }
         public double? ManagementCommission { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
 
     }
 
@@ -50,6 +58,10 @@ namespace Insurance.Domain
 
         public int Id { get; set; }
         public string Source { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
 
     }
 
@@ -61,6 +73,10 @@ namespace Insurance.Domain
         public int Id { get; set; }
         public string Name { get; set; }
         public bool? IsActive { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
     }
 
     public partial class Customer : Entity<Customer>
@@ -89,6 +105,11 @@ namespace Insurance.Domain
 
         public bool? IsActive { get; set; }
         public string Countrycode { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
+
     }
 
     public partial class LicenseDelivery : Entity<LicenseDelivery>
@@ -119,6 +140,10 @@ namespace Insurance.Domain
         public DateTime? RedemedDate { get; set; }
 
         public bool? IsActive { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
     }
 
     public partial class PaymentMethod : Entity<PaymentMethod>
@@ -130,6 +155,11 @@ namespace Insurance.Domain
         public string Name { get; set; }
 
         public bool? IsActive { get; set; }
+
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
     }
 
     public partial class PaymentTerm : Entity<PaymentTerm>
@@ -164,6 +194,10 @@ namespace Insurance.Domain
         public DateTime? TransactionDate { get; set; }
         public int BusinessSourceId { get; set; }
         public bool? IsActive { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
     }
 
     public partial class PolicyStatus : Entity<PolicyStatus>
@@ -250,6 +284,19 @@ namespace Insurance.Domain
         public Boolean MedicalExpenses { get; set; }
         public int? NumberofPersons { get; set; }
         public bool? IsLicenseDiskNeeded { get; set; }
+        public decimal? PassengerAccidentCoverAmount { get; set; }
+        public decimal? ExcessBuyBackAmount { get; set; }
+        public decimal? RoadsideAssistanceAmount { get; set; }
+        public decimal? MedicalExpensesAmount { get; set; }
+        public decimal? PassengerAccidentCoverAmountPerPerson { get; set; }
+        public decimal? ExcessBuyBackPercentage { get; set; }
+        public decimal? RoadsideAssistancePercentage { get; set; }
+        public decimal? MedicalExpensesPercentage { get; set; }
+        public int PaymentTermId { get; set; }
+        public int ProductId { get; set; }
+
+
+
     }
 
     public partial class VehicleMake : Entity<VehicleMake>
@@ -261,6 +308,10 @@ namespace Insurance.Domain
         public string MakeDescription { get; set; }
         public string MakeCode { get; set; }
         public string ShortDescription { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
 
     }
 
@@ -274,6 +325,10 @@ namespace Insurance.Domain
         public string ModelCode { get; set; }
         public string ShortDescription { get; set; }
         public string MakeCode { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
 
     }
 
@@ -339,6 +394,10 @@ namespace Insurance.Domain
         public string ReinsuranceBrokerCode { get; set; }
         public string ReinsuranceBrokerName { get; set; }
         public decimal? Commission { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
 
     }
     public partial class ReinsurerDetail : Entity<ReinsurerDetail>
@@ -350,6 +409,10 @@ namespace Insurance.Domain
         public string ReinsurerCode { get; set; }
         public string ReinsurerName { get; set; }
         public Single? ReinsurerCommission { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
 
     }
     public partial class Reinsurance : Entity<Reinsurance>
@@ -385,6 +448,10 @@ namespace Insurance.Domain
         public int VehicleId { get; set; }
         public int SummaryDetailId { get; set; }
         public int ReinsuranceBrokerId { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
 
     }
     public partial class Product : Entity<Product>
@@ -395,6 +462,10 @@ namespace Insurance.Domain
         public int Id { get; set; }
         public string ProductName { get; set; }
         public string ProductCode { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
 
 
     }
@@ -407,6 +478,10 @@ namespace Insurance.Domain
         public string InsurerName { get; set; }
         public string InsurerCode { get; set; }
         public string InsurerAddress { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
 
     }
     public partial class VehicleCoverType : Entity<VehicleCoverType>
@@ -432,6 +507,10 @@ namespace Insurance.Domain
         public decimal? MinThirdAmount { get; set; }
         public decimal? FTPAmount { get; set; }
         public decimal? AnnualTPAmount { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
 
     }
     public partial class PaymentInformation : Entity<PaymentInformation>
@@ -450,6 +529,11 @@ namespace Insurance.Domain
         public bool DeleverLicence { get; set; }
         public string PaymentId { get; set; }
         public string InvoiceId { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
+
     }
 
     public partial class SmsLog : Entity<SmsLog>
@@ -460,6 +544,10 @@ namespace Insurance.Domain
         public string Sendto { get; set; }
         public string Body { get; set; }
         public string Response { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
 
     }
     public partial class Setting : Entity<Setting>
@@ -494,6 +582,10 @@ namespace Insurance.Domain
         public string AddressLine2 { get; set; }
         public string PhoneNumber { get; set; }
         public string City { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
 
     }
     public partial class SummaryVehicleDetail : Entity<SummaryVehicleDetail>
@@ -503,6 +595,10 @@ namespace Insurance.Domain
         public int Id { get; set; }
         public int SummaryDetailId { get; set; }
         public int VehicleDetailsId { get; set; }
+       public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
 
     }
 }

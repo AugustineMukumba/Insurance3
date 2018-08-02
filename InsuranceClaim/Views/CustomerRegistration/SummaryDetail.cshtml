@@ -186,6 +186,38 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x=>x.ExcessBuyBackAmount, new { @class = "gender-label" })
+                                                @Html.TextBoxFor(m => m.ExcessBuyBackAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Excess Buy Back Amount", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x=>x.MedicalExpensesAmount, new { @class = "gender-label" })
+                                                @Html.TextBoxFor(m => m.MedicalExpensesAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Medical Expenses Amount", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.PassengerAccidentCoverAmount, new { @class = "gender-label" })
+                                                @Html.TextBoxFor(m => m.PassengerAccidentCoverAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Passenger Accident Cover Amount", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.RoadsideAssistanceAmount, new { @class = "gender-label" })
+                                                @Html.TextBoxFor(m => m.RoadsideAssistanceAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Roadside Assistance Amount", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+
 
                                     <div class="row">
                                         <div class="col-md-12 next-btn">

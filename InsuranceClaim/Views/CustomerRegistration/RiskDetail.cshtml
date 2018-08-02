@@ -69,6 +69,15 @@
                             @Html.HiddenFor(m => m.Id)
                             @Html.HiddenFor(m => m.isUpdate)
                             @Html.HiddenFor(m => m.vehicleindex)
+                            @Html.HiddenFor(m => m.PassengerAccidentCoverAmount)
+                            @Html.HiddenFor(m => m.ExcessBuyBackAmount)
+                            @Html.HiddenFor(m => m.MedicalExpensesAmount)
+                            @Html.HiddenFor(m => m.RoadsideAssistanceAmount)
+                            @Html.HiddenFor(m => m.PassengerAccidentCoverAmountPerPerson)
+                            @Html.HiddenFor(m => m.ExcessBuyBackPercentage)
+                            @Html.HiddenFor(m => m.RoadsideAssistancePercentage)
+                            @Html.HiddenFor(m => m.MedicalExpensesPercentage)
+                         
                         </div>
                         <div class="form-group-section">
                             <div class="form-title">
@@ -80,14 +89,7 @@
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.Label("Vehicle Number", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.NoOfCarsCovered, new
-                                           {
-                                               @placeholder = "Vehicle Number",
-                                               @autocomplete = "off",
-                                               @class = "form-control",
-                                               @maxlength = "2",
-                                               @readonly = "readonly"
-                                           })
+                                                @Html.TextBoxFor(m => m.NoOfCarsCovered, new {@placeholder = "Vehicle Number", @autocomplete = "off",@class = "form-control",@maxlength = "2",@readonly = "readonly"})
                                                 @Html.ValidationMessageFor(m => m.NoOfCarsCovered, "", new { @class = "text-danger" })
                                                 @Html.ValidationMessageFor(m => m.NoOfCarsCovered, "", new { @class = "text-danger" })
                                             </div>
@@ -252,8 +254,8 @@
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                                @Html.Label("Premium", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.Premium, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Premium", @readonly = "readonly" })
+                                                @Html.Label("Basic Premium", new { @class = "gender-label" })
+                                                @Html.TextBoxFor(m => m.Premium, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Basic Premium", @readonly = "readonly" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-select" style="display:none;">
@@ -797,12 +799,21 @@
         $.ajax({
             type: "POST",
             url: "@Url.Action("CalculatePremium", "CustomerRegistration")",
-            data: { vehicleUsageId: vehicleUsageId, sumInsured: sumInsured, coverType: coverType, excessType: excessType, excess: excess, AddThirdPartyAmount: AddThirdPartyAmount, NumberofPersons: NumberofPersons, Addthirdparty: Addthirdparty, PassengerAccidentCover: PassengerAccidentCover, ExcessBuyBack: ExcessBuyBack, RoadsideAssistance: RoadsideAssistance, MedicalExpenses: MedicalExpenses, RadioLicenseCost: RadioLicenseCost, IncludeRadioLicenseCost: IncludeRadioLicenseCost },
+            data: { vehicleUsageId: vehicleUsageId, sumInsured: sumInsured, coverType: coverType, excessType: excessType, excess: excess, AddThirdPartyAmount: AddThirdPartyAmount, NumberofPersons: NumberofPersons, Addthirdparty: Addthirdparty, PassengerAccidentCover: PassengerAccidentCover, ExcessBuyBack: ExcessBuyBack, RoadsideAssistance: RoadsideAssistance, MedicalExpenses: MedicalExpenses, RadioLicenseCost: RadioLicenseCost, IncludeRadioLicenseCost: IncludeRadioLicenseCost},
             success: function (data) {
                 debugger;
                 $("#Premium").val(data.Premium);
                 $("#StampDuty").val(data.StamDuty);
                 $("#ZTSCLevy").val(data.ZtscLevy);
+                $("#PassengerAccidentCoverAmount").val(data.PassengerAccidentCoverAmount);
+                $("#ExcessBuyBackAmount").val(data.ExcessBuyBackAmount);
+                $("#RoadsideAssistanceAmount").val(data.RoadsideAssistanceAmount);
+                $("#MedicalExpensesAmount").val(data.MedicalExpensesAmount);
+                $("#MedicalExpensesPercentage").val(data.MedicalExpensesPercentage);
+                $("#RoadsideAssistancePercentage").val(data.RoadsideAssistancePercentage);
+                $("#ExcessBuyBackPercentage").val(data.ExcessBuyBackPercentage);
+                $("#PassengerAccidentCoverAmountPerPerson").val(data.PassengerAccidentCoverAmountPerPerson);
+
                 //$("#NumberofPersons").val(data.NumberofPersons);
                 //$("#AddThirdPartyAmount").val(data.AddThirdPartyAmount);
 

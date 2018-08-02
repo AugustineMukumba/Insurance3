@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,17 @@ namespace InsuranceClaim.Models
         public string DebitNote { get; set; }
         public string ReceiptNumber { get; set; }
         public bool SMSConfirmation { get; set; }
-        public int? CarInsuredCount { get; set; }        
-        
+        public int? CarInsuredCount { get; set; }
+        [Display(Name = "Excess Buy Back Amount")]
+        public decimal? ExcessBuyBackAmount { get; set; }
+        [Display(Name = "Roadside Assistance Amount")]
+        public decimal? RoadsideAssistanceAmount { get; set; }
+        [Display(Name = "Medical Expenses Amount")]
+        public decimal? MedicalExpensesAmount { get; set; }
+        [Display(Name = "Passenger Accident Cover Amount")]
+        public decimal? PassengerAccidentCoverAmount { get; set; }
+        //[Display(Name = "Roadside Assistance Amount")]
+        //public decimal? RoadsideAssistanceAmount { get; set; }
+
     }
 }

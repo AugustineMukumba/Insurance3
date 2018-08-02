@@ -201,7 +201,7 @@ namespace InsuranceClaim.Controllers
                 Item item = new Item();
                 item.name = make.MakeDescription + "/" + _model.ModelDescription;
                 item.currency = "USD";
-                item.price = Convert.ToString(_vehicle.Premium) ;
+                item.price = Convert.ToString(_vehicle.Premium + _vehicle.StampDuty + _vehicle.ZTSCLevy + _vehicle.RoadsideAssistanceAmount + _vehicle.RadioLicenseCost + _vehicle.PassengerAccidentCoverAmount + _vehicle.MedicalExpensesAmount + _vehicle.ExcessBuyBackAmount) ;
                 item.quantity = "1";
                 item.sku = _vehicle.RegistrationNo;
 

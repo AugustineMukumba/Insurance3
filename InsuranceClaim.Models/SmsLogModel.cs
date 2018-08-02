@@ -12,6 +12,9 @@ namespace InsuranceClaim.Models
         public string Sendto { get; set; }
         public string Body { get; set; }
         public string Response { get; set; }
-
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
     }
 }

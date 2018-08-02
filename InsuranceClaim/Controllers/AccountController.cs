@@ -884,7 +884,7 @@ namespace InsuranceClaim.Controllers
 
 
             List<CustomerModel> ListUserViewModel = new List<CustomerModel>();
-            var user = InsuranceContext.Customers.All().ToList();
+            var user = InsuranceContext.Customers.All().OrderByDescending(x=>x.Id).ToList();
 
 
             foreach (var item in user)
@@ -1172,7 +1172,7 @@ namespace InsuranceClaim.Controllers
         public ActionResult SettingList()
         {
 
-            var db = InsuranceContext.Settings.All().ToList();
+            var db = InsuranceContext.Settings.All().OrderByDescending(x=>x.Id).ToList();
             return View(db);
         }
 
@@ -1221,7 +1221,7 @@ namespace InsuranceClaim.Controllers
         {
 
 
-            var list = InsuranceContext.ReinsuranceBrokers.All().ToList();
+            var list = InsuranceContext.ReinsuranceBrokers.All().OrderByDescending(x=>x.Id).ToList();
             return View(list);
         }
         public ActionResult AddReinsuranceBroker(int? id = 0)

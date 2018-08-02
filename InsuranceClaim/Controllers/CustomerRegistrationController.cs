@@ -103,6 +103,7 @@ namespace InsuranceClaim.Controllers
             {
                 var customerData = (CustomerModel)Session["CustomerDataModal"];
                 var customerModel = new CustomerModel();
+                customerModel.Zipcode = "00263";
                 if (customerData != null)
                 {
                     var User = UserManager.FindById(customerData.UserID);
@@ -354,7 +355,7 @@ namespace InsuranceClaim.Controllers
                     viewModel.OptionalCovers = data.OptionalCovers;
                     viewModel.PolicyId = data.PolicyId;
                     viewModel.Premium = data.Premium;
-                    viewModel.RadioLicenseCost = (int)Math.Round(data.RadioLicenseCost == null ? 0 : data.RadioLicenseCost.Value, 0);
+                    //viewModel.RadioLicenseCost = (int)Math.Round(data.RadioLicenseCost == null ? 0 : data.RadioLicenseCost.Value, 0);
                     viewModel.Rate = data.Rate;
                     viewModel.RegistrationNo = data.RegistrationNo;
                     viewModel.StampDuty = data.StampDuty;
@@ -401,6 +402,8 @@ namespace InsuranceClaim.Controllers
 
             if (model.isUpdate)
             {
+                model.Id = 0;
+
                 if (ModelState.IsValid)
                 {
                     List<RiskDetailModel> listriskdetailmodel = new List<RiskDetailModel>();
@@ -439,8 +442,10 @@ namespace InsuranceClaim.Controllers
                         ModelState.Remove("CoverEndDate");
                         model.CoverEndDate = Convert.ToDateTime(endDate, usDtfi);
                     }
+
                     if (ModelState.IsValid)
                     {
+                        model.Id = 0;
                         List<RiskDetailModel> listriskdetailmodel = new List<RiskDetailModel>();
                         if (Session["VehicleDetails"] != null)
                         {
@@ -477,6 +482,14 @@ namespace InsuranceClaim.Controllers
                     }
                     if (ModelState.IsValid)
                     {
+                        model.Id = 0;
+
+                        if (!model.IncludeRadioLicenseCost)
+                        {
+                            model.RadioLicenseCost = 0.00m;
+                        }
+                        
+
                         List<RiskDetailModel> listriskdetailmodel = new List<RiskDetailModel>();
                         if (Session["VehicleDetails"] != null)
                         {
@@ -486,7 +499,7 @@ namespace InsuranceClaim.Controllers
                                 listriskdetailmodel = listriskdetails;
                             }
                         }
-
+                        model.Id = 0;
                         listriskdetailmodel.Add(model);
                         Session["VehicleDetails"] = listriskdetailmodel;
 
@@ -602,11 +615,16 @@ namespace InsuranceClaim.Controllers
             model.PaymentTermId = 1;
             model.ReceiptNumber = "";
             model.SMSConfirmation = false;
-            model.TotalPremium = vehicle.Sum(item => item.Premium);// + vehicle.StampDuty + vehicle.ZTSCLevy;
+            model.TotalPremium = vehicle.Sum(item => item.Premium+item.ZTSCLevy+item.StampDuty + item.RoadsideAssistanceAmount + item.MedicalExpensesAmount + item.PassengerAccidentCoverAmount + item.ExcessBuyBackAmount +item.RadioLicenseCost);// + vehicle.StampDuty + vehicle.ZTSCLevy;
             model.TotalRadioLicenseCost = vehicle.Sum(item => item.RadioLicenseCost);
             model.TotalStampDuty = vehicle.Sum(item => item.StampDuty);
             model.TotalSumInsured = vehicle.Sum(item => item.SumInsured);
             model.TotalZTSCLevies = vehicle.Sum(item => item.ZTSCLevy);
+            model.ExcessBuyBackAmount = vehicle.Sum(item => item.ExcessBuyBackAmount);
+            model.MedicalExpensesAmount = vehicle.Sum(item => item.MedicalExpensesAmount);
+            model.PassengerAccidentCoverAmount = vehicle.Sum(item => item.PassengerAccidentCoverAmount);
+            model.RoadsideAssistanceAmount = vehicle.Sum(item => item.RoadsideAssistanceAmount);
+
             return View(model);
         }
 

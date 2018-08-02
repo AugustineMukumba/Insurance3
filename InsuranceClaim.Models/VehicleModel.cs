@@ -13,5 +13,9 @@ namespace InsuranceClaim.Models
         public string ModelCode { get; set; }
         public string ShortDescription { get; set; }
         public string MakeCode { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
     }
 }
