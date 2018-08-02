@@ -334,51 +334,54 @@ namespace InsuranceClaim.Controllers
             if (id > 0)
             {
                 var list = (List<RiskDetailModel>)Session["VehicleDetails"];
-                var data = (RiskDetailModel)list[Convert.ToInt32(id - 1)];
-                if (data != null)
+                if (list != null && list.Count > 0 && (list.Count >= id))
                 {
-                    viewModel.AgentCommissionId = data.AgentCommissionId;
-                    viewModel.ChasisNumber = data.ChasisNumber;
-                    viewModel.CoverEndDate = data.CoverEndDate;
-                    viewModel.CoverNoteNo = data.CoverNoteNo;
-                    viewModel.CoverStartDate = data.CoverStartDate;
-                    viewModel.CoverTypeId = data.CoverTypeId;
-                    viewModel.CubicCapacity = (int)Math.Round(data.CubicCapacity.Value, 0);
-                    viewModel.CustomerId = data.CustomerId;
-                    viewModel.EngineNumber = data.EngineNumber;
-                    //viewModel.Equals = data.Equals;
-                    viewModel.Excess = (int)Math.Round(data.Excess, 0);
-                    viewModel.ExcessType = data.ExcessType;
-                    viewModel.MakeId = data.MakeId;
-                    viewModel.ModelId = data.ModelId;
-                    viewModel.NoOfCarsCovered = id;
-                    viewModel.OptionalCovers = data.OptionalCovers;
-                    viewModel.PolicyId = data.PolicyId;
-                    viewModel.Premium = data.Premium;
-                    //viewModel.RadioLicenseCost = (int)Math.Round(data.RadioLicenseCost == null ? 0 : data.RadioLicenseCost.Value, 0);
-                    viewModel.Rate = data.Rate;
-                    viewModel.RegistrationNo = data.RegistrationNo;
-                    viewModel.StampDuty = data.StampDuty;
-                    viewModel.SumInsured = (int)Math.Round(data.SumInsured == null ? 0 : data.SumInsured.Value, 0);
-                    viewModel.VehicleColor = data.VehicleColor;
-                    viewModel.VehicleUsage = data.VehicleUsage;
-                    viewModel.VehicleYear = data.VehicleYear;
-                    viewModel.Id = data.Id;
-                    viewModel.ZTSCLevy = data.ZTSCLevy;
-                    viewModel.NumberofPersons = data.NumberofPersons;
-                    viewModel.PassengerAccidentCover = data.PassengerAccidentCover;
-                    viewModel.IsLicenseDiskNeeded = data.IsLicenseDiskNeeded;
-                    viewModel.ExcessBuyBack = data.ExcessBuyBack;
-                    viewModel.RoadsideAssistance = data.RoadsideAssistance;
-                    viewModel.MedicalExpenses = data.MedicalExpenses;
-                    viewModel.Addthirdparty = data.Addthirdparty;
-                    viewModel.AddThirdPartyAmount = data.AddThirdPartyAmount;
-                    viewModel.isUpdate = true;
-                    viewModel.vehicleindex = Convert.ToInt32(id);
+                    var data = (RiskDetailModel)list[Convert.ToInt32(id - 1)];
+                    if (data != null)
+                    {
+                        viewModel.AgentCommissionId = data.AgentCommissionId;
+                        viewModel.ChasisNumber = data.ChasisNumber;
+                        viewModel.CoverEndDate = data.CoverEndDate;
+                        viewModel.CoverNoteNo = data.CoverNoteNo;
+                        viewModel.CoverStartDate = data.CoverStartDate;
+                        viewModel.CoverTypeId = data.CoverTypeId;
+                        viewModel.CubicCapacity = (int)Math.Round(data.CubicCapacity.Value, 0);
+                        viewModel.CustomerId = data.CustomerId;
+                        viewModel.EngineNumber = data.EngineNumber;
+                        //viewModel.Equals = data.Equals;
+                        viewModel.Excess = (int)Math.Round(data.Excess, 0);
+                        viewModel.ExcessType = data.ExcessType;
+                        viewModel.MakeId = data.MakeId;
+                        viewModel.ModelId = data.ModelId;
+                        viewModel.NoOfCarsCovered = id;
+                        viewModel.OptionalCovers = data.OptionalCovers;
+                        viewModel.PolicyId = data.PolicyId;
+                        viewModel.Premium = data.Premium;
+                        viewModel.RadioLicenseCost = (int)Math.Round(data.RadioLicenseCost == null ? 0 : data.RadioLicenseCost.Value, 0);
+                        viewModel.Rate = data.Rate;
+                        viewModel.RegistrationNo = data.RegistrationNo;
+                        viewModel.StampDuty = data.StampDuty;
+                        viewModel.SumInsured = (int)Math.Round(data.SumInsured == null ? 0 : data.SumInsured.Value, 0);
+                        viewModel.VehicleColor = data.VehicleColor;
+                        viewModel.VehicleUsage = data.VehicleUsage;
+                        viewModel.VehicleYear = data.VehicleYear;
+                        viewModel.Id = data.Id;
+                        viewModel.ZTSCLevy = data.ZTSCLevy;
+                        viewModel.NumberofPersons = data.NumberofPersons;
+                        viewModel.PassengerAccidentCover = data.PassengerAccidentCover;
+                        viewModel.IsLicenseDiskNeeded = data.IsLicenseDiskNeeded;
+                        viewModel.ExcessBuyBack = data.ExcessBuyBack;
+                        viewModel.RoadsideAssistance = data.RoadsideAssistance;
+                        viewModel.MedicalExpenses = data.MedicalExpenses;
+                        viewModel.Addthirdparty = data.Addthirdparty;
+                        viewModel.AddThirdPartyAmount = data.AddThirdPartyAmount;
+                        viewModel.isUpdate = true;
+                        viewModel.vehicleindex = Convert.ToInt32(id);
 
-                    var ser = new VehicleService();
-                    var model = ser.GetModel(data.MakeId);
-                    ViewBag.Model = model;
+                        var ser = new VehicleService();
+                        var model = ser.GetModel(data.MakeId);
+                        ViewBag.Model = model;
+                    }
                 }
             }
 
@@ -661,6 +664,14 @@ namespace InsuranceClaim.Controllers
                         var result = await UserManager.CreateAsync(user, "Geninsure@123");
                         if (result.Succeeded)
                         {
+                            try
+                            {
+                                var roleresult = UserManager.AddToRole(user.Id, "Customer");
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+                           
                             var objCustomer = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).FirstOrDefault();
                             if (objCustomer != null)
                             {
@@ -761,6 +772,7 @@ namespace InsuranceClaim.Controllers
 
                         if (ReinsuranceCase != null && ReinsuranceCase.MaxTreatyCapacity != null)
                         {
+                            var basicPremium = item.Premium - item.StampDuty - item.ZTSCLevy;
                             var ReinsuranceBroker = InsuranceContext.ReinsuranceBrokers.Single(where: $"ReinsuranceBrokerCode='{ReinsuranceCase.ReinsuranceBrokerCode}'");
 
                             if (ReinsuranceCase.MinTreatyCapacity > 200000)
@@ -771,7 +783,7 @@ namespace InsuranceClaim.Controllers
 
                                 var _reinsurance = new ReinsuranceTransaction();
                                 _reinsurance.ReinsuranceAmount = autofacSumInsured;
-                                _reinsurance.ReinsurancePremium = ((_reinsurance.ReinsuranceAmount / item.SumInsured) * item.Premium);
+                                _reinsurance.ReinsurancePremium = ((_reinsurance.ReinsuranceAmount / item.SumInsured) * basicPremium);
                                 _reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(autofacReinsuranceBroker.Commission);
                                 _reinsurance.ReinsuranceCommission = ((_reinsurance.ReinsurancePremium * _reinsurance.ReinsuranceCommissionPercentage) / 100);
                                 _reinsurance.VehicleId = item.Id;
@@ -787,7 +799,7 @@ namespace InsuranceClaim.Controllers
 
                                 var __reinsurance = new ReinsuranceTransaction();
                                 __reinsurance.ReinsuranceAmount = _item.SumInsured - ownRetention - autofacSumInsured;
-                                __reinsurance.ReinsurancePremium = ((__reinsurance.ReinsuranceAmount / item.SumInsured) * item.Premium);
+                                __reinsurance.ReinsurancePremium = ((__reinsurance.ReinsuranceAmount / item.SumInsured) * basicPremium);
                                 __reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(ReinsuranceBroker.Commission);
                                 __reinsurance.ReinsuranceCommission = ((__reinsurance.ReinsurancePremium * __reinsurance.ReinsuranceCommissionPercentage) / 100);
                                 __reinsurance.VehicleId = item.Id;
@@ -806,7 +818,7 @@ namespace InsuranceClaim.Controllers
 
                                 var reinsurance = new ReinsuranceTransaction();
                                 reinsurance.ReinsuranceAmount = _item.SumInsured - ownRetention;
-                                reinsurance.ReinsurancePremium = ((reinsurance.ReinsuranceAmount / item.SumInsured) * item.Premium);
+                                reinsurance.ReinsurancePremium = ((reinsurance.ReinsuranceAmount / item.SumInsured) * basicPremium);
                                 reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(ReinsuranceBroker.Commission);
                                 reinsurance.ReinsuranceCommission = ((reinsurance.ReinsurancePremium * reinsurance.ReinsuranceCommissionPercentage) / 100);
                                 reinsurance.VehicleId = item.Id;
@@ -1038,6 +1050,28 @@ namespace InsuranceClaim.Controllers
             json.Data = premium;
             return json;
         }
+
+        [HttpPost]
+        public JsonResult CheckDuplicateRegisterationNumberExist(string regNo)
+        {
+            JsonResult json = new JsonResult();
+            json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            json.Data = false;
+
+            var list = (List<RiskDetailModel>)Session["VehicleDetails"];
+
+            if (list != null && list.Count > 0)
+            {
+                foreach (var item in list)
+                {
+                    if (item.RegistrationNo.Trim().ToLower() == regNo.Trim().ToLower())
+                        json.Data = true;
+                }
+            }
+
+            return json;
+        }
+
         public JsonResult GetVehicleModel(string makeCode)
         {
             var service = new VehicleService();

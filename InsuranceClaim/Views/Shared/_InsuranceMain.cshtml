@@ -1,15 +1,25 @@
 ﻿@using System.Security.Claims;
 @using Insurance.Domain;
+@using Microsoft.AspNet.Identity;
+
 @{
     Layout = null;
 
     bool userLoggedin = ((System.Web.HttpContext.Current.User != null) && (System.Web.HttpContext.Current.User.Identity.IsAuthenticated));
-    //var userid = System.Web.HttpContext.Current.User.Identity.Name;
-    //var customer = InsuranceContext.Customers.Single(where: $"userid='{userid}'");
-    var role = Session["LoggedInUserRole"];
-    var fname = Session["firstname"];
-    var lname = Session["lastname"];
-
+    string userId = User.Identity.GetUserId();
+    var role = "";
+    var fname = "";
+    var lname = "";
+    if (userLoggedin)
+    {
+        var customer = InsuranceContext.Customers.Single(where: $"userid='{userId}'");
+        role = Convert.ToString(Session["LoggedInUserRole"]);
+        if (customer!=null)
+        {
+            fname = customer.FirstName;
+            lname = customer.LastName;
+        }
+    }
 
 }
 @{
