@@ -41,7 +41,7 @@ namespace InsuranceClaim.Controllers
             string path = Server.MapPath("~/Content/Countries.txt");
             var countries = System.IO.File.ReadAllText(path);
             var resultt = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObject>(countries);
-            ViewBag.Countries = resultt.countries;
+            ViewBag.Countries = resultt.countries.OrderBy(x => x.code.Replace("+", ""));
 
             string paths = Server.MapPath("~/Content/Cities.txt");
             var cities = System.IO.File.ReadAllText(paths);
@@ -491,7 +491,7 @@ namespace InsuranceClaim.Controllers
                         {
                             model.RadioLicenseCost = 0.00m;
                         }
-                        
+
 
                         List<RiskDetailModel> listriskdetailmodel = new List<RiskDetailModel>();
                         if (Session["VehicleDetails"] != null)
@@ -618,7 +618,7 @@ namespace InsuranceClaim.Controllers
             model.PaymentTermId = 1;
             model.ReceiptNumber = "";
             model.SMSConfirmation = false;
-            model.TotalPremium = vehicle.Sum(item => item.Premium+item.ZTSCLevy+item.StampDuty + item.RoadsideAssistanceAmount + item.MedicalExpensesAmount + item.PassengerAccidentCoverAmount + item.ExcessBuyBackAmount +item.RadioLicenseCost);// + vehicle.StampDuty + vehicle.ZTSCLevy;
+            model.TotalPremium = vehicle.Sum(item => item.Premium + item.ZTSCLevy + item.StampDuty + item.RoadsideAssistanceAmount + item.MedicalExpensesAmount + item.PassengerAccidentCoverAmount + item.ExcessBuyBackAmount + item.RadioLicenseCost);// + vehicle.StampDuty + vehicle.ZTSCLevy;
             model.TotalRadioLicenseCost = vehicle.Sum(item => item.RadioLicenseCost);
             model.TotalStampDuty = vehicle.Sum(item => item.StampDuty);
             model.TotalSumInsured = vehicle.Sum(item => item.SumInsured);
@@ -671,7 +671,7 @@ namespace InsuranceClaim.Controllers
                             catch (Exception ex)
                             {
                             }
-                           
+
                             var objCustomer = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).FirstOrDefault();
                             if (objCustomer != null)
                             {
@@ -1107,6 +1107,7 @@ namespace InsuranceClaim.Controllers
         {
             public string code { get; set; }
             public string name { get; set; }
+            public string DisplayName { get; set; }
         }
 
         public class RootObject
