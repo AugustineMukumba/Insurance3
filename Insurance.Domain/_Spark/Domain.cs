@@ -292,6 +292,9 @@ namespace Insurance.Domain
         public decimal? ExcessBuyBackPercentage { get; set; }
         public decimal? RoadsideAssistancePercentage { get; set; }
         public decimal? MedicalExpensesPercentage { get; set; }
+        public decimal? ExcessAmount { get; set; }
+        public DateTime? RenewalDate { get; set; }
+        public DateTime? TransactionDate { get; set; }
         public int PaymentTermId { get; set; }
         public int ProductId { get; set; }
 
