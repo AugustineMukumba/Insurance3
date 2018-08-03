@@ -1,0 +1,67 @@
+﻿@model  List<InsuranceClaim.Models.ReinsuranceCommissionReportModel>
+@{
+    ViewBag.Title = "ReinsuranceCommissionReport";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+}
+
+
+
+
+
+<div class="productsave-section">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
+                <div class="head-title">
+                    <h2>Reinsurance Commission Report</h2>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 add-btn">
+                <div class="text-right">
+                    @*<button type="button" class="btn btn-primary">Add</button>*@
+
+
+
+
+                </div>
+            </div>
+        </div>
+        <div class="product-table-grid">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Policy Number</th>
+                        <th>Transaction Date</th>
+                        <th>Policy Start Date</th>
+                        <th>Policy End date</th>
+                        <th>Facultative Commission</th>
+                        <th>Auto-Fac Commission</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+            {
+
+                    <tr>
+                        <td>@item.FirstName @item.LastName</td>
+                        @*<td>@item.LastName</td>*@
+                        <td>@item.PolicyNumber</td>
+                        <td>@item.TransactionDate</td>
+                        <td>@item.StartDate</td>
+                        <td>@item.EndDate</td>
+                        <td>$@item.FacultativeReinsurance</td>
+                        <td>$@item.AutoFacultativeReinsurance</td>
+                        <td>
+                            <div class="tbl-btn-list">
+                                <ul class="list-inline"></ul>
+                            </div>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -106,7 +106,9 @@ namespace InsuranceClaim.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("index", "CustomerRegistration");
+
+                        return Redirect("/CustomerRegistration/index");
+                       // return RedirectToAction("Index", "CustomerRegistration");
                     }
 
                 case SignInStatus.LockedOut:

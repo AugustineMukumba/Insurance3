@@ -18,7 +18,7 @@ namespace Insurance.Service
         public string Message { get; set; }
         public decimal ExcessBuyBackAmount { get; set; }
         public decimal RoadsideAssistanceAmount { get; set; }
-        public decimal MedicalExpensesAmount{ get; set; }
+        public decimal MedicalExpensesAmount { get; set; }
         public decimal PassengerAccidentCoverAmount { get; set; }
         public decimal PassengerAccidentCoverAmountPerPerson { get; set; }
         public decimal ExcessBuyBackPercentage { get; set; }
@@ -57,11 +57,7 @@ namespace Insurance.Service
                 InsuranceMinAmount = vehicleUsage.FTPAmount;
             }
 
-            if (excessType == eExcessType.Percentage && excess > 0)
-            {
-                InsuranceRate = InsuranceRate + float.Parse(excess.ToString());
-            }
-
+           
             var premium = 0.00m;
 
             if (coverType == eCoverType.ThirdParty)
@@ -108,7 +104,7 @@ namespace Insurance.Service
 
                 if (AddThirdPartyAmountADD > 10000)
                 {
-                    
+
                     var Amount = AddThirdPartyAmountADD - 10000;
                     premium += Convert.ToDecimal((Amount * settingAddThirdparty) / 100);
 
@@ -116,7 +112,6 @@ namespace Insurance.Service
             }
             if (PassengerAccidentCover)
             {
-
                 int totalAdditionalPACcharge = NumberofPersons * Convert.ToInt32(PassengerAccidentCoverAmountPerPerson);
 
                 additionalchargepac = totalAdditionalPACcharge;
@@ -124,28 +119,17 @@ namespace Insurance.Service
             }
             if (ExcessBuyBack)
             {
-
-
-
-                additionalchargeebb = (premium * ExcessBuyBackPercentage) / 100;
-
-
+                additionalchargeebb = (sumInsured * ExcessBuyBackPercentage) / 100;
             }
+
             if (RoadsideAssistance)
             {
-
-
-                additionalchargersa = (premium * RoadsideAssistancePercentage) / 100;
-
-
+                additionalchargersa = (sumInsured * RoadsideAssistancePercentage) / 100;
             }
+
             if (MedicalExpenses)
             {
-
-
-
-                additionalchargeme = (premium * MedicalExpensesPercentage) / 100;
-
+                additionalchargeme = (sumInsured * MedicalExpensesPercentage) / 100;
             }
 
             if (excessType == eExcessType.FixedAmount && excess > 0)
@@ -153,18 +137,11 @@ namespace Insurance.Service
                 premium = premium + excess;
             }
 
+
+
             this.Premium = premium;
-            var stampDuty = (premium * 5) / 100;
-            if (stampDuty > 2000000)
-            {
 
-                Status = false;
-                this.Message = "Stamp Duty must not exceed $2,000,000";
-            }
 
-            var ztscLevy = (premium * 12) / 100;
-            this.StamDuty = Math.Round(stampDuty, 2);
-            this.ZtscLevy = Math.Round(ztscLevy, 2);
             this.PassengerAccidentCoverAmount = Math.Round(additionalchargepac, 2);
             this.PassengerAccidentCoverAmountPerPerson = Math.Round(PassengerAccidentCoverAmountPerPerson, 2);
             this.RoadsideAssistanceAmount = Math.Round(additionalchargersa, 2);
@@ -173,12 +150,38 @@ namespace Insurance.Service
             this.MedicalExpensesPercentage = Math.Round(MedicalExpensesPercentage, 2);
             this.ExcessBuyBackAmount = Math.Round(additionalchargeebb, 2);
             this.ExcessBuyBackPercentage = Math.Round(ExcessBuyBackPercentage, 2);
-            
+
             //premium = premium + stampDuty + ztscLevy;
 
             //premium = premium + additionalchargeebb + additionalchargeme + additionalchargepac + additionalchargersa + (IncludeRadioLicenseCost ? Convert.ToDecimal(RadioLicenseCost) : 0.00m );// + Convert.ToDecimal(AgentCommission);
 
+            //if (excessType == eExcessType.Percentage && excess > 0)
+            //{
+            //    InsuranceRate = InsuranceRate + float.Parse(excess.ToString());
+            //}
+
+
             this.Premium = Math.Round(premium, 2);
+
+            if (excessType == eExcessType.Percentage && excess > 0)
+            {
+                this.Premium = premium + (sumInsured * excess) / 100;
+            }
+
+            var totalPremium = this.Premium + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount;
+
+           
+
+            var stampDuty = (totalPremium * 5) / 100;
+            if (stampDuty > 2000000)
+            {
+                Status = false;
+                this.Message = "Stamp Duty must not exceed $2,000,000";
+            }
+
+            var ztscLevy = (totalPremium * 12) / 100;
+            this.StamDuty = Math.Round(stampDuty, 2);
+            this.ZtscLevy = Math.Round(ztscLevy, 2);
 
             return this;
         }
