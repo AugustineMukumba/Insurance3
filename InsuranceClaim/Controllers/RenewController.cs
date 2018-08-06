@@ -98,7 +98,7 @@ namespace InsuranceClaim.Controllers
             var lapsedvehicleid = (int)Session["LapsedVehicleId"];
             var SummaryDetailId = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId = {lapsedvehicleid}").SummaryDetailId;
             var summary = InsuranceContext.SummaryDetails.Single(SummaryDetailId);
-            Session["policytermid"] = summary.PaymentTermId;
+            //Session["policytermid"] = summary.PaymentTermId;
             int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
             var LapsedVehiclePolicy = (PolicyDetail)Session["LapsedVehiclePolicy"];
             //Id is policyid from Policy detail table
@@ -254,9 +254,9 @@ namespace InsuranceClaim.Controllers
         }
 
         [HttpPost]
-        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost)
+        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost,int policytermid)
         {
-            var policytermid = (int)Session["policytermid"];
+            //var policytermid = (int)Session["policytermid"];
             JsonResult json = new JsonResult();
             var quote = new QuoteLogic();
             var typeCover = eCoverType.Comprehensive;
@@ -326,7 +326,7 @@ namespace InsuranceClaim.Controllers
             objSaveDetailListModel.InvoiceId = InvoiceId == null ? "" : InvoiceId.ToString();
             InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
 
-            Session.Remove("policytermid");
+            //Session.Remove("policytermid");
             Session.Remove("LapsedVehicleId");
             Session.Remove("PaymentId");
             Session.Remove("InvoiceId");

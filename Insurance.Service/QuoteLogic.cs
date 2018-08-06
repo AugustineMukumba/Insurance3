@@ -24,6 +24,7 @@ namespace Insurance.Service
         public decimal ExcessBuyBackPercentage { get; set; }
         public decimal RoadsideAssistancePercentage { get; set; }
         public decimal MedicalExpensesPercentage { get; set; }
+        public decimal ExcessAmount { get; set; }
 
 
 
@@ -104,19 +105,16 @@ namespace Insurance.Service
 
                 if (AddThirdPartyAmountADD > 10000)
                 {
-
                     var Amount = AddThirdPartyAmountADD - 10000;
                     premium += Convert.ToDecimal((Amount * settingAddThirdparty) / 100);
-
                 }
             }
             if (PassengerAccidentCover)
             {
                 int totalAdditionalPACcharge = NumberofPersons * Convert.ToInt32(PassengerAccidentCoverAmountPerPerson);
-
                 additionalchargepac = totalAdditionalPACcharge;
-
             }
+
             if (ExcessBuyBack)
             {
                 additionalchargeebb = (sumInsured * ExcessBuyBackPercentage) / 100;
@@ -134,13 +132,10 @@ namespace Insurance.Service
 
             if (excessType == eExcessType.FixedAmount && excess > 0)
             {
-                premium = premium + excess;
+                this.ExcessAmount =  excess;
             }
 
-
-
             this.Premium = premium;
-
 
             this.PassengerAccidentCoverAmount = Math.Round(additionalchargepac, 2);
             this.PassengerAccidentCoverAmountPerPerson = Math.Round(PassengerAccidentCoverAmountPerPerson, 2);
@@ -152,26 +147,21 @@ namespace Insurance.Service
             this.ExcessBuyBackPercentage = Math.Round(ExcessBuyBackPercentage, 2);
 
             //premium = premium + stampDuty + ztscLevy;
-
             //premium = premium + additionalchargeebb + additionalchargeme + additionalchargepac + additionalchargersa + (IncludeRadioLicenseCost ? Convert.ToDecimal(RadioLicenseCost) : 0.00m );// + Convert.ToDecimal(AgentCommission);
-
             //if (excessType == eExcessType.Percentage && excess > 0)
             //{
             //    InsuranceRate = InsuranceRate + float.Parse(excess.ToString());
             //}
 
-
-            this.Premium = Math.Round(premium, 2);
+            
 
             if (excessType == eExcessType.Percentage && excess > 0)
             {
-                this.Premium = premium + (sumInsured * excess) / 100;
+                this.ExcessAmount = (sumInsured * excess) / 100;
             }
 
-            var totalPremium = this.Premium + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount;
-
-           
-
+            var totalPremium = this.Premium + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount;
+            this.Premium = Math.Round(totalPremium, 2);
             var stampDuty = (totalPremium * 5) / 100;
             if (stampDuty > 2000000)
             {

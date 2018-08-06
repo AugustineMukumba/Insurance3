@@ -74,7 +74,9 @@ namespace InsuranceClaim.Models
         public decimal? ExcessAmount { get; set; }
         public DateTime RenewalDate { get; set; }
         public DateTime TransactionDate { get; set; }
+        [Required(ErrorMessage = "Please Select Payment Term.")]
         public int PaymentTermId { get; set; }
+        [Required(ErrorMessage = "Please Select A Product.")]
         public int ProductId { get; set; }
 
     }

@@ -71,10 +71,9 @@
                             {
                                 @*@Html.HiddenFor(x => x.InsurerId, new { @Value = ViewBag.InsurerId });*@
                                 @Html.HiddenFor(m => m.Id)
-                                <div class="row">
+                                @*<div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-select">
-                                        <div class="form-group">
-                                            @*@Html.TextBoxFor(x => x.PolicyName, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Name" })*@
+                                        <div class="form-group">                                            
                                             @Html.Label("Product Name", new { @class = "gender-label" })
                                             @Html.DropDownListFor(x => x.PolicyName, new SelectList(ViewBag.Products, "Id", "ProductName"), new { @class = "form-control" })
                                             @Html.ValidationMessageFor(x => x.PolicyName, "", new { @class = "text-danger" })
@@ -88,7 +87,7 @@
                                         </div>
                                     </div>
                                     
-                                </div>
+                                </div>*@
                                
                                 <div class="row" style="display:none">
                                     <div class="col-md-6 form-group-select">

@@ -1,0 +1,79 @@
+﻿@model  List<InsuranceClaim.Models.ReinsuranceReport>
+@{
+    ViewBag.Title = "ReinsuranceReport";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+}
+
+<div class="productsave-section">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
+                <div class="head-title">
+                    <h2>Reinsurance Report</h2>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 add-btn">
+                @*<input type="text" id="txtdate" placeholder="Enter date" class="form-control" />*@
+            </div>
+            @*<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 add-btn">
+                    <button type="button" class="btn btn-primary pull-right" onclick="searchBydate()">Search</button>
+
+                </div>*@
+        </div>
+
+        <div class="product-table-grid">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Contact number</th>
+                        <th>Policy Number</th>
+                        <th>Policy Start Date</th>
+                        <th>Policy End Date</th>
+                        <th>Transaction Date</th>
+                        <th>Sum Insured</th>
+                        <th>Premium Due</th>
+                        <th>Auto-Fac Sum Insured</th>
+                        <th>Auto-Fac Premium</th>
+                        <th>Auto-Fac Commission</th>
+                        <th>Facultive Sum Insured</th>
+                        <th>Facultive Premium</th>
+                        <th>Facultive Commission</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+            {
+                    <tr>
+                        <td>@item.FirstName @item.LastName</td>
+                        <td>@item.PhoneNumber</td>
+                        <td>@item.PolicyNumber</td>
+                        
+                        <td>@item.StartDate</td>
+                        <td>@item.EndDate</td>
+                        <td>@item.TransactionDate</td>
+                        <td>@item.SumInsured</td>
+                        <td>@item.Premium</td>
+                        
+                        <td>@item.AutoFacSumInsured</td>
+                        <td>@item.AutoFacPremium</td>
+                        <td>@item.AutoFacCommission</td>
+                        <td>@item.FacSumInsured</td>
+                        <td>@item.FacPremium</td>
+                        <td>@item.FacCommission</td>
+                        <td>
+                            <div class="tbl-btn-list">
+                                <ul class="list-inline"></ul>
+                            </div>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

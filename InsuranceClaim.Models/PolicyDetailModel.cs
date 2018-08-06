@@ -12,9 +12,9 @@ namespace InsuranceClaim.Models
     {
         public int Id { get; set; }
         //[Display(Name = "Policy Name")]
-        [Required(ErrorMessage = "Please Enter Policy Name.")]
-        [MaxLength(50,ErrorMessage ="Policy name must be less than 50 characters long.")]
-        public string PolicyName { get; set; }
+        //[Required(ErrorMessage = "Please Enter Policy Name.")]
+        //[MaxLength(50,ErrorMessage ="Policy name must be less than 50 characters long.")]
+        //public string PolicyName { get; set; }
         //[Display(Name ="Policy Number")]
         [Required(ErrorMessage ="Please Enter Policy Number.")]
         [MaxLength(25,ErrorMessage ="Policy number must be less than 25 characters long.")]
@@ -22,8 +22,8 @@ namespace InsuranceClaim.Models
         [Display(Name = "Insurer")]
         public int? InsurerId { get; set; }
         //[Display(Name = "Payment Term")]
-        [Required(ErrorMessage = "Please Select Payment Term.")]
-        public int? PaymentTermId { get; set; }
+        //[Required(ErrorMessage = "Please Select Payment Term.")]
+        //public int? PaymentTermId { get; set; }
         //[Display(Name = "Policy Status")]
         public int PolicyStatusId { get; set; }
         //[Display(Name = "Currency")]

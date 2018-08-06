@@ -1,0 +1,79 @@
+﻿@model InsuranceClaim.Models.ListVehicleRiskAboutExpireModels
+@{
+    ViewBag.Title = "VehicleRiskAboutExpire";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+}
+
+
+
+<div class="productsave-section">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
+                <div class="head-title">
+                    <h2>Vehicle Risk About To Expire</h2>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 add-btn">
+                <input type="text" id="txtdate" placeholder="Enter date" class="form-control" />
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 add-btn">
+                <button type="button" class="btn btn-primary pull-right" onclick="searchBydate()">Search</button>
+
+            </div>
+        </div>
+        <div class="product-table-grid">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Customer Contact Number</th>
+                        <th>Policy Number</th>
+                        <th>Transaction Date</th>
+                        <th>vehicle make and model</th>
+                        <th>vehicle/risk start date</th>
+                        <th>vehicle/risk end date</th>
+                        <th>Sum Insured</th>
+                        <th>Premium Due</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ListVehicleRiskAboutExpiredata.ToList())
+                    {
+                        <tr>
+                            <td>@item.Customer_Name</td>
+                            <td>@item.phone_number</td>
+                            <td>@item.Policy_Number</td>
+                            <td>@item.Transaction_date</td>
+                            <td>@item.Vehicle_makeandmodel</td>
+                            <td>@item.Vehicle_startdate</td>
+                            <td>@item.Vehicle_enddate</td>
+                            <td>@item.Sum_Insured</td>
+                            <td>@item.Premium_due</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#txtdate").datetimepicker().on("changeDate", function (ev) {
+            $("#txtdate").datetimepicker('hide');
+        });
+
+
+    })
+    function searchBydate() {
+        var date = $("#txtdate").val();
+        window.location.href = "/Report/VehicleRiskAboutExpire?Date=" + date
+    }
+</script>

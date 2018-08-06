@@ -217,7 +217,20 @@
                                         </div>
                                     </div>
 
-
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.Label("Excess Amount", new { @class = "gender-label" })
+                                                @Html.TextBoxFor(m => m.ExcessAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Excess Amount", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @*@Html.LabelFor(x => x.RoadsideAssistanceAmount, new { @class = "gender-label" })
+                                                @Html.TextBoxFor(m => m.RoadsideAssistanceAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Roadside Assistance Amount", @readonly = "readonly" })*@
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <div class="row">
                                         <div class="col-md-12 next-btn">

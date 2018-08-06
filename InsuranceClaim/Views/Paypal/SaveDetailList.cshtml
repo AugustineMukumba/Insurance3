@@ -53,39 +53,7 @@
         </div>
     </div>
     <br />
-    @*<div class="container">
-            <div class="row">
-                <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
-                    <div class="head-title">
-                        <h2>Save Detail List</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="product-table-grid">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Summary Detail Id</th>
-                            <th>Vehicle Detail Id</th>
-                            <th>Policy Id</th>
-                            <th>Customer Id</th>
-                            <th>Currency Id</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>@Model.SummaryDetailId</td>
-                            <td>@Model.CustomerId</td>
-                            <td>@Model.PolicyId</td>
-                            <td>@Model.CurrencyId</td>
-                            <td>@Model.VehicleDetailId</td>
-                        </tr>
-
-                    </tbody>
-                </table>
-            </div>
-
-        </div>*@
+  
 </div>
 <script>
     function saveAndRedirect() {
@@ -97,7 +65,7 @@
             data: { IsCheck: isCheck, Id: id },
             success: function (data) {
                 if (data == true) {
-                    window.location.href = "/CommissionController/Index"
+                    window.location.href = "/InsuranceHome/Index";
                 }
             }
         })
