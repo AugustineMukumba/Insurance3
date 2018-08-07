@@ -384,6 +384,10 @@ namespace InsuranceClaim.Controllers
                         viewModel.Addthirdparty = data.Addthirdparty;
                         viewModel.AddThirdPartyAmount = data.AddThirdPartyAmount;
                         viewModel.ExcessAmount = data.ExcessAmount;
+                        viewModel.ProductId = data.ProductId;
+                        viewModel.PaymentTermId = data.PaymentTermId;
+                        //viewModel.VehicleUsage = data.VehicleUsage;
+
 
                         viewModel.isUpdate = true;
                         viewModel.vehicleindex = Convert.ToInt32(id);

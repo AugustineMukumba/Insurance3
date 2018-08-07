@@ -67,20 +67,31 @@
                         </tr>
                     </thead>*@
                 <tbody>
-                    <tr>
 
-                        <th>Policy Number</th>
-                        <th>Customer Name</th>
-                        <th>Payment Method</th>
-                        <th>Total Sum Insured</th>
-                        <th>Total Premium</th>
+                    @if (Model != null)
+                    {
+                        if (Model.listpolicy.Count == 0)
+                        {
+                            <label>No Policies Found</label>
+                        }
+                    }
 
-
-
-                    </tr>
                     @foreach (var item in Model.listpolicy.ToList())
                     {
 
+
+
+                        <tr class="policyheading-tr">
+
+                            <th>Policy Number</th>
+                            <th>Customer Name</th>
+                            <th>Payment Method</th>
+                            <th>Total Sum Insured</th>
+                            <th>Total Premium</th>
+                            <th>  </th>
+
+
+                        </tr>
                         <tr class="policynumber-tr">
 
                             <td>@item.PolicyNumber</td>
@@ -88,42 +99,61 @@
                             <td>@MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId)</td>
                             <td>$@item.TotalSumInsured</td>
                             <td>$@item.TotalPremium</td>
-
+                            <td>@Html.ActionLink("View Policy", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</td>
 
                         </tr>
-                            <tr>
-                                <td colspan="5">
-                                    <table class="policy-table-grid" style="width:100%">
+                        <tr>
+                            <td colspan="6">
+                                <table class="policy-table-grid" style="width:100%">
+                                    <tr>
+                                        <th>Vehicle</th>
+                                        <th>Sum Insured</th>
+                                        <th>Auto-Fac Sum Insured</th>
+                                        <th>AutoFac Premium</th>
+                                        <th>Fac Sum Insured</th>
+                                        <th>Fac Premium</th>
+                                        @*<th>Reinsurance Broker</th>*@
+                                        <th>Reinsurance Broker Commission</th>
+                                        <th>Facultative Commission</th>
+                                        <th>Status</th>
+                                        @*<th>Actions(s)</th>*@
+                                    </tr>
+                                    @foreach (var _item in item.Vehicles)
+                                    {
                                         <tr>
-                                            <th>Cover Type</th>
-                                            <th>Is Reinsurance ?</th>
-                                            <th>Vehicle Make</th>
-                                            <th>Vehicle Model</th>
-                                            <th>Reinsurance Amount</th>
-                                            <th>Reinsurance Broker</th>
-                                            <th>Sum Insured</th>
-                                            <th>Premium</th>
-                                            <th>Vehicle registeration Number</th>
+                                            <td>@MiscellaneousService.GetMakeNamebyMakeCode(_item.MakeId)/@MiscellaneousService.GetModelNamebyModelCode(_item.ModelId)</td>
+                                            <td>$@_item.SumInsured</td>
+                                            <td>$@_item.AutoFacReinsuranceAmount</td>
+                                            <td>$@_item.AutoFacPremium</td>
+                                            <td>$@_item.FacReinsuranceAmount</td>
+                                            <td>$@_item.FacPremium</td>
+                                            @*<td>@MiscellaneousService.GetReinsuranceBrokerNamebybrokerid(_item.ReinsurerBrokerId)</td>*@
+                                            <td>$@_item.BrokerCommission</td>
+                                            <td>$@_item.FacultativeCommission</td>
+                                            @if (DateTime.Now < _item.enddate)
+                                            {
+                                                <td>In Force</td>
+                                            }
+                                            else if (DateTime.Now >= _item.enddate && DateTime.Now <= _item.enddate.AddDays(30))
+                                            {
+                                                <td>Renew</td>
+                                                @*<td>@Html.ActionLink("Renew", "Index", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</td>*@
+
+                                            }
+                                            else if (DateTime.Now >= _item.enddate.AddDays(30))
+                                            {
+                                                <td>Lapsed</td>
+                                            }
+
                                         </tr>
-                                        @foreach (var _item in item.Vehicles)
-                                        {
-                                            <tr>
-                                                <td>@MiscellaneousService.GetCoverTypeNamebyID(_item.CoverType)</td>
-                                                <td>@_item.isReinsurance</td>
-                                                <td>@MiscellaneousService.GetMakeNamebyMakeCode(_item.MakeId)</td>
-                                                <td>@MiscellaneousService.GetModelNamebyModelCode(_item.ModelId)</td>
-                                                <td>@_item.ReinsuranceAmount</td>
-                                                <td>@MiscellaneousService.GetReinsuranceBrokerNamebybrokerid(_item.ReinsurerBrokerId)</td>
-                                                <td>$@_item.SumInsured</td>
-                                                <td>$@_item.Premium</td>
-                                                <td>@_item.RegisterationNumber</td>
-                                            </tr>
-                                        }
-                                    </table>
-                                </td>
-                            </tr>
+                                    }
+                                </table>
+                            </td>
+                        </tr>
                     }
                 </tbody>
+
+
 
             </table>
         </div>

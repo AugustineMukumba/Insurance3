@@ -30,7 +30,7 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please Enter Chassis Number")]
         public string ChasisNumber { get; set; }
         public string VehicleColor { get; set; }
-        public string VehicleUsage { get; set; }
+        public int VehicleUsage { get; set; }
         public int? CoverTypeId { get; set; }
         [Required(ErrorMessage = "Please Enter Cover Start Date")]
         public DateTime? CoverStartDate { get; set; }

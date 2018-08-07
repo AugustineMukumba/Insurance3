@@ -178,7 +178,9 @@
                                         <div class="col-sm-6 col-md-6 form-group-select">
                                             <div class="form-group">
                                                 @Html.Label("Vehicle Usage", new { @class = "gender-label" })
-                                                @Html.DropDownListFor(x => x.VehicleUsage, new SelectList(ViewBag.VehicleUsage, "Id", "VehUsage"), new { @class = "form-control" })
+                                              
+                                                
+                                                   @Html.DropDownListFor(x => x.VehicleUsage, new SelectList(ViewBag.VehicleUsage, "Id", "VehUsage"), new { @class = "form-control" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-select">
@@ -584,8 +586,12 @@
     }
 
     $(document).ready(function () {
+        //var deepakTeeth =
 
-
+        if (@Model.VehicleUsage >0)
+        {
+        $("#VehicleUsage").val('@Model.VehicleUsage');
+        }
 
         today = new Date();
         debugger;
@@ -604,7 +610,7 @@
         $("#CoverStartDate").val(today);
         $("#TransactionDate").val(today).css("background-color", "lightgray");
 
-        
+
 
         $("#PaymentTermId").change(function () {
             debugger;

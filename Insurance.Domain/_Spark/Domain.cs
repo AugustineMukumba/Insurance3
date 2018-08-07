@@ -256,7 +256,7 @@ namespace Insurance.Domain
         public string EngineNumber { get; set; }
         public string ChasisNumber { get; set; }
         public string VehicleColor { get; set; }
-        public string VehicleUsage { get; set; }
+        public int? VehicleUsage { get; set; }
         public int? CoverTypeId { get; set; }
         public DateTime? CoverStartDate { get; set; }
         public DateTime? CoverEndDate { get; set; }
