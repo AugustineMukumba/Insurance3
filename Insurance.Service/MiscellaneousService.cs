@@ -1,4 +1,5 @@
 ﻿using Insurance.Domain;
+using InsuranceClaim.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace Insurance.Service
                 return list.FirstName + " " + list.LastName;
             }
             return "";
-            
+
         }
 
         public static string GetPaymentMethodNamebyID(int id)
@@ -73,6 +74,57 @@ namespace Insurance.Service
             }
             return "";
 
+        }
+
+        public static string AddLoyaltyPoints(int CustomerId, int PolicyId, RiskDetailModel vehicle)
+        {
+            var loaltyPointsSettings = InsuranceContext.Settings.Single(where: $"keyname='Points On Renewal'");
+            var loyaltyPoint = 0.00m;
+            switch (vehicle.PaymentTermId)
+            {
+                case 1:                    
+                    if (loaltyPointsSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                    {
+                        loyaltyPoint = ((Convert.ToDecimal(vehicle.AnnualRiskPremium) * Convert.ToDecimal(loaltyPointsSettings.value)) / 100);
+                    }
+                    if (loaltyPointsSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                    {
+                        loyaltyPoint = Convert.ToDecimal(loaltyPointsSettings.value);
+                    }
+                    break;
+                case 3:
+                    if (loaltyPointsSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                    {
+                        loyaltyPoint = ((Convert.ToDecimal(vehicle.QuaterlyRiskPremium) * Convert.ToDecimal(loaltyPointsSettings.value)) / 100);
+                    }
+                    if (loaltyPointsSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                    {
+                        loyaltyPoint = Convert.ToDecimal(loaltyPointsSettings.value);
+                    }
+                    break;
+                case 4:
+                    if (loaltyPointsSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                    {
+                        loyaltyPoint = ((Convert.ToDecimal(vehicle.TermlyRiskPremium) * Convert.ToDecimal(loaltyPointsSettings.value)) / 100);
+                    }
+                    if (loaltyPointsSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                    {
+                        loyaltyPoint = Convert.ToDecimal(loaltyPointsSettings.value);
+                    }
+                    break;
+            }
+
+            LoyaltyDetail objLoyaltydetails = new LoyaltyDetail();
+            objLoyaltydetails.CustomerId = CustomerId;
+            objLoyaltydetails.IsActive = true;
+            objLoyaltydetails.PolicyId = PolicyId;
+            objLoyaltydetails.PointsEarned = loyaltyPoint;
+            objLoyaltydetails.CreatedBy = CustomerId;
+            objLoyaltydetails.CreatedOn = DateTime.Now;
+
+            InsuranceContext.LoyaltyDetails.Insert(objLoyaltydetails);
+
+            return "";
         }
     }
 }

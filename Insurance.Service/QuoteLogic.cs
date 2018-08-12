@@ -25,16 +25,17 @@ namespace Insurance.Service
         public decimal RoadsideAssistancePercentage { get; set; }
         public decimal MedicalExpensesPercentage { get; set; }
         public decimal ExcessAmount { get; set; }
-
-
-
-
+        public decimal AnnualRiskPremium { get; set; }
+        public decimal TermlyRiskPremium { get; set; }
+        public decimal QuaterlyRiskPremium { get; set; }
+        public decimal Discount { get; set; }
 
         public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType, eExcessType excessType, decimal excess, int PaymentTermid, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost)
         {
             var vehicleUsage = InsuranceContext.VehicleUsages.Single(vehicleUsageId);
             var Setting = InsuranceContext.Settings.All();
-            //var AgentCommission = InsuranceContext.AgentCommissions.Single(AgentCommissionId).CommissionAmount;
+            var DiscountOnRenewalSettings = Setting.Where(x => x.keyname == "Discount On Renewal").FirstOrDefault();
+
             var additionalchargeatp = 0.0m;
             var additionalchargepac = 0.0m;
             var additionalchargeebb = 0.0m;
@@ -42,6 +43,12 @@ namespace Insurance.Service
             var additionalchargeme = 0.0m;
             float? InsuranceRate = 0;
             decimal? InsuranceMinAmount = 0;
+            this.AnnualRiskPremium = 0.00m;
+            this.QuaterlyRiskPremium = 0.00m;
+            this.TermlyRiskPremium = 0.00m;
+            this.Discount = 0.00m;
+
+
             if (coverType == eCoverType.Comprehensive)
             {
                 InsuranceRate = vehicleUsage.ComprehensiveRate;
@@ -58,12 +65,49 @@ namespace Insurance.Service
                 InsuranceMinAmount = vehicleUsage.FTPAmount;
             }
 
-           
+
             var premium = 0.00m;
 
             if (coverType == eCoverType.ThirdParty)
             {
                 premium = (decimal)InsuranceRate;
+
+                switch (PaymentTermid)
+                {
+                    case 1:
+                        this.AnnualRiskPremium = premium;
+                        if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                        {
+                            this.Discount = ((this.AnnualRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
+                        }
+                        if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                        {
+                            this.Discount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
+                        }
+                        break;
+                    case 3:
+                        this.QuaterlyRiskPremium = premium / 4;
+                        if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                        {
+                            this.Discount = ((this.QuaterlyRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
+                        }
+                        if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                        {
+                            this.Discount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
+                        }
+                        break;
+                    case 4:
+                        this.TermlyRiskPremium = premium / 3;
+                        if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                        {
+                            this.Discount = ((this.TermlyRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
+                        }
+                        if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                        {
+                            this.Discount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
+                        }
+                        break;
+                }
             }
             else if (coverType == eCoverType.FullThirdParty)
             {
@@ -92,6 +136,8 @@ namespace Insurance.Service
                     premium = premium / 3;
                     break;
             }
+
+
 
             var settingAddThirdparty = Convert.ToDecimal(Setting.Where(x => x.keyname == "Addthirdparty").Select(x => x.value).FirstOrDefault());
             decimal PassengerAccidentCoverAmountPerPerson = Convert.ToInt32(Setting.Where(x => x.keyname == "PassengerAccidentCover").Select(x => x.value).FirstOrDefault());
@@ -132,7 +178,7 @@ namespace Insurance.Service
 
             if (excessType == eExcessType.FixedAmount && excess > 0)
             {
-                this.ExcessAmount =  excess;
+                this.ExcessAmount = excess;
             }
 
             this.Premium = premium;
@@ -153,7 +199,7 @@ namespace Insurance.Service
             //    InsuranceRate = InsuranceRate + float.Parse(excess.ToString());
             //}
 
-            
+
 
             if (excessType == eExcessType.Percentage && excess > 0)
             {

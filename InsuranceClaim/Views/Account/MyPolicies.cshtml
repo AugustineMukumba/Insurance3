@@ -53,7 +53,7 @@
                             <th>Payment Method</th>
                             <th>Total Sum Insured</th>
                             <th>Total Premium</th>
-
+                            
 
                         </tr>
                         <tr class="policynumber-tr">
@@ -62,8 +62,7 @@
                             <td>@MiscellaneousService.GetCustomerNamebyID(item.CustomerId)</td>
                             <td>@MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId)</td>
                             <td>$@item.TotalSumInsured</td>
-                            <td>$@item.TotalPremium</td>
-
+                            <td>$@item.TotalPremium</td>                            
                         </tr>
                         <tr>
                             <td colspan="6">
@@ -94,13 +93,14 @@
                                             <td>$@_item.BrokerCommission</td>
                                             <td>$@_item.FacultativeCommission</td>
                                             @if (DateTime.Now < _item.enddate)
-                                            {                                                
+                                            {
                                                 <td>In Force</td>
+                                                <td><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
                                             }
                                             else if (DateTime.Now >= _item.enddate && DateTime.Now <= _item.enddate.AddDays(30))
                                             {
                                                 <td>Renew</td>
-                                                <td>@Html.ActionLink("Renew", "Index", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</td>
+                                                <td>@Html.ActionLink("Renew", "Index", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-primary" })<br /><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
 
                                             }
                                             else if (DateTime.Now >= _item.enddate.AddDays(30))
@@ -144,6 +144,203 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="mymodals2" role="dialog">
+    @*@using (Html.BeginForm("UploadFile", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {*@
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <label>Document List</label>
+            </div>
+            <div class="modal-body">
+                <div class="tblfilelisting-grid">
+                    <table id="tblfileListing" class="table table-striped">
+                        <thead>
+                            <tr>
+                                @*<th>Serial No</th>*@
+                                <th style="width:100px">Title</th>
+                                <th>Description</th>
+                                <th style="width:100px">Action(s)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <ul id="fileListUL"></ul>
+
+                    <br />
+                </div>
+                <div>
+                    <table style="width:100%">
+                        <tr>
+                            <td style="padding: 6px;">Title</td>
+                            <td style="padding: 6px;"><input class="form-control" id="txt" type="text" name="Textbox" /></td>
+
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px;">Description</td>
+                            <td style="padding: 6px;"><textarea class="form-control" id="tarea" name="message" rows="2" cols="20"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px;">File</td>
+                            <td style="padding: 6px;"><input type="file" id="file_Uploader"  accept=".doc,.docx,.xml,.PDF,.XLSX," /></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div>
+
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="documnet" value="Upload" class="btn btn-primary" />
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+    @Html.Hidden("PolicyNumber")
+    @Html.Hidden("CustomerId")
+    @Html.Hidden("vehicleId")
+</div>
+
+
+<script>
+
+    function uploadFile() {
+        debugger;
+
+        if ($("#txt").val() == "") {
+            toastr.error("No Title selected");
+            return false;
+        }
+        if (document.getElementById("file_Uploader").files.length == 0) {
+            //alert("No files selected");
+            toastr.error("No files selected");
+
+
+            return false;
+        }
+        else {
+            if (window.FormData !== undefined) {
+                debugger;
+                var fileUpload = $("#file_Uploader").get(0);
+                var files = fileUpload.files;
+                var Filedata = new FormData();
+
+                for (var i = 0; i < files.length; i++) {
+                    Filedata.append(files[i].name, files[i]);
+                }
+
+                Filedata.append("PolicyNumber", $("#PolicyNumber").val());
+                Filedata.append("CustomerId", $("#CustomerId").val());
+                Filedata.append("vehicleId", $("#vehicleId").val());
+                Filedata.append("Title", $("#txt").val());
+                Filedata.append("Description", $("#tarea").val());
+
+
+
+                $.ajax({
+                    url: '/Account/UploadFile',
+                    type: "POST",
+                    contentType: false,
+                    processData: false,
+                    data: Filedata,
+                    success: function (result) {
+                        //alert(result);
+
+                        $("#txt").val("");
+                        $("#tarea").val("");
+                        $("#file_Uploader").val('')
+
+                        toastr.success(result);
+
+                        getFiles();
+
+
+
+                    },
+                    error: function (err) {
+                        toastr.error(err.statusText);
+                    }
+                });
+            }
+            else {
+                //alert("FormData is not supported.");
+            }
+        }
+    }
+
+    $(document).ready(function () {
+        debugger;
+        $("#tblfileListing").hide();
+        $("#documnet").click(function () {
+            debugger;
+
+            uploadFile();
+        })
+    })
+
+    function showPopuppDocument(PolicyNumber, CustomerId, vehicleId) {
+        debugger;
+        $("#PolicyNumber").val(PolicyNumber);
+        $("#CustomerId").val(CustomerId);
+        $("#vehicleId").val(vehicleId);
+
+        getFiles();
+
+        $("#txt").val("");
+        $("#tarea").val("");
+        $("#file_Uploader").val('')
+
+        //$("#mymodals").modal("show");
+
+        $("#mymodals2").modal("show");
+
+    };
+
+    function getFiles() {
+
+        var Filedata = new FormData();
+        Filedata.append("PolicyNumber", $("#PolicyNumber").val());
+        Filedata.append("CustomerId", $("#CustomerId").val());
+        Filedata.append("vehicleId", $("#vehicleId").val());
+        $("#tblfileListing tbody").empty();
+        debugger;
+        $.ajax({
+
+            url: '/Account/GetUplodedFiles',
+            type: "POST",
+            contentType: false,
+            processData: false,
+            data: Filedata,
+            success: function (result) {
+                $("#tblfileListing").show();
+                for (var i = 0; i < result.length; i++) {
+                    $("#tblfileListing tbody").append('<tr><td>' + result[i].Title + '</td><td>' + result[i].Decription + '</td><td><a href=' + result[i].FilePath + ' class = "glyphicon glyphicon-download-alt"></a></td></tr>');
+                }
+                if (result.length == 0) {
+                    $("#tblfileListing tbody").append('<tr><td colspan=3> Records not found</td></tr>');
+                    toastr.error("Records not found");
+                }
+               
+            },
+            error: function (err) {
+                //alert(err.statusText);
+            }
+        });
+    }
+
+    function removeSearchBoxText() {
+        window.location.href = "/Account/PolicyList";
+
+    }
+
+</script>
 
 <script>
 

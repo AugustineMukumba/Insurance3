@@ -16,6 +16,7 @@ using AutoMapper;
 using System.Configuration;
 using static InsuranceClaim.Controllers.CustomerRegistrationController;
 using InsuranceClaim.Controllers;
+using System.IO;
 
 namespace InsuranceClaim.Controllers
 {
@@ -987,7 +988,7 @@ namespace InsuranceClaim.Controllers
                     obj.VehicleId = _vehicle.Id;
                     obj.startdate = Convert.ToDateTime(_vehicle.CoverStartDate);
                     obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
-                    if (_reinsurenaceTrans != null)
+                    if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
                     {
                         obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
                         obj.AutoFacPremium = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsurancePremium);
@@ -1326,7 +1327,7 @@ namespace InsuranceClaim.Controllers
                 var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={item.Id}").ToList();
                 var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
                 var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
-                var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+                var product = InsuranceContext.Products.Single(Convert.ToInt32(vehicle.ProductId));
 
                 policylistviewmodel.PolicyNumber = policy.PolicyNumber;
 
@@ -1347,6 +1348,7 @@ namespace InsuranceClaim.Controllers
                     obj.VehicleId = _vehicle.Id;
                     obj.startdate = Convert.ToDateTime(_vehicle.CoverStartDate);
                     obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
+                    obj.RenewalDate = Convert.ToDateTime(_vehicle.RenewalDate);
                     if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
                     {
                         obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
@@ -1371,6 +1373,168 @@ namespace InsuranceClaim.Controllers
 
             return View(policylist);
         }
+
+        public ActionResult LicenceTickets()
+        {
+            var ListLicence = new ListLicenceTickets();
+            var LicenceTickets = new List<LicenceTicketViewModel>();
+            var List = InsuranceContext.LicenceTickets.All().ToList();
+
+            foreach (var item in List)
+            {
+                //var id = InsuranceContext.LicenceTickets.Single(item.Id);
+
+                LicenceTickets.Add(new LicenceTicketViewModel
+                {
+                    IsClosed = Convert.ToBoolean(item.IsClosed),
+                    Id = item.Id,
+                    TicketNo = item.TicketNo,
+                    PolicyNumber = item.PolicyNumber,
+                    CloseComments = item.CloseComments,
+                    ReopenComments = item.ReopenComments,
+                    DeliveredTo = item.DeliveredTo
+
+
+                });
+            }
+            return View(LicenceTickets.ToList());
+        }
+
+        public ActionResult SaveComments(string CloseComments, string hdnSelectedTicket, string DeliveredTo)
+        {
+            if (ModelState.IsValid)
+            {
+                var ticket = InsuranceContext.LicenceTickets.Single(Convert.ToInt32(hdnSelectedTicket));
+                ticket.CloseComments = CloseComments;
+                ticket.DeliveredTo = DeliveredTo;
+                ticket.IsClosed = true;
+                InsuranceContext.LicenceTickets.Update(ticket);
+                //LicenceTickets();
+            }
+            return RedirectToAction("LicenceTickets");
+        }
+
+
+        public ActionResult ReopenTicket(string ReopenComments, int Id)
+        {
+            var ticket = InsuranceContext.LicenceTickets.Single(Convert.ToInt32(Id));
+            ticket.IsClosed = false;
+            ticket.ReopenComments = ReopenComments;
+            InsuranceContext.LicenceTickets.Update(ticket);
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult UploadFile()
+        {
+            if (Request.Files.Count > 0)
+            {
+                try
+                {
+                    var PolicyNumber = System.Web.HttpContext.Current.Request.Params["PolicyNumber"];
+                    var CustomerId = System.Web.HttpContext.Current.Request.Params["CustomerId"];
+                    var vehicleId = System.Web.HttpContext.Current.Request.Params["vehicleId"];
+
+                    var Title = System.Web.HttpContext.Current.Request.Params["Title"];
+                    var Description = System.Web.HttpContext.Current.Request.Params["Description"];
+
+                    //var customerid = "";
+                    //  Get all files from Request object  
+                    HttpFileCollectionBase files = Request.Files;
+                    for (int i = 0; i < files.Count; i++)
+                    {
+                        //string path = AppDomain.CurrentDomain.BaseDirectory + "Uploads/";  
+                        //string filename = Path.GetFileName(Request.Files[i].FileName);  
+
+                        HttpPostedFileBase file = files[i];
+                        string fname;
+
+                        // Checking for Internet Explorer  
+                        if (Request.Browser.Browser.ToUpper() == "IE" || Request.Browser.Browser.ToUpper() == "INTERNETEXPLORER")
+                        {
+                            string[] testfiles = file.FileName.Split(new char[] { '\\' });
+                            fname = Title + "-" + DateTime.Now.ToString("yyyyMMddhhmmss") + "." + testfiles[testfiles.Length - 1].Split('.')[1];
+                        }
+                        else
+                        {
+                            fname = Title + "-" + DateTime.Now.ToString("yyyyMMddhhmmss") + "." + file.FileName.Split('.')[1];
+                        }
+
+
+                        //if folder exist : folder name : customer id eg 1,2,3 etc
+                        string custfolderpath = @Server.MapPath("~/Documents/" + CustomerId + "/");
+                        string policyfolderpath = @Server.MapPath("~/Documents/" + CustomerId + "/" + PolicyNumber + "/");
+                        string vehiclefolderpath = @Server.MapPath("~/Documents/" + CustomerId + "/" + PolicyNumber + "/" + vehicleId + "/");
+
+                        if (!Directory.Exists(custfolderpath))
+                        {
+                            Directory.CreateDirectory(custfolderpath);
+                            Directory.CreateDirectory(policyfolderpath);
+                            Directory.CreateDirectory(vehiclefolderpath);
+                        }
+                        else
+                        {
+                            if (!Directory.Exists(policyfolderpath))
+                            {
+                                Directory.CreateDirectory(policyfolderpath);
+                                Directory.CreateDirectory(vehiclefolderpath);
+                            }
+                            else
+                            {
+                                if (!Directory.Exists(vehiclefolderpath))
+                                {
+                                    Directory.CreateDirectory(vehiclefolderpath);
+                                }
+                            }
+                        }
+
+                        fname = "/Documents/" + CustomerId + "/" + PolicyNumber + "/" + vehicleId + "/" + fname;
+                        file.SaveAs(Server.MapPath(fname));
+
+                        PolicyDocument doc = new PolicyDocument();
+                        doc.PolicyNumber = PolicyNumber;
+                        doc.Title = Title;
+                        doc.Description = Description;
+                        doc.CustomerId = Convert.ToInt32(CustomerId);
+                        doc.FilePath = fname;
+                        doc.vehicleId = Convert.ToInt32(vehicleId);
+                        InsuranceContext.PolicyDocuments.Insert(doc);
+                    }
+                    // Returns message that successfully uploaded  
+                    return Json("File Uploaded Successfully!");
+                }
+                catch (Exception ex)
+                {
+                    return Json("Error occurred. Error details: " + ex.Message);
+                }
+            }
+            else
+            {
+                return Json("No files selected.");
+            }
+
+        }
+        [HttpPost]
+        public JsonResult GetUplodedFiles()
+        {
+            var PolicyNumber = System.Web.HttpContext.Current.Request.Params["PolicyNumber"];
+            var CustomerId = System.Web.HttpContext.Current.Request.Params["CustomerId"];
+            var vehicleId = System.Web.HttpContext.Current.Request.Params["vehicleId"];
+
+            //string[] filePaths = Directory.GetFiles(Server.MapPath("~/Documents/" + CustomerId + "/" + PolicyNumber + "/" + vehicleId + "/"));
+
+            var FileList = InsuranceContext.PolicyDocuments.All(where: $"CustomerId={CustomerId} and PolicyNumber='{PolicyNumber}' and vehicleId={vehicleId}");
+            var list = new List<InsuranceClaim.Models.PolicyDocumentModels>();
+            foreach (var item in FileList)
+            {
+                var obj = new InsuranceClaim.Models.PolicyDocumentModels();
+                obj.Title = item.Title;
+                obj.Decription = item.Description;
+                obj.FilePath = item.FilePath;
+                list.Add(obj);
+            }
+
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
     }
 
 

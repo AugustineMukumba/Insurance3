@@ -19,11 +19,12 @@ namespace InsuranceClaim.Models
         public decimal Annual_Premium { get; set;}
         public decimal Stamp_duty { get; set; }
         public decimal ZTSC_Levy { get; set; }
-        public decimal Net_Premium { get; set; }
+        public decimal? Net_Premium { get; set; }
         public decimal Premium_due { get; set; }
         public decimal Comission_percentage { get; set; }
         public decimal Comission_Amount { get; set; }
         public decimal Sum_Insured { get; set; }
+        public decimal? RadioLicenseCost { get; set; }
     }
     public class ListGrossWrittenPremiumReportModels
     {

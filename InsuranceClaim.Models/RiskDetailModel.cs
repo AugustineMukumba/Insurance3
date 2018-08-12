@@ -30,7 +30,7 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please Enter Chassis Number")]
         public string ChasisNumber { get; set; }
         public string VehicleColor { get; set; }
-        public string VehicleUsage { get; set; }
+        public int? VehicleUsage { get; set; }
         public int? CoverTypeId { get; set; }
         [Required(ErrorMessage = "Please Enter Cover Start Date")]
         public DateTime? CoverStartDate { get; set; }
@@ -78,6 +78,11 @@ namespace InsuranceClaim.Models
         public int PaymentTermId { get; set; }
         [Required(ErrorMessage = "Please Select A Product.")]
         public int ProductId { get; set; }
+        public string InsuranceId { get; set; }
+        public decimal? AnnualRiskPremium { get; set; }
+        public decimal? TermlyRiskPremium { get; set; }
+        public decimal? QuaterlyRiskPremium { get; set; }
+        public decimal? Discount { get; set; }
 
     }
 }

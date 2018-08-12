@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
+using Insurance.Service;
 
 namespace InsuranceClaim.Controllers
 {
@@ -607,26 +608,18 @@ namespace InsuranceClaim.Controllers
             var product = InsuranceContext.Products.Single(Convert.ToInt32(vehicle.ProductId));
             var currency = InsuranceContext.Currencies.Single(policy.CurrencyId);
             var paymentInformations = InsuranceContext.PaymentInformations.SingleCustome(id);
-            var user = UserManager.FindById(customer.UserID);
-            //var user = Microsoft.AspNet.Identity.GetUserManager<ApplicationUserManager>();
+            var user = UserManager.FindById(customer.UserID);            
             var DebitNote = summaryDetail.DebitNote;
             PaymentInformation objSaveDetailListModel = new PaymentInformation();
             objSaveDetailListModel.CurrencyId = policy.CurrencyId;
-            objSaveDetailListModel.PolicyId = vehicle.PolicyId;
-            //objSaveDetailListModel.VehicleDetailId = summaryDetail.VehicleDetailId.Value;
+            objSaveDetailListModel.PolicyId = vehicle.PolicyId;            
             objSaveDetailListModel.CustomerId = summaryDetail.CustomerId.Value;
             objSaveDetailListModel.SummaryDetailId = id;
             objSaveDetailListModel.DebitNote = summaryDetail.DebitNote;
             objSaveDetailListModel.ProductId = product.Id;
-            objSaveDetailListModel.PaymentId = PaymentId == null ? "" : PaymentId.ToString();
+            objSaveDetailListModel.PaymentId = PaymentId == null ? "CASH" : PaymentId.ToString();
             objSaveDetailListModel.InvoiceId = InvoiceId == null ? "" : InvoiceId.ToString();
 
-            // Insurance.Service.PaymentInformationService objPaymentInformationService = new Insurance.Service.PaymentInformationService();
-            //var isExist= objPaymentInformationService.GetById(id);
-            // if (true)
-            // {
-
-            // }
             if (paymentInformations == null)
             {
                 Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
@@ -635,15 +628,18 @@ namespace InsuranceClaim.Controllers
                 bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
                 InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
 
+                foreach (var itemSummaryVehicleDetails in SummaryVehicleDetails)
+                {
+                    var itemVehicle = InsuranceContext.VehicleDetails.Single(itemSummaryVehicleDetails.VehicleDetailsId);
+                    MiscellaneousService.AddLoyaltyPoints(summaryDetail.CustomerId.Value, policy.Id, Mapper.Map<VehicleDetail, RiskDetailModel>(itemVehicle));
+                }                
+
                 if (!userLoggedin)
                 {
-
                     string emailTemplatePath = "/Views/Shared/EmaiTemplates/UserRegisteration.cshtml";
                     string EmailBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(emailTemplatePath));
                     var Body = EmailBody.Replace(" #PolicyNumber#", policy.PolicyNumber).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Email#", user.Email).Replace("#change#", callbackUrl);
                     objEmailService.SendEmail(user.Email, "", "", "Account Creation", Body, null);
-
-
 
                     Insurance.Service.smsService objsmsService = new Insurance.Service.smsService();
 
@@ -665,14 +661,11 @@ namespace InsuranceClaim.Controllers
                 {
                     var totalprem = data.Sum(x => Convert.ToDecimal(x.price));
 
-
                     string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentEmail.cshtml";
                     string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
                     var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#AccountName#", customer.FirstName + ", " + customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Amount#", Convert.ToString(totalprem)).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Cash" : (summaryDetail.PaymentMethodId == 2 ? "PayPal" : "PayNow")));
                     objEmailService.SendEmail(user.Email, "", "", "Payment", Body2, null);
                 }
-
-
 
                 decimal totalpaymentdue = 0.00m;
 
@@ -689,7 +682,6 @@ namespace InsuranceClaim.Controllers
                     totalpaymentdue = (decimal)summaryDetail.TotalPremium * 4;
                 }
 
-
                 string Summeryofcover = "";
                 for (int i = 0; i < SummaryVehicleDetails.Count; i++)
                 {
@@ -700,11 +692,8 @@ namespace InsuranceClaim.Controllers
 
                     string vehicledescription = model.ModelDescription + " / " + make.MakeDescription;
 
-
-                    Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + _vehicle.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + (_vehicle.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(_vehicle.VehicleUsage).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>$0.00</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(_vehicle.Excess) + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(_vehicle.Premium) + "</td></tr>";
+                    Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + _vehicle.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + (_vehicle.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(_vehicle.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>$0.00</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(_vehicle.Excess) + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(_vehicle.Premium) + "</td></tr>";
                 }
-
-                //TempData["Summeryofcover"] = Summeryofcover;
 
                 var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
                 var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == vehicle.PaymentTermId);
@@ -716,7 +705,6 @@ namespace InsuranceClaim.Controllers
 
             Session.Remove("PolicyData");
             Session.Remove("VehicleDetails");
-            //Session.Remove("policytermid");
             Session.Remove("SummaryDetailed");
             Session.Remove("CardDetail");
             Session.Remove("issummaryformvisited");

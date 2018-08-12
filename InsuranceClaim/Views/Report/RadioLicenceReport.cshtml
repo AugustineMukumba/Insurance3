@@ -1,53 +1,42 @@
-﻿@model InsuranceClaim.Models.ListStampDutyReportModels
+﻿@model List<InsuranceClaim.Models.RadioLicenceReportModel>
 @{
-    ViewBag.Title = "StampDutyReport";
+    ViewBag.Title = "RadioLicenceReport";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
 
-
-
-
 <div class="productsave-section">
-
     <div class="container">
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
                 <div class="head-title">
-                    <h2>Stamp Duty Report</h2>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 add-btn">
-                <div class="text-right">
-                    @*<button type="button" class="btn btn-primary">Add</button>*@
-                    
-
-
-
+                    <h2>Radio Licence Reports</h2>
                 </div>
             </div>
         </div>
         <div class="product-table-grid">
+
             <table class="table table-striped tablesorter">
+
                 <thead>
                     <tr>
-                        <th>Customer Name</th>
-                        <th>Policy Number</th>
-                        <th>Transaction Date</th>
-                        <th>Premium Due</th>
-                        <th>Stamp Duty</th>
+                        <th style="width:300px;">Customer Name</th>
+                        <th style="width:300px;">Policy Number</th>
+                        <th style="width:300px;">Transaction Date</th>
+                        <th style="width:140px;text-align: left;">Radio Licence Cost</th>
                     </tr>
+
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.ListStampDutyReportdata.ToList())
+                    @foreach (var item in Model)
                     {
                         <tr>
-                            <td>@item.Customer_Name</td>
+                            <td>@item.FirstName @item.LastName</td>
                             <td>@item.Policy_Number</td>
                             <td>@item.Transaction_date</td>
-                            <td>$@item.Premium_due</td>
-                            <td>$@item.Stamp_duty</td>
+                            <td>$ @item.RadioLicenseCost</td>
                         </tr>
                     }
+
                 </tbody>
             </table>
         </div>
@@ -58,5 +47,6 @@
 
         $(".tablesorter").tablesorter();
     });
+
 
 </script>

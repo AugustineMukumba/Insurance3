@@ -26,6 +26,41 @@ ol, ul {
     background: lightgray !important;
 }
 
+
+/*******START*********************Saturday - 11 aug 2018********/
+
+.DashboardButton {
+    border: 3px solid;
+    border-radius: 30px;
+    padding: 10px 17px !important;
+    font-weight: bold;
+}
+
+.GrossWrittenPremiumReport .container {
+    margin-left: 3%;
+    margin-right: 3%;
+    width: 1785px;
+}
+.DailyReceiptsReport .container {
+    margin-left: 3%;
+    margin-right: 3%;
+    width: 1785px;
+}
+
+.ReinuranceReport .container {
+       margin-left: 14%;
+    margin-right: 3%;
+    width: 1314px;
+}
+
+.sub-table tr {
+    padding-bottom: 8px;
+    float: left;
+    width: 100%;
+}
+
+/*******END***************************(Saturday - 11 aug 2018)********/
+
 /****************************************************************************/
 .top-header-section {
     font-family: 'Poppins', sans-serif;
@@ -88,10 +123,10 @@ ol, ul {
 }
 
 .form-group-text .form-group .countrycode {
-    width : 22%;
+    width: 22%;
     margin-right: 10px;
-    float:left;
-    height:    51px;
+    float: left;
+    height: 51px;
 }
 
 .form-group-text .form-group .phonenumber {
@@ -238,7 +273,7 @@ ol, ul {
 }
 
 .hvr-overline-from-center {
-      cursor:pointer;
+    cursor: pointer;
     display: inline-block;
     vertical-align: middle;
     -webkit-transform: perspective(1px) translateZ(0);
@@ -249,7 +284,7 @@ ol, ul {
 }
 
 .hvr-float-shadow {
-     cursor:pointer;
+    cursor: pointer;
     display: inline-block;
     vertical-align: middle;
     -webkit-transform: perspective(1px) translateZ(0);
@@ -262,13 +297,13 @@ ol, ul {
     transition-property: transform;
 }
 
-.hvr-float-shadow:hover, .hvr-float-shadow:focus, .hvr-float-shadow:active {
-    -webkit-transform: translateY(-5px);
-    transform: translateY(-5px);
-}
+    .hvr-float-shadow:hover, .hvr-float-shadow:focus, .hvr-float-shadow:active {
+        -webkit-transform: translateY(-5px);
+        transform: translateY(-5px);
+    }
 
 .hvr-grow-shadow {
-    cursor:pointer;
+    cursor: pointer;
     display: inline-block;
     vertical-align: middle;
     -webkit-transform: perspective(1px) translateZ(0);
@@ -280,19 +315,18 @@ ol, ul {
     transition-property: box-shadow, transform;
 }
 
-.hvr-grow-shadow:hover, .hvr-grow-shadow:focus, .hvr-grow-shadow:active {
-    box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-}
+    .hvr-grow-shadow:hover, .hvr-grow-shadow:focus, .hvr-grow-shadow:active {
+        box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
+        -webkit-transform: scale(1.1);
+        transform: scale(1.1);
+    }
 
 .dashboard-section {
-    
     margin: auto;
     width: 100%;
     /*background: #3b3b3b;*/
     padding: 30px;
-    border:1px solid #ddd;
+    border: 1px solid #ddd;
     margin-bottom: 50px;
 }
 
@@ -518,6 +552,16 @@ h4.footer-heading {
     z-index: 9999;
     background: #ffff;
     right: 0;
+}
+
+.licenceticket-table-top table tr td.list-btn-right{
+    vertical-align:middle
+}
+.licenceticket-table ul li input[type="button"] {
+    border: none;
+}
+.list-inline li {
+    padding-bottom: 5px;
 }
 
 .online-caht-box {
@@ -943,11 +987,11 @@ button.btn-sm.btn-danger {
 .form-group-text .form-group span.text-danger {
     position: absolute;
     top: 100%;
-
 }
-.form-group-text .form-group span.help-inline{ position: absolute;
-    top: 100%;
 
+.form-group-text .form-group span.help-inline {
+    position: absolute;
+    top: 100%;
 }
 
 .form-group-select .form-group span.text-danger {
@@ -1009,20 +1053,29 @@ button.btn-sm.btn-danger {
 }
 
 .policy-table-grid-main table tbody td {
-    padding:0;
+    padding: 0;
 }
 
 .policy-table-grid-main table .policy-table-grid td {
     padding: 10px 5px;
     border: 1px solid #ddd;
-    font-size: 13px; color:#444
+    font-size: 13px;
+    color: #444;
 }
+
 tr.policynumber-tr {
     background: #57c3cf !important;
 }
-.policy-table-grid-main table tbody tr.policynumber-tr td{color:#fff; border:none; padding:10px 5px;} 
 
-table.policy-table-grid{margin:0 0 20px;}
+.policy-table-grid-main table tbody tr.policynumber-tr td {
+    color: #fff;
+    border: none;
+    padding: 10px 5px;
+}
+
+table.policy-table-grid {
+    margin: 0 0 20px;
+}
 
 
 .color-box {
@@ -1036,13 +1089,19 @@ table.policy-table-grid{margin:0 0 20px;}
     height: 100px;
     vertical-align: middle;
     display: table-cell;
-       width: 247px;
+    width: 247px;
     text-align: center;
     border-radius: 4px;
-    box-shadow: -3px 2px 2px #cccc
+    box-shadow: -3px 2px 2px #cccc;
 }
-.color-box h4{color:#fff;}
-.width-auto{width:auto}
+
+    .color-box h4 {
+        color: #fff;
+    }
+
+.width-auto {
+    width: auto;
+}
 
 .search-btn button {
     padding: 6px 0;

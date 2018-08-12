@@ -15,6 +15,7 @@ namespace Insurance.Service
             try
             {
                 var db = Mapper.Map<RiskDetailModel, VehicleDetail>(model);
+                db.IsActive = true;
                 InsuranceContext.VehicleDetails.Insert(db);
                 return db.Id;
             }

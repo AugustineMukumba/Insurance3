@@ -134,7 +134,7 @@ namespace Insurance.Domain
         public int Id { get; set; }
         public int? CustomerId { get; set; }
         public int? PolicyId { get; set; }
-        public int? PointsEarned { get; set; }
+        public decimal? PointsEarned { get; set; }
         public DateTime? EarnedDate { get; set; }
         public int? PointsRedemed { get; set; }
         public DateTime? RedemedDate { get; set; }
@@ -256,7 +256,7 @@ namespace Insurance.Domain
         public string EngineNumber { get; set; }
         public string ChasisNumber { get; set; }
         public string VehicleColor { get; set; }
-        public string VehicleUsage { get; set; }
+        public int? VehicleUsage { get; set; }
         public int? CoverTypeId { get; set; }
         public DateTime? CoverStartDate { get; set; }
         public DateTime? CoverEndDate { get; set; }
@@ -297,9 +297,12 @@ namespace Insurance.Domain
         public DateTime? TransactionDate { get; set; }
         public int PaymentTermId { get; set; }
         public int ProductId { get; set; }
-
-
-
+        public bool? IncludeRadioLicenseCost { get; set; }
+        public string InsuranceId { get; set; }
+        public decimal? AnnualRiskPremium { get; set; }
+        public decimal? TermlyRiskPremium { get; set; }
+        public decimal? QuaterlyRiskPremium { get; set; }
+        public decimal? Discount { get; set; }
     }
 
     public partial class VehicleMake : Entity<VehicleMake>
@@ -603,5 +606,45 @@ namespace Insurance.Domain
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
 
+    }
+
+    public partial class LicenceTicket : Entity<LicenceTicket>
+    {
+        public LicenceTicket() { }
+        public LicenceTicket(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public string TicketNo { get; set; }
+        public string PolicyNumber { get; set; }
+        public int? VehicleId { get; set; }
+        public bool? IsClosed { get; set; }
+        public string CloseComments { get; set; }
+        public string ReopenComments { get; set; }
+        public string DeliveredTo { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public int? ModifyBy { get; set; }
+    }
+
+    public partial class CustomerWallet : Entity<CustomerWallet>
+    {
+        public CustomerWallet() { }
+        public CustomerWallet(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public int? CustId { get; set; }
+        public decimal? Points { get; set; }
+        public DateTime? CreatedDate { get; set; }
+    }
+    public partial class PolicyDocument : Entity<PolicyDocument>
+    {
+        public PolicyDocument() { }
+        public PolicyDocument(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public int? CustomerId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string FilePath { get; set; }
+        public string PolicyNumber { get; set; }
+        public int? vehicleId { get; set; }
     }
 }

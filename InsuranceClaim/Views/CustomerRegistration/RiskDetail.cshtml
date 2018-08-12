@@ -78,6 +78,9 @@
                             @Html.HiddenFor(m => m.RoadsideAssistancePercentage)
                             @Html.HiddenFor(m => m.MedicalExpensesPercentage)
                             @Html.HiddenFor(m => m.ExcessAmount)
+                            @Html.HiddenFor(m => m.AnnualRiskPremium)
+                            @Html.HiddenFor(m => m.QuaterlyRiskPremium)
+                            @Html.HiddenFor(m => m.TermlyRiskPremium)                            
                         </div>
                         <div class="form-group-section">
                             <div class="form-title">
@@ -395,6 +398,21 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.Label("Discount", new { @class = "gender-label" })
+                                                @Html.TextBoxFor(m => m.Discount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Discount" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                            <div class="form-group">
+                                                @*@Html.Label("Want the licence disk to be delivered ?", new { @class = "gender-label" })
+                                                @Html.CheckBoxFor(x => x.IsLicenseDiskNeeded, new { @style = "width: 40px;height: 36px;" })*@
+                                            </div>
+                                        </div>
+                                    </div>
 
 
                                     @if (Model.isUpdate)
@@ -585,7 +603,15 @@
 
     $(document).ready(function () {
 
+        if (@Model.VehicleUsage != null && @Model.VehicleUsage > 0)
+        {
+            $("#VehicleUsage").val('@Model.VehicleUsage');
+        }
 
+        if (@Model.ProductId != null && @Model.ProductId > 0)
+        {
+            $("#ProductId").val('@Model.ProductId');
+        }
 
         today = new Date();
         debugger;
@@ -604,7 +630,7 @@
         $("#CoverStartDate").val(today);
         $("#TransactionDate").val(today).css("background-color", "lightgray");
 
-        
+
 
         $("#PaymentTermId").change(function () {
             debugger;
@@ -971,6 +997,12 @@
                 $("#ExcessBuyBackPercentage").val(data.ExcessBuyBackPercentage);
                 $("#PassengerAccidentCoverAmountPerPerson").val(data.PassengerAccidentCoverAmountPerPerson);
                 $("#ExcessAmount").val(data.ExcessAmount);
+
+                $("#AnnualRiskPremium").val(data.AnnualRiskPremium);
+                $("#TermlyRiskPremium").val(data.TermlyRiskPremium);
+                $("#QuaterlyRiskPremium").val(data.QuaterlyRiskPremium);
+                $("#Discount").val(data.Discount);
+
 
                 //$("#NumberofPersons").val(data.NumberofPersons);
                 //$("#AddThirdPartyAmount").val(data.AddThirdPartyAmount);

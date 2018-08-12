@@ -30,8 +30,7 @@ namespace InsuranceClaim.Models
         [Display(Name = "Passenger Accident Cover Amount")]
         public decimal? PassengerAccidentCoverAmount { get; set; }
         public decimal? ExcessAmount { get; set; }
-        //[Display(Name = "Roadside Assistance Amount")]
-        //public decimal? RoadsideAssistanceAmount { get; set; }
+        public decimal? Discount { get; set; }
 
     }
 }

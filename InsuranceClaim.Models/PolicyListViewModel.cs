@@ -40,6 +40,7 @@ namespace InsuranceClaim.Models
         public int CoverType { get; set; }
         public DateTime startdate { get; set; }
         public DateTime enddate { get; set; }
+        public DateTime RenewalDate { get; set; }
         public decimal BrokerCommission { get; set; }
 
         public decimal FacultativeCommission { get; set; }

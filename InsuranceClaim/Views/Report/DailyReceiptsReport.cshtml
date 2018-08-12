@@ -1,0 +1,92 @@
+﻿@model List<InsuranceClaim.Models.DailyReceiptsReportModel>
+@{
+    ViewBag.Title = "DailyReceiptsReport";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+}
+
+<div class="productsave-section DailyReceiptsReport">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
+                <div class="head-title">
+                    <h2>Daily Receipts Report</h2>
+                </div>
+            </div>
+        </div>
+        <div class="product-table-grid">
+
+            <table class="table table-striped tablesorter">
+
+                <thead>
+                    <tr>
+                        <th>Customer Details</th>
+                        @*<th>Contact Number</th>*@
+                        <th>Product</th>
+                        <th>Policy Number</th>
+                        <th>Transaction Date</th>
+                        <th>Receipt Number</th>
+                        <th>Premium Due</th>
+                        <th>Amount Paid</th>
+                        <th>Balance</th>
+                        <th style="text-align:left;">Payment Type</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <table class="sub-table">
+                                    <tr>
+                                        <td><b>Customer Name :</b><br />@item.FirstName @item.LastName<br /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Contact Number : </b><br />@item.Contact<br /></td>
+                                    </tr>
+                                </table>
+                            </td>
+                            @*<td>@item.Contact</td>*@
+                            <td>@item.Product</td>
+                            <td>@item.PolicyNumber</td>
+                            <td>@item.TransactionDate</td>
+                            <td>@item.ReceiptNumber</td>
+                            <td>$ @item.PremiumDue</td>
+                            <td>$ @item.AmountPaid</td>
+                            <td>$ @item.Balance</td>
+                            <td>@item.PaymentType</td>
+                        </tr>
+                    }
+
+                </tbody>
+
+
+
+            </table>
+        </div>
+
+
+
+    </div>
+</div>
+<script>
+
+
+    $(document).ready(function () {
+
+        $(".tablesorter").tablesorter({
+
+            headers: {
+                0: {
+                    sorter: false
+                },
+            }
+
+
+        });
+    });
+
+
+
+</script>

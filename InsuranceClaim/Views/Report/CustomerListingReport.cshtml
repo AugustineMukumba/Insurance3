@@ -1,0 +1,113 @@
+﻿@model List<InsuranceClaim.Models.CustomerListingReportModel>
+@{
+    ViewBag.Title = "CustomerListingReport";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+}
+
+<div class="productsave-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
+                <div class="head-title">
+                    <h2>Customer Listing Report</h2>
+                </div>
+            </div>
+        </div>
+        <div class="product-table-grid">
+
+            <table class="table table-striped tablesorter">
+
+                <thead>
+                    <tr>
+                        <th style="width:270px;">Customer Details</th>
+                        @*<th>Gender</th>
+                            <th>Date of birth</th>
+                            <th>National Identification Number</th>
+                            <th>Contact Number</th>
+                            <th>Email address</th>
+                            <th>Town/City</th>*@
+                        <th style="width:170px;">Product</th>
+                        <th style="width:170px;">Make and Model</th>
+                        <th>Vehicle Usage</th>
+                        <th style="text-align: left;">Payment Details</th>
+                        @*<th>Payment Type/Mode</th>*@
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <table class="sub-table">
+                                    <tr>
+                                        <td><b>Customer Name :</b><br />@item.FirstName @item.LastName<br /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Gender : </b><br />@item.Dateofbirth<br /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>National Identification Number :</b><br />@item.NationalIdentificationNumber<br /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Contact Number :</b><br />@item.ContactNumber<br /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Email address :</b><br />@item.EmailAddress<br /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Town/City :</b><br />@item.City<br /></td>
+                                    </tr>
+                                </table>
+                            </td>
+                            @*<td>@item.Gender</td>
+                                <td>@item.Dateofbirth</td>
+                                <td>@item.NationalIdentificationNumber</td>
+                                <td>@item.ContactNumber</td>
+                                <td>@item.EmailAddress</td>
+                                <td>@item.City</td>*@
+                            <td>@item.Product</td>
+                            <td>@item.VehicleMake / @item.VehicleModel</td>
+                            <td>@item.VehicleUsage</td>
+                            <td>
+
+                                <table class="sub-table">
+                                    <tr>
+                                        <td><b>Payment Term :</b><br />@item.PaymentTerm<br /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Payment Mode : </b><br />@item.PaymentType<br /></td>
+                                </tr>
+                            </table>
+                        </td>
+                        @*<td>@item.PaymentType</td>*@
+                    </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+
+        $(".tablesorter").tablesorter({
+
+            headers: {
+                0: {
+                    sorter: false
+                },
+                3: {
+                    sorter: false
+                }
+            }
+
+
+        });
+    });
+
+
+
+</script>
