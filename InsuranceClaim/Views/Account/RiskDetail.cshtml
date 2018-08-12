@@ -10,9 +10,16 @@
         </div>
     </div>
 </div>
+
 <div class="body-content-section">
 
+    <div class="Process-step-section">
+        <div class="container">
+            <div class="row bs-wizard">
 
+            </div>
+        </div>
+    </div>
     <div class="form-section-top">
         <div class="container">
             <div class="row">
@@ -41,359 +48,322 @@
                             </div>
                             <div class="form-group-input">
                                 <div id="contact-form" class="contact-form">
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Vehicle Number", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.NoOfCarsCovered, new { @placeholder = "Vehicle Number", @autocomplete = "off", @class = "form-control", @maxlength = "2", @readonly = "readonly" })
-                                                @Html.ValidationMessageFor(m => m.NoOfCarsCovered, "", new { @class = "text-danger" })
-                                                @Html.ValidationMessageFor(m => m.NoOfCarsCovered, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Registration No", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.RegistrationNo, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Registration Number" })
-                                                @Html.ValidationMessageFor(m => m.RegistrationNo, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-select">
-                                            <div class="form-group">
-                                                @Html.Label("Make", new { @class = "gender-label" })
-                                                @Html.DropDownListFor(x => x.MakeId, new SelectList(ViewBag.Makers, "MakeCode", "MakeDescription"), new { @class = "form-control" })
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-select">
-                                            <div class="form-group">
-                                                @Html.Label("Model", new { @class = "gender-label" })
-                                                @Html.DropDownListFor(x => x.ModelId, new SelectList(ViewBag.Model, "ModelCode", "ModelDescription"), new { @class = "form-control" })
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Cubic Capacity", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.CubicCapacity, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cubic Capacity", @maxlength = "4" })
-                                                @Html.ValidationMessageFor(m => m.CubicCapacity, "", new { @class = "text-danger" })
-                                                @*@Html.ValidationMessageFor(m => m.CubicCapacity, "", new { @class = "text-danger" })*@
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Vehicle Year", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.VehicleYear, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle year", @maxlength = "4" })
-                                                @Html.ValidationMessageFor(m => m.VehicleYear, "", new { @class = "text-danger" })
-                                                @*@Html.ValidationMessageFor(m => m.VehicleYear, "", new { @class = "text-danger" })*@
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Engine Number", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.EngineNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Engine Number" })
-                                                @Html.ValidationMessageFor(m => m.EngineNumber, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Chasis Number", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.ChasisNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Chassis Number" })
-                                                @Html.ValidationMessageFor(m => m.ChasisNumber, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-select">
-                                            <div class="form-group">
-                                                @*@Html.TextBoxFor(x => x.PolicyName, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Name" })*@
-                                                @Html.Label("Product Name", new { @class = "gender-label" })
-                                                @Html.DropDownListFor(x => x.ProductId, new SelectList(ViewBag.Products, "Id", "ProductName"), new { @class = "form-control" })
-                                                @Html.ValidationMessageFor(x => x.ProductId, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 form-group-select">
-                                            <div class="form-group">
-                                                @Html.Label("Payment Term", new { @class = "gender-label" })
-                                                @Html.DropDownListFor(x => x.PaymentTermId, ViewBag.ePaymentTermData as SelectList, "Select Payment Term", new { @class = "form-control" })
-                                                @Html.ValidationMessageFor(x => x.PaymentTermId, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-select">
-                                            <div class="form-group">
-                                                @Html.Label("Vehicle Usage", new { @class = "gender-label" })
-
-
-                                                @Html.DropDownListFor(x => x.VehicleUsage, new SelectList(ViewBag.VehicleUsage, "Id", "VehUsage"), new { @class = "form-control" })
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-select">
-                                            <div class="form-group">
-                                                @Html.Label("Cover Type", new { @class = "gender-label" })
-                                                @Html.DropDownListFor(x => x.CoverTypeId, new SelectList(ViewBag.CoverType, "id", "Name"), new { @class = "form-control" })
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Suggested Value", new { @class = "gender-label" })
-                                                @Html.TextBox("VehicleSumInsures", null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Suggested Value", @maxlength = "5" })
-                                                @*@Html.ValidatiVehicleSumInsuresonMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
-                                                @* @Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
-
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Sum Insured", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.SumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insured", @maxlength = "11" })
-                                                <span class="text-danger" id="validationSumIns">Please Enter Sum Insured</span>
-                                                @*@Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
-                                                @*@Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div id="thridparty" class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-select">
-                                            <div id="thirdpartycheck" class="form-group">
-                                                @Html.Label("Add Third Party Insurance", new { @class = "gender-label" })
-                                                @Html.CheckBoxFor(x => x.Addthirdparty, new { @style = "width: 40px;height: 36px;" })
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Add Third Party Amount", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.AddThirdPartyAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Add Third Party Amount", @disabled = "disabled" })
-                                                @* @Html.TextBoxFor(x => x.AddThirdPartyAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Chassis Number" })*@
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div id="thridparty" class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-select">
-                                            <div id="thirdpartycheck" class="form-group">
-                                                @Html.Label("Include Radio License Cost", new { @class = "gender-label" })
-                                                @Html.CheckBoxFor(x => x.IncludeRadioLicenseCost, new { @style = "width: 40px;height: 36px;" })
-                                            </div>
-
-                                        </div>
-
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Radio License Cost", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.RadioLicenseCost, new { @class = "form-control inputDisabled", @autocomplete = "off", @placeholder = "Vehicle Radio Licence Cost", @maxlength = "5" })
-                                                @Html.ValidationMessageFor(m => m.RadioLicenseCost, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Cover Start Date", new { @class = "gender-label" })
-                                                <div class='input-group date' id='datetimepicker1'>
-                                                    @Html.TextBoxFor(m => m.CoverStartDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Cover Start Date" })
-                                                    @Html.ValidationMessageFor(m => m.CoverEndDate, "", new { @class = "text-danger" })
-                                                    <span class="input-group-addon">
-                                                        <span class="glyphicon glyphicon-calendar"></span>
-
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Cover End Date", new { @class = "gender-label" })
-                                                <div class='input-group date' id='datetimepicker2'>
-                                                    @Html.TextBoxFor(m => m.CoverEndDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Cover End Date" })
-                                                    @Html.ValidationMessageFor(m => m.CoverEndDate, "", new { @class = "text-danger" })
-                                                    <span class="input-group-addon">
-                                                        <span class="glyphicon glyphicon-calendar"></span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="display:none">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Renewal Date", new { @class = "gender-label" })
-                                                <div class='input-group date' id='datetimepicker3'>
-                                                    @Html.TextBoxFor(x => x.RenewalDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Renewal Date" })
-                                                    <span class="input-group-addon">
-                                                        <span class="glyphicon glyphicon-calendar"></span>
-                                                    </span>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Transaction Date", new { @class = "gender-label" })
-                                                <div class='input-group' id='datetimepicker4'>
-                                                    @Html.TextBoxFor(x => x.TransactionDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Transaction/Effective Date" })
-                                                    <span class="input-group-addon">
-                                                        <span class="glyphicon glyphicon-calendar"></span>
-                                                    </span>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Basic Premium", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.Premium, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Basic Premium", @readonly = "readonly" })
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-select" style="display:none;">
-                                            <div class="form-group">
-                                                @Html.Label("Agent Commission", new { @class = "gender-label" })
-                                                @Html.DropDownListFor(x => x.AgentCommissionId, new SelectList(ViewBag.AgentCommission, "Id", "CommissionName"), new { @class = "form-control" })
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Stamp Duty", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.StampDuty, new { @class = "form-control", @autocomplete = "off", @placeholder = "Stamp Duty", @readonly = "readonly" })
-                                                @Html.ValidationMessageFor(m => m.StampDuty, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("ZTSC Levy", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.ZTSCLevy, new { @class = "form-control", @autocomplete = "off", @placeholder = "ZTSC Levy", @readonly = "readonly" })
-                                                @Html.ValidationMessageFor(m => m.ZTSCLevy, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-select">
-                                            <div class="form-group">
-                                                @Html.Label("Excess Type", new { @class = "gender-label" })
-                                                <select name="ExcessType" class="form-control" id="ExcessType">
-                                                    <option value="1">Percentage</option>
-                                                    <option value="2">Fixed Amount</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Excess", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.Excess, new { @class = "form-control", @autocomplete = "off", @placeholder = "Excess", maxlength = "5" })
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-select">
-                                            <div class="form-group">
-                                                @Html.Label("Want the licence disk to be delivered ?", new { @class = "gender-label" })
-                                                @Html.CheckBoxFor(x => x.IsLicenseDiskNeeded, new { @style = "width: 40px;height: 36px;" })
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="row">
-
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group margin-0">
-                                                @Html.Label("Optional Covers", new { @class = "gender-label" })
-                                            </div>
-                                            <div class="form-group-list">
-                                                <ul class="list-inline">
-                                                    <li>
-                                                        @Html.CheckBoxFor(x => x.PassengerAccidentCover)
-                                                        @Html.Label("Passenger Accident Cover", new { @class = "gender-label" })
-
-
-                                                    </li>
-                                                    <li>
-                                                        @Html.CheckBoxFor(x => x.ExcessBuyBack)
-                                                        @Html.Label("Excess BuyBack", new { @class = "gender-label" })
-
-                                                    </li>
-                                                    <li>
-                                                        @Html.CheckBoxFor(x => x.RoadsideAssistance)
-                                                        @Html.Label("Roadside Assistance", new { @class = "gender-label" })
-
-                                                    </li>
-                                                    <li>
-                                                        @Html.CheckBoxFor(x => x.MedicalExpenses)
-                                                        @Html.Label("Medical Expenses", new { @class = "gender-label" })
-
-                                                    </li>
-                                                </ul>
-
-                                            </div>
-
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text" id="Containernumberofpersons">
-                                            <div class="form-group">
-                                                @Html.Label("Number of Persons", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(x => x.NumberofPersons, null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Number of Persons", @disabled = "disabled" })
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    @*@if (Model.isUpdate)
-                                    {
-                                        <hr />
+                                    <fieldset disabled="disabled">
                                         <div class="row">
-                                            <div class="col-md-12 next-btn">
-                                                <div class="row">
-                                                    <div class="col-sm-6 col-md-6">
-                                                        <div class="text-left">
-                                                            <div class="back-left"><button type="button" style="padding:5px" onclick="cancelUpdate()" class="btn">Cancel</button></div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-sm-6 col-md-6">
-                                                        <div class="text-right">
-                                                            <button type="submit" style="padding:5px" class="btn">Update</button>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }*@
-
-                                    @*<hr />
-                                    <div class="row">
-                                        <div class="next-btn">
-                                            <div class="col-sm-6 col-md-6">
+                                            <div class="col-sm-6 col-md-6 form-group-text">
                                                 <div class="form-group">
-                                                    @Html.Label("Add More Vehicles ?", new { @class = "gender-label" })
-                                                    @Html.CheckBoxFor(m => m.chkAddVehicles, new { @class = (Model.isUpdate ? "btnDisabled" : ""), @style = "width: 40px;height: 36px;" })
+                                                    @Html.Label("Vehicle Number", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.NoOfCarsCovered, new { @placeholder = "Vehicle Number", @autocomplete = "off", @class = "form-control", @maxlength = "2", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(m => m.NoOfCarsCovered, "", new { @class = "text-danger" })
+                                                    @Html.ValidationMessageFor(m => m.NoOfCarsCovered, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6 col-md-6">
-                                                <div class="form-group text-right">
-                                                    <button type="submit" id="btnAddVehicle" class="btn btnDisabled @(Model.isUpdate ? "btnDisabled" : "")" style="width: 270px;    margin-top: 8px;">Submit & Add More Vehicle</button>
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Registration No", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.RegistrationNo, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Registration Number" })
+                                                    @Html.ValidationMessageFor(m => m.RegistrationNo, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>*@
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-select">
+                                                <div class="form-group">
+                                                    @Html.Label("Make", new { @class = "gender-label" })
+                                                    @Html.DropDownListFor(x => x.MakeId, new SelectList(ViewBag.Makers, "MakeCode", "MakeDescription"), new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-select">
+                                                <div class="form-group">
+                                                    @Html.Label("Model", new { @class = "gender-label" })
+                                                    @Html.DropDownListFor(x => x.ModelId, new SelectList(ViewBag.Model, "ModelCode", "ModelDescription"), new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Cubic Capacity", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.CubicCapacity, new { @class = "form-control", @autocomplete = "off", @placeholder = "Cubic Capacity", @maxlength = "4" })
+                                                    @Html.ValidationMessageFor(m => m.CubicCapacity, "", new { @class = "text-danger" })
+                                                    @*@Html.ValidationMessageFor(m => m.CubicCapacity, "", new { @class = "text-danger" })*@
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Vehicle Year", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.VehicleYear, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle year", @maxlength = "4" })
+                                                    @Html.ValidationMessageFor(m => m.VehicleYear, "", new { @class = "text-danger" })
+                                                    @*@Html.ValidationMessageFor(m => m.VehicleYear, "", new { @class = "text-danger" })*@
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Engine Number", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.EngineNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Engine Number" })
+                                                    @Html.ValidationMessageFor(m => m.EngineNumber, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Chasis Number", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.ChasisNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Chassis Number" })
+                                                    @Html.ValidationMessageFor(m => m.ChasisNumber, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-select">
+                                                <div class="form-group">
+                                                    @*@Html.TextBoxFor(x => x.PolicyName, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Name" })*@
+                                                    @Html.Label("Product Name", new { @class = "gender-label" })
+                                                    @Html.DropDownListFor(x => x.ProductId, new SelectList(ViewBag.Products, "Id", "ProductName"), new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(x => x.ProductId, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 form-group-select">
+                                                <div class="form-group">
+                                                    @Html.Label("Payment Term", new { @class = "gender-label" })
+                                                    @Html.DropDownListFor(x => x.PaymentTermId, ViewBag.ePaymentTermData as SelectList, "Select Payment Term", new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(x => x.PaymentTermId, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-select">
+                                                <div class="form-group">
+                                                    @Html.Label("Vehicle Usage", new { @class = "gender-label" })
+
+
+                                                    @Html.DropDownListFor(x => x.VehicleUsage, new SelectList(ViewBag.VehicleUsage, "Id", "VehUsage"), new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-select">
+                                                <div class="form-group">
+                                                    @Html.Label("Cover Type", new { @class = "gender-label" })
+                                                    @Html.DropDownListFor(x => x.CoverTypeId, new SelectList(ViewBag.CoverType, "id", "Name"), new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Suggested Value", new { @class = "gender-label" })
+                                                    @Html.TextBox("VehicleSumInsures", null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Suggested Value", @maxlength = "5" })
+                                                    @*@Html.ValidatiVehicleSumInsuresonMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
+                                                    @* @Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Sum Insured", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.SumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insured", @maxlength = "11" })
+                                                    <span class="text-danger" id="validationSumIns">Please Enter Sum Insured</span>
+                                                    @*@Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
+                                                    @*@Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div id="thridparty" class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-select">
+                                                <div id="thirdpartycheck" class="form-group">
+                                                    @Html.Label("Add Third Party Insurance", new { @class = "gender-label" })
+                                                    @Html.CheckBoxFor(x => x.Addthirdparty, new { @style = "width: 40px;height: 36px;" })
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Add Third Party Amount", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.AddThirdPartyAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Add Third Party Amount", @disabled = "disabled" })
+                                                    @* @Html.TextBoxFor(x => x.AddThirdPartyAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Chassis Number" })*@
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="thridparty" class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-select">
+                                                <div id="thirdpartycheck" class="form-group">
+                                                    @Html.Label("Include Radio License Cost", new { @class = "gender-label" })
+                                                    @Html.CheckBoxFor(x => x.IncludeRadioLicenseCost, new { @style = "width: 40px;height: 36px;" })
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Radio License Cost", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.RadioLicenseCost, new { @class = "form-control inputDisabled", @autocomplete = "off", @placeholder = "Vehicle Radio Licence Cost", @maxlength = "5" })
+                                                    @Html.ValidationMessageFor(m => m.RadioLicenseCost, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Cover Start Date", new { @class = "gender-label" })
+                                                    <div class='input-group date' id='datetimepicker1'>
+                                                        @Html.TextBoxFor(m => m.CoverStartDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Cover Start Date" })
+                                                        @Html.ValidationMessageFor(m => m.CoverEndDate, "", new { @class = "text-danger" })
+                                                        <span class="input-group-addon">
+                                                            <span class="glyphicon glyphicon-calendar"></span>
+
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Cover End Date", new { @class = "gender-label" })
+                                                    <div class='input-group date' id='datetimepicker2'>
+                                                        @Html.TextBoxFor(m => m.CoverEndDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Cover End Date" })
+                                                        @Html.ValidationMessageFor(m => m.CoverEndDate, "", new { @class = "text-danger" })
+                                                        <span class="input-group-addon">
+                                                            <span class="glyphicon glyphicon-calendar"></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="display:none">
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Renewal Date", new { @class = "gender-label" })
+                                                    <div class='input-group date' id='datetimepicker3'>
+                                                        @Html.TextBoxFor(x => x.RenewalDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Renewal Date" })
+                                                        <span class="input-group-addon">
+                                                            <span class="glyphicon glyphicon-calendar"></span>
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Transaction Date", new { @class = "gender-label" })
+                                                    <div class='input-group' id='datetimepicker4'>
+                                                        @Html.TextBoxFor(x => x.TransactionDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Transaction/Effective Date" })
+                                                        <span class="input-group-addon">
+                                                            <span class="glyphicon glyphicon-calendar"></span>
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Basic Premium", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.Premium, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Basic Premium", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-select" style="display:none;">
+                                                <div class="form-group">
+                                                    @Html.Label("Agent Commission", new { @class = "gender-label" })
+                                                    @Html.DropDownListFor(x => x.AgentCommissionId, new SelectList(ViewBag.AgentCommission, "Id", "CommissionName"), new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Stamp Duty", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.StampDuty, new { @class = "form-control", @autocomplete = "off", @placeholder = "Stamp Duty", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(m => m.StampDuty, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("ZTSC Levy", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.ZTSCLevy, new { @class = "form-control", @autocomplete = "off", @placeholder = "ZTSC Levy", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(m => m.ZTSCLevy, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-select">
+                                                <div class="form-group">
+                                                    @Html.Label("Excess Type", new { @class = "gender-label" })
+                                                    <select name="ExcessType" class="form-control" id="ExcessType">
+                                                        <option value="1">Percentage</option>
+                                                        <option value="2">Fixed Amount</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Excess", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.Excess, new { @class = "form-control", @autocomplete = "off", @placeholder = "Excess", maxlength = "5" })
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-select">
+                                                <div class="form-group">
+                                                    @Html.Label("Want the licence disk to be delivered ?", new { @class = "gender-label" })
+                                                    @Html.CheckBoxFor(x => x.IsLicenseDiskNeeded, new { @style = "width: 40px;height: 36px;" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row">
+
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group margin-0">
+                                                    @Html.Label("Optional Covers", new { @class = "gender-label" })
+                                                </div>
+                                                <div class="form-group-list">
+                                                    <ul class="list-inline">
+                                                        <li>
+                                                            @Html.CheckBoxFor(x => x.PassengerAccidentCover)
+                                                            @Html.Label("Passenger Accident Cover", new { @class = "gender-label" })
+
+
+                                                        </li>
+                                                        <li>
+                                                            @Html.CheckBoxFor(x => x.ExcessBuyBack)
+                                                            @Html.Label("Excess BuyBack", new { @class = "gender-label" })
+
+                                                        </li>
+                                                        <li>
+                                                            @Html.CheckBoxFor(x => x.RoadsideAssistance)
+                                                            @Html.Label("Roadside Assistance", new { @class = "gender-label" })
+
+                                                        </li>
+                                                        <li>
+                                                            @Html.CheckBoxFor(x => x.MedicalExpenses)
+                                                            @Html.Label("Medical Expenses", new { @class = "gender-label" })
+
+                                                        </li>
+                                                    </ul>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-text" id="Containernumberofpersons">
+                                                <div class="form-group">
+                                                    @Html.Label("Number of Persons", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(x => x.NumberofPersons, null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Number of Persons", @disabled = "disabled" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </fieldset>
+
                                     <div id="divVehicleList" style="display:block;">
                                         <table class="table table-striped" id="tblVehicleList">
                                             <thead>
@@ -416,27 +386,32 @@
                                     <div class="row">
                                         <div class="col-md-12 next-btn">
                                             <div class="row">
-                                                @*<div class=@(Session["issummaryformvisited"] != null && (bool)Session["issummaryformvisited"] ? "col-sm-4 col-md-4" : "col-sm-6 col-md-6")>
-                                                    <div class="text-left">
-                                                        <div class="back-left"><button type="button" onclick="gotoPeriviouse()" class="btn">Back</button></div>
-                                                        <a style="display:none" id="previouselink" href="/CustomerRegistration/ProductDetail" class="back"></a>
-                                                    </div>
-                                                </div>*@
 
-                                                @*<div class=@(Session["issummaryformvisited"] != null && (bool)Session["issummaryformvisited"] ? "col-sm-4 col-md-4" : "col-sm-6 col-md-6")>*@
+
+                                                <div class="col-sm-6 col-md-6">
+                                                    <div class="text-left">
+                                                        <div class="back-left"><button type="button" onclick="gotoPolicyList()" class="btn">Back to List</button></div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6">
                                                     <div class="text-right">
                                                         <button type="button" onclick="redirectToRiskDetails();" class="btn">Next</button>
                                                     </div>
-                                                @*</div>*@
+                                                </div>
 
-                                                @*@if (Session["issummaryformvisited"] != null && (bool)Session["issummaryformvisited"])
-                                                {
-                                                    <div class="col-sm-4 col-md-4">
-                                                        <div class="text-right">
-                                                            <button type="button" id="btnSkip" onclick="redirectToSummary();" class="btn" style="padding:20px 10px;width: 170px;">Skip</button>
-                                                        </div>
+
+                                                @*<div class="text-left">
+
+                                                        <div class="back-left"><a href="/Account/PolicyList" class="btn">Back to List</a></div>
+
                                                     </div>
-                                                }*@
+                                                    <div class="text-right">
+
+                                                    </div>*@
+
+
+
 
                                             </div>
                                         </div>
@@ -457,8 +432,8 @@
 </div>
 
 <script>
-    function gotoPeriviouse() {
-        $("#previouselink")[0].click();
+    function gotoPolicyList() {
+        location.href = '@Url.Action("PolicyList", "Account", new { id=0 })';
     }
 
     function cancelUpdate() {
@@ -525,7 +500,7 @@
 
         if (@Model.VehicleUsage >0)
         {
-        $("#VehicleUsage").val('@Model.VehicleUsage');
+            $("#VehicleUsage").val('@Model.VehicleUsage');
         }
 
         today = new Date();

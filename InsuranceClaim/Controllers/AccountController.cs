@@ -16,8 +16,8 @@ using AutoMapper;
 using System.Configuration;
 using static InsuranceClaim.Controllers.CustomerRegistrationController;
 using InsuranceClaim.Controllers;
-using Insurance.Service;
 using System.IO;
+using Insurance.Service;
 
 namespace InsuranceClaim.Controllers
 {
@@ -103,14 +103,14 @@ namespace InsuranceClaim.Controllers
 
                     if (role == "Administrator" || role == "Staff")
                     {
-
+                       
                         return RedirectToAction("Dashboard", "Account");
                     }
                     else
                     {
 
                         return Redirect("/CustomerRegistration/index");
-                        // return RedirectToAction("Index", "CustomerRegistration");
+                       // return RedirectToAction("Index", "CustomerRegistration");
                     }
 
                 case SignInStatus.LockedOut:
@@ -888,7 +888,7 @@ namespace InsuranceClaim.Controllers
 
 
             List<CustomerModel> ListUserViewModel = new List<CustomerModel>();
-            var user = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).ToList();
+            var user = InsuranceContext.Customers.All().OrderByDescending(x=>x.Id).ToList();
 
 
             foreach (var item in user)
@@ -1027,7 +1027,7 @@ namespace InsuranceClaim.Controllers
             policylist.listpolicy = new List<PolicyListViewModel>();
             if (searchText != null && searchText != "")
             {
-
+                
                 var custom = searchText.Split(' ');
                 var SummaryList = new List<SummaryDetail>();
                 var customers = new List<Customer>();
@@ -1061,10 +1061,10 @@ namespace InsuranceClaim.Controllers
                 }
                 else
                 {
-                    var policye = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber = '" + searchText + "'");
+                    var policye = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber = '"+ searchText +"'");
 
                     var policyId = policye.Id;
-                    var vehicle = InsuranceContext.VehicleDetails.Single(where: $"PolicyId = '" + policyId + "'");
+                    var vehicle = InsuranceContext.VehicleDetails.Single(where: $"PolicyId = '"+ policyId + "'");
 
                     var vehiclesummaryid = vehicle.Id;
 
@@ -1109,7 +1109,7 @@ namespace InsuranceClaim.Controllers
                         obj.VehicleId = _vehicle.Id;
                         obj.startdate = Convert.ToDateTime(_vehicle.CoverStartDate);
                         obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
-                        if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
+                        if (_reinsurenaceTrans != null)
                         {
                             obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
                             obj.AutoFacPremium = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsurancePremium);
@@ -1143,11 +1143,11 @@ namespace InsuranceClaim.Controllers
             List<Insurance.Domain.Setting> objList = new List<Insurance.Domain.Setting>();
 
             var eSettingValueTypedata = from eSettingValueType e in Enum.GetValues(typeof(eSettingValueType))
-                                        select new
-                                        {
-                                            ID = (int)e,
-                                            Name = e.ToString()
-                                        };
+                                   select new
+                                   {
+                                       ID = (int)e,
+                                       Name = e.ToString()
+                                   };
 
             ViewBag.eSettingValueType = new SelectList(eSettingValueTypedata, "ID", "Name");
 
@@ -1176,7 +1176,7 @@ namespace InsuranceClaim.Controllers
         public ActionResult SettingList()
         {
 
-            var db = InsuranceContext.Settings.All().OrderByDescending(x => x.Id).ToList();
+            var db = InsuranceContext.Settings.All().OrderByDescending(x=>x.Id).ToList();
             return View(db);
         }
 
@@ -1225,7 +1225,7 @@ namespace InsuranceClaim.Controllers
         {
 
 
-            var list = InsuranceContext.ReinsuranceBrokers.All().OrderByDescending(x => x.Id).ToList();
+            var list = InsuranceContext.ReinsuranceBrokers.All().OrderByDescending(x=>x.Id).ToList();
             return View(list);
         }
         public ActionResult AddReinsuranceBroker(int? id = 0)
@@ -1337,7 +1337,7 @@ namespace InsuranceClaim.Controllers
                     VehicleReinsuranceViewModel obj = new VehicleReinsuranceViewModel();
                     var _vehicle = InsuranceContext.VehicleDetails.Single(_item.VehicleDetailsId);
                     var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.All(where: $"SummaryDetailId={item.Id} and VehicleId={_item.VehicleDetailsId}").ToList();
-
+                    
 
                     obj.CoverType = Convert.ToInt32(_vehicle.CoverTypeId);
                     obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
@@ -1374,6 +1374,168 @@ namespace InsuranceClaim.Controllers
 
             return View(policylist);
         }
+
+        public ActionResult LicenceTickets()
+        {
+            var ListLicence = new ListLicenceTickets();
+            var LicenceTickets = new List<LicenceTicketViewModel>();
+            var List = InsuranceContext.LicenceTickets.All().ToList();
+
+            foreach (var item in List)
+            {
+                //var id = InsuranceContext.LicenceTickets.Single(item.Id);
+
+                LicenceTickets.Add(new LicenceTicketViewModel
+                {
+                    IsClosed = Convert.ToBoolean(item.IsClosed),
+                    Id = item.Id,
+                    TicketNo = item.TicketNo,
+                    PolicyNumber = item.PolicyNumber,
+                    CloseComments = item.CloseComments,
+                    ReopenComments = item.ReopenComments,
+                    DeliveredTo = item.DeliveredTo
+
+
+                });
+            }
+            return View(LicenceTickets.ToList());
+        }
+
+        public ActionResult SaveComments(string CloseComments, string hdnSelectedTicket, string DeliveredTo)
+        {
+            if (ModelState.IsValid)
+            {
+                var ticket = InsuranceContext.LicenceTickets.Single(Convert.ToInt32(hdnSelectedTicket));
+                ticket.CloseComments = CloseComments;
+                ticket.DeliveredTo = DeliveredTo;
+                ticket.IsClosed = true;
+                InsuranceContext.LicenceTickets.Update(ticket);
+                //LicenceTickets();
+            }
+            return RedirectToAction("LicenceTickets");
+        }
+
+
+        public ActionResult ReopenTicket(string ReopenComments, int Id)
+        {
+            var ticket = InsuranceContext.LicenceTickets.Single(Convert.ToInt32(Id));
+            ticket.IsClosed = false;
+            ticket.ReopenComments = ReopenComments;
+            InsuranceContext.LicenceTickets.Update(ticket);
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult UploadFile()
+        {
+            if (Request.Files.Count > 0)
+            {
+                try
+                {
+                    var PolicyNumber = System.Web.HttpContext.Current.Request.Params["PolicyNumber"];
+                    var CustomerId = System.Web.HttpContext.Current.Request.Params["CustomerId"];
+                    var vehicleId = System.Web.HttpContext.Current.Request.Params["vehicleId"];
+
+                    var Title = System.Web.HttpContext.Current.Request.Params["Title"];
+                    var Description = System.Web.HttpContext.Current.Request.Params["Description"];
+
+                    //var customerid = "";
+                    //  Get all files from Request object  
+                    HttpFileCollectionBase files = Request.Files;
+                    for (int i = 0; i < files.Count; i++)
+                    {
+                        //string path = AppDomain.CurrentDomain.BaseDirectory + "Uploads/";  
+                        //string filename = Path.GetFileName(Request.Files[i].FileName);  
+
+                        HttpPostedFileBase file = files[i];
+                        string fname;
+
+                        // Checking for Internet Explorer  
+                        if (Request.Browser.Browser.ToUpper() == "IE" || Request.Browser.Browser.ToUpper() == "INTERNETEXPLORER")
+                        {
+                            string[] testfiles = file.FileName.Split(new char[] { '\\' });
+                            fname = Title + "-" + DateTime.Now.ToString("yyyyMMddhhmmss") + "." + testfiles[testfiles.Length - 1].Split('.')[1];
+                        }
+                        else
+                        {
+                            fname = Title + "-" + DateTime.Now.ToString("yyyyMMddhhmmss") + "." + file.FileName.Split('.')[1];
+                        }
+
+
+                        //if folder exist : folder name : customer id eg 1,2,3 etc
+                        string custfolderpath = @Server.MapPath("~/Documents/" + CustomerId + "/");
+                        string policyfolderpath = @Server.MapPath("~/Documents/" + CustomerId + "/" + PolicyNumber + "/");
+                        string vehiclefolderpath = @Server.MapPath("~/Documents/" + CustomerId + "/" + PolicyNumber + "/" + vehicleId + "/");
+
+                        if (!Directory.Exists(custfolderpath))
+                        {
+                            Directory.CreateDirectory(custfolderpath);
+                            Directory.CreateDirectory(policyfolderpath);
+                            Directory.CreateDirectory(vehiclefolderpath);
+                        }
+                        else
+                        {
+                            if (!Directory.Exists(policyfolderpath))
+                            {
+                                Directory.CreateDirectory(policyfolderpath);
+                                Directory.CreateDirectory(vehiclefolderpath);
+                            }
+                            else
+                            {
+                                if (!Directory.Exists(vehiclefolderpath))
+                                {
+                                    Directory.CreateDirectory(vehiclefolderpath);
+                                }
+                            }
+                        }
+
+                        fname = "/Documents/" + CustomerId + "/" + PolicyNumber + "/" + vehicleId + "/" + fname;
+                        file.SaveAs(Server.MapPath(fname));
+
+                        PolicyDocument doc = new PolicyDocument();
+                        doc.PolicyNumber = PolicyNumber;
+                        doc.Title = Title;
+                        doc.Description = Description;
+                        doc.CustomerId = Convert.ToInt32(CustomerId);
+                        doc.FilePath = fname;
+                        doc.vehicleId = Convert.ToInt32(vehicleId);
+                        InsuranceContext.PolicyDocuments.Insert(doc);
+                    }
+                    // Returns message that successfully uploaded  
+                    return Json("File Uploaded Successfully!");
+                }
+                catch (Exception ex)
+                {
+                    return Json("Error occurred. Error details: " + ex.Message);
+                }
+            }
+            else
+            {
+                return Json("No files selected.");
+            }
+
+        }
+        [HttpPost]
+        public JsonResult GetUplodedFiles()
+        {
+            var PolicyNumber = System.Web.HttpContext.Current.Request.Params["PolicyNumber"];
+            var CustomerId = System.Web.HttpContext.Current.Request.Params["CustomerId"];
+            var vehicleId = System.Web.HttpContext.Current.Request.Params["vehicleId"];
+
+            //string[] filePaths = Directory.GetFiles(Server.MapPath("~/Documents/" + CustomerId + "/" + PolicyNumber + "/" + vehicleId + "/"));
+
+            var FileList = InsuranceContext.PolicyDocuments.All(where: $"CustomerId={CustomerId} and PolicyNumber='{PolicyNumber}' and vehicleId={vehicleId}");
+            var list = new List<InsuranceClaim.Models.PolicyDocumentModels>();
+            foreach (var item in FileList)
+            {
+                var obj = new InsuranceClaim.Models.PolicyDocumentModels();
+                obj.Title = item.Title;
+                obj.Decription = item.Description;
+                obj.FilePath = item.FilePath;
+                list.Add(obj);
+            }
+
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult RiskDetail(int? id = 0)
         {
 
@@ -1405,6 +1567,7 @@ namespace InsuranceClaim.Controllers
             ViewBag.AgentCommission = service.GetAgentCommission();
             ViewBag.Makers = makers;
             viewModel.isUpdate = false;
+            viewModel.VehicleUsage = 0;
             //TempData["Policy"] = service.GetPolicy(id);
             if (makers.Count > 0)
             {
@@ -1454,7 +1617,7 @@ namespace InsuranceClaim.Controllers
                     _vehicle.SumInsured = __vehicle.SumInsured;
                     _vehicle.VehicleColor = __vehicle.VehicleColor;
 
-                    //_vehicle.VehicleUsage = __vehicle.VehicleUsage;
+                    _vehicle.VehicleUsage = Convert.ToInt16(__vehicle.VehicleUsage);
                     _vehicle.VehicleYear = __vehicle.VehicleYear;
                     _vehicle.ZTSCLevy = __vehicle.ZTSCLevy;
                     _vehicle.MakeId = __vehicle.MakeId;
@@ -1469,7 +1632,7 @@ namespace InsuranceClaim.Controllers
                     _vehicle.MedicalExpenses = __vehicle.MedicalExpenses;
                     _vehicle.PassengerAccidentCover = __vehicle.PassengerAccidentCover;
                     _vehicle.PaymentTermId = __vehicle.PaymentTermId;
-                   
+                    _vehicle.ProductId = __vehicle.ProductId;
 
 
 
@@ -1582,6 +1745,8 @@ namespace InsuranceClaim.Controllers
 
             return View(viewModel);
         }
+
+
         [HttpGet]
         public JsonResult getVehicleList()
         {
@@ -1615,34 +1780,6 @@ namespace InsuranceClaim.Controllers
 
         }
 
-
-        //[HttpGet]
-        //public JsonResult getVehicleListbyID(int index)
-        //{
-        //    try
-        //    {
-        //        if (Session["ViewlistVehicles"] != null)
-        //        {
-        //            var list = (List<RiskDetailModel>)Session["ViewlistVehicles"];
-        //            List<VehicleListModel> vehiclelist = new List<VehicleListModel>();
-
-        //            return Json(vehiclelist[index - 1], JsonRequestBehavior.AllowGet);
-        //        }
-        //        else
-        //        {
-        //            return Json(false, JsonRequestBehavior.AllowGet);
-        //        }
-
-        //    }
-        //    catch (Exception)
-        //    {
-
-        //        return Json(false, JsonRequestBehavior.AllowGet);
-        //    }
-
-        //}
-
-
         public ActionResult SummaryDetail(int? Id = 0)
         {
             var _model = new SummaryDetailModel();
@@ -1659,7 +1796,7 @@ namespace InsuranceClaim.Controllers
                 var model = Mapper.Map<SummaryDetail, SummaryDetailModel>(summarydetail);
                 model.CarInsuredCount = vehicle.Count;
                 model.DebitNote = "INV" + Convert.ToString(SummaryDetailServiceObj.getNewDebitNote());
-                model.PaymentMethodId = 1;
+                model.PaymentMethodId = summarydetail.PaymentMethodId;
                 model.PaymentTermId = 1;
                 model.ReceiptNumber = "";
                 model.SMSConfirmation = false;
@@ -1679,20 +1816,28 @@ namespace InsuranceClaim.Controllers
 
                 return View(model);
             }
-
-
             return View(_model);
+        }
 
-
+        [HttpGet]
+        public JsonResult DisablePolicy(int VehicleId)
+        {
+            try
+            {
+                var vehicle = InsuranceContext.VehicleDetails.Single(VehicleId);
+                vehicle.IsActive = false;
+                InsuranceContext.VehicleDetails.Update(vehicle);
+                return Json(true);
+            }
+            catch (Exception)
+            {
+                return Json(false);
+                throw;
+            }
 
         }
+
     }
+
+
 }
-
-
-
-
-
-
-
-
