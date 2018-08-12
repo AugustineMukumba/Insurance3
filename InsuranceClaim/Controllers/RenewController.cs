@@ -120,7 +120,7 @@ namespace InsuranceClaim.Controllers
                     viewModel.StampDuty = data.StampDuty;
                     viewModel.SumInsured = (int)Math.Round(data.SumInsured == null ? 0 : data.SumInsured.Value, 0);
                     viewModel.VehicleColor = data.VehicleColor;
-                    viewModel.VehicleUsage = data.VehicleUsage;
+                    viewModel.VehicleUsage = Convert.ToInt32( data.VehicleUsage);
                     viewModel.VehicleYear = data.VehicleYear;
                     viewModel.Id = data.Id;
                     viewModel.ZTSCLevy = data.ZTSCLevy;

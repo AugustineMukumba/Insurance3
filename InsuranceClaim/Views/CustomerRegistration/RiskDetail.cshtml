@@ -181,7 +181,9 @@
                                         <div class="col-sm-6 col-md-6 form-group-select">
                                             <div class="form-group">
                                                 @Html.Label("Vehicle Usage", new { @class = "gender-label" })
-                                                @Html.DropDownListFor(x => x.VehicleUsage, new SelectList(ViewBag.VehicleUsage, "Id", "VehUsage"), new { @class = "form-control" })
+                                              
+                                                
+                                                   @Html.DropDownListFor(x => x.VehicleUsage, new SelectList(ViewBag.VehicleUsage, "Id", "VehUsage"), new { @class = "form-control" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-select">
