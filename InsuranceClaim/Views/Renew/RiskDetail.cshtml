@@ -486,7 +486,7 @@
 
 
 
-
+    var isReinsuranceConfirmed = false;
 
 
 
@@ -774,6 +774,7 @@
                     return false;
                 }
                 else {
+                    isReinsuranceConfirmed = true;
                     callQuoteCalculation(sumInsured);
                 }
             });

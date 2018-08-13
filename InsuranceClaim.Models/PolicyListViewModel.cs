@@ -42,7 +42,7 @@ namespace InsuranceClaim.Models
         public DateTime enddate { get; set; }
         public DateTime RenewalDate { get; set; }
         public decimal BrokerCommission { get; set; }
-
+        public bool isLapsed { get; set; }
         public decimal FacultativeCommission { get; set; }
 
 

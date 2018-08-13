@@ -303,6 +303,7 @@ namespace Insurance.Domain
         public decimal? TermlyRiskPremium { get; set; }
         public decimal? QuaterlyRiskPremium { get; set; }
         public decimal? Discount { get; set; }
+        public bool isLapsed { get; set; }
     }
 
     public partial class VehicleMake : Entity<VehicleMake>

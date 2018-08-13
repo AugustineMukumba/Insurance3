@@ -120,7 +120,7 @@ namespace InsuranceClaim.Controllers
                     viewModel.StampDuty = data.StampDuty;
                     viewModel.SumInsured = (int)Math.Round(data.SumInsured == null ? 0 : data.SumInsured.Value, 0);
                     viewModel.VehicleColor = data.VehicleColor;
-                    viewModel.VehicleUsage = Convert.ToInt32( data.VehicleUsage);
+                    viewModel.VehicleUsage = Convert.ToInt32(data.VehicleUsage);
                     viewModel.VehicleYear = data.VehicleYear;
                     viewModel.Id = data.Id;
                     viewModel.ZTSCLevy = data.ZTSCLevy;
@@ -445,14 +445,14 @@ namespace InsuranceClaim.Controllers
 
             if (Session["RenewVehicleDetails"] != null)
             {
-                vehicle.IsActive = false;
+                vehicle.isLapsed = true;
                 InsuranceContext.VehicleDetails.Update(vehicle);
 
-                var summaryvehicledetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"SummaryDetailId={summary.Id} and VehicleDetailsId={vehicleId}");               
-                InsuranceContext.SummaryVehicleDetails.Delete(summaryvehicledetail);
+                //var summaryvehicledetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"SummaryDetailId={summary.Id} and VehicleDetailsId={vehicleId}");               
+                //InsuranceContext.SummaryVehicleDetails.Delete(summaryvehicledetail);
 
                 var _item = (RiskDetailModel)Session["RenewVehicleDetails"];
-                var product = InsuranceContext.Products.Single(Convert.ToInt32(_item.ProductId));
+                //var product = InsuranceContext.Products.Single(Convert.ToInt32(_item.ProductId));
 
                 objSaveDetailListModel.CurrencyId = policy.CurrencyId;
                 objSaveDetailListModel.PolicyId = policy.Id;
@@ -460,7 +460,7 @@ namespace InsuranceClaim.Controllers
                 objSaveDetailListModel.CustomerId = summary.CustomerId.Value;
                 objSaveDetailListModel.SummaryDetailId = id;
                 objSaveDetailListModel.DebitNote = summary.DebitNote;
-                objSaveDetailListModel.ProductId = product.Id;
+                objSaveDetailListModel.ProductId = _item.ProductId;
                 objSaveDetailListModel.PaymentId = PaymentId == null ? "" : PaymentId.ToString();
                 objSaveDetailListModel.InvoiceId = InvoiceId == null ? "" : InvoiceId.ToString();
                 InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
@@ -470,26 +470,25 @@ namespace InsuranceClaim.Controllers
             else
             {
 
-
                 DateTime NewRenewalDate = DateTime.Now;
 
                 switch (vehicle.PaymentTermId)
                 {
                     case 1:
-                        NewRenewalDate = DateTime.Now.AddYears(1);
+                        NewRenewalDate = vehicle.RenewalDate.Value.AddYears(1);
                         break;
                     case 3:
-                        NewRenewalDate = DateTime.Now.AddMonths(3);
+                        NewRenewalDate = vehicle.RenewalDate.Value.AddMonths(3);
                         break;
                     case 4:
-                        NewRenewalDate = DateTime.Now.AddMonths(4);
+                        NewRenewalDate = vehicle.RenewalDate.Value.AddMonths(4);
                         break;
                 }
 
                 vehicle.RenewalDate = NewRenewalDate;
                 InsuranceContext.VehicleDetails.Update(vehicle);
 
-                var product = InsuranceContext.Products.Single(Convert.ToInt32(vehicle.ProductId));
+                //var product = InsuranceContext.Products.Single(Convert.ToInt32(vehicle.ProductId));
 
                 objSaveDetailListModel.CurrencyId = policy.CurrencyId;
                 objSaveDetailListModel.PolicyId = policy.Id;
@@ -497,7 +496,7 @@ namespace InsuranceClaim.Controllers
                 objSaveDetailListModel.CustomerId = summary.CustomerId.Value;
                 objSaveDetailListModel.SummaryDetailId = id;
                 objSaveDetailListModel.DebitNote = summary.DebitNote;
-                objSaveDetailListModel.ProductId = product.Id;
+                objSaveDetailListModel.ProductId = vehicle.ProductId;
                 objSaveDetailListModel.PaymentId = PaymentId == null ? "" : PaymentId.ToString();
                 objSaveDetailListModel.InvoiceId = InvoiceId == null ? "" : InvoiceId.ToString();
                 InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
@@ -513,8 +512,8 @@ namespace InsuranceClaim.Controllers
             Session.Remove("RenewInvoiceId");
             Session.Remove("RenewVehicleSummary");
             Session.Remove("RenewVehiclePolicy");
-            Session.Remove("RenewVehicle");
-
+            //Session.Remove("RenewVehicle");
+            Session.Remove("RenewVehicleDetails");
             //if (paymentInformations == null)
             //{
             //    Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();

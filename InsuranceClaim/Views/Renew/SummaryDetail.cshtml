@@ -1,7 +1,23 @@
 ﻿@model InsuranceClaim.Models.SummaryDetailModel
+@using Insurance.Domain;
 @{
     ViewBag.Title = "SummaryDetail";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+    var Id = (int)Session["RenewVehicleId"];
+
+    var vehicle = InsuranceContext.VehicleDetails.Single(Id);
+    if (vehicle != null)
+    {
+        if (vehicle.RenewalDate < DateTime.Now)
+        {
+            var newVEhicleDetail = (InsuranceClaim.Models.RiskDetailModel)Session["RenewVehicleDetails"];
+
+            vehicle.PaymentTermId = newVEhicleDetail.PaymentTermId;
+            vehicle.Premium = newVEhicleDetail.Premium;
+            vehicle.ModelId = newVEhicleDetail.ModelId;
+        }
+    }
+
 
 }
 
@@ -17,7 +33,7 @@
     <div class="Process-step-section">
         <div class="container">
             <div class="row bs-wizard">
-                
+
             </div>
         </div>
     </div>
@@ -35,52 +51,57 @@
                                 <div class="col-sm-12 col-md-12 choose-plan-heading">
                                     <h4>Your plan</h4>
                                 </div>
-                                <div class="Choose-sections">
-                                    <div class="col-sm-3 col-md-3 choose-plan-blocl" style="@(Convert.ToString(Session["policytermid"]) == "1" ? "display:block;" : "display:none;")">
-                                        <div class="choose-plan-box active" planpurchase="1" style="cursor:pointer" onclick="SelectPlan(this);">
-                                            <h4>Annual</h4>
-                                            <div class="plan-white-box">
-                                                <h3>$@Model.TotalPremium</h3>
-                                                <p>for all @Model.CarInsuredCount items</p>
-                                                <a href="">PAY FOR 12 MONTHS</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3 col-md-3 choose-plan-blocl" style="@(Convert.ToString(Session["policytermid"]) == "2" ? "display:block;" : "display:none;")">
-                                        <div class="choose-plan-box" planpurchase="2" style="cursor:pointer" onclick="SelectPlan(this);">
-                                            <h4>Monthly</h4>
-                                            <div class="plan-white-box">
-                                                <h3>$@Math.Round(Convert.ToDouble(Model.TotalPremium), 2)</h3>
-                                                <p>for all @Model.CarInsuredCount items</p>
-                                                <a href="">PAY FOR 1 MONTHS</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3 col-md-3 choose-plan-blocl" style="@(Convert.ToString(Session["policytermid"]) == "3" ? "display:block;" : "display:none;")">
-                                        <div class="choose-plan-box" planpurchase="3" style="cursor:pointer" onclick="SelectPlan(this);">
+                                @if (vehicle != null)
+                                {
 
-                                            <h4>Quarterly</h4>
-                                            <div class="plan-white-box">
-                                                @*<h3>$ @Math.Round(Convert.ToDouble(Model.TotalPremium)/4,2)</h3>*@
-                                                <h3>$ @Math.Round(Convert.ToDouble(Model.TotalPremium), 2)</h3>
-                                                <p>for all @Model.CarInsuredCount items</p>
-                                                <a href="">PAY FOR 3 MONTHS</a>
+                                    <div class="Choose-sections">
+                                        <div class="col-sm-3 col-md-3 choose-plan-blocl" style="@(Convert.ToString(vehicle.PaymentTermId) == "1" ? "display:block;" : "display:none;")">
+                                            <div class="choose-plan-box active" planpurchase="1" style="cursor:pointer" onclick="SelectPlan(this);">
+                                                <h4>Annual</h4>
+                                                <div class="plan-white-box">
+                                                    <h3>$@Math.Round(Convert.ToDouble(vehicle.Premium), 2)</h3>
+                                                    <p>Vehicle Model : @Insurance.Domain.InsuranceContext.VehicleModels.Single(where: $"ModelCode='{vehicle.ModelId}'").ModelDescription</p>
+                                                    <a href="javascript:void(0);" style="pointer-events:none;">PAY FOR 12 MONTHS</a>
+                                                </div>
                                             </div>
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 choose-plan-blocl" style="@(Convert.ToString(vehicle.PaymentTermId) == "2" ? "display:block;" : "display:none;")">
+                                            <div class="choose-plan-box" planpurchase="2" style="cursor:pointer" onclick="SelectPlan(this);">
+                                                <h4>Monthly</h4>
+                                                <div class="plan-white-box">
+                                                    <h3>$@Math.Round(Convert.ToDouble(vehicle.Premium), 2)</h3>
+                                                    <p>Vehicle Model : @Insurance.Domain.InsuranceContext.VehicleModels.Single(where: $"ModelCode='{vehicle.ModelId}'").ModelDescription</p>
+                                                    <a href="javascript:void(0);" style="pointer-events:none;">PAY FOR 1 MONTHS</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 choose-plan-blocl" style="@(Convert.ToString(vehicle.PaymentTermId) == "3" ? "display:block;" : "display:none;")">
+                                            <div class="choose-plan-box" planpurchase="3" style="cursor:pointer" onclick="SelectPlan(this);">
 
+                                                <h4>Quarterly</h4>
+                                                <div class="plan-white-box">
+                                                    @*<h3>$ @Math.Round(Convert.ToDouble(Model.TotalPremium)/4,2)</h3>*@
+                                                    <h3>$@Math.Round(Convert.ToDouble(vehicle.Premium), 2)</h3>
+                                                    <p>Vehicle Model : @Insurance.Domain.InsuranceContext.VehicleModels.Single(where: $"ModelCode='{vehicle.ModelId}'").ModelDescription</p>
+                                                    <a href="javascript:void(0);" style="pointer-events:none;">PAY FOR 3 MONTHS</a>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 choose-plan-blocl" style="@(Convert.ToString(vehicle.PaymentTermId) == "4" ? "display:block;" : "display:none;")">
+                                            <div class="choose-plan-box" planpurchase="4" style="cursor:pointer" onclick="SelectPlan(this);">
+                                                <h4>Termly</h4>
+                                                <div class="plan-white-box">
+                                                    <h3>$@Math.Round(Convert.ToDouble(vehicle.Premium), 2)</h3>
+                                                    <p>Vehicle Model : @Insurance.Domain.InsuranceContext.VehicleModels.Single(where: $"ModelCode='{vehicle.ModelId}'").ModelDescription</p>
+                                                    <a href="javascript:void(0);" style="pointer-events:none;">PAY FOR 4 MONTHS</a>
+                                                </div>
+
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-3 col-md-3 choose-plan-blocl" style="@(Convert.ToString(Session["policytermid"]) == "4" ? "display:block;" : "display:none;")">
-                                        <div class="choose-plan-box" planpurchase="4" style="cursor:pointer" onclick="SelectPlan(this);">
-                                            <h4>Termly</h4>
-                                            <div class="plan-white-box">
-                                                <h3>$@Math.Round(Convert.ToDouble(Model.TotalPremium), 2)</h3>
-                                                <p>for all @Model.CarInsuredCount items</p>
-                                                <a href="">PAY FOR 4 MONTHS</a>
-                                            </div>
 
-                                        </div>
-                                    </div>
-                                </div>
+                                }
                             </div>
                         </div>
                         <div class="form-group-input">
@@ -158,7 +179,7 @@
                                                 <div class="col-sm-6 col-md-6">
                                                     <div class="text-left">
                                                         @*<div class="back-left"><button type="button" onclick="gotoPeriviouse()" class="btn">Back</button></div>
-                                                        <a style="display:none" id="previouselink" href="/CustomerRegistration/RiskDetail" class="back"></a>*@
+                                                            <a style="display:none" id="previouselink" href="/CustomerRegistration/RiskDetail" class="back"></a>*@
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6 col-md-6">

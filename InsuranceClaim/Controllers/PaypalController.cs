@@ -631,7 +631,10 @@ namespace InsuranceClaim.Controllers
                 foreach (var itemSummaryVehicleDetails in SummaryVehicleDetails)
                 {
                     var itemVehicle = InsuranceContext.VehicleDetails.Single(itemSummaryVehicleDetails.VehicleDetailsId);
-                    MiscellaneousService.AddLoyaltyPoints(summaryDetail.CustomerId.Value, policy.Id, Mapper.Map<VehicleDetail, RiskDetailModel>(itemVehicle));
+                    if (itemVehicle.CoverTypeId == Convert.ToInt32(eCoverType.ThirdParty))
+                    {
+                        MiscellaneousService.AddLoyaltyPoints(summaryDetail.CustomerId.Value, policy.Id, Mapper.Map<VehicleDetail, RiskDetailModel>(itemVehicle));
+                    }                    
                 }                
 
                 if (!userLoggedin)

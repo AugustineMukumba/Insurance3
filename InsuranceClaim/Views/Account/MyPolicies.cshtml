@@ -92,20 +92,25 @@
                                             @*<td>@MiscellaneousService.GetReinsuranceBrokerNamebybrokerid(_item.ReinsurerBrokerId)</td>*@
                                             <td>$@_item.BrokerCommission</td>
                                             <td>$@_item.FacultativeCommission</td>
-                                            @if (DateTime.Now < _item.enddate)
+                                            @if (DateTime.Now < _item.RenewalDate.AddDays(-21))
                                             {
                                                 <td>In Force</td>
                                                 <td><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
                                             }
-                                            else if (DateTime.Now >= _item.enddate && DateTime.Now <= _item.enddate.AddDays(30))
+                                            else if (DateTime.Now >= _item.RenewalDate.AddDays(-21) && DateTime.Now <= _item.RenewalDate)
                                             {
                                                 <td>Renew</td>
-                                                <td>@Html.ActionLink("Renew", "Index", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-primary" })<br /><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
+                                                <td>@Html.ActionLink("Pay Premium", "RiskDetail", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-danger", @style= "    width: 100%;    float: left;    text-align: center;" })<br /><br /><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
 
                                             }
-                                            else if (DateTime.Now >= _item.enddate.AddDays(30))
+                                            else if (DateTime.Now > _item.RenewalDate)
                                             {
                                                 <td>Lapsed</td>
+                                                if (!_item.isLapsed)
+                                                {
+                                                    <td>@Html.ActionLink("Renew", "RiskDetail", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-danger", @style = "    width: 100%;    float: left;    text-align: center;" })</td>
+                                                }
+
                                             }
 
                                         </tr>
@@ -285,6 +290,38 @@
         })
     })
 
+    function DeleteConfirm(docid) {
+        debugger;
+        if (confirm("Are You Sure Delete This File")) {
+
+            var Filedata = new FormData();
+            Filedata.append("docid", docid);
+
+            $.ajax({
+                url: '/Account/DeleteDocument',
+                type: "POST",
+                contentType: false,
+                processData: false,
+                data: Filedata,
+                success: function (result) {
+                    if (result) {
+                        toastr.success("File Deleted Successfully");
+                    }
+                    else {
+                        toastr.error("File was not Deleted. Please Try Again !!");
+                    }
+                    getFiles();
+
+                },
+                error: function (err) {
+                    toastr.error(err.statusText);
+                }
+            });
+
+        }
+        return false;
+    }
+
     function showPopuppDocument(PolicyNumber, CustomerId, vehicleId) {
         debugger;
         $("#PolicyNumber").val(PolicyNumber);
@@ -321,7 +358,7 @@
             success: function (result) {
                 $("#tblfileListing").show();
                 for (var i = 0; i < result.length; i++) {
-                    $("#tblfileListing tbody").append('<tr><td>' + result[i].Title + '</td><td>' + result[i].Decription + '</td><td><a href=' + result[i].FilePath + ' class = "glyphicon glyphicon-download-alt"></a></td></tr>');
+                    $("#tblfileListing tbody").append('<tr><td>' + result[i].Title + '</td><td>' + result[i].Decription + '</td><td><a href=' + result[i].FilePath + ' class = "glyphicon glyphicon-download-alt"></a><a style="margin-left: 15px;" href = "" class ="glyphicon glyphicon-trash" onclick = "return DeleteConfirm(' + result[i].id + ')"></a></td></tr>');
                 }
                 if (result.length == 0) {
                     $("#tblfileListing tbody").append('<tr><td colspan=3> Records not found</td></tr>');

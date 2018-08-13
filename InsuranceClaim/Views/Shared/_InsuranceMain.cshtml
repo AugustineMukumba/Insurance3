@@ -10,12 +10,14 @@
     var role = "";
     var fname = "";
     var lname = "";
+    var LoyalyPoints = 0.00m;
     if (userLoggedin)
     {
         var customer = InsuranceContext.Customers.Single(where: $"userid='{userId}'");
 
         if (customer != null)
         {
+            LoyalyPoints = Convert.ToDecimal(InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={customer.Id}").Sum(x => x.PointsEarned));
             role = User.Identity.Name;
             fname = customer.FirstName;
             lname = customer.LastName;
@@ -72,7 +74,7 @@
                 <div class="row">
                     <div class="top-logo-block">
                         <div class="col-xs-12 col-sm-4 col-md-6 col-lg-6 logo-blocks">
-                            <div class="logo-img" >
+                            <div class="logo-img">
                                 <a href="~/InsuranceHome/Index/Index"><img src="~/Images/geneinsure-logo.png"></a>
                             </div>
                         </div>
@@ -80,6 +82,10 @@
                             <div class="text-right">
                                 <div class="renew-btn">
                                     <a href="javascript:void(0);">Buy/Renew : 1800 2700 700  </a>
+                                    @if (userLoggedin)
+                                    {
+                                        <a href="javascript:void(0);">Wallet : $ @LoyalyPoints  </a>
+                                    }
                                 </div>
                                 <div class="login-btn" style="@(userLoggedin ? "display:none;" : "display:block;")">
                                     <ul class="list-inline">
@@ -215,10 +221,10 @@
 
 
     @*<div class="chat-box">
-        <div class="online-caht-box">
-            <h4>Online Chat <span class="online-dot"></span></h4>
-        </div>
-    </div>*@
+            <div class="online-caht-box">
+                <h4>Online Chat <span class="online-dot"></span></h4>
+            </div>
+        </div>*@
     <script>
         $(document).ready(function () { // will trigger when the document is ready
 
@@ -231,7 +237,7 @@
                 format: 'MM/D/YYYY',
             })
 
-           
+
             //debugger
             //var errorMessage = $('#ErrorMessage').val();
             //if (errorMessage != null && errorMessage != '') {

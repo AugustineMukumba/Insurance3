@@ -584,7 +584,7 @@ namespace InsuranceClaim.Controllers
 
             if (model.Id == "0")
             {
-                if (!roleManager.RoleExists(model.RoleName))
+                if (roleManager.RoleExists(model.RoleName))
                 {
                     //alert user that role already exist
                 }
@@ -1350,6 +1350,7 @@ namespace InsuranceClaim.Controllers
                     obj.startdate = Convert.ToDateTime(_vehicle.CoverStartDate);
                     obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
                     obj.RenewalDate = Convert.ToDateTime(_vehicle.RenewalDate);
+                    obj.isLapsed = _vehicle.isLapsed;
                     if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
                     {
                         obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
@@ -1375,6 +1376,7 @@ namespace InsuranceClaim.Controllers
             return View(policylist);
         }
 
+        [Authorize(Roles = "Licence Disk Delivery Manager,Administrator")]
         public ActionResult LicenceTickets()
         {
             var ListLicence = new ListLicenceTickets();
@@ -1530,6 +1532,7 @@ namespace InsuranceClaim.Controllers
                 obj.Title = item.Title;
                 obj.Decription = item.Description;
                 obj.FilePath = item.FilePath;
+                obj.id = item.Id;
                 list.Add(obj);
             }
 
@@ -1836,6 +1839,36 @@ namespace InsuranceClaim.Controllers
             }
 
         }
+
+        public JsonResult DeleteDocument()
+        {
+            try
+            {
+                var docid = System.Web.HttpContext.Current.Request.Params["docid"];
+
+                var document = InsuranceContext.PolicyDocuments.Single(Convert.ToInt32(docid));
+
+                string filelocation = document.FilePath;
+
+                if (System.IO.File.Exists(Server.MapPath(filelocation)))
+                {
+                    System.IO.File.Delete(Server.MapPath(filelocation));
+                }
+
+                InsuranceContext.PolicyDocuments.Delete(document);
+
+                return Json(true, JsonRequestBehavior.AllowGet);
+
+            }
+            catch (Exception)
+            {
+
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
+
 
     }
 
