@@ -83,6 +83,7 @@ namespace InsuranceClaim.Models
         public decimal? TermlyRiskPremium { get; set; }
         public decimal? QuaterlyRiskPremium { get; set; }
         public decimal? Discount { get; set; }
+        public decimal? BalanceAmount { get; set; }
 
     }
 }

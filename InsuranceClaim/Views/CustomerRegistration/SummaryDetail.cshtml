@@ -1,4 +1,4 @@
-﻿@model InsuranceClaim.Models.SummaryDetailModel
+﻿.@model InsuranceClaim.Models.SummaryDetailModel
 @{
     ViewBag.Title = "SummaryDetail";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
@@ -147,17 +147,38 @@
                                         </div>
                                         <div class="col-md-6 form-group-text">
                                             <div class="form-group">
-                                                @Html.Label("Total Sum Insured", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.TotalSumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Sum Insured", @readonly = "readonly" })
+                                                @Html.Label("Amount to be Paid", new { @class = "gender-label" })
+                                                @Html.TextBoxFor(m => m.AmountPaid, new { @class = "form-control", @autocomplete = "off", @placeholder = "Amount Paid" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.Label("Min Amount To be Paid", new { @class = "gender-label" })
+                                                @Html.TextBoxFor(m => m.MinAmounttoPaid, new { @class = "form-control", @autocomplete = "off", @placeholder = "Min Amount To be Paid", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.Label("Max Amount To be Paid", new { @class = "gender-label" })
+                                                @Html.TextBoxFor(m => m.MaxAmounttoPaid, new { @class = "form-control", @autocomplete = "off", @placeholder = "Max Amount To be Paid", @readonly = "readonly" })
                                             </div>
                                         </div>
                                     </div>
 
 
-
+                                    <hr />
 
                                     <div class="row">
-                                        <div class="col-md-12 form-group-text">
+                                        <div class="col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.Label("Total Sum Insured", new { @class = "gender-label" })
+                                                @Html.TextBoxFor(m => m.TotalSumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Sum Insured", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.Label("Total Premium", new { @class = "gender-label" })
                                                 @Html.TextBoxFor(m => m.TotalPremium, null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Premium / Total vehicle Licence Cost", @readonly = "readonly" })
@@ -251,7 +272,7 @@
                                                 </div>
                                                 <div class="col-sm-6 col-md-6">
                                                     <div class="text-right">
-                                                        <button type="submit" class="btn">Next</button>
+                                                        <button type="submit" id="btnNext" onclick="return checkAmountPaid()" class="btn">Next</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -284,6 +305,51 @@
         $("#PaymentTermId").val(planPurchase);
         $(element).addClass("active");
     }
+
+    function checkAmountPaid() {
+        var minAmount = $("#MinAmounttoPaid").val();
+        var maxAmount = $("#MaxAmounttoPaid").val();
+        var Amount = $(this).val();
+        var flag = false;
+        if (Amount != "") {
+            if (parseFloat(Amount) < parseFloat(minAmount)) {
+                $(this).val(minAmount);
+                toastr.warning("Amount Paid can not be less than the Minimum Value.");                
+            }
+            if (parseFloat(Amount) > parseFloat(maxAmount)) {
+                $(this).val(maxAmount);
+                toastr.warning("Amount Paid can not be more than the Minimum Value.");                
+            }
+            if (flag) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    $(document).ready(function () {
+
+        $("#AmountPaid").change(function () {
+            
+            var minAmount = $("#MinAmounttoPaid").val();
+            var maxAmount = $("#MaxAmounttoPaid").val();
+            var Amount = $(this).val();
+            if (Amount != "") {
+                if (parseFloat(Amount) < parseFloat(minAmount)) {
+                    $(this).val(minAmount);
+                    toastr.warning("Amount Paid can not be less than the Minimum Value.");
+                }
+                if (parseFloat(Amount) > parseFloat(maxAmount)) {
+                    $(this).val(maxAmount);
+                    toastr.warning("Amount Paid can not be more than the Minimum Value.");
+                }
+            }
+
+        });
+
+       
+
+    });
 </script>
 
 

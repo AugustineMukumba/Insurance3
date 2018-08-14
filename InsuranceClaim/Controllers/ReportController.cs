@@ -127,6 +127,7 @@ namespace InsuranceClaim.Controllers
                 var make = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'");
                 var model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
                 var vehicleSUmmarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
+               
                 var summary = InsuranceContext.SummaryDetails.Single(vehicleSUmmarydetail.SummaryDetailId);
                 obj.Payment_Term = InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name;
                 obj.Payment_Mode = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name;

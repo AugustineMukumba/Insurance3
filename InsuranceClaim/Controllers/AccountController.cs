@@ -1061,7 +1061,8 @@ namespace InsuranceClaim.Controllers
                 }
                 else
                 {
-                    var policye = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber = '"+ searchText +"'");
+                    //var policye = InsuranceContext.PolicyDetails.Query("Select * From PolicyDetail Where PolicyNumber Like '%" + searchText + "%'").FirstOrDefault();
+                    var policye = InsuranceContext.PolicyDetails.Query("Select * From PolicyDetail Where PolicyNumber Like '%" + searchText + "%'").FirstOrDefault();
 
                     var policyId = policye.Id;
                     var vehicle = InsuranceContext.VehicleDetails.Single(where: $"PolicyId = '"+ policyId + "'");
@@ -1109,7 +1110,7 @@ namespace InsuranceClaim.Controllers
                         obj.VehicleId = _vehicle.Id;
                         obj.startdate = Convert.ToDateTime(_vehicle.CoverStartDate);
                         obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
-                        if (_reinsurenaceTrans != null)
+                        if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
                         {
                             obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
                             obj.AutoFacPremium = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsurancePremium);

@@ -229,6 +229,7 @@ namespace Insurance.Domain
         public decimal? TotalStampDuty { get; set; }
         public decimal? TotalZTSCLevies { get; set; }
         public decimal? TotalRadioLicenseCost { get; set; }
+        public decimal? AmountPaid { get; set; }
         public string DebitNote { get; set; }
         public string ReceiptNumber { get; set; }
         public bool? SMSConfirmation { get; set; }
@@ -304,6 +305,7 @@ namespace Insurance.Domain
         public decimal? QuaterlyRiskPremium { get; set; }
         public decimal? Discount { get; set; }
         public bool isLapsed { get; set; }
+        public decimal? BalanceAmount { get; set; }
     }
 
     public partial class VehicleMake : Entity<VehicleMake>

@@ -31,6 +31,10 @@ namespace InsuranceClaim.Models
         public decimal? PassengerAccidentCoverAmount { get; set; }
         public decimal? ExcessAmount { get; set; }
         public decimal? Discount { get; set; }
+        [Required(ErrorMessage = "Please Enter Amount to be paid")]
+        public decimal AmountPaid { get; set; }
+        public decimal? MaxAmounttoPaid { get; set; }        
+        public decimal? MinAmounttoPaid { get; set; }
 
     }
 }
