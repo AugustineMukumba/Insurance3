@@ -195,12 +195,12 @@ namespace InsuranceClaim.Controllers
                 model.PolicyNumber = ViewBag.PolicyNumber;
             }
 
-          
+
 
 
             model.BusinessSourceId = 3;
 
-          
+
 
 
             Session["PolicyData"] = Mapper.Map<PolicyDetailModel, PolicyDetail>(model);
@@ -215,7 +215,7 @@ namespace InsuranceClaim.Controllers
             var response = new Response();
             try
             {
-               
+
 
                 response.Message = "Success";
                 response.Status = true;
@@ -236,6 +236,10 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult RiskDetail(int? id = 0)
         {
+
+
+
+
             ViewBag.Products = InsuranceContext.Products.All().ToList();
             var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm))
                                    select new
@@ -779,9 +783,35 @@ namespace InsuranceClaim.Controllers
                                 ///Licence Ticket
                                 if (_item.IsLicenseDiskNeeded)
                                 {
-                                    string TicketNo = "LT-" + Guid.NewGuid().ToString();
+
                                     var LicenceTicket = new LicenceTicket();
-                                    LicenceTicket.TicketNo = TicketNo;
+                                    var Licence = InsuranceContext.LicenceTickets.All(orderBy: "Id desc").FirstOrDefault();
+
+                                    if (Licence != null)
+                                    {
+                                        string number = Licence.TicketNo.Substring(3);
+
+                                        long tNumber = Convert.ToInt64(number) + 1;
+                                        string TicketNo = string.Empty;
+                                        int length = 6;
+                                        length = length - tNumber.ToString().Length;
+
+                                        for (int i = 0; i < length; i++)
+                                        {
+                                            TicketNo += "0";
+                                        }
+                                        TicketNo += tNumber;
+                                        var ticketnumber = "GEN" + TicketNo;
+
+                                        LicenceTicket.TicketNo = ticketnumber;
+                                    }
+                                    else
+                                    {
+                                        var TicketNo = ConfigurationManager.AppSettings["TicketNo"];
+
+                                        LicenceTicket.TicketNo = TicketNo;
+                                    }
+
                                     LicenceTicket.VehicleId = _item.Id;
                                     LicenceTicket.CloseComments = "";
                                     LicenceTicket.ReopenComments = "";
@@ -1115,7 +1145,7 @@ namespace InsuranceClaim.Controllers
             else
             {
                 return RedirectToAction("SummaryDetail");
-            }           
+            }
         }
 
         [HttpPost]
@@ -1165,6 +1195,43 @@ namespace InsuranceClaim.Controllers
             return json;
         }
 
+        [HttpPost]
+        public JsonResult checkVRNwithICEcash(string regNo)
+        {
+            checkVRNwithICEcashResponse response = new checkVRNwithICEcashResponse();
+            JsonResult json = new JsonResult();
+            json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            //json.Data = "";
+
+            Insurance.Service.ICEcashService ICEcashService = new Insurance.Service.ICEcashService();
+            var tokenObject = new ICEcashTokenResponse();
+
+            #region get ICE cash token
+            if (Session["ICEcashToken"] != null)
+            {
+                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+            }
+            else
+            {
+                ICEcashService.getToken();
+                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+            }
+            #endregion
+
+            List<RiskDetailModel> objVehicles = new List<RiskDetailModel>();
+            objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo });
+
+            if (tokenObject.Response.PartnerToken != "")
+            {
+                ICEcashQuoteResponse quoteresponse = ICEcashService.RequestQuote(objVehicles, tokenObject.Response.PartnerToken);
+                response.result = quoteresponse.Response.Result;
+                response.message = quoteresponse.Response.Quotes[0].Message;
+            }
+
+            json.Data = response;
+
+            return json;
+        }
         public JsonResult GetVehicleModel(string makeCode)
         {
             var service = new VehicleService();
@@ -1226,7 +1293,11 @@ namespace InsuranceClaim.Controllers
             public List<City> cities { get; set; }
         }
 
-
+        public class checkVRNwithICEcashResponse
+        {
+            public int result { get; set; }
+            public string message { get; set; }
+        }
     }
 }
 

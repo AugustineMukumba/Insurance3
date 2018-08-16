@@ -8,11 +8,14 @@ using System.Configuration;
 using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 using InsuranceClaim.Models;
+using Newtonsoft.Json;
+using System.Web;
 
 namespace Insurance.Service
 {
     public class ICEcashService
     {
+        public static string PSK = "127782435202916376850511";
         private static string GetSHA512(string text)
         {
             UnicodeEncoding UE = new UnicodeEncoding();
@@ -45,12 +48,12 @@ namespace Insurance.Service
             }
         }
 
-        public string getToken()
+        public ICEcashTokenResponse getToken()
         {
 
             //string json = "%7B%20%20%20%22PartnerReference%22%3A%20%228eca64cb-ccf8-4304-a43f-a6eaef441918%22%2C%0A%20%20%20%20%22Date%22%3A%20%22201801080615165001%22%2C%0A%20%20%20%20%22Version%22%3A%20%222.0%22%2C%0A%20%20%20%20%22Request%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22Function%22%3A%20%22PartnerToken%22%7D%7D";
-            string PSK = "127782435202916376850511";
-            string _json = "{'PartnerReference':'8eca64cb-ccf8-4304-a43f-a6eaef441918','Date':'201801080615165001','Version':'2.0','Request':{'Function':'PartnerToken'}}";
+            //string PSK = "127782435202916376850511";
+            string _json = "";//"{'PartnerReference':'" + Convert.ToString(Guid.NewGuid()) + "','Date':'" + DateTime.Now.ToString("yyyyMMddhhmmss") + "','Version':'2.0','Request':{'Function':'PartnerToken'}}";
             Arguments objArg = new Arguments();
             objArg.PartnerReference = Guid.NewGuid().ToString();
             objArg.Date = DateTime.Now.ToString("yyyyMMddhhmmss");
@@ -97,12 +100,17 @@ namespace Insurance.Service
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
             request.AddParameter("application/x-www-form-urlencoded", jsonobject, ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
-            return response.StatusDescription;
+
+            ICEcashTokenResponse json = JsonConvert.DeserializeObject<ICEcashTokenResponse>(response.Content);
+
+            HttpContext.Current.Session["ICEcashToken"] = json;
+
+            return json;
         }
 
-        public string RequestQuote(List<RiskDetailModel> listofvehicles)
+        public ICEcashQuoteResponse RequestQuote(List<RiskDetailModel> listofvehicles,string PartnerToken)
         {
-            string PSK = "127782435202916376850511";
+            //string PSK = "127782435202916376850511";
             string _json = "";
 
             List<VehicleObject> obj = new List<VehicleObject>();
@@ -117,7 +125,7 @@ namespace Insurance.Service
             objArg.PartnerReference = Guid.NewGuid().ToString();
             objArg.Date = DateTime.Now.ToString("yyyyMMddhhmmss");
             objArg.Version = "2.0";
-            objArg.PartnerToken = "000000000362878";
+            objArg.PartnerToken = PartnerToken;
             objArg.Request = new QuoteFunctionObject { Function = "TPIQuote", Vehicles = obj };
 
             _json = Newtonsoft.Json.JsonConvert.SerializeObject(objArg);
@@ -160,7 +168,10 @@ namespace Insurance.Service
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
             request.AddParameter("application/x-www-form-urlencoded", jsonobject, ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
-            return response.StatusDescription;
+
+            ICEcashQuoteResponse json = JsonConvert.DeserializeObject<ICEcashQuoteResponse>(response.Content);
+
+            return json;
         }
     }
 
@@ -226,5 +237,47 @@ namespace Insurance.Service
         public QuoteArguments Arguments { get; set; }
         public string MAC { get; set; }
         public string Mode { get; set; }
+    }
+
+    public class TokenReposone
+    {
+        public string Function { get; set; }
+        public string Result { get; set; }
+        public string Message { get; set; }
+        public string PartnerToken { get; set; }
+        public string ExpireDate { get; set; }
+    }
+
+    public class ICEcashTokenResponse
+    {
+        public string PartnerReference { get; set; }
+        public string Date { get; set; }
+        public string Version { get; set; }
+        public TokenReposone Response { get; set; }
+    }
+
+
+
+    public class Quote
+    {
+        public string VRN { get; set; }
+        public string InsuranceID { get; set; }
+        public int Result { get; set; }
+        public string Message { get; set; }
+    }
+
+    public class QuoteResponse
+    {
+        public int Result { get; set; }
+        public string Message { get; set; }
+        public List<Quote> Quotes { get; set; }
+    }
+
+    public class ICEcashQuoteResponse
+    {
+        public string PartnerReference { get; set; }
+        public string Date { get; set; }
+        public string Version { get; set; }
+        public QuoteResponse Response { get; set; }
     }
 }
