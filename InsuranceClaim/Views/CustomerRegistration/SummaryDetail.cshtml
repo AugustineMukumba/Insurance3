@@ -329,6 +329,14 @@
     }
 
     $(document).ready(function () {
+         debugger;
+        if (@Model.PaymentMethodId != null && @Model.PaymentMethodId > 0)
+           
+        {
+            $("#PaymentMethodId").val('@Model.PaymentMethodId');
+        }
+
+
 
         $("#AmountPaid").change(function () {
 

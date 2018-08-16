@@ -1165,7 +1165,7 @@ namespace InsuranceClaim.Controllers
 
             //model.CreatedBy = 1;
             //model.CreatedDate = DateTime.Now;
-            var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{User.Identity.GetUserId().ToString()}'").FirstOrDefault();
+            var _customerData = InsuranceContext.Customers.Single(where: $"UserId ='{User.Identity.GetUserId().ToString()}'");
             model.CreatedBy = _customerData.Id;
             model.CreatedDate = DateTime.Now;
             var dbModel = Mapper.Map<SettingModel, Setting>(model);
@@ -1178,6 +1178,7 @@ namespace InsuranceClaim.Controllers
         {
 
             var db = InsuranceContext.Settings.All().OrderByDescending(x=>x.Id).ToList();
+            
             return View(db);
         }
 
@@ -1205,7 +1206,8 @@ namespace InsuranceClaim.Controllers
 
             if (ModelState.IsValid)
             {
-                model.ModifiedBy = 2;
+                var _customerData = InsuranceContext.Customers.Single(where: $"UserId ='{User.Identity.GetUserId().ToString()}'");
+                model.ModifiedBy = _customerData.Id;
                 model.ModifiedDate = DateTime.Now;
 
                 var data = Mapper.Map<SettingModel, Setting>(model);
