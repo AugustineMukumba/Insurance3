@@ -195,12 +195,12 @@ namespace InsuranceClaim.Controllers
                 model.PolicyNumber = ViewBag.PolicyNumber;
             }
 
-          
+
 
 
             model.BusinessSourceId = 3;
 
-          
+
 
 
             Session["PolicyData"] = Mapper.Map<PolicyDetailModel, PolicyDetail>(model);
@@ -215,7 +215,7 @@ namespace InsuranceClaim.Controllers
             var response = new Response();
             try
             {
-               
+
 
                 response.Message = "Success";
                 response.Status = true;
@@ -777,11 +777,43 @@ namespace InsuranceClaim.Controllers
                                 Session["VehicleDetails"] = vehicles;
 
                                 ///Licence Ticket
+                                ///
+                               
                                 if (_item.IsLicenseDiskNeeded)
                                 {
-                                    string TicketNo = "LT-" + Guid.NewGuid().ToString();
+
                                     var LicenceTicket = new LicenceTicket();
-                                    LicenceTicket.TicketNo = TicketNo;
+                                    var Licence = InsuranceContext.LicenceTickets.All(orderBy: "Id desc").FirstOrDefault();
+
+                                    if (Licence != null)
+                                    {
+
+
+                                        string number = Licence.TicketNo.Substring(3);
+
+                                        long tNumber = Convert.ToInt64(number) + 1;
+                                        string TicketNo = string.Empty;
+                                        int length = 6;
+                                        length = length - tNumber.ToString().Length;
+
+                                        for (int i = 0; i < length; i++)
+                                        {
+                                            TicketNo += "0";
+                                        }
+                                        TicketNo += tNumber;
+                                        var ticketnumber = "GEN" + TicketNo;
+                                                                               
+                                        LicenceTicket.TicketNo = ticketnumber;                                       
+                                    }
+                                    else
+                                    {
+                                        var TicketNo = ConfigurationManager.AppSettings["TicketNo"];
+                                        
+                                        LicenceTicket.TicketNo = TicketNo;                                      
+
+                                       
+                                    }
+
                                     LicenceTicket.VehicleId = _item.Id;
                                     LicenceTicket.CloseComments = "";
                                     LicenceTicket.ReopenComments = "";
@@ -1115,7 +1147,7 @@ namespace InsuranceClaim.Controllers
             else
             {
                 return RedirectToAction("SummaryDetail");
-            }           
+            }
         }
 
         [HttpPost]
