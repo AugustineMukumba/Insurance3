@@ -25,7 +25,7 @@ namespace InsuranceClaim
             routes.MapRoute(
              name: "",
              url: "Payment/{controller}/{action}/{id}/{TotalPremium}/{Email}/{PolicyNumber}",
-             defaults: new { controller = "Paypal", action = "InitiatePaynowTransaction", id = UrlParameter.Optional, Email = UrlParameter.Optional, TotalPremium = UrlParameter.Optional, PolicyNumber = UrlParameter.Optional }
+             defaults: new { controller = "Paypal", action = "InitiatePaynowTransaction", id = UrlParameter.Optional, Email = UrlParameter.Optional, TotalPremiumPaid = UrlParameter.Optional, PolicyNumber = UrlParameter.Optional }
          );
         }
     }

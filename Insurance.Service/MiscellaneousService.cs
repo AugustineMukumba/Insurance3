@@ -21,7 +21,7 @@ namespace Insurance.Service
 
             _SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={SummaryID}").ToList();
 
-            if (amountPaid < totalPremium)
+            if (amountPaid <= totalPremium)
             {
                 if (isRenew)
                 {
