@@ -236,6 +236,10 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult RiskDetail(int? id = 0)
         {
+
+
+
+
             ViewBag.Products = InsuranceContext.Products.All().ToList();
             var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm))
                                    select new
@@ -1197,6 +1201,43 @@ namespace InsuranceClaim.Controllers
             return json;
         }
 
+        [HttpPost]
+        public JsonResult checkVRNwithICEcash(string regNo)
+        {
+            checkVRNwithICEcashResponse response = new checkVRNwithICEcashResponse();
+            JsonResult json = new JsonResult();
+            json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            //json.Data = "";
+
+            Insurance.Service.ICEcashService ICEcashService = new Insurance.Service.ICEcashService();
+            var tokenObject = new ICEcashTokenResponse();
+
+            #region get ICE cash token
+            if (Session["ICEcashToken"] != null)
+            {
+                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+            }
+            else
+            {
+                ICEcashService.getToken();
+                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+            }
+            #endregion
+
+            List<RiskDetailModel> objVehicles = new List<RiskDetailModel>();
+            objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo });
+
+            if (tokenObject.Response.PartnerToken != "")
+            {
+                ICEcashQuoteResponse quoteresponse = ICEcashService.RequestQuote(objVehicles, tokenObject.Response.PartnerToken);
+                response.result = quoteresponse.Response.Result;
+                response.message = quoteresponse.Response.Quotes[0].Message;
+            }
+
+            json.Data = response;
+
+            return json;
+        }
         public JsonResult GetVehicleModel(string makeCode)
         {
             var service = new VehicleService();
@@ -1258,7 +1299,11 @@ namespace InsuranceClaim.Controllers
             public List<City> cities { get; set; }
         }
 
-
+        public class checkVRNwithICEcashResponse
+        {
+            public int result { get; set; }
+            public string message { get; set; }
+        }
     }
 }
 

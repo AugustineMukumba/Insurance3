@@ -14,9 +14,7 @@ namespace InsuranceClaim.Controllers
         public ActionResult Index()
         {
 
-            List<RiskDetailModel> objVehicles = new List<RiskDetailModel>();
-
-            objVehicles.Add(new RiskDetailModel { RegistrationNo = "AEM5376", CoverTypeId = 1, SumInsured = 10000.00m, PaymentTermId = 4, VehicleYear = 2012 });
+            
 
             ICEcashService obj = new ICEcashService();
             //obj.getToken();
