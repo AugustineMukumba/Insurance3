@@ -14,8 +14,8 @@ namespace InsuranceClaim.Models
         public string TransactionDate { get; set; }
         public decimal? SumInsured { get; set; }
         public decimal? Premium { get; set; }
-        //public string Commission { get; set; }
-        //public string CommissionAmount { get; set; }
+        public decimal? Commission { get; set; }
+        public decimal? ManagementCommission { get; set; }
     }
 
 

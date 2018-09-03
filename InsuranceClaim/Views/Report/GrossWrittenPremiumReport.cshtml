@@ -6,14 +6,23 @@
 
 <div class="productsave-section GrossWrittenPremiumReport">
 
-    <div class="container">
+    <div class="container-fluid" id="content">
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
                 <div class="head-title">
                     <h2>Gross Written Premium Report</h2>
                 </div>
             </div>
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 add-btn">
+                <div class="text-right">
+                    @*<button type="button" class="btn btn-primary">Add</button>*@
+                    @*<input class="btn btn-primary" type="button" value="Generate PDF" id="generatePdf" />*@
+                    <input class="btn btn-primary" type="button" value="Generate Excel" id="generateExcel" />
 
+
+
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 add-btn">
@@ -25,103 +34,170 @@
                 </div>*@
         </div>
         <div class="product-table-grid">
-            <table class="table table-striped tablesorter">
-                <thead>
-                    <tr>
-                        <th style="width: 170px;">Customer Name</th>
-                        <th style="width: 180px;">Policy Number</th>
-                        <th style="width:170px;">Policy Dates</th>
-                        @*<th>Policy End Date</th>
-                            <th>Transaction Date</th>*@
-                        <th>Make and Model</th>
-                        <th style="width:170px;">Payment Detail</th>
-                        @*<th>Payment Mode</th>*@
-                        <th>Sum Insured</th>
-                        <th style="width:170px;">Premium</th>
-                        <th>Stamp Duty</th>
-                        <th>ZTSC Levy</th>
-                        @*<th>Net Premium</th>*@
-                        <th style="width:200px;">Commission Detail</th>
-                        @*<th>Commission Amount</th>*@
-                        <th style="text-align: left;">Radio Licence Cost</th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.ListGrossWrittenPremiumReportdata.ToList())
-                    {
+            <div class="table-responsive">
+                <table width="1785" class="table table-striped tablesorter" style="width:1785px" id="report2excel">
+                    <thead>
                         <tr>
-                            <td>@item.Customer_Name</td>
-                            <td>@item.Policy_Number</td>
-                            <td>
-                                <table class="sub-table">
-                                    <tr>
-                                        <td><b>Policy Start Date :</b><br />@item.Policy_startdate<br /></td>
+                            <th style="width: 170px;">Customer Name</th>
+                            <th style="width: 180px;">Policy Number</th>
+                            <th style="width:170px;">Policy Dates</th>
+                            @*<th>Policy End Date</th>
+                                <th>Transaction Date</th>*@
+                            <th>Make and Model</th>
+                            <th style="width:170px;">Payment Detail</th>
+                            @*<th>Payment Mode</th>*@
+                            <th>Sum Insured</th>
+                            <th style="width:170px;">Premium</th>
+                            <th>Stamp Duty</th>
+                            <th>ZTSC Levy</th>
+                            @*<th>Net Premium</th>*@
+                            <th style="width:200px;">Commission Detail</th>
+                            @*<th>Commission Amount</th>*@
+                            <th style="text-align: left;">Radio Licence Cost</th>
 
-                                    </tr>
-                                    <tr>
-                                        <td><b>Policy End Date : </b><br />@item.Policy_endate<br /></td>
-
-                                    </tr>
-                                    <tr>
-                                        <td><b>Transaction Date :</b><br />@item.Transaction_date<br /></td>
-                                    </tr>
-                                </table>
-                            </td>
-                            @*<td>@item.Policy_endate</td>
-                                <td>@item.Transaction_date</td>*@
-                            <td>@item.Vehicle_makeandmodel</td>
-                            <td>                            
-                                <table class="sub-table">
-                                    <tr>
-                                        <td><b>Payment Term :</b><br />@item.Payment_Term<br /></td>
-
-                                    </tr>
-                                    <tr>
-                                        <td><b>Payment Mode : </b><br />@item.Payment_Mode<br /></td>
-
-                                    </tr>                                  
-                                </table>
-                            </td>
-                            @*<td>@item.Payment_Mode</td>*@
-                            <td>$ @item.Sum_Insured</td>
-                            <td>
-                                <table class="sub-table">
-                                    <tr>
-                                        <td><b>Annual Premium :</b><br />$@item.Annual_Premium<br /></td>
-
-                                    </tr>
-                                    <tr>
-                                        <td><b>Premium Due : </b><br />$@item.Premium_due<br /></td>
-
-                                    </tr>
-                                    <tr>
-                                        <td><b>Net Premium : </b><br />$@item.Net_Premium<br /></td>
-
-                                    </tr>
-                                </table>
-                            </td>
-                            <td>$ @item.Stamp_duty</td>
-                            <td>$ @item.ZTSC_Levy</td>
-                            @*<td>@item.Net_Premium</td>*@
-                            <td>
-                                <table class="sub-table">
-                                    <tr>
-                                        <td><b>Commission Percentage :</b><br />@item.Comission_percentage %<br /></td>
-
-                                    </tr>
-                                    <tr>
-                                        <td><b>Commission Amount : </b><br />$ @item.Comission_Amount<br /></td>
-
-                                    </tr>
-                                </table>
-                            </td>
-                            @*<td>@item.Comission_Amount</td>*@
-                            <td>$@item.RadioLicenseCost</td>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+
+                        @{ 
+                            decimal sumInsuredTotal = 0;
+                            decimal annualPremiumTotal = 0;
+                            decimal premiumDueTotal = 0;
+                            decimal netPremiumTotal = 0;
+                            decimal stampdutyTotal = 0;
+                            decimal ztscLevyTotal = 0;
+                            decimal commissionAmountTotal = 0;
+                            decimal radioLicenseCostTotal = 0;
+                        }
+
+
+
+
+
+
+                        @foreach (var item in Model.ListGrossWrittenPremiumReportdata.ToList())
+                        {
+                            sumInsuredTotal += item.Sum_Insured;
+                            annualPremiumTotal += item.Annual_Premium;
+                            premiumDueTotal += item.Premium_due;
+                            netPremiumTotal += Convert.ToDecimal(item.Net_Premium);
+                            stampdutyTotal += item.Stamp_duty;
+                            ztscLevyTotal += item.ZTSC_Levy;
+                            commissionAmountTotal += item.Comission_Amount;
+                            radioLicenseCostTotal += Convert.ToDecimal(item.RadioLicenseCost);
+
+
+
+                            <tr>
+                                <td>@item.Customer_Name</td>
+                                <td>@item.Policy_Number</td>
+                                <td>
+                                    <table class="sub-table">
+                                        <tr>
+                                            <td><b>Policy Start Date :</b><br />@item.Policy_startdate<br /></td>
+
+                                        </tr>
+                                        <tr>
+                                            <td><b>Policy End Date : </b><br />@item.Policy_endate<br /></td>
+
+                                        </tr>
+                                        <tr>
+                                            <td><b>Transaction Date :</b><br />@item.Transaction_date<br /></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                @*<td>@item.Policy_endate</td>
+                                    <td>@item.Transaction_date</td>*@
+                                <td>@item.Vehicle_makeandmodel</td>
+                                <td>
+                                    <table class="sub-table">
+                                        <tr>
+                                            <td><b>Payment Term :</b><br />@item.Payment_Term<br /></td>
+
+                                        </tr>
+                                        <tr>
+                                            <td><b>Payment Mode : </b><br />@item.Payment_Mode<br /></td>
+
+                                        </tr>
+                                    </table>
+                                </td>
+                                @*<td>@item.Payment_Mode</td>*@
+                                <td>$ @item.Sum_Insured</td>
+                                <td>
+                                    <table class="sub-table">
+                                        <tr>
+                                            <td><b>Annual Premium :</b><br />$@item.Annual_Premium<br /></td>
+
+                                        </tr>
+                                        <tr>
+                                            <td><b>Premium Due : </b><br />$@item.Premium_due<br /></td>
+
+                                        </tr>
+                                        <tr>
+                                            <td><b>Net Premium : </b><br />$@item.Net_Premium<br /></td>
+
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>$ @item.Stamp_duty</td>
+                                <td>$ @item.ZTSC_Levy</td>
+                                @*<td>@item.Net_Premium</td>*@
+                                <td>
+                                    <table class="sub-table">
+                                        <tr>
+                                            <td><b>Commission Percentage :</b><br />@item.Comission_percentage %<br /></td>
+
+                                        </tr>
+                                        <tr>
+                                            <td><b>Commission Amount : </b><br />$ @item.Comission_Amount<br /></td>
+
+                                        </tr>
+                                    </table>
+                                </td>
+                                @*<td>@item.Comission_Amount</td>*@
+                                <td>$@item.RadioLicenseCost</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td><strong>Total:</strong></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong>$@sumInsuredTotal</strong></td>
+                            <td>
+                                <table class="sub-table">
+                                    <tr>
+                                        <td><b>Total Annual Premium :</b><br /><b>$@annualPremiumTotal</b><br /></td>
+
+                                    </tr>
+                                    <tr>
+                                        <td><b>Total Premium Due : </b><br /><b>$@premiumDueTotal</b><br /></td>
+
+                                    </tr>
+                                    <tr>
+                                        <td><b>Total Net Premium : </b><br /><b>$@netPremiumTotal</b><br /></td>
+
+                                    </tr>
+                                </table>
+                            </td>
+                            <td><strong>$@stampdutyTotal</strong></td>
+                            <td><strong>$@ztscLevyTotal</strong></td>
+                            <td>
+                                <table class="sub-table">
+                                    <tr>
+                                        <td><b>Commission Amount : </b><br /><strong>$@commissionAmountTotal</strong><br /></td>
+
+                                    </tr>
+                                </table>
+                            </td>
+                            <td><strong>$@radioLicenseCostTotal</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -136,23 +212,52 @@
                 2: {
                     sorter: false
                 },
-                 4: {
+                4: {
                     sorter: false
-                 },
+                },
 
-                 6: {
-                     sorter: false
-                 },
-                 9: {
-                     sorter: false
-                 },
+                6: {
+                    sorter: false
+                },
+                9: {
+                    sorter: false
+                },
 
             }
 
 
 
 
-        } );
+        });
     });
+
+    $("#generateExcel").click(function () {
+        debugger;
+        $("#report2excel").table2excel({
+            // exclude CSS class
+            exclude: ".noExl",
+            name: "Worksheet Name",
+            filename: "GrossWrittenPremiumReport" //do not include extension
+
+        });
+    });
+
+    var doc = new jsPDF({ format: [600, 600] });
+    var specialElementHandlers = {
+        '#editor': function (element, renderer) {
+            return true;
+        }
+    };
+
+    $('#generatePdf').click(function () {
+
+        doc.fromHTML($('#content').html(), 15, 15, {
+            'width': 500,
+            'elementHandlers': specialElementHandlers
+        });
+        doc.save('GrossWrittenPremiumReport.pdf');
+
+    });
+
 
 </script>

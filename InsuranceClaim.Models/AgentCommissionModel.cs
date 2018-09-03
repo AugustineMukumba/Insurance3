@@ -10,10 +10,13 @@ namespace InsuranceClaim.Models
     public class AgentCommissionModel
     {
         public int Id { get; set; }
+        [Display(Name = "Commission Name")]
         [Required(ErrorMessage = "Please Enter Commission Name.")]
         public string CommissionName { get; set; }
+        [Display(Name = "Commission Amount")]
         [Required(ErrorMessage = "Please Enter Commission Amount.")]
         public double? CommissionAmount { get; set; }
+        [Display(Name = "Management Commission")]
         [Required(ErrorMessage = "Please Enter Management Commission.")]
         public double? ManagementCommission { get; set; }
         public bool? IsActive { get; set; }

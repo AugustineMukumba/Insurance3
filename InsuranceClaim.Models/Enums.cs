@@ -38,4 +38,10 @@ namespace InsuranceClaim.Models
         NTU = 4,
         Renewed = 5
     }
+
+    public enum ePolicyRenewReminderType
+    {
+        Email = 1,
+        SMS = 2
+    }
 }

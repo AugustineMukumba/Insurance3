@@ -19,7 +19,9 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please Enter Registration No")]
         public string RegistrationNo { get; set; }
         public int? CustomerId { get; set; }
+        [Required(ErrorMessage = "Please Select Vehicle Make")]
         public string MakeId { get; set; }
+        [Required(ErrorMessage = "Please Select Vehicle Model")]
         public string ModelId { get; set; }
         [Required(ErrorMessage = "Please Enter Cubic Capacity")]
         public decimal? CubicCapacity { get; set; }
@@ -31,6 +33,7 @@ namespace InsuranceClaim.Models
         public string ChasisNumber { get; set; }
         public string VehicleColor { get; set; }
         public int? VehicleUsage { get; set; }
+        [Required(ErrorMessage = "Please Select Cover Type")]
         public int? CoverTypeId { get; set; }
         [Required(ErrorMessage = "Please Enter Cover Start Date")]
         public DateTime? CoverStartDate { get; set; }
@@ -84,6 +87,11 @@ namespace InsuranceClaim.Models
         public decimal? QuaterlyRiskPremium { get; set; }
         public decimal? Discount { get; set; }
         public decimal? BalanceAmount { get; set; }
-
+        public string LicenseAddress1 { get; set; }
+        public string LicenseAddress2 { get; set; }
+        public string LicenseCity { get; set; }
+        public bool isWebUser { get; set; }
+        public decimal SuggestedValue { get; set; }
+        public decimal VehicleLicenceFee { get; set; }
     }
 }

@@ -18,7 +18,7 @@
         if (customer != null)
         {
             LoyalyPoints = Convert.ToDecimal(InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={customer.Id}").Sum(x => x.PointsEarned));
-            role = User.Identity.Name;
+            role = System.Web.HttpContext.Current.User.IsInRole("Administrator") ? "Administrator" : (System.Web.HttpContext.Current.User.IsInRole("Customer") ? "Customer" : "");
             fname = customer.FirstName;
             lname = customer.LastName;
         }
@@ -60,6 +60,11 @@
     <link href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
     <link href="~/Content/style-sorting.css" rel="stylesheet" />
     <script src="~/Scripts/jquery.tablesorter.js"></script>
+    <link href="~/Content/select2.css" rel="stylesheet" />
+    <script src="~/Scripts/select2.js"></script>
+    <script src="~/Scripts/jquery.table2excel.min.js"></script>
+    <script src="~/Scripts/jspdf.debug.js"></script>
+
     <style>
         .input-group-addon {
             border: none !important;
@@ -68,6 +73,14 @@
 </head>
 <body>
     <input type="hidden" id="ErrorMessage" value="@ErrorMessage" />
+
+    <div class="loading-area">
+        <div class="loading-svg">
+            <img src="~/Images/loading.svg" />
+        </div>
+        <div class="loading-overlay"></div>
+    </div>
+
     <div class="top-header-section">
         <div class="logo-section-details">
             <div class="container">
@@ -75,13 +88,13 @@
                     <div class="top-logo-block">
                         <div class="col-xs-12 col-sm-4 col-md-6 col-lg-6 logo-blocks">
                             <div class="logo-img">
-                                <a href="~/InsuranceHome/Index/Index"><img src="~/Images/geneinsure-logo.png"></a>
+                                <a href="~/InsuranceHome/Index/Index"><img src="~/Images/geneinsure-logo.jpeg" style="width: 241px;height: 81px;"></a>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-4 col-md-6 col-lg-6 renew-blocks">
                             <div class="text-right">
                                 <div class="renew-btn">
-                                    <a href="javascript:void(0);">Buy/Renew : 1800 2700 700  </a>
+                                    <a href="tel:+2638677223344">Buy/Renew : <strong>+263 8677 223 344</strong>  </a>
                                     @if (userLoggedin)
                                     {
                                         <a href="javascript:void(0);">Wallet : $ @LoyalyPoints  </a>
@@ -96,19 +109,13 @@
                                 <div class="login-btn" style="@(userLoggedin ? "display:block;" : "display:none;")">
                                     <ul class="list-inline">
                                         <li>@(userLoggedin ? "Welcome " + fname + " " + lname : "Welcome Guest")</li>
-
-
+                                        
                                         @if (userLoggedin)
                                         {
                                             <li><a href="/Account/Logout">Logout</a></li>
                                         }
 
-
-
-
-
                                         <li><a href="/Account/MyPolicies">My Policies</a></li>
-
 
                                     </ul>
                                 </div>
@@ -136,20 +143,19 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
-                            <li><a href="/InsuranceHome/Index">Home</a></li>
-                            <li><a href="#">About us</a></li>
-                            <li><a href="#">Our Busniess</a></li>
-                            <li><a href="#">Investor Relations</a></li>
-                            <li><a href="#">Social Responsibility</a></li>
-                            <li><a href="#">News</a></li>
-                            <li><a href="#">Contact</a></li>
-                            @if (role != null && role != "")
-                            {
-                                if (User.IsInRole("Administrator") || User.IsInRole("Staff"))
+                            <li><a href="/InsuranceHome/Index">Request Quote</a></li>
+                            <li><a href="#">Renew Policy</a></li>
+                            <li><a href="#">Change Policy</a></li>
+                            <li><a href="#">Register Claim</a></li>
+                            <li><a href="#">Policy/Claim Detail</a></li>
+                            <li><a href="#">About Us</a></li>
+                            @*<li><a href="#">Contact</a></li>*@
+                          
+                                @if (User.IsInRole("Administrator") || User.IsInRole("Staff"))
                                 {
                                     <li><a class="DashboardButton" href="@Url.Action("Dashboard","Account")">Dashboard</a></li>
                                 }
-                            }
+                           
                         </ul>
                     </div><!-- /.navbar-collapse -->
                 </div><!-- /.container-fluid -->
@@ -163,20 +169,20 @@
     <div class="footer-section">
         <div class="container">
             <div class="row">
-                <div class="col-sm-3 footer-content">
+                <div class="col-sm-4 footer-content">
                     <div class="logo-img">
-                        <img src="~/Images/geneinsure-logo.png">
+                        <img src="~/Images/geneinsure-logo.jpeg" style="width: 241px;height: 81px;">
                     </div>
                     <div class="ftr-about-content">
                         <p>Genetic Financial Services (Pvt) Ltd<br>11 Routledge Road ,Milton Park<br>Belvedere ,Harare</p>
                     </div>
                     <div class="details-list">
                         <ul>
-                            <li><a href="">Tel: <strong>+263 867 700 7491</strong></a></li>
+                            <li><a href="tel:+2638677223344">Tel: <strong>+263 8677 223 344</strong></a></li>
                         </ul>
                     </div>
                 </div>
-                <div class="col-sm-3 footer-newsletter">
+                @*<div class="col-sm-3 footer-newsletter">
                     <div class="newsletter-box">
                         <h4 class="footer-heading">Sign Up Newsletter</h4>
                         <p>Make sure you don’t miss interesting happenings by joining our newsletter program. Sign up by entering your email address bellow.</p>
@@ -187,30 +193,43 @@
                             <button type="button">Subscribe</button>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-3 footer-links">
+                </div>*@
+                <div class="col-sm-4 footer-links">
                     <div class="quick-links">
                         <h4 class="footer-heading">Quick Links</h4>
                         <ul>
-                            <li><a href="/InsuranceHome/Index"><i class="fa fa-angle-right"></i> Home</a></li>
+                            <li><a href="/InsuranceHome/Index"><i class="fa fa-angle-right"></i> Request Quote</a></li>
+                            <li><a href="#"><i class="fa fa-angle-right"></i> Renew Policy</a></li>
+                            <li><a href="#"><i class="fa fa-angle-right"></i> Change Policy</a></li>
+                            <li><a href="#"><i class="fa fa-angle-right"></i> Register Claim</a></li>
+                            <li><a href="#"><i class="fa fa-angle-right"></i> Policy/Claim Detail</a></li>
+                            <li><a href="#"><i class="fa fa-angle-right"></i> About Us</a></li>
+
+                            @*<li><a href="/InsuranceHome/Index"><i class="fa fa-angle-right"></i> Home</a></li>
                             <li><a href=""><i class="fa fa-angle-right"></i> About Us</a></li>
                             <li><a href=""><i class="fa fa-angle-right"></i> Our Partners</a></li>
                             <li><a href=""><i class="fa fa-angle-right"></i> Our Services</a></li>
-                            <li><a href=""><i class="fa fa-angle-right"></i> Contact Us</a></li>
+                            <li><a href=""><i class="fa fa-angle-right"></i> Contact Us</a></li>*@
                         </ul>
                     </div>
 
                 </div>
-                <div class="col-sm-3 footer-content">
+                <div class="col-sm-4 footer-content">
 
                     <div class="quick-links">
                         <h4 class="footer-heading">Quick Links</h4>
                         <ul>
-                            <li><a href="/InsuranceHome/Index"><i class="fa fa-angle-right"></i> Home</a></li>
+                            <li><a href="/InsuranceHome/Index"><i class="fa fa-angle-right"></i> Request Quote</a></li>
+                            <li><a href="#"><i class="fa fa-angle-right"></i> Renew Policy</a></li>
+                            <li><a href="#"><i class="fa fa-angle-right"></i> Change Policy</a></li>
+                            <li><a href="#"><i class="fa fa-angle-right"></i> Register Claim</a></li>
+                            <li><a href="#"><i class="fa fa-angle-right"></i> Policy/Claim Detail</a></li>
+                            <li><a href="#"><i class="fa fa-angle-right"></i> About Us</a></li>
+                            @*<li><a href="/InsuranceHome/Index"><i class="fa fa-angle-right"></i> Home</a></li>
                             <li><a href=""><i class="fa fa-angle-right"></i> About Us</a></li>
                             <li><a href=""><i class="fa fa-angle-right"></i> Our Partners</a></li>
                             <li><a href=""><i class="fa fa-angle-right"></i> Our Services</a></li>
-                            <li><a href=""><i class="fa fa-angle-right"></i> Contact Us</a></li>
+                            <li><a href=""><i class="fa fa-angle-right"></i> Contact Us</a></li>*@
                         </ul>
                     </div>
 
@@ -234,7 +253,7 @@
             });
 
             $('.date').datetimepicker({
-                format: 'MM/D/YYYY',
+                format: 'MM/D/YYYY'
             })
 
 

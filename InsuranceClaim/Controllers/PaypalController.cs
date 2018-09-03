@@ -203,7 +203,7 @@ namespace InsuranceClaim.Controllers
                 Item item = new Item();
                 item.name = make.MakeDescription + "/" + _model.ModelDescription;
                 item.currency = "USD";
-                item.price = Convert.ToString((_vehicle.Premium + _vehicle.StampDuty + _vehicle.ZTSCLevy + (Convert.ToBoolean(_vehicle.IncludeRadioLicenseCost) ? _vehicle.RadioLicenseCost : 0.00m) - _vehicle.Discount) - _vehicle.BalanceAmount);
+                item.price = Convert.ToString((_vehicle.Premium + _vehicle.StampDuty + _vehicle.ZTSCLevy + (Convert.ToBoolean(_vehicle.IncludeRadioLicenseCost) ? _vehicle.RadioLicenseCost : 0.00m)) - _vehicle.BalanceAmount);
                 item.quantity = "1";
                 item.sku = _vehicle.RegistrationNo;
 
@@ -262,11 +262,11 @@ namespace InsuranceClaim.Controllers
             Details details = new Details();
             details.tax = "0";
             details.shipping = "0";
-            details.subtotal = summaryDetail.AmountPaid.ToString() + zeros;
+            details.subtotal = (summaryDetail.AmountPaid.ToString().IndexOf('.') > -1 ? summaryDetail.AmountPaid.ToString() : summaryDetail.AmountPaid.ToString() + zeros);
 
             Amount amont = new Amount();
             amont.currency = "USD";
-            amont.total = summaryDetail.AmountPaid.ToString() + zeros;
+            amont.total = (summaryDetail.AmountPaid.ToString().IndexOf('.') > -1 ? summaryDetail.AmountPaid.ToString() : summaryDetail.AmountPaid.ToString() + zeros);
             amont.details = details;
 
             Transaction tran = new Transaction();
@@ -620,131 +620,151 @@ namespace InsuranceClaim.Controllers
             objSaveDetailListModel.ProductId = product.Id;
             objSaveDetailListModel.PaymentId = PaymentId == null ? "CASH" : PaymentId.ToString();
             objSaveDetailListModel.InvoiceId = InvoiceId == null ? "" : InvoiceId.ToString();
+            objSaveDetailListModel.CreatedBy = customer.Id;
+            objSaveDetailListModel.CreatedOn = DateTime.Now;
 
             List<VehicleDetail> ListOfVehicles = new List<VehicleDetail>();
 
-            if (paymentInformations == null)
+            //if (paymentInformations == null)
+            //{
+            Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
+            string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+            var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+            bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
+
+            foreach (var itemSummaryVehicleDetails in SummaryVehicleDetails)
             {
-                Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
-                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-                InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
-
-                foreach (var itemSummaryVehicleDetails in SummaryVehicleDetails)
-                {
-                    var itemVehicle = InsuranceContext.VehicleDetails.Single(itemSummaryVehicleDetails.VehicleDetailsId);
-                    if (itemVehicle.CoverTypeId == Convert.ToInt32(eCoverType.ThirdParty))
-                    {
-                        MiscellaneousService.AddLoyaltyPoints(summaryDetail.CustomerId.Value, policy.Id, Mapper.Map<VehicleDetail, RiskDetailModel>(itemVehicle));
-                    }
-                    ListOfVehicles.Add(itemVehicle);
-                }
-
-                if (!userLoggedin)
-                {
-                    string emailTemplatePath = "/Views/Shared/EmaiTemplates/UserRegisteration.cshtml";
-                    string EmailBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(emailTemplatePath));
-                    var Body = EmailBody.Replace(" #PolicyNumber#", policy.PolicyNumber).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Email#", user.Email).Replace("#change#", callbackUrl);
-                    objEmailService.SendEmail(user.Email, "", "", "Account Creation", Body, null);
-
-                    string body = "Hello " + customer.FirstName + "\nWelcome to the GENE-INSURE family, we would like to simplify your life." + "\nYour policy number is : " + policy.PolicyNumber + "\nUsername is : " + user.Email + "\nYour Password : Geneinsure@123" + "\nPlease reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>" + "\nThank you once again.";
-                    var result = await objsmsService.SendSMS(customer.Countrycode.Replace("+", "") + user.PhoneNumber, body);
-
-                    SmsLog objsmslog = new SmsLog()
-                    {
-                        Sendto = user.PhoneNumber,
-                        Body = body,
-                        Response = result
-                    };
-
-                    InsuranceContext.SmsLogs.Insert(objsmslog);
-                }
-
-                var data = (List<Item>)Session["itemData"];
-                if (data != null)
-                {
-                    var totalprem = data.Sum(x => Convert.ToDecimal(x.price));
-
-                    string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentEmail.cshtml";
-                    string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
-                    var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#AccountName#", customer.FirstName + ", " + customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Amount#", Convert.ToString(summaryDetail.AmountPaid)).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Cash" : (summaryDetail.PaymentMethodId == 2 ? "PayPal" : "PayNow")));
-
-                    #region Payment Email
-                    objEmailService.SendEmail(user.Email, "", "", "Payment", Body2, null);
-                    #endregion
-
-                    #region Send Payment SMS
-
-                    string body = "Hello " + customer.FirstName + "\nWelcome to the GENE-INSURE family, we would like to simplify your life." + "\n$" + Convert.ToString(totalprem) + " has been deducted from your account for your policy number is : " + policy.PolicyNumber + "\n" + "\nThank you.";
-                    var result = await objsmsService.SendSMS(customer.Countrycode.Replace("+", "") + user.PhoneNumber, body);
-
-                    SmsLog objsmslog = new SmsLog()
-                    {
-                        Sendto = user.PhoneNumber,
-                        Body = body,
-                        Response = result
-                    };
-
-                    InsuranceContext.SmsLogs.Insert(objsmslog);
-
-                    #endregion
-
-                    #region Payment PDF
-                    //MiscellaneousService.ScheduleMotorPdf(Body2, policy.CustomerId, policy.PolicyNumber, "Payment");
-                    #endregion
-                }
-
-                decimal totalpaymentdue = 0.00m;
-
-                //if (vehicle.PaymentTermId == 1)
+                var itemVehicle = InsuranceContext.VehicleDetails.Single(itemSummaryVehicleDetails.VehicleDetailsId);
+                //if (itemVehicle.CoverTypeId == Convert.ToInt32(eCoverType.ThirdParty))
                 //{
-                //    totalpaymentdue = (decimal)summaryDetail.TotalPremium;
+                MiscellaneousService.AddLoyaltyPoints(summaryDetail.CustomerId.Value, policy.Id, Mapper.Map<VehicleDetail, RiskDetailModel>(itemVehicle));
                 //}
-                //else if (vehicle.PaymentTermId == 4)
-                //{
-                //    totalpaymentdue = (decimal)summaryDetail.TotalPremium * 3;
-                //}
-                //else if (vehicle.PaymentTermId == 3)
-                //{
-                //    totalpaymentdue = (decimal)summaryDetail.TotalPremium * 4;
-                //}
-
-                string Summeryofcover = "";
-                foreach (var item in ListOfVehicles)
-                {
-                    Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
-                    VehicleModel model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
-                    VehicleMake make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{item.MakeId}'");
-
-                    string vehicledescription = model.ModelDescription + " / " + make.MakeDescription;
-
-                    Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + (item.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>$0.00</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Excess) + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
-                }
-                //for (int i = 0; i < SummaryVehicleDetails.Count; i++)
-                //{
-                //    var _vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[i].VehicleDetailsId);
-
-                //}
-
-                var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
-                var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == vehicle.PaymentTermId);
-                string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/SeheduleMotor.cshtml";
-                string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
-                var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (summaryDetail.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + summaryDetail.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(summaryDetail.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty)).Replace("##MotorLevy##", Convert.ToString(summaryDetail.TotalZTSCLevies)).Replace("##PremiumDue##", Convert.ToString(summaryDetail.TotalPremium - summaryDetail.TotalStampDuty - summaryDetail.TotalZTSCLevies - summaryDetail.TotalRadioLicenseCost - ListOfVehicles.Sum(x => x.Discount))).Replace("##PostalAddress##", customer.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(vehicle.ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(vehicle.MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(vehicle.PassengerAccidentCoverAmount)).Replace("##RoadsideAssistance##", Convert.ToString(vehicle.RoadsideAssistanceAmount)).Replace("##RadioLicence##", Convert.ToString(summaryDetail.TotalRadioLicenseCost)).Replace("##Discount##", Convert.ToString(vehicle.Discount));
-
-                #region Invoice EMail
-                objEmailService.SendEmail(user.Email, "", "", "Schedule-motor", Bodyy, null);
-                #endregion
-
-                #region Invoice PDF
-                //MiscellaneousService.ScheduleMotorPdf(Bodyy, policy.CustomerId, policy.PolicyNumber, "Schedule-motor");
-                #endregion
+                ListOfVehicles.Add(itemVehicle);
             }
+
+            if (!userLoggedin)
+            {
+                string emailTemplatePath = "/Views/Shared/EmaiTemplates/UserRegisteration.cshtml";
+                string EmailBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(emailTemplatePath));
+                var Body = EmailBody.Replace(" #PolicyNumber#", policy.PolicyNumber).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Email#", user.Email).Replace("#change#", callbackUrl);
+                objEmailService.SendEmail(user.Email, "", "", "Account Creation", Body, null);
+
+                string body = "Hello " + customer.FirstName + "\nWelcome to the GENE-INSURE family, we would like to simplify your life." + "\nYour policy number is : " + policy.PolicyNumber + "\nUsername is : " + user.Email + "\nYour Password : Geneinsure@123" + "\nPlease reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>" + "\nThank you once again.";
+                var result = await objsmsService.SendSMS(customer.Countrycode.Replace("+", "") + user.PhoneNumber, body);
+
+                SmsLog objsmslog = new SmsLog()
+                {
+                    Sendto = user.PhoneNumber,
+                    Body = body,
+                    Response = result,
+                    CreatedBy = customer.Id,
+                    CreatedOn = DateTime.Now
+                };
+
+                InsuranceContext.SmsLogs.Insert(objsmslog);
+            }
+
+            //var data = (List<Item>)Session["itemData"];
+            //if (data != null)
+            //{
+            //var totalprem = data.Sum(x => Convert.ToDecimal(x.price));
+
+            string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentEmail.cshtml";
+            string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
+            var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#AccountName#", customer.FirstName + ", " + customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Amount#", Convert.ToString(summaryDetail.AmountPaid)).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Cash" : (summaryDetail.PaymentMethodId == 2 ? "PayPal" : "PayNow")));
+
+            #region Payment Email
+            objEmailService.SendEmail(user.Email, "", "", "Payment", Body2, null);
+            #endregion
+
+            #region Send Payment SMS
+
+            string Recieptbody = "Hello " + customer.FirstName + "\nWelcome to the GENE-INSURE family, we would like to simplify your life." + "\n$" + Convert.ToString(summaryDetail.AmountPaid) + " has been deducted from your account for your policy number is : " + policy.PolicyNumber + "\n" + "\nThank you.";
+            var Recieptresult = await objsmsService.SendSMS(customer.Countrycode.Replace("+", "") + user.PhoneNumber, Recieptbody);
+
+            SmsLog objRecieptsmslog = new SmsLog()
+            {
+                Sendto = user.PhoneNumber,
+                Body = Recieptbody,
+                Response = Recieptresult,
+                CreatedBy = customer.Id,
+                CreatedOn = DateTime.Now
+            };
+
+            InsuranceContext.SmsLogs.Insert(objRecieptsmslog);
+
+            #endregion
+
+            #region Payment PDF
+            //MiscellaneousService.ScheduleMotorPdf(Body2, policy.CustomerId, policy.PolicyNumber, "Payment");
+            #endregion
+            //}
+
+            decimal totalpaymentdue = 0.00m;
+
+            //if (vehicle.PaymentTermId == 1)
+            //{
+            //    totalpaymentdue = (decimal)summaryDetail.TotalPremium;
+            //}
+            //else if (vehicle.PaymentTermId == 4)
+            //{
+            //    totalpaymentdue = (decimal)summaryDetail.TotalPremium * 3;
+            //}
+            //else if (vehicle.PaymentTermId == 3)
+            //{
+            //    totalpaymentdue = (decimal)summaryDetail.TotalPremium * 4;
+            //}
+
+            string Summeryofcover = "";
+            var RoadsideAssistanceAmount = 0.00m;
+            var MedicalExpensesAmount = 0.00m;
+            var ExcessBuyBackAmount = 0.00m;
+            var PassengerAccidentCoverAmount = 0.00m;
+            var ExcessAmount = 0.00m;
+
+            foreach (var item in ListOfVehicles)
+            {
+                Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
+                VehicleModel model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
+                VehicleMake make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{item.MakeId}'");
+
+                string vehicledescription = model.ModelDescription + " / " + make.MakeDescription;
+
+                RoadsideAssistanceAmount = RoadsideAssistanceAmount + Convert.ToDecimal(item.RoadsideAssistanceAmount);
+                MedicalExpensesAmount = MedicalExpensesAmount + Convert.ToDecimal(item.MedicalExpensesAmount);
+                ExcessBuyBackAmount = ExcessBuyBackAmount + Convert.ToDecimal(item.ExcessBuyBackAmount);
+                PassengerAccidentCoverAmount = PassengerAccidentCoverAmount + Convert.ToDecimal(item.PassengerAccidentCoverAmount);
+                ExcessAmount = ExcessAmount + Convert.ToDecimal(item.ExcessAmount);
+
+                Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + (item.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>$0.00</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Excess) + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
+            }
+            //for (int i = 0; i < SummaryVehicleDetails.Count; i++)
+            //{
+            //    var _vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[i].VehicleDetailsId);
+
+            //}
+
+            var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
+            var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == vehicle.PaymentTermId);
+            string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/SeheduleMotor.cshtml";
+            string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
+            //var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (summaryDetail.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + summaryDetail.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(summaryDetail.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty)).Replace("##MotorLevy##", Convert.ToString(summaryDetail.TotalZTSCLevies)).Replace("##PremiumDue##", Convert.ToString(summaryDetail.TotalPremium - summaryDetail.TotalStampDuty - summaryDetail.TotalZTSCLevies - summaryDetail.TotalRadioLicenseCost - ListOfVehicles.Sum(x => x.Discount))).Replace("##PostalAddress##", customer.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(vehicle.ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(vehicle.MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(vehicle.PassengerAccidentCoverAmount)).Replace("##RoadsideAssistance##", Convert.ToString(vehicle.RoadsideAssistanceAmount)).Replace("##RadioLicence##", Convert.ToString(summaryDetail.TotalRadioLicenseCost)).Replace("##Discount##", Convert.ToString(vehicle.Discount));
+            var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (summaryDetail.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + summaryDetail.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(summaryDetail.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty)).Replace("##MotorLevy##", Convert.ToString(summaryDetail.TotalZTSCLevies)).Replace("##PremiumDue##", Convert.ToString(summaryDetail.TotalPremium - summaryDetail.TotalStampDuty - summaryDetail.TotalZTSCLevies - summaryDetail.TotalRadioLicenseCost + ListOfVehicles.Sum(x => x.Discount))).Replace("##PostalAddress##", customer.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount)).Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount)).Replace("##RadioLicence##", Convert.ToString(summaryDetail.TotalRadioLicenseCost)).Replace("##Discount##", Convert.ToString(vehicle.Discount)).Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).Replace("##NINumber##", customer.NationalIdentificationNumber);
+
+            #region Invoice EMail
+            objEmailService.SendEmail(user.Email, "", "", "Schedule-motor", Bodyy, null);
+            #endregion
+
+            #region Invoice PDF
+            //MiscellaneousService.ScheduleMotorPdf(Bodyy, policy.CustomerId, policy.PolicyNumber, "Schedule-motor");
+            #endregion
+            //}
 
             #region Remove  All Sessions
             try
             {
+                Session.Remove("CustomerDataModal");
                 Session.Remove("PolicyData");
                 Session.Remove("VehicleDetails");
                 Session.Remove("SummaryDetailed");
@@ -762,11 +782,12 @@ namespace InsuranceClaim.Controllers
                 Session.Remove("SummaryDetailed");
                 Session.Remove("VehicleDetails");
                 Session.Remove("PolicyData");
+                Session.Remove("CustomerDataModal");
             }
 
             #endregion
 
-            return View(objSaveDetailListModel);
+            return RedirectToAction("ThankYou");
         }
         [HttpPost]
         public ActionResult SaveDetailList(PaymentInformationsModel model)
@@ -854,6 +875,11 @@ namespace InsuranceClaim.Controllers
 
             return View();
             //return RedirectToAction("SaveDetailList", "Paypal", new { id = id });
+        }
+
+        public ActionResult ThankYou()
+        {
+            return View();
         }
     }
 }

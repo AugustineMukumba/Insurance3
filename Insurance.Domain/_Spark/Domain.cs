@@ -306,6 +306,7 @@ namespace Insurance.Domain
         public decimal? Discount { get; set; }
         public bool isLapsed { get; set; }
         public decimal? BalanceAmount { get; set; }
+        public decimal? VehicleLicenceFee { get; set; }
     }
 
     public partial class VehicleMake : Entity<VehicleMake>
@@ -649,5 +650,51 @@ namespace Insurance.Domain
         public string FilePath { get; set; }
         public string PolicyNumber { get; set; }
         public int? vehicleId { get; set; }
+    }
+
+    public partial class PolicyRenewReminderSetting : Entity<PolicyRenewReminderSetting>
+    {
+        public PolicyRenewReminderSetting() { }
+        public PolicyRenewReminderSetting(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public int NoOfDays { get; set; }
+        public int NotificationType { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public int? ModifiedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
+        public bool SMS { get; set; }
+        public bool Email { get; set; }
+    }
+    public partial class ReminderFailed : Entity<ReminderFailed>
+    {
+        public ReminderFailed() { }
+        public ReminderFailed(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public string EmailBody { get; set; }
+        public string SendTo { get; set; }
+        public string EmailSubject { get; set; }
+        public int NotificationType { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public int? ModifiedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
+
+    }
+
+    public partial class LicenceDiskDeliveryAddress : Entity<LicenceDiskDeliveryAddress>
+    {
+        public LicenceDiskDeliveryAddress() { }
+        public LicenceDiskDeliveryAddress(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string City { get; set; }
+        public int VehicleId { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public int? ModifiedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
+
     }
 }

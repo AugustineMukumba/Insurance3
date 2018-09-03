@@ -16,6 +16,7 @@ namespace InsuranceClaim.Models
         public decimal TotalSumInsured { get; set; }
         public decimal TotalPremium { get; set; }
         public int SummaryId { get; set; }
+        public DateTime createdOn { get; set; }
 
     }
 
@@ -44,7 +45,9 @@ namespace InsuranceClaim.Models
         public decimal BrokerCommission { get; set; }
         public bool isLapsed { get; set; }
         public decimal FacultativeCommission { get; set; }
-
+        public decimal BalanceAmount { get; set; }
+        public decimal Premium { get; set; }
+        public bool isActive { get; set; }
 
     }
 }

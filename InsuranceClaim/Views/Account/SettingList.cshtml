@@ -1,11 +1,9 @@
 ﻿@model List<Insurance.Domain.Setting>
-@using InsuranceClaim.Models;
+    @using InsuranceClaim.Models;
 @using Insurance.Domain;
 @{
     ViewBag.Title = "SettingList";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
-
-
 }
 
 
@@ -16,7 +14,7 @@
             <div class="row">
                 <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
                     <div class="head-title">
-                        <h2>Setting</h2>
+                        <h2>Setting List</h2>
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 add-btn">
@@ -35,15 +33,15 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>keyname</th>
+                            <th>Key Name</th>
                             <th>Value</th>
                             <th>Type</th>
-                            <th>CreatedBy</th>
-                            <th>CreatedDate</th>
-
+                            <th>Created By</th>
+                            <th>Created On</th>
+                            
                             <th class="action-th">Action</th>
                         </tr>
-
+                        
                     </thead>
                     <tbody>
 
@@ -112,7 +110,7 @@
     </div>
 
 
-                                    }
+}
 
 
 <script>

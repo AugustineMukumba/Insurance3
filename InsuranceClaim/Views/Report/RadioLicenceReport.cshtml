@@ -5,17 +5,27 @@
 }
 
 <div class="productsave-section">
-    <div class="container">
+    <div class="container" id="content">
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
                 <div class="head-title">
                     <h2>Radio Licence Reports</h2>
                 </div>
             </div>
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 add-btn">
+                <div class="text-right">
+                    @*<button type="button" class="btn btn-primary">Add</button>*@
+                    <input class="btn btn-primary" type="button" value="Generate PDF" id="generatePdf" />
+                    <input class="btn btn-primary" type="button" value="Generate Excel" id="generateExcel" />
+
+
+
+                </div>
+            </div>
         </div>
         <div class="product-table-grid">
 
-            <table class="table table-striped tablesorter">
+            <table class="table table-striped tablesorter" id="report2excel">
 
                 <thead>
                     <tr>
@@ -27,8 +37,17 @@
 
                 </thead>
                 <tbody>
+
+                    @{ 
+                        decimal radioLicenseCostTotal = 0;
+                    }
+
                     @foreach (var item in Model)
                     {
+                       
+                            radioLicenseCostTotal += Convert.ToDecimal(item.RadioLicenseCost);
+
+
                         <tr>
                             <td>@item.FirstName @item.LastName</td>
                             <td>@item.Policy_Number</td>
@@ -38,6 +57,14 @@
                     }
 
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td><strong>Total:</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td><strong>$@radioLicenseCostTotal</strong></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -48,5 +75,32 @@
         $(".tablesorter").tablesorter();
     });
 
+    $("#generateExcel").click(function () {
+        debugger;
+        $("#report2excel").table2excel({
+            // exclude CSS class
+            exclude: ".noExl",
+            name: "Worksheet Name",
+            filename: "RadioLicenceReport" //do not include extension
+
+        });
+    });
+
+    var doc = new jsPDF({ format: [600, 600] });
+    var specialElementHandlers = {
+        '#editor': function (element, renderer) {
+            return true;
+        }
+    };
+
+    $('#generatePdf').click(function () {
+
+        doc.fromHTML($('#content').html(), 80, 15, {
+            'width': 500,
+            'elementHandlers': specialElementHandlers
+        });
+        doc.save('RadioLicenceReport.pdf');
+
+    });
 
 </script>

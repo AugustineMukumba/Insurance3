@@ -42,14 +42,14 @@
                                 </div>
                             </div>*@
                         <div class="col-sm-3 col-md-3">
+                           
+                        </div>
+                        <div class="col-sm-5 col-md-5">
                             <div class="text-left search-btn">
                                 <button type="submit" class="btn btn-success">Search</button>
-                            </div>
-                        </div>
-                        <div class="col-sm-3 col-md-3">
-                            <div class="text-left search-btn">
                                 <button type="button" onclick="removeSearchBoxText();" class="btn btn-danger">Clear Search</button>
                             </div>
+                           
                         </div>
                     </div>
                 </div>
@@ -88,6 +88,7 @@
                             <th>Payment Method</th>
                             <th>Total Sum Insured</th>
                             <th>Total Premium</th>
+                            <th>Created On</th>
                             <th>Action(s)</th>
 
 
@@ -99,6 +100,7 @@
                             <td>@MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId)</td>
                             <td>$@item.TotalSumInsured</td>
                             <td>$@item.TotalPremium</td>
+                            <td>@item.createdOn.ToString("dd-MMM-yyyy")</td>
 
                             @*<td>@Html.ActionLink("View Policy", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</td>*@
 
@@ -113,8 +115,8 @@
 
                         </tr>
                         <tr>
-                            <td colspan="6">
-                                <table class="policy-table-grid" style="width:100%">
+                            <td colspan="7">
+                                <table class="policy-table-grid policyList" style="width:100%">
                                     <tr>
                                         <th>Vehicle</th>
                                         <th>Sum Insured</th>
@@ -140,30 +142,64 @@
                                             @*<td>@MiscellaneousService.GetReinsuranceBrokerNamebybrokerid(_item.ReinsurerBrokerId)</td>*@
                                             <td>$@_item.BrokerCommission</td>
                                             <td>$@_item.FacultativeCommission</td>
-                                            @if (DateTime.Now < _item.enddate)
+                                            @if (_item.isLapsed)
+                                            {
+                                                <td>Lapsed</td>                                                
+                                            }
+                                            else if (!_item.isActive)
+                                            {
+                                                <td>Disabled</td>
+                                                <td><button type="button" class="btn-sm btn-primary" onclick="ActivateVehicle('@_item.VehicleId')">Activate</button></td>
+                                            }
+                                            else if (DateTime.Now < _item.RenewalDate.AddDays(-21))
                                             {
                                                 <td>In Force</td>
+                                                <td>
+                                                    <div class="tbl-btn-list">
+                                                        <ul class="list-inline">
+                                                            <li><button onclick="disableVehicle('@_item.VehicleId')" class="btn-sm btn-danger">Disable Policy</button></li>
+                                                            <li><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId');">View/Upload Document</button></li>
+                                                            @*<li><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.CustomerId')">View/Upload Document</button></li>*@
+                                                        </ul>
+                                                    </div>
+
+                                                </td>
+                                            }
+                                            else if (DateTime.Now >= _item.RenewalDate.AddDays(-21) && DateTime.Now <= _item.RenewalDate)
+                                            {
+                                                <td>Renew</td>
+                                                <td></td>
+
+                                            }
+                                            else if (DateTime.Now > _item.RenewalDate)
+                                            {
+                                                <td>Lapsed</td>
+                                                @*<td>@Html.ActionLink("Renew", "RiskDetail", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-danger", @style = "    width: 100%;    float: left;    text-align: center;" })</td>*@
+                                            }
+
+                                            @*else if (DateTime.Now < _item.enddate)
+                                            {
+                                                <td>In Force</td>
+                                                <td>
+                                                    <div class="tbl-btn-list">
+                                                        <ul class="list-inline">
+                                                            <li><button onclick="disableVehicle('@_item.VehicleId')" class="btn-sm btn-danger">Disable Policy</button></li>
+                                                            <li><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId');">View/Upload Document</button></li>
+                                                        </ul>
+                                                    </div>
+
+                                                </td>
                                             }
                                             else if (DateTime.Now >= _item.enddate && DateTime.Now <= _item.enddate.AddDays(30))
                                             {
                                                 <td>Renew</td>
-                                                @*<td>@Html.ActionLink("Renew", "Index", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</td>*@
 
                                             }
                                             else if (DateTime.Now >= _item.enddate.AddDays(30))
                                             {
                                                 <td>Lapsed</td>
-                                            }
-                                            <td>
-                                                <div class="tbl-btn-list">
-                                                    <ul class="list-inline">
-                                                        <li><button onclick="disablepy('@_item.VehicleId')" class="btn-sm btn-danger">Disable Policy</button></li>
-                                                        <li><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId');">View/Upload Document</button></li>
-                                                        @*<li><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.CustomerId')">View/Upload Document</button></li>*@
-                                                    </ul>
-                                                </div>
-
-                                            </td>
+                                            }*@
+                                            
 
                                         </tr>
                                     }
@@ -343,7 +379,7 @@
         $("#mymodals").modal("show");
     };
 
-    function disablepy(VehicleId) {
+    function disableVehicle(VehicleId) {
 
         $.ajax({
 
@@ -351,7 +387,33 @@
             type: "GET",
             data: { VehicleId: VehicleId },
             success: function (result) {
+                if (result) {
+                    toastr.success("Vehicle De-Activated Successfully !!");
+                    location.href = location.href;
+                }
+                else {
+                    toastr.error("Unable To De-Activate, Please Try Again !!");
+                }
+            }
+        });
 
+    }
+
+    function ActivateVehicle(VehicleId) {
+
+        $.ajax({
+
+            url: '/Account/ActivateVehicle',
+            type: "GET",
+            data: { VehicleId: VehicleId },
+            success: function (result) {
+                if (result) {
+                    toastr.success("Vehicle Activated Successfully !!");
+                    location.href = location.href;
+                }
+                else {
+                    toastr.error("Unable To Activate, Please Try Again !!");
+                }
             }
         });
 

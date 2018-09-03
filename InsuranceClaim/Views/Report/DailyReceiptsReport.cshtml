@@ -6,64 +6,128 @@
 
 <div class="productsave-section DailyReceiptsReport">
 
-    <div class="container">
+    <div class="container-fluid" id="content">
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
                 <div class="head-title">
                     <h2>Daily Receipts Report</h2>
                 </div>
             </div>
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 add-btn">
+                <div class="text-right">
+                    @*<button type="button" class="btn btn-primary">Add</button>*@
+                    @*<input class="btn btn-primary" type="button" value="Generate PDF" id="generatePdf" />*@
+                    <input class="btn btn-primary" type="button" value="Generate Excel" id="generateExcel" />
+
+
+
+                </div>
+            </div>
+
+
         </div>
         <div class="product-table-grid">
+            <div class="table-responsive">
+                <table class="table table-striped tablesorter" style="width:1785px;" id="report2excel">
 
-            <table class="table table-striped tablesorter">
-
-                <thead>
-                    <tr>
-                        <th>Customer Details</th>
-                        @*<th>Contact Number</th>*@
-                        <th>Product</th>
-                        <th>Policy Number</th>
-                        <th>Transaction Date</th>
-                        <th>Receipt Number</th>
-                        <th>Premium Due</th>
-                        <th>Amount Paid</th>
-                        <th>Balance</th>
-                        <th style="text-align:left;">Payment Type</th>
-                    </tr>
-
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+                    <thead>
                         <tr>
-                            <td>
-                                <table class="sub-table">
-                                    <tr>
-                                        <td><b>Customer Name :</b><br />@item.FirstName @item.LastName<br /></td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Contact Number : </b><br />@item.Contact<br /></td>
-                                    </tr>
-                                </table>
-                            </td>
-                            @*<td>@item.Contact</td>*@
-                            <td>@item.Product</td>
-                            <td>@item.PolicyNumber</td>
-                            <td>@item.TransactionDate</td>
-                            <td>@item.ReceiptNumber</td>
-                            <td>$ @item.PremiumDue</td>
-                            <td>$ @item.AmountPaid</td>
-                            <td>$ @item.Balance</td>
-                            <td>@item.PaymentType</td>
+                            <th>Customer Details</th>
+                            @*<th>Contact Number</th>*@
+                            <th>Product</th>
+                            <th>Policy Number</th>
+                            <th>Transaction Date</th>
+                            <th>Receipt Number</th>
+                            <th>Premium Due</th>
+                            <th>Amount Paid</th>
+                            <th>Balance</th>
+                            <th style="text-align:left;">Payment Type</th>
                         </tr>
+
+                    </thead>
+                    <tbody>
+
+                        @{ 
+                            decimal premiumDueTotal = 0;
+                            decimal amountPaidTotal = 0;
+                            decimal balanceTotal = 0;
+
+                        }
+
+                        @foreach (var item in Model)
+                        {
+                            if (item.PremiumDue != null)
+                            {
+                                premiumDueTotal += Convert.ToDecimal(item.PremiumDue);
+                            }
+                            else
+                            {
+                                premiumDueTotal = 0;
+                            }
+
+                            if (item.AmountPaid != null && item.AmountPaid != "")
+                            {
+                                amountPaidTotal += Convert.ToDecimal(item.AmountPaid);
+                            }
+                            else
+                            {
+                                amountPaidTotal = 0;
+                            }
+
+
+                            if (item.Balance != null || item.Balance != "")
+                            {
+                                balanceTotal += Convert.ToDecimal(item.Balance);
+                            }
+                            else
+                            {
+                                balanceTotal = 0;
+                            }
+
+
+
+
+                            <tr>
+                                <td>
+                                    <table class="sub-table">
+                                        <tr>
+                                            <td><b>Customer Name :</b><br />@item.FirstName @item.LastName<br /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Contact Number : </b><br />@item.Contact<br /></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                @*<td>@item.Contact</td>*@
+                                <td>@item.Product</td>
+                                <td>@item.PolicyNumber</td>
+                                <td>@item.TransactionDate</td>
+                                <td>@item.ReceiptNumber</td>
+                                <td>$ @item.PremiumDue</td>
+                                <td>$ @item.AmountPaid</td>
+                                <td>$ @item.Balance</td>
+                                <td>@item.PaymentType</td>
+                            </tr>
                     }
 
-                </tbody>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td><strong>Total:</strong></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong>$@premiumDueTotal</strong></td>
+                            <td><strong>$@amountPaidTotal</strong></td>
+                            <td><strong>$@balanceTotal</strong></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
 
 
-
-            </table>
+                </table>
+            </div>
         </div>
 
 
@@ -85,6 +149,34 @@
 
 
         });
+    });
+
+    $("#generateExcel").click(function () {
+        debugger;
+        $("#report2excel").table2excel({
+            // exclude CSS class
+            exclude: ".noExl",
+            name: "Worksheet Name",
+            filename: "DailyReceiptsReport" //do not include extension
+
+        });
+    });
+
+    var doc = new jsPDF({ format: [400, 400] });
+    var specialElementHandlers = {
+        '#editor': function (element, renderer) {
+            return true;
+        }
+    };
+
+    $('#generatePdf').click(function () {
+
+        doc.fromHTML($('#content').html(), 5, 5, {
+            'width': 300,
+            'elementHandlers': specialElementHandlers
+        });
+        doc.save('DailyReceiptsReport.pdf');
+
     });
 
 

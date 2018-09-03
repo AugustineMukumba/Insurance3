@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using InsuranceClaim.Models;
 using Newtonsoft.Json;
 using System.Web;
+using Insurance.Domain;
 
 namespace Insurance.Service
 {
@@ -108,17 +109,18 @@ namespace Insurance.Service
             return json;
         }
 
-        public ICEcashQuoteResponse RequestQuote(List<RiskDetailModel> listofvehicles,string PartnerToken)
+        public ResultRootObject checkVehicleExists(List<RiskDetailModel> listofvehicles, string PartnerToken)
         {
             //string PSK = "127782435202916376850511";
             string _json = "";
 
             List<VehicleObject> obj = new List<VehicleObject>();
 
+            var CustomerInfo = (CustomerModel)HttpContext.Current.Session["CustomerDataModal"];
 
             foreach (var item in listofvehicles)
             {
-                obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 10000, YearManufacture = Convert.ToInt32(item.VehicleYear), InsuranceType = (item.CoverTypeId == 1 ? 4 : Convert.ToInt32(item.CoverTypeId)), VehicleType = 1, TaxClass = 1, Make = "ACTM", Model = "MONTELIMAR", EntityType = "Personal", Town = "Dummy Town", Address1 = "Add1", Address2 = "Add2", CompanyName = "Dummy Company", FirstName = "Constantine", LastName = "Mambariza", IDNumber = "14-104864Y27", MSISDN = "+2630775308520" });
+                obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 0, YearManufacture = 0, InsuranceType = 0, VehicleType = 0, TaxClass = 0, Make = "", Model = "", EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber });
             }
 
             QuoteArguments objArg = new QuoteArguments();
@@ -151,14 +153,12 @@ namespace Insurance.Service
 
             MAC = MAC.ToUpper();
 
-
             ICEQuoteRequest objroot = new ICEQuoteRequest();
             objroot.Arguments = objArg;
             objroot.MAC = MAC;
             objroot.Mode = "SH";
 
             var data = Newtonsoft.Json.JsonConvert.SerializeObject(objroot);
-
 
             JObject jsonobject = JObject.Parse(data);
 
@@ -169,7 +169,123 @@ namespace Insurance.Service
             request.AddParameter("application/x-www-form-urlencoded", jsonobject, ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
 
-            ICEcashQuoteResponse json = JsonConvert.DeserializeObject<ICEcashQuoteResponse>(response.Content);
+            ResultRootObject json = JsonConvert.DeserializeObject<ResultRootObject>(response.Content);
+
+            return json;
+        }
+
+        public ResultRootObject RequestQuote(string PartnerToken, string RegistrationNo, string suminsured, string make, string model, int PaymentTermId, int VehicleYear, int CoverTypeId, int VehicleUsage)
+        {
+            //string PSK = "127782435202916376850511";
+            string _json = "";
+
+            var CustomerInfo = (CustomerModel)HttpContext.Current.Session["CustomerDataModal"];
+
+            List<VehicleObject> obj = new List<VehicleObject>();
+
+            //foreach (var item in listofvehicles)
+            //{
+            //obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 10000, YearManufacture = Convert.ToInt32(item.VehicleYear), InsuranceType = (item.CoverTypeId == 1 ? 4 : Convert.ToInt32(item.CoverTypeId)), VehicleType = 1, TaxClass = 1, Make = "ACTM", Model = "MONTELIMAR", EntityType = "Personal", Town = "Dummy Town", Address1 = "Add1", Address2 = "Add2", CompanyName = "Dummy Company", FirstName = "Constantine", LastName = "Mambariza", IDNumber = "14-104864Y27", MSISDN = "+2630775308520" });
+            obj.Add(new VehicleObject { VRN = RegistrationNo, DurationMonths = (PaymentTermId == 1 ? 12 : PaymentTermId), VehicleValue = Convert.ToInt32(suminsured), YearManufacture = Convert.ToInt32(VehicleYear), InsuranceType = (CoverTypeId == 1 ? 4 : Convert.ToInt32(CoverTypeId)), VehicleType = Convert.ToInt32(VehicleUsage), TaxClass = 1, Make = make, Model = model, EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber });
+            //}
+
+            QuoteArguments objArg = new QuoteArguments();
+            objArg.PartnerReference = Guid.NewGuid().ToString();
+            objArg.Date = DateTime.Now.ToString("yyyyMMddhhmmss");
+            objArg.Version = "2.0";
+            objArg.PartnerToken = PartnerToken;
+            objArg.Request = new QuoteFunctionObject { Function = "TPIQuote", Vehicles = obj };
+
+            _json = Newtonsoft.Json.JsonConvert.SerializeObject(objArg);
+
+            //string  = json.Reverse()
+            string reversejsonString = new string(_json.Reverse().ToArray());
+            string reversepartneridString = new string(PSK.Reverse().ToArray());
+
+            string concatinatedString = reversejsonString + reversepartneridString;
+
+            byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(concatinatedString);
+
+            string returnValue = System.Convert.ToBase64String(toEncodeAsBytes);
+
+            string GetSHA512encrypted = SHA512(returnValue);
+
+            string MAC = "";
+
+            for (int i = 0; i < 16; i++)
+            {
+                MAC += GetSHA512encrypted.Substring((i * 8), 1);
+            }
+
+            MAC = MAC.ToUpper();
+
+            ICEQuoteRequest objroot = new ICEQuoteRequest();
+            objroot.Arguments = objArg;
+            objroot.MAC = MAC;
+            objroot.Mode = "SH";
+
+            var data = Newtonsoft.Json.JsonConvert.SerializeObject(objroot);
+
+            JObject jsonobject = JObject.Parse(data);
+
+            var client = new RestClient("http://api-test.icecash.com/request/20523588");
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("cache-control", "no-cache");
+            request.AddHeader("content-type", "application/x-www-form-urlencoded");
+            request.AddParameter("application/x-www-form-urlencoded", jsonobject, ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+
+            ResultRootObject json = JsonConvert.DeserializeObject<ResultRootObject>(response.Content);
+
+
+
+
+            if (json.Response.Quotes != null && json.Response.Quotes.Count > 0)
+            {
+                if (json.Response.Quotes[0].Policy != null)
+                {
+                    var Setting = InsuranceContext.Settings.All();
+                    var DiscountOnRenewalSettings = Setting.Where(x => x.keyname == "Discount On Renewal").FirstOrDefault();
+                    var premium = Convert.ToDecimal(json.Response.Quotes[0].Policy.CoverAmount);
+                    switch (PaymentTermId)
+                    {
+                        case 1:
+                            var AnnualRiskPremium = premium;
+                            if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                            {
+                                json.LoyaltyDiscount = ((AnnualRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
+                            }
+                            if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                            {
+                                json.LoyaltyDiscount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
+                            }
+                            break;
+                        case 3:
+                            var QuaterlyRiskPremium = premium;
+                            if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                            {
+                                json.LoyaltyDiscount = ((QuaterlyRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
+                            }
+                            if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                            {
+                                json.LoyaltyDiscount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
+                            }
+                            break;
+                        case 4:
+                            var TermlyRiskPremium = premium;
+                            if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                            {
+                                json.LoyaltyDiscount = ((TermlyRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
+                            }
+                            if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                            {
+                                json.LoyaltyDiscount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
+                            }
+                            break;
+                    }
+                }
+            }
+
 
             return json;
         }
@@ -182,19 +298,16 @@ namespace Insurance.Service
         public string Version { get; set; }
         public FunctionObject Request { get; set; }
     }
-
     public class FunctionObject
     {
         public string Function { get; set; }
     }
-
     public class ICERootObject
     {
         public Arguments Arguments { get; set; }
         public string MAC { get; set; }
         public string Mode { get; set; }
     }
-
     public class VehicleObject
     {
         public string VRN { get; set; }
@@ -216,7 +329,6 @@ namespace Insurance.Service
         public int TaxClass { get; set; }
         public int YearManufacture { get; set; }
     }
-
     public class QuoteArguments
     {
         public string PartnerReference { get; set; }
@@ -225,20 +337,17 @@ namespace Insurance.Service
         public string PartnerToken { get; set; }
         public QuoteFunctionObject Request { get; set; }
     }
-
     public class QuoteFunctionObject
     {
         public string Function { get; set; }
         public List<VehicleObject> Vehicles { get; set; }
     }
-
     public class ICEQuoteRequest
     {
         public QuoteArguments Arguments { get; set; }
         public string MAC { get; set; }
         public string Mode { get; set; }
     }
-
     public class TokenReposone
     {
         public string Function { get; set; }
@@ -247,7 +356,6 @@ namespace Insurance.Service
         public string PartnerToken { get; set; }
         public string ExpireDate { get; set; }
     }
-
     public class ICEcashTokenResponse
     {
         public string PartnerReference { get; set; }
@@ -255,9 +363,6 @@ namespace Insurance.Service
         public string Version { get; set; }
         public TokenReposone Response { get; set; }
     }
-
-
-
     public class Quote
     {
         public string VRN { get; set; }
@@ -265,19 +370,74 @@ namespace Insurance.Service
         public int Result { get; set; }
         public string Message { get; set; }
     }
-
     public class QuoteResponse
     {
         public int Result { get; set; }
         public string Message { get; set; }
         public List<Quote> Quotes { get; set; }
     }
-
     public class ICEcashQuoteResponse
     {
         public string PartnerReference { get; set; }
         public string Date { get; set; }
         public string Version { get; set; }
         public QuoteResponse Response { get; set; }
+    }
+    public class ResultPolicy
+    {
+        public string InsuranceType { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string DurationMonths { get; set; }
+        public string Amount { get; set; }
+        public string StampDuty { get; set; }
+        public string GovernmentLevy { get; set; }
+        public string CoverAmount { get; set; }
+        public string PremiumAmount { get; set; }
+    }
+    public class ResultClient
+    {
+        public string IDNumber { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string MSISDN { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string Town { get; set; }
+        public string EntityType { get; set; }
+        public string CompanyName { get; set; }
+    }
+    public class ResultVehicle
+    {
+        public string Make { get; set; }
+        public string Model { get; set; }
+        public string TaxClass { get; set; }
+        public string YearManufacture { get; set; }
+        public int VehicleType { get; set; }
+        public string VehicleValue { get; set; }
+    }
+    public class ResultQuote
+    {
+        public string VRN { get; set; }
+        public string InsuranceID { get; set; }
+        public int Result { get; set; }
+        public string Message { get; set; }
+        public ResultPolicy Policy { get; set; }
+        public ResultClient Client { get; set; }
+        public ResultVehicle Vehicle { get; set; }
+    }
+    public class ResultResponse
+    {
+        public int Result { get; set; }
+        public string Message { get; set; }
+        public List<ResultQuote> Quotes { get; set; }
+    }
+    public class ResultRootObject
+    {
+        public decimal LoyaltyDiscount { get; set; }
+        public string PartnerReference { get; set; }
+        public string Date { get; set; }
+        public string Version { get; set; }
+        public ResultResponse Response { get; set; }
     }
 }

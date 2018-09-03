@@ -18,6 +18,7 @@ using static InsuranceClaim.Controllers.CustomerRegistrationController;
 using InsuranceClaim.Controllers;
 using System.IO;
 using Insurance.Service;
+using System.Web.Configuration;
 
 namespace InsuranceClaim.Controllers
 {
@@ -26,7 +27,9 @@ namespace InsuranceClaim.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        string AdminEmail = WebConfigurationManager.AppSettings["AdminEmail"];
         RoleManager<IdentityRole> roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
+        Insurance.Service.smsService objsmsService = new Insurance.Service.smsService();
         public AccountController()
         {
         }
@@ -103,14 +106,14 @@ namespace InsuranceClaim.Controllers
 
                     if (role == "Administrator" || role == "Staff")
                     {
-                       
+
                         return RedirectToAction("Dashboard", "Account");
                     }
                     else
                     {
 
                         return Redirect("/CustomerRegistration/index");
-                       // return RedirectToAction("Index", "CustomerRegistration");
+                        // return RedirectToAction("Index", "CustomerRegistration");
                     }
 
                 case SignInStatus.LockedOut:
@@ -234,6 +237,7 @@ namespace InsuranceClaim.Controllers
         [AllowAnonymous]
         public ActionResult ForgotPassword()
         {
+            ViewBag.UserDoesnotExists = 0;
             return View();
         }
 
@@ -244,25 +248,70 @@ namespace InsuranceClaim.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
+            //if (ModelState.IsValid)
+            //{
+            //    var user = await UserManager.FindByNameAsync(model.Email);
+            //    if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+            //    {
+            //        // Don't reveal that the user does not exist or is not confirmed
+            //        return View("ForgotPasswordConfirmation");
+            //    }
+
+            //    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+            //    // Send an email with this link
+            //    // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+            //    // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
+            //    // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+            //    // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+            //}
+
+            //// If we got this far, something failed, redisplay form
+            //return View(model);
+
+
+
             if (ModelState.IsValid)
             {
+
                 var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                if (user == null)
                 {
-                    // Don't reveal that the user does not exist or is not confirmed
-                    return View("ForgotPasswordConfirmation");
+
+
+                    // If user does not exist or is not confirmed.  
+                    ViewBag.UserDoesnotExists = 1;
+                    return View();
+
+                }
+                else
+                {
+                    ViewBag.UserDoesnotExists = 0;
+                    //Create URL with above token
+                    Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
+                    string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+
+                    var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    //var lnkHref = "<a href='" + Url.Action("ResetPassword", "Account", new { email = UserName, code = token }, "http") + "'>Reset Password</a>";
+
+
+                    //HTML Template for Send email  
+
+                    //string subject = "Your changed password";
+                    //string emailTemplatePath = "/Views/Shared/EmaiTemplates/UserRegisteration.cshtml";
+                    //string EmailBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(emailTemplatePath));
+                    string body = "<a>Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>";
+                    //var Body = EmailBody.Replace(" #PolicyNumber#", policy.PolicyNumber).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Email#", user.Email).Replace("#change#", callbackUrl);
+                    objEmailService.SendEmail(user.Email, "", "", "Account Creation", body, null);
+
+                    //string body = "Hello " + customer.FirstName + "\nWelcome to the GENE-INSURE family, we would like to simplify your life." + "\nYour policy number is : " + policy.PolicyNumber + "\nUsername is : " + user.Email + "\nYour Password : Geneinsure@123" + "\nPlease reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>" + "\nThank you once again.";
+
+
                 }
 
-                // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
-            }
+                // Don't reveal that the user does not exist or is not confirmed
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
+            }
+            return View("ForgotPasswordConfirmation");
         }
 
         //
@@ -888,7 +937,7 @@ namespace InsuranceClaim.Controllers
 
 
             List<CustomerModel> ListUserViewModel = new List<CustomerModel>();
-            var user = InsuranceContext.Customers.All().OrderByDescending(x=>x.Id).ToList();
+            var user = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).ToList();
 
 
             foreach (var item in user)
@@ -950,9 +999,11 @@ namespace InsuranceClaim.Controllers
         [Authorize(Roles = "Staff,Administrator")]
         public ActionResult PolicyList()
         {
+            TempData["RedirectedFrom"] = "PolicyList";
+            Session["ViewlistVehicles"] = null;
             ListPolicy policylist = new ListPolicy();
             policylist.listpolicy = new List<PolicyListViewModel>();
-            var SummaryList = InsuranceContext.SummaryDetails.All().ToList();
+            var SummaryList = InsuranceContext.SummaryDetails.All().OrderByDescending(x => x.Id).ToList();
 
             foreach (var item in SummaryList)
             {
@@ -964,47 +1015,53 @@ namespace InsuranceClaim.Controllers
                 policylistviewmodel.PaymentMethodId = Convert.ToInt32(item.PaymentMethodId);
                 policylistviewmodel.CustomerId = Convert.ToInt32(item.CustomerId);
                 policylistviewmodel.SummaryId = item.Id;
+                policylistviewmodel.createdOn = Convert.ToDateTime(item.CreatedOn);
 
                 var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={item.Id}").ToList();
-                var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
-                var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
-                var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
-
-                policylistviewmodel.PolicyNumber = policy.PolicyNumber;
-
-                foreach (var _item in SummaryVehicleDetails)
+                if (SummaryVehicleDetails != null && SummaryVehicleDetails.Count > 0)
                 {
-                    VehicleReinsuranceViewModel obj = new VehicleReinsuranceViewModel();
-                    var _vehicle = InsuranceContext.VehicleDetails.Single(_item.VehicleDetailsId);
-                    var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.All(where: $"SummaryDetailId={item.Id} and VehicleId={_item.VehicleDetailsId}").ToList();
+                    var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+                    var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
+                    var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
 
+                    policylistviewmodel.PolicyNumber = policy.PolicyNumber;
 
-                    obj.CoverType = Convert.ToInt32(_vehicle.CoverTypeId);
-                    obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
-                    obj.MakeId = _vehicle.MakeId;
-                    obj.ModelId = _vehicle.ModelId;
-                    //obj.Premium = Convert.ToDecimal(_vehicle.Premium);
-                    obj.RegisterationNumber = _vehicle.RegistrationNo;
-                    obj.SumInsured = Convert.ToDecimal(_vehicle.SumInsured);
-                    obj.VehicleId = _vehicle.Id;
-                    obj.startdate = Convert.ToDateTime(_vehicle.CoverStartDate);
-                    obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
-                    if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
+                    foreach (var _item in SummaryVehicleDetails)
                     {
-                        obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
-                        obj.AutoFacPremium = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsurancePremium);
-                        obj.AutoFacReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceAmount);
+                        VehicleReinsuranceViewModel obj = new VehicleReinsuranceViewModel();
+                        var _vehicle = InsuranceContext.VehicleDetails.Single(_item.VehicleDetailsId);
+                        var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.All(where: $"SummaryDetailId={item.Id} and VehicleId={_item.VehicleDetailsId}").ToList();
 
-                        if (_reinsurenaceTrans.Count > 1)
+
+                        obj.CoverType = Convert.ToInt32(_vehicle.CoverTypeId);
+                        obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
+                        obj.MakeId = _vehicle.MakeId;
+                        obj.ModelId = _vehicle.ModelId;
+                        //obj.Premium = Convert.ToDecimal(_vehicle.Premium);
+                        obj.RegisterationNumber = _vehicle.RegistrationNo;
+                        obj.SumInsured = Convert.ToDecimal(_vehicle.SumInsured);
+                        obj.VehicleId = _vehicle.Id;
+                        obj.startdate = Convert.ToDateTime(_vehicle.CoverStartDate);
+                        obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
+                        obj.RenewalDate = Convert.ToDateTime(_vehicle.RenewalDate);
+                        obj.isActive = Convert.ToBoolean(_vehicle.IsActive);
+                        if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
                         {
-                            obj.FacultativeCommission = Convert.ToDecimal(_reinsurenaceTrans[1].ReinsuranceCommission);
-                            obj.FacPremium = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsurancePremium);
-                            obj.FacReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceAmount);
+                            obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
+                            obj.AutoFacPremium = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsurancePremium);
+                            obj.AutoFacReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceAmount);
+
+                            if (_reinsurenaceTrans.Count > 1)
+                            {
+                                obj.FacultativeCommission = Convert.ToDecimal(_reinsurenaceTrans[1].ReinsuranceCommission);
+                                obj.FacPremium = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsurancePremium);
+                                obj.FacReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceAmount);
+                            }
                         }
+
+
+                        policylistviewmodel.Vehicles.Add(obj);
                     }
-
-
-                    policylistviewmodel.Vehicles.Add(obj);
                 }
 
                 policylist.listpolicy.Add(policylistviewmodel);
@@ -1027,7 +1084,7 @@ namespace InsuranceClaim.Controllers
             policylist.listpolicy = new List<PolicyListViewModel>();
             if (searchText != null && searchText != "")
             {
-                
+
                 var custom = searchText.Split(' ');
                 var SummaryList = new List<SummaryDetail>();
                 var customers = new List<Customer>();
@@ -1063,72 +1120,78 @@ namespace InsuranceClaim.Controllers
                 {
                     //var policye = InsuranceContext.PolicyDetails.Query("Select * From PolicyDetail Where PolicyNumber Like '%" + searchText + "%'").FirstOrDefault();
                     var policye = InsuranceContext.PolicyDetails.Query("Select * From PolicyDetail Where PolicyNumber Like '%" + searchText + "%'").FirstOrDefault();
+                    if (policye != null)
+                    {
 
-                    var policyId = policye.Id;
-                    var vehicle = InsuranceContext.VehicleDetails.Single(where: $"PolicyId = '"+ policyId + "'");
 
-                    var vehiclesummaryid = vehicle.Id;
+                        var policyId = policye.Id;
+                        var vehicle = InsuranceContext.VehicleDetails.Single(where: $"PolicyId = '" + policyId + "'");
 
-                    var SummaryVehicleDetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId =" + vehiclesummaryid);
+                        var vehiclesummaryid = vehicle.Id;
 
-                    SummaryList = InsuranceContext.SummaryDetails.All(Convert.ToString(SummaryVehicleDetail.SummaryDetailId)).ToList();
+                        var SummaryVehicleDetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId =" + vehiclesummaryid);
+
+                        SummaryList = InsuranceContext.SummaryDetails.All(Convert.ToString(SummaryVehicleDetail.SummaryDetailId)).ToList();
+                    }
                 }
 
-
-                foreach (var item in SummaryList)
+                if (SummaryList != null && SummaryList.Count > 0)
                 {
-                    PolicyListViewModel policylistviewmodel = new PolicyListViewModel();
-
-                    policylistviewmodel.Vehicles = new List<VehicleReinsuranceViewModel>();
-                    policylistviewmodel.TotalPremium = Convert.ToDecimal(item.TotalPremium);
-                    policylistviewmodel.TotalSumInsured = Convert.ToDecimal(item.TotalSumInsured);
-                    policylistviewmodel.PaymentMethodId = Convert.ToInt32(item.PaymentMethodId);
-                    policylistviewmodel.CustomerId = Convert.ToInt32(item.CustomerId);
-                    policylistviewmodel.SummaryId = item.Id;
-
-                    var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={item.Id}").ToList();
-                    var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
-                    var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
-                    var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
-
-                    policylistviewmodel.PolicyNumber = policy.PolicyNumber;
-
-                    foreach (var _item in SummaryVehicleDetails)
+                    foreach (var item in SummaryList)
                     {
-                        VehicleReinsuranceViewModel obj = new VehicleReinsuranceViewModel();
-                        var _vehicle = InsuranceContext.VehicleDetails.Single(_item.VehicleDetailsId);
-                        var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.All(where: $"SummaryDetailId={item.Id} and VehicleId={_item.VehicleDetailsId}").ToList();
+                        PolicyListViewModel policylistviewmodel = new PolicyListViewModel();
 
+                        policylistviewmodel.Vehicles = new List<VehicleReinsuranceViewModel>();
+                        policylistviewmodel.TotalPremium = Convert.ToDecimal(item.TotalPremium);
+                        policylistviewmodel.TotalSumInsured = Convert.ToDecimal(item.TotalSumInsured);
+                        policylistviewmodel.PaymentMethodId = Convert.ToInt32(item.PaymentMethodId);
+                        policylistviewmodel.CustomerId = Convert.ToInt32(item.CustomerId);
+                        policylistviewmodel.SummaryId = item.Id;
 
-                        obj.CoverType = Convert.ToInt32(_vehicle.CoverTypeId);
-                        obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
-                        obj.MakeId = _vehicle.MakeId;
-                        obj.ModelId = _vehicle.ModelId;
-                        //obj.Premium = Convert.ToDecimal(_vehicle.Premium);
-                        obj.RegisterationNumber = _vehicle.RegistrationNo;
-                        obj.SumInsured = Convert.ToDecimal(_vehicle.SumInsured);
-                        obj.VehicleId = _vehicle.Id;
-                        obj.startdate = Convert.ToDateTime(_vehicle.CoverStartDate);
-                        obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
-                        if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
+                        var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={item.Id}").ToList();
+                        var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+                        var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
+                        var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+
+                        policylistviewmodel.PolicyNumber = policy.PolicyNumber;
+
+                        foreach (var _item in SummaryVehicleDetails)
                         {
-                            obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
-                            obj.AutoFacPremium = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsurancePremium);
-                            obj.AutoFacReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceAmount);
+                            VehicleReinsuranceViewModel obj = new VehicleReinsuranceViewModel();
+                            var _vehicle = InsuranceContext.VehicleDetails.Single(_item.VehicleDetailsId);
+                            var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.All(where: $"SummaryDetailId={item.Id} and VehicleId={_item.VehicleDetailsId}").ToList();
 
-                            if (_reinsurenaceTrans.Count > 1)
+
+                            obj.CoverType = Convert.ToInt32(_vehicle.CoverTypeId);
+                            obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
+                            obj.MakeId = _vehicle.MakeId;
+                            obj.ModelId = _vehicle.ModelId;
+                            //obj.Premium = Convert.ToDecimal(_vehicle.Premium);
+                            obj.RegisterationNumber = _vehicle.RegistrationNo;
+                            obj.SumInsured = Convert.ToDecimal(_vehicle.SumInsured);
+                            obj.VehicleId = _vehicle.Id;
+                            obj.startdate = Convert.ToDateTime(_vehicle.CoverStartDate);
+                            obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
+                            if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
                             {
-                                obj.FacultativeCommission = Convert.ToDecimal(_reinsurenaceTrans[1].ReinsuranceCommission);
-                                obj.FacPremium = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsurancePremium);
-                                obj.FacReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceAmount);
+                                obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
+                                obj.AutoFacPremium = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsurancePremium);
+                                obj.AutoFacReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceAmount);
+
+                                if (_reinsurenaceTrans.Count > 1)
+                                {
+                                    obj.FacultativeCommission = Convert.ToDecimal(_reinsurenaceTrans[1].ReinsuranceCommission);
+                                    obj.FacPremium = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsurancePremium);
+                                    obj.FacReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceAmount);
+                                }
                             }
+
+
+                            policylistviewmodel.Vehicles.Add(obj);
                         }
 
-
-                        policylistviewmodel.Vehicles.Add(obj);
+                        policylist.listpolicy.Add(policylistviewmodel);
                     }
-
-                    policylist.listpolicy.Add(policylistviewmodel);
                 }
             }
 
@@ -1144,11 +1207,11 @@ namespace InsuranceClaim.Controllers
             List<Insurance.Domain.Setting> objList = new List<Insurance.Domain.Setting>();
 
             var eSettingValueTypedata = from eSettingValueType e in Enum.GetValues(typeof(eSettingValueType))
-                                   select new
-                                   {
-                                       ID = (int)e,
-                                       Name = e.ToString()
-                                   };
+                                        select new
+                                        {
+                                            ID = (int)e,
+                                            Name = e.ToString()
+                                        };
 
             ViewBag.eSettingValueType = new SelectList(eSettingValueTypedata, "ID", "Name");
 
@@ -1177,8 +1240,7 @@ namespace InsuranceClaim.Controllers
         public ActionResult SettingList()
         {
 
-            var db = InsuranceContext.Settings.All().OrderByDescending(x=>x.Id).ToList();
-            
+            var db = InsuranceContext.Settings.All().OrderByDescending(x => x.Id).ToList();
             return View(db);
         }
 
@@ -1228,7 +1290,7 @@ namespace InsuranceClaim.Controllers
         {
 
 
-            var list = InsuranceContext.ReinsuranceBrokers.All().OrderByDescending(x=>x.Id).ToList();
+            var list = InsuranceContext.ReinsuranceBrokers.All().OrderByDescending(x => x.Id).ToList();
             return View(list);
         }
         public ActionResult AddReinsuranceBroker(int? id = 0)
@@ -1311,10 +1373,12 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult MyPolicies()
         {
+            TempData["RedirectedFrom"] = "MyPolicy";
+            Session["ViewlistVehicles"] = null;
             ListPolicy policylist = new ListPolicy();
             policylist.listpolicy = new List<PolicyListViewModel>();
             var customerID = InsuranceContext.Customers.Single(where: $"userid='{User.Identity.GetUserId().ToString()}'").Id;
-            var SummaryList = InsuranceContext.SummaryDetails.All(where: $"customerid={customerID}").ToList();
+            var SummaryList = InsuranceContext.SummaryDetails.All(where: $"customerid={customerID}").OrderByDescending(x => x.Id).ToList();
 
 
             foreach (var item in SummaryList)
@@ -1327,6 +1391,7 @@ namespace InsuranceClaim.Controllers
                 policylistviewmodel.PaymentMethodId = Convert.ToInt32(item.PaymentMethodId);
                 policylistviewmodel.CustomerId = Convert.ToInt32(item.CustomerId);
                 policylistviewmodel.SummaryId = item.Id;
+                policylistviewmodel.createdOn = Convert.ToDateTime(item.CreatedOn);
 
                 var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={item.Id}").ToList();
                 var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
@@ -1340,7 +1405,7 @@ namespace InsuranceClaim.Controllers
                     VehicleReinsuranceViewModel obj = new VehicleReinsuranceViewModel();
                     var _vehicle = InsuranceContext.VehicleDetails.Single(_item.VehicleDetailsId);
                     var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.All(where: $"SummaryDetailId={item.Id} and VehicleId={_item.VehicleDetailsId}").ToList();
-                    
+
 
                     obj.CoverType = Convert.ToInt32(_vehicle.CoverTypeId);
                     obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
@@ -1354,6 +1419,9 @@ namespace InsuranceClaim.Controllers
                     obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
                     obj.RenewalDate = Convert.ToDateTime(_vehicle.RenewalDate);
                     obj.isLapsed = _vehicle.isLapsed;
+                    obj.BalanceAmount = Convert.ToDecimal(_vehicle.BalanceAmount);
+                    obj.isActive = Convert.ToBoolean(_vehicle.IsActive);
+                    obj.Premium = Convert.ToDecimal(_vehicle.Premium + _vehicle.StampDuty + _vehicle.ZTSCLevy + (Convert.ToBoolean(_vehicle.IncludeRadioLicenseCost) ? Convert.ToDecimal(_vehicle.RadioLicenseCost) : 0.00m));
                     if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
                     {
                         obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
@@ -1544,8 +1612,18 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult RiskDetail(int? id = 0)
         {
-
-
+            if (TempData["RedirectedFrom"] != null && Convert.ToString(TempData["RedirectedFrom"]) == "MyPolicy")
+            {
+                ViewBag.RedirectedFrom = "MyPolicy";
+            }
+            else if (TempData["RedirectedFrom"] != null && Convert.ToString(TempData["RedirectedFrom"]) == "PolicyList")
+            {
+                ViewBag.RedirectedFrom = "PolicyList";
+            }
+            else
+            {
+                ViewBag.RedirectedFrom = "PolicyList";
+            }
 
             ViewBag.Products = InsuranceContext.Products.All().ToList();
             var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm))
@@ -1599,48 +1677,7 @@ namespace InsuranceClaim.Controllers
                     VehicleDetail __vehicle = new VehicleDetail();
                     __vehicle = InsuranceContext.VehicleDetails.Single(item.VehicleDetailsId);
 
-                    _vehicle.Addthirdparty = __vehicle.Addthirdparty;
-                    _vehicle.AddThirdPartyAmount = __vehicle.AddThirdPartyAmount;
-                    _vehicle.AgentCommissionId = __vehicle.AgentCommissionId;
-                    _vehicle.ChasisNumber = __vehicle.ChasisNumber;
-
-                    _vehicle.CoverEndDate = __vehicle.CoverEndDate;
-                    _vehicle.CoverNoteNo = __vehicle.CoverNoteNo;
-                    _vehicle.CoverStartDate = __vehicle.CoverStartDate;
-                    _vehicle.CoverTypeId = __vehicle.CoverTypeId;
-                    _vehicle.CubicCapacity = __vehicle.CubicCapacity;
-                    _vehicle.CustomerId = __vehicle.CustomerId;
-                    _vehicle.EngineNumber = __vehicle.EngineNumber;
-                    _vehicle.Excess = __vehicle.Excess;
-                    _vehicle.ExcessBuyBack = __vehicle.ExcessBuyBack;
-                    _vehicle.ExcessType = __vehicle.ExcessType;
-                    _vehicle.Id = __vehicle.Id;
-                    _vehicle.RadioLicenseCost = __vehicle.RadioLicenseCost;
-                    _vehicle.Rate = __vehicle.Rate;
-                    _vehicle.RegistrationNo = __vehicle.RegistrationNo;
-                    _vehicle.RoadsideAssistance = __vehicle.RoadsideAssistance;
-                    _vehicle.StampDuty = __vehicle.StampDuty;
-                    _vehicle.SumInsured = __vehicle.SumInsured;
-                    _vehicle.VehicleColor = __vehicle.VehicleColor;
-
-                    _vehicle.VehicleUsage = Convert.ToInt16(__vehicle.VehicleUsage);
-                    _vehicle.VehicleYear = __vehicle.VehicleYear;
-                    _vehicle.ZTSCLevy = __vehicle.ZTSCLevy;
-                    _vehicle.MakeId = __vehicle.MakeId;
-                    _vehicle.ModelId = __vehicle.ModelId;
-                    _vehicle.Premium = __vehicle.Premium;
-                    _vehicle.MedicalExpensesAmount = __vehicle.MedicalExpensesAmount;
-                    _vehicle.ExcessAmount = __vehicle.ExcessAmount;
-                    _vehicle.PassengerAccidentCoverAmount = __vehicle.PassengerAccidentCoverAmount;
-                    _vehicle.RoadsideAssistanceAmount = __vehicle.RoadsideAssistanceAmount;
-                    _vehicle.ExcessBuyBackAmount = __vehicle.ExcessBuyBackAmount;
-                    _vehicle.NumberofPersons = __vehicle.NumberofPersons;
-                    _vehicle.MedicalExpenses = __vehicle.MedicalExpenses;
-                    _vehicle.PassengerAccidentCover = __vehicle.PassengerAccidentCover;
-                    _vehicle.PaymentTermId = __vehicle.PaymentTermId;
-                    _vehicle.ProductId = __vehicle.ProductId;
-
-
+                    _vehicle = Mapper.Map<VehicleDetail, RiskDetailModel>(__vehicle);
 
                     listVehicles.Add(_vehicle);
                 }
@@ -1648,13 +1685,10 @@ namespace InsuranceClaim.Controllers
                 //Session["ViewPolicy"] = policy;
                 Session["ViewlistVehicles"] = listVehicles;
 
-
-
-
-
-
-
             }
+
+
+
 
             viewModel.NoOfCarsCovered = 1;
 
@@ -1728,7 +1762,8 @@ namespace InsuranceClaim.Controllers
                             viewModel.IncludeRadioLicenseCost = true;
                         }
 
-
+                        viewModel.Discount = data.Discount;
+                        viewModel.VehicleLicenceFee = Convert.ToDecimal(data.VehicleLicenceFee);
 
                         //viewModel.VehicleUsage = data.VehicleUsage;
 
@@ -1833,11 +1868,28 @@ namespace InsuranceClaim.Controllers
                 var vehicle = InsuranceContext.VehicleDetails.Single(VehicleId);
                 vehicle.IsActive = false;
                 InsuranceContext.VehicleDetails.Update(vehicle);
-                return Json(true);
+                return Json(true, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {
-                return Json(false);
+                return Json(false, JsonRequestBehavior.AllowGet);
+                throw;
+            }
+
+        }
+
+        public JsonResult ActivateVehicle(int VehicleId)
+        {
+            try
+            {
+                var vehicle = InsuranceContext.VehicleDetails.Single(VehicleId);
+                vehicle.IsActive = true;
+                InsuranceContext.VehicleDetails.Update(vehicle);
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
                 throw;
             }
 
@@ -1873,7 +1925,209 @@ namespace InsuranceClaim.Controllers
 
 
 
+        public ActionResult PolicyRenewReminderSetting(int? id = 0)
+        {
+            InsuranceClaim.Models.PolicyRenewReminderSettingViewModel data = new InsuranceClaim.Models.PolicyRenewReminderSettingViewModel();
+            var eRemainderType = from ePolicyRenewReminderType e in Enum.GetValues(typeof(ePolicyRenewReminderType))
+                                 select new
+                                 {
+                                     ID = (int)e,
+                                     Name = e.ToString()
+                                 };
+
+            ViewBag.ePolicyRenewReminder = new SelectList(eRemainderType, "ID", "Name");
+            if (id > 0)
+            {
+                var listofRemindersetting = InsuranceContext.PolicyRenewReminderSettings.Single(id);
+                data = new PolicyRenewReminderSettingViewModel() { CreatedBy = listofRemindersetting.CreatedBy, CreatedOn = listofRemindersetting.CreatedOn, Id = listofRemindersetting.Id, ModifiedBy = listofRemindersetting.ModifiedBy, ModifiedOn = listofRemindersetting.ModifiedOn, NoOfDays = listofRemindersetting.NoOfDays, NotificationType = listofRemindersetting.NotificationType, Email = listofRemindersetting.Email, SMS = listofRemindersetting.SMS };
+            }
+
+            return View(data);
+        }
+        [HttpPost]
+        public ActionResult SavePolicyRenewReminderSetting(PolicyRenewReminderSettingViewModel model)
+        {
+            PolicyRenewReminderSetting obje = new Insurance.Domain.PolicyRenewReminderSetting();
+            var _customerData = InsuranceContext.Customers.Single(where: $"UserId ='{User.Identity.GetUserId().ToString()}'");
+
+            if (ModelState.IsValid)
+            {
+                if (model.Id == 0 || model.Id == null)
+                {
+                    obje.NoOfDays = model.NoOfDays;
+                    obje.NotificationType = 0;
+                    obje.SMS = model.SMS;
+                    obje.Email = model.Email;
+                    obje.CreatedBy = _customerData.Id;
+                    obje.CreatedOn = DateTime.Now;
+                    obje.ModifiedBy = _customerData.Id;
+                    obje.ModifiedOn = DateTime.Now;
+                    InsuranceContext.PolicyRenewReminderSettings.Insert(obje);
+                }
+                else
+                {
+                    var data = InsuranceContext.PolicyRenewReminderSettings.Single(model.Id);
+                    //obje.Id = model.Id;
+                    data.NoOfDays = model.NoOfDays;
+                    data.NotificationType = 0;
+                    data.SMS = model.SMS;
+                    data.Email = model.Email;
+                    data.ModifiedBy = _customerData.Id;
+                    data.ModifiedOn = DateTime.Now;
+                    InsuranceContext.PolicyRenewReminderSettings.Update(data);
+                }
+
+            }
+
+            return RedirectToAction("ListPolicyRenewReminderSetting");
+        }
+        public ActionResult ListPolicyRenewReminderSetting()
+        {
+            var PolicySettingList = InsuranceContext.PolicyRenewReminderSettings.All().OrderByDescending(x => x.Id).ToList();
+
+            return View(PolicySettingList);
+        }
+        public ActionResult DeletePolicyRenewReminderSetting(int Id)
+        {
+            string query = $"Delete PolicyRenewReminderSetting  where Id = {Id}";
+            InsuranceContext.PolicyRenewReminderSettings.Execute(query);
+
+
+
+            return RedirectToAction("ListPolicyRenewReminderSetting");
+        }
+        public async Task<JsonResult> ReminderEmailsSmsLogic()
+        {
+            var EmailsContant = InsuranceContext.PolicyRenewReminderSettings.All(where: $"NotificationType = {Convert.ToInt32(ePolicyRenewReminderType.Email)}");
+            var SmsContant = InsuranceContext.PolicyRenewReminderSettings.All(where: $"NotificationType = {Convert.ToInt32(ePolicyRenewReminderType.Email)}");
+            var LicenceTickets = InsuranceContext.LicenceTickets.All(where: $"CAST(CreatedDate as date) <= '{DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")}'");
+            var VehicleMakes = InsuranceContext.VehicleMakes.All();
+            var VehicleModels = InsuranceContext.VehicleModels.All();
+
+            var customerData = InsuranceContext.Customers.Single(where: $"UserId ='{User.Identity.GetUserId().ToString()}'");
+            var policylist = InsuranceContext.PolicyDetails.Single(where: $"CustomerId = {customerData.Id}");
+            var user = UserManager.FindById(customerData.UserID);
+            Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
+            var now = DateTime.Now;
+            foreach (var item in EmailsContant)
+            {
+                var _vehicleList = InsuranceContext.VehicleDetails.All(where: $"RenewalDate = '{new DateTime(now.Year, now.Month, now.Day, 0, 0, 0).AddDays(item.NoOfDays)}'").ToList();
+                foreach (var _item in _vehicleList)
+                {
+                    string make = VehicleMakes.Where(x => x.MakeCode == _item.MakeId).Select(x => x.ShortDescription).FirstOrDefault();
+                    string model = VehicleModels.Where(x => x.ModelCode == _item.ModelId).Select(x => x.ShortDescription).FirstOrDefault();
+
+                    string ReminderEmailPath = "/Views/Shared/EmaiTemplates/RenewReminderEmail.cshtml";
+                    string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(ReminderEmailPath));
+                    var body = EmailBody2.Replace("##RenewDate##", _item.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##FirstName##", customerData.FirstName).Replace("##LastName##", customerData.LastName).Replace("##Address1##", customerData.AddressLine1).Replace("##Address2##", customerData.AddressLine2).Replace("##numberofDays##", item.NoOfDays.ToString()).Replace("##PolicyNumber##", policylist.PolicyNumber).Replace("##Make##", make).Replace("##Model##", model);
+                    try
+                    {
+                        objEmailService.SendEmail(user.Email, "", "", "Renew/Repay Next Term Premium of Your Policy | 21 Days Left", body, null);
+                    }
+                    catch (Exception ex)
+                    {
+                        ReminderFailed(body, user.Email, "Renew/Repay Next Term Premium of Your Policy | 21 Days Left", Convert.ToInt32(ePolicyRenewReminderType.Email));
+
+
+                    }
+                }
+            }
+            foreach (var item in SmsContant)
+            {
+                var vehicleList = InsuranceContext.VehicleDetails.All(where: $"RenewalDate = '{new DateTime(now.Year, now.Month, now.Day, 0, 0, 0).AddDays(item.NoOfDays)}'").ToList();
+                foreach (var items in vehicleList)
+                {
+                    string make = VehicleMakes.Where(x => x.MakeCode == items.MakeId).Select(x => x.ShortDescription).FirstOrDefault();
+                    string model = VehicleModels.Where(x => x.ModelCode == items.ModelId).Select(x => x.ShortDescription).FirstOrDefault();
+
+
+                    string body = "Hello " + customerData.FirstName + "\nYour Vehicle " + make + " " + model + " will Expire in " + item.NoOfDays + " days i.e on " + items.RenewalDate.Value.ToString("dd/MM/yyyy") + ". Please Renew/Repay for your next Payment Term before the Renewal date of " + items.RenewalDate.Value.ToString("dd/MM/yyyy") + " to continue your services otherwise your vehicle will get Lapsed." + "\nThank you.";
+
+                    try
+                    {
+                        var result = await objsmsService.SendSMS(customerData.Countrycode.Replace("+", "") + user.PhoneNumber, body);
+                        SmsLog objsmslog = new SmsLog()
+                        {
+                            Sendto = user.PhoneNumber,
+                            Body = body,
+                            Response = result,
+                            CreatedBy = customerData.Id,
+                            CreatedOn = DateTime.Now
+                        };
+
+                        InsuranceContext.SmsLogs.Insert(objsmslog);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        ReminderFailed(body, user.PhoneNumber, "", Convert.ToInt32(ePolicyRenewReminderType.SMS));
+
+                    }
+                }
+
+            }
+
+            foreach (var _item in LicenceTickets)
+            {
+                var vehicle = InsuranceContext.VehicleDetails.Single(_item.VehicleId);
+
+                string make = VehicleMakes.Where(x => x.MakeCode == vehicle.MakeId).Select(x => x.ShortDescription).FirstOrDefault();
+                string model = VehicleModels.Where(x => x.ModelCode == vehicle.ModelId).Select(x => x.ShortDescription).FirstOrDefault();
+
+                string ReminderEmailPath = "/Views/Shared/EmaiTemplates/LicenceDiskReminder.cshtml";
+                string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(ReminderEmailPath));
+                var body = EmailBody2.Replace("##PolicyNumber##", policylist.PolicyNumber).Replace("##Make##", make).Replace("##Model##", model).Replace("##TransactionDate##", vehicle.TransactionDate.Value.ToString("dd/MM/yyyy"));
+                try
+                {
+                    objEmailService.SendEmail(AdminEmail, "", "", "Licence Disk Not Delivered | Policy NUmber - " + _item.PolicyNumber, body, null);
+                }
+                catch (Exception ex)
+                {
+                    ReminderFailed(body, AdminEmail, "Licence Disk Not Delivered | Policy NUmber - " + _item.PolicyNumber, Convert.ToInt32(ePolicyRenewReminderType.Email));
+                }
+            }
+
+            var FailedEmailsList = InsuranceContext.ReminderFaileds.All().ToList();
+
+            if (FailedEmailsList != null && FailedEmailsList.Count > 0)
+            {
+                foreach (var item in FailedEmailsList)
+                {
+                    try
+                    {
+                        objEmailService.SendEmail(item.SendTo, "", "", item.EmailSubject, item.EmailBody, null);
+                        InsuranceContext.ReminderFaileds.Delete(item);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+            }
+
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+
+        public void ReminderFailed(string body, string SendTo, string subject, int NotificationType)
+        {
+
+            ReminderFailed obj = new Insurance.Domain.ReminderFailed();
+            obj.EmailBody = body;
+            obj.SendTo = SendTo;
+            obj.EmailSubject = subject;
+            obj.NotificationType = NotificationType;
+            obj.ModifiedBy = 0;
+            obj.ModifiedOn = DateTime.Now;
+            obj.CreatedBy = 0;
+            obj.CreatedOn = DateTime.Now;
+            InsuranceContext.ReminderFaileds.Insert(obj);
+        }
+
+
+       
+
+      
+       
+
     }
-
-
 }

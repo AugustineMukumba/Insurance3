@@ -41,32 +41,44 @@
                         }
                     }
 
+                    <tr class="policyheading-tr">
+
+                        <th>Policy Number</th>
+                        <th>Customer Name</th>
+                        <th>Payment Method</th>
+                        <th>Total Sum Insured</th>
+                        <th>Total Premium</th>
+                        <th>Created On</th>
+                        <th>Action(s)</th>
+
+                    </tr>
+
                     @foreach (var item in Model.listpolicy.ToList())
                     {
 
 
 
-                        <tr class="policyheading-tr">
-
-                            <th>Policy Number</th>
-                            <th>Customer Name</th>
-                            <th>Payment Method</th>
-                            <th>Total Sum Insured</th>
-                            <th>Total Premium</th>
-                            
-
-                        </tr>
+                       
                         <tr class="policynumber-tr">
 
                             <td>@item.PolicyNumber</td>
                             <td>@MiscellaneousService.GetCustomerNamebyID(item.CustomerId)</td>
                             <td>@MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId)</td>
                             <td>$@item.TotalSumInsured</td>
-                            <td>$@item.TotalPremium</td>                            
+                            <td>$@item.TotalPremium</td>
+                            <td>@item.createdOn.ToString("dd-MMM-yyyy")</td>
+                            <td>
+                                <div class="tbl-btn-list">
+                                    <ul class="list-inline">
+                                        <li>@Html.ActionLink("View Policy", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>
+
+                                    </ul>
+                                </div>
+                            </td>
                         </tr>
-                        <tr>
-                            <td colspan="6">
-                                <table class="policy-table-grid" style="width:100%">
+                        @*<tr>
+                            <td colspan="7">
+                                <table class="policy-table-grid policyList" style="width:100%">
                                     <tr>
                                         <th>Vehicle</th>
                                         <th>Sum Insured</th>
@@ -74,7 +86,6 @@
                                         <th>AutoFac Premium</th>
                                         <th>Fac Sum Insured</th>
                                         <th>Fac Premium</th>
-                                        @*<th>Reinsurance Broker</th>*@
                                         <th>Reinsurance Broker Commission</th>
                                         <th>Facultative Commission</th>
                                         <th>Status</th>
@@ -89,35 +100,51 @@
                                             <td>$@_item.AutoFacPremium</td>
                                             <td>$@_item.FacReinsuranceAmount</td>
                                             <td>$@_item.FacPremium</td>
-                                            @*<td>@MiscellaneousService.GetReinsuranceBrokerNamebybrokerid(_item.ReinsurerBrokerId)</td>*@
                                             <td>$@_item.BrokerCommission</td>
                                             <td>$@_item.FacultativeCommission</td>
-                                            @if (DateTime.Now < _item.RenewalDate.AddDays(-21))
+
+
+                                            @if (_item.isLapsed)
+                                            {
+                                                <td>Lapsed</td>
+                                                <td></td>
+                                            }
+                                            else if (!_item.isActive)
+                                            {
+                                                <td>Disabled</td>
+                                                <td><button type="button" class="btn-sm btn-primary" onclick="javascript:confirm('In Progress !!');">Pay To Activate</button></td>
+                                            }
+                                            else if (DateTime.Now < _item.RenewalDate.AddDays(-21))
                                             {
                                                 <td>In Force</td>
-                                                <td><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
+                                                
+                                                if (_item.BalanceAmount > 0.00m)
+                                                {
+                                                    <td><button type="button" class="btn-sm btn-danger" onclick="javascript: alert('Your Balance Amount is : $ @_item.BalanceAmount');">Pay Balance Amount</button><br /><br /><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
+                                                }
+
                                             }
                                             else if (DateTime.Now >= _item.RenewalDate.AddDays(-21) && DateTime.Now <= _item.RenewalDate)
                                             {
                                                 <td>Renew</td>
-                                                <td>@Html.ActionLink("Pay Premium", "RiskDetail", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-danger", @style= "    width: 100%;    float: left;    text-align: center;" })<br /><br /><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
+                                                <td>@Html.ActionLink("Pay Premium", "RiskDetail", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-danger", @style = "    width: 100%;    float: left;    text-align: center;" })<br /><br /><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
 
                                             }
-                                            else if (DateTime.Now > _item.RenewalDate)
+                                            else if (DateTime.Now > _item.RenewalDate && _item.isLapsed != true)
                                             {
                                                 <td>Lapsed</td>
-                                                if (!_item.isLapsed)
-                                                {
-                                                    <td>@Html.ActionLink("Renew", "RiskDetail", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-danger", @style = "    width: 100%;    float: left;    text-align: center;" })</td>
-                                                }
-
+                                                <td>@Html.ActionLink("Renew", "RiskDetail", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-danger", @style = "    width: 100%;    float: left;    text-align: center;" })</td>
                                             }
 
                                         </tr>
                                     }
                                 </table>
                             </td>
-                        </tr>
+                        </tr>*@
                     }
                 </tbody>
 
@@ -190,7 +217,7 @@
                         </tr>
                         <tr>
                             <td style="padding: 6px;">File</td>
-                            <td style="padding: 6px;"><input type="file" id="file_Uploader"  accept=".doc,.docx,.xml,.PDF,.XLSX," /></td>
+                            <td style="padding: 6px;"><input type="file" id="file_Uploader" accept=".doc,.docx,.xml,.PDF,.XLSX," /></td>
                         </tr>
                     </table>
                 </div>
@@ -364,7 +391,7 @@
                     $("#tblfileListing tbody").append('<tr><td colspan=3> Records not found</td></tr>');
                     toastr.error("Records not found");
                 }
-               
+
             },
             error: function (err) {
                 //alert(err.statusText);

@@ -7,24 +7,31 @@ using System.Threading.Tasks;
 
 namespace InsuranceClaim.Models
 {
-     public class VehicleUsageModel
+    public class VehicleUsageModel
     {
         public int Id { get; set; }
-        
+        [Display(Name = "Product Name")]
         public int ProductId { get; set; }
-        [Required(ErrorMessage = "Please enter Veh Usage.")]
+        [Display(Name = "Veh Usage")]
+        [Required(ErrorMessage = "Please Enter Veh Usage.")]
         public string VehUsage { get; set; }
-        [Required(ErrorMessage = "Please enter Comprehensive Rate.")]
+        [Display(Name = "Comprehensive Rate")]
+        [Required(ErrorMessage = "Please Enter Comprehensive Rate.")]
         public Single? ComprehensiveRate { get; set; }
-        [Required(ErrorMessage = "Please enter MinComp Amount.")]
+        [Display(Name = "Min Comp Amount")]
+        [Required(ErrorMessage = "Please Enter Min Comp Amount.")]
         public decimal? MinCompAmount { get; set; }
-        [Required(ErrorMessage = "Please enter ThirdParty Rate.")]
+        [Display(Name = "Third Party Rate")]
+        [Required(ErrorMessage = "Please Enter Third Party Rate.")]
         public Single? ThirdPartyRate { get; set; }
-        [Required(ErrorMessage = "Please enter MinThird Amount.")]
+        [Display(Name = "Min Third Amount")]
+        [Required(ErrorMessage = "Please Enter Min Third Amount.")]
         public decimal? MinThirdAmount { get; set; }
-        [Required(ErrorMessage = "Please enter FTP Amount.")]
+        [Display(Name = "FTP Amount")]
+        [Required(ErrorMessage = "Please Enter FTP Amount.")]
         public decimal? FTPAmount { get; set; }
-        [Required(ErrorMessage = "Please enter AnnualTP Amount.")]
+        [Display(Name = "Annual TP Amount")]
+        [Required(ErrorMessage = "Please Enter Annual TP Amount.")]
         public decimal? AnnualTPAmount { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedOn { get; set; }

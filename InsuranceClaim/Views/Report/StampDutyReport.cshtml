@@ -9,7 +9,7 @@
 
 <div class="productsave-section">
 
-    <div class="container">
+    <div class="container" id="content">
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
                 <div class="head-title">
@@ -19,15 +19,16 @@
             <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 add-btn">
                 <div class="text-right">
                     @*<button type="button" class="btn btn-primary">Add</button>*@
-                    
+                    <input class="btn btn-primary" type="button" value="Generate PDF" id="generatePdf" />
+                    <input class="btn btn-primary" type="button" value="Generate Excel" id="generateExcel" />
 
-
+                   
 
                 </div>
             </div>
         </div>
         <div class="product-table-grid">
-            <table class="table table-striped tablesorter">
+            <table class="table table-striped tablesorter" id="report2excel">
                 <thead>
                     <tr>
                         <th>Customer Name</th>
@@ -38,8 +39,17 @@
                     </tr>
                 </thead>
                 <tbody>
+
+                    @{ 
+                        decimal premiumDueTotal = 0;
+                        decimal stampDutyTotal = 0;
+                    }
+
+
                     @foreach (var item in Model.ListStampDutyReportdata.ToList())
                     {
+                        premiumDueTotal += item.Premium_due;
+                        stampDutyTotal += item.Stamp_duty;
                         <tr>
                             <td>@item.Customer_Name</td>
                             <td>@item.Policy_Number</td>
@@ -49,6 +59,15 @@
                         </tr>
                     }
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td><strong>Total:</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td><strong>$@premiumDueTotal</strong></td>
+                        <td><strong>$@stampDutyTotal</strong></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -57,6 +76,38 @@
     $(document).ready(function () {
 
         $(".tablesorter").tablesorter();
+
+
     });
+
+    $("#generateExcel").click(function () {
+        debugger;
+        $("#report2excel").table2excel({
+            // exclude CSS class
+            exclude: ".noExl",
+            name: "Worksheet Name",
+            filename: "StampDutyReport" //do not include extension
+
+        });
+    });
+
+    var doc = new jsPDF({ format: [600, 600] });
+    var specialElementHandlers = {
+        '#editor': function (element, renderer) {
+            return true;
+        }
+    };
+
+    $('#generatePdf').click(function () {
+
+        doc.fromHTML($('#content').html(), 80,15, {
+            'width': 500,
+            'elementHandlers': specialElementHandlers
+        });
+        doc.save('StampDutyReport.pdf');
+
+    });
+
+
 
 </script>

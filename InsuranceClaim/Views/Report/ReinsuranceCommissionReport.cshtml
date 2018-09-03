@@ -4,13 +4,9 @@
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
 
-
-
-
-
 <div class="productsave-section">
 
-    <div class="container">
+    <div class="container-fluid"  id="divPdfContent">
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
                 <div class="head-title">
@@ -19,16 +15,16 @@
             </div>
             <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 add-btn">
                 <div class="text-right">
-                    @*<button type="button" class="btn btn-primary">Add</button>*@
-
-
-
+                    <input class="btn btn-primary" type="button" value="Generate PDF" id="generatePdf" />
+                    <input class="btn btn-primary" type="button" value="Generate Excel" id="generateExcel" />
 
                 </div>
             </div>
         </div>
         <div class="product-table-grid">
-            <table class="table table-striped tablesorter">
+
+
+            <table class="table table-striped tablesorter" id="report2excel">
                 <thead>
                     <tr>
                         <th>Customer Name</th>
@@ -41,8 +37,16 @@
                     </tr>
                 </thead>
                 <tbody>
+                    
+                    @{ 
+                        decimal autoFacultativeReinsuranceTotal = 0;
+                        decimal facultativeReinsuranceTotal = 0;
+                    }
+
                     @foreach (var item in Model)
-            {
+                    {
+                        autoFacultativeReinsuranceTotal += item.AutoFacultativeReinsurance;
+                        facultativeReinsuranceTotal += item.FacultativeReinsurance;
 
                         <tr>
                             <td>@item.FirstName @item.LastName</td>
@@ -53,14 +57,21 @@
                             <td>@item.EndDate</td>
                             <td>$@item.AutoFacultativeReinsurance</td>
                             <td>$@item.FacultativeReinsurance</td>
-                            <td>
-                                <div class="tbl-btn-list">
-                                    <ul class="list-inline"></ul>
-                                </div>
-                            </td>
+                          
                         </tr>
                     }
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td><strong>Total:</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><strong>$@autoFacultativeReinsuranceTotal</strong></td>
+                        <td><strong>$@facultativeReinsuranceTotal</strong></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -71,4 +82,35 @@
 
         $(".tablesorter").tablesorter();
     });
+
+    $("#generateExcel").click(function () {
+        debugger;
+        $("#report2excel").table2excel({
+            // exclude CSS class
+            exclude: ".noExl",
+            name: "Worksheet Name",
+            filename: "ReinsuranceCommissionReport" //do not include extension
+
+        });
+    });
+
+    var doc = new jsPDF({ format: [600, 600] });
+    var specialElementHandlers = {
+        '#editor': function (element, renderer) {
+            return true;
+        }
+    };
+
+    $('#generatePdf').click(function () {
+
+        doc.fromHTML($('#divPdfContent').html(), 80, 15, {
+            'width': 500,
+            'elementHandlers': specialElementHandlers
+        });
+        doc.save('ReinsuranceCommissionReport.pdf');
+
+    });
+
+
+
 </script>

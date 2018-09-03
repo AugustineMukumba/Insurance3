@@ -20,6 +20,7 @@ namespace InsuranceClaim.Controllers
     {
         private ApplicationUserManager _userManager;
         string AdminEmail = WebConfigurationManager.AppSettings["AdminEmail"];
+        string ZimnatEmail = WebConfigurationManager.AppSettings["ZimnatEmail"];
         public CustomerRegistrationController()
         {
             // UserManager = userManager;
@@ -195,15 +196,18 @@ namespace InsuranceClaim.Controllers
                 model.PolicyNumber = ViewBag.PolicyNumber;
             }
 
-
-
-
             model.BusinessSourceId = 3;
 
-
-
-
             Session["PolicyData"] = Mapper.Map<PolicyDetailModel, PolicyDetail>(model);
+
+            if (User != null && User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Staff"))
+                {
+                    return RedirectToAction("RiskDetail", "ContactCentre");
+                }
+            }
+
 
             return RedirectToAction("RiskDetail");
         }
@@ -237,18 +241,25 @@ namespace InsuranceClaim.Controllers
         public ActionResult RiskDetail(int? id = 0)
         {
 
-
+            if (Session["CustomerDataModal"] == null)
+            {
+                // return RedirectToAction("Index", "CustomerRegistration");
+                return Redirect("/CustomerRegistration/Index");
+            }
 
 
             ViewBag.Products = InsuranceContext.Products.All().ToList();
-            var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm))
-                                   select new
-                                   {
-                                       ID = (int)e,
-                                       Name = e.ToString()
-                                   };
+            //var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm))
+            //                       select new
+            //                       {
+            //                           ID = (int)e,
+            //                           Name = e.ToString()
+            //                       };
 
-            ViewBag.ePaymentTermData = new SelectList(ePaymentTermData, "ID", "Name");
+            //ViewBag.ePaymentTermData = new SelectList(ePaymentTermData, "ID", "Name");
+
+            ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All().ToList();
+
             int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
             var PolicyData = (PolicyDetail)Session["PolicyData"];
             //Id is policyid from Policy detail table
@@ -262,10 +273,35 @@ namespace InsuranceClaim.Controllers
             viewModel.AddThirdPartyAmount = 0.00m;
             viewModel.RadioLicenseCost = Convert.ToDecimal(RadioLicenseCosts);
             var makers = service.GetMakers();
-            ViewBag.CoverType = service.GetCoverType();
+            ViewBag.CoverType = service.GetCoverType().Where(x => x.Name.Contains("Third Party")).ToList();
             ViewBag.AgentCommission = service.GetAgentCommission();
             ViewBag.Makers = makers;
             viewModel.isUpdate = false;
+            viewModel.isWebUser = true;
+
+            viewModel.AnnualRiskPremium = 0.00m;
+            viewModel.TermlyRiskPremium = 0.00m;
+            viewModel.QuaterlyRiskPremium = 0.00m;
+
+            viewModel.ChasisNumber = "0";
+            viewModel.CubicCapacity = 0;
+            viewModel.EngineNumber = "0";
+            viewModel.Excess = 0.00m;
+            viewModel.ExcessAmount = 0.00m;
+            viewModel.ExcessBuyBack = false;
+            viewModel.ExcessBuyBackAmount = 0.00m;
+            viewModel.ExcessBuyBackPercentage = 0.00m;
+            viewModel.ExcessType = 0;
+            viewModel.MedicalExpenses = false;
+            viewModel.MedicalExpensesAmount = 0.00m;
+            viewModel.MedicalExpensesPercentage = 0.00m;
+            viewModel.PassengerAccidentCover = false;
+            viewModel.PassengerAccidentCoverAmount = 0.00m;
+            viewModel.PassengerAccidentCoverAmountPerPerson = 0.00m;
+            viewModel.RoadsideAssistance = false;
+            viewModel.RoadsideAssistanceAmount = 0.00m;
+            viewModel.RoadsideAssistancePercentage = 0.00m;
+
             //TempData["Policy"] = service.GetPolicy(id);
             if (makers.Count > 0)
             {
@@ -310,13 +346,13 @@ namespace InsuranceClaim.Controllers
                         viewModel.RadioLicenseCost = (int)Math.Round(data.RadioLicenseCost == null ? 0 : data.RadioLicenseCost.Value, 0);
                         viewModel.Rate = data.Rate;
                         viewModel.RegistrationNo = data.RegistrationNo;
-                        viewModel.StampDuty = data.StampDuty;
+                        viewModel.StampDuty = Math.Round(Convert.ToDecimal(data.StampDuty), 2);
                         viewModel.SumInsured = (int)Math.Round(data.SumInsured == null ? 0 : data.SumInsured.Value, 0);
                         viewModel.VehicleColor = data.VehicleColor;
                         viewModel.VehicleUsage = data.VehicleUsage;
                         viewModel.VehicleYear = data.VehicleYear;
                         viewModel.Id = data.Id;
-                        viewModel.ZTSCLevy = data.ZTSCLevy;
+                        viewModel.ZTSCLevy = Math.Round(Convert.ToDecimal(data.ZTSCLevy), 2);
                         viewModel.NumberofPersons = data.NumberofPersons;
                         viewModel.PassengerAccidentCover = data.PassengerAccidentCover;
                         viewModel.IsLicenseDiskNeeded = data.IsLicenseDiskNeeded;
@@ -324,23 +360,24 @@ namespace InsuranceClaim.Controllers
                         viewModel.RoadsideAssistance = data.RoadsideAssistance;
                         viewModel.MedicalExpenses = data.MedicalExpenses;
                         viewModel.Addthirdparty = data.Addthirdparty;
-                        viewModel.AddThirdPartyAmount = data.AddThirdPartyAmount;
-                        viewModel.ExcessAmount = data.ExcessAmount;
-                        viewModel.ExcessAmount = data.ExcessAmount;
-                        viewModel.ExcessBuyBackAmount = data.ExcessBuyBackAmount;
-                        viewModel.MedicalExpensesAmount = data.MedicalExpensesAmount;
-                        viewModel.MedicalExpensesPercentage = data.MedicalExpensesPercentage;
-                        viewModel.PassengerAccidentCoverAmount = data.PassengerAccidentCoverAmount;
-                        viewModel.PassengerAccidentCoverAmountPerPerson = data.PassengerAccidentCoverAmountPerPerson;
+                        viewModel.AddThirdPartyAmount = Math.Round(Convert.ToDecimal(data.AddThirdPartyAmount), 2);
+                        viewModel.ExcessAmount = Math.Round(Convert.ToDecimal(data.ExcessAmount), 2);
+                        viewModel.ExcessAmount = Math.Round(Convert.ToDecimal(data.ExcessAmount), 2);
+                        viewModel.ExcessBuyBackAmount = Math.Round(Convert.ToDecimal(data.ExcessBuyBackAmount), 2);
+                        viewModel.MedicalExpensesAmount = Math.Round(Convert.ToDecimal(data.MedicalExpensesAmount), 2);
+                        viewModel.MedicalExpensesPercentage = Math.Round(Convert.ToDecimal(data.MedicalExpensesPercentage), 2);
+                        viewModel.PassengerAccidentCoverAmount = Math.Round(Convert.ToDecimal(data.PassengerAccidentCoverAmount), 2);
+                        viewModel.PassengerAccidentCoverAmountPerPerson = Math.Round(Convert.ToDecimal(data.PassengerAccidentCoverAmountPerPerson), 2);
                         viewModel.PaymentTermId = data.PaymentTermId;
                         viewModel.ProductId = data.ProductId;
                         viewModel.IncludeRadioLicenseCost = data.IncludeRadioLicenseCost;
                         viewModel.RenewalDate = data.RenewalDate;
                         viewModel.TransactionDate = data.TransactionDate;
-                        viewModel.AnnualRiskPremium = data.AnnualRiskPremium;
-                        viewModel.TermlyRiskPremium = data.TermlyRiskPremium;
-                        viewModel.QuaterlyRiskPremium = data.QuaterlyRiskPremium;
-                        viewModel.Discount = data.Discount;
+                        viewModel.AnnualRiskPremium = Math.Round(Convert.ToDecimal(data.AnnualRiskPremium), 2);
+                        viewModel.TermlyRiskPremium = Math.Round(Convert.ToDecimal(data.TermlyRiskPremium), 2);
+                        viewModel.QuaterlyRiskPremium = Math.Round(Convert.ToDecimal(data.QuaterlyRiskPremium), 2);
+                        viewModel.Discount = Math.Round(Convert.ToDecimal(data.Discount), 2);
+                        viewModel.VehicleLicenceFee = Convert.ToDecimal(data.VehicleLicenceFee);
 
                         viewModel.isUpdate = true;
                         viewModel.vehicleindex = Convert.ToInt32(id);
@@ -359,6 +396,7 @@ namespace InsuranceClaim.Controllers
         [HttpPost]
         public ActionResult GenerateQuote(RiskDetailModel model)
         {
+
 
             if (model.NumberofPersons == null)
             {
@@ -572,6 +610,20 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult SummaryDetail()
         {
+            if (Session["CustomerDataModal"] == null)
+            {
+                // return RedirectToAction("Index", "CustomerRegistration");
+                return Redirect("/CustomerRegistration/Index");
+            }
+
+            if (Session["VehicleDetails"] == null)
+            {
+                //return RedirectToAction("RiskDetail", "CustomerRegistration");
+                return Redirect("/CustomerRegistration/RiskDetail");
+            }
+
+
+
             Session["issummaryformvisited"] = true;
             var summarydetail = (SummaryDetailModel)Session["SummaryDetailed"];
             SummaryDetailService SummaryDetailServiceObj = new SummaryDetailService();
@@ -602,41 +654,44 @@ namespace InsuranceClaim.Controllers
                     model.TotalPremium += item.RadioLicenseCost;
                     model.TotalRadioLicenseCost += item.RadioLicenseCost;
                 }
-                if (DiscountSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
-                {
-                    var amountToCalculateDiscount = 0.00m;
-                    switch (item.PaymentTermId)
-                    {
-                        case 1:
-                            amountToCalculateDiscount = Convert.ToDecimal(item.AnnualRiskPremium);
-                            break;
-                        case 3:
-                            amountToCalculateDiscount = Convert.ToDecimal(item.QuaterlyRiskPremium);
-                            break;
-                        case 4:
-                            amountToCalculateDiscount = Convert.ToDecimal(item.TermlyRiskPremium);
-                            break;
-                    }
-                    model.Discount += ((Convert.ToDecimal(DiscountSettings.value) * amountToCalculateDiscount) / 100);
-                }
-                if (DiscountSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
-                {
-                    model.Discount += Convert.ToDecimal(DiscountSettings.value);
-                }
+                model.Discount += item.Discount;
+                //if (DiscountSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                //{
+                //    var amountToCalculateDiscount = 0.00m;
+                //    switch (item.PaymentTermId)
+                //    {
+                //        case 1:
+                //            amountToCalculateDiscount = Convert.ToDecimal(item.AnnualRiskPremium);
+                //            break;
+                //        case 3:
+                //            amountToCalculateDiscount = Convert.ToDecimal(item.QuaterlyRiskPremium);
+                //            break;
+                //        case 4:
+                //            amountToCalculateDiscount = Convert.ToDecimal(item.TermlyRiskPremium);
+                //            break;
+                //    }
+                //    model.Discount += ((Convert.ToDecimal(DiscountSettings.value) * amountToCalculateDiscount) / 100);
+                //}
+                //if (DiscountSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                //{
+                //    model.Discount += Convert.ToDecimal(DiscountSettings.value);
+                //}
             }
-            model.TotalPremium = model.TotalPremium - model.Discount;
-            model.TotalStampDuty = vehicle.Sum(item => item.StampDuty);
-            model.TotalSumInsured = vehicle.Sum(item => item.SumInsured);
-            model.TotalZTSCLevies = vehicle.Sum(item => item.ZTSCLevy);
-            model.ExcessBuyBackAmount = vehicle.Sum(item => item.ExcessBuyBackAmount);
-            model.MedicalExpensesAmount = vehicle.Sum(item => item.MedicalExpensesAmount);
-            model.PassengerAccidentCoverAmount = vehicle.Sum(item => item.PassengerAccidentCoverAmount);
-            model.RoadsideAssistanceAmount = vehicle.Sum(item => item.RoadsideAssistanceAmount);
-            model.ExcessAmount = vehicle.Sum(item => item.ExcessAmount);
+            model.TotalRadioLicenseCost = Math.Round(Convert.ToDecimal(model.TotalRadioLicenseCost), 2);
+            model.Discount = Math.Round(Convert.ToDecimal(model.Discount), 2);
+            model.TotalPremium = Math.Round(Convert.ToDecimal(model.TotalPremium), 2);
+            model.TotalStampDuty = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.StampDuty)), 2);
+            model.TotalSumInsured = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.SumInsured)), 2);
+            model.TotalZTSCLevies = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.ZTSCLevy)), 2);
+            model.ExcessBuyBackAmount = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.ExcessBuyBackAmount)), 2);
+            model.MedicalExpensesAmount = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.MedicalExpensesAmount)), 2);
+            model.PassengerAccidentCoverAmount = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.PassengerAccidentCoverAmount)), 2);
+            model.RoadsideAssistanceAmount = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.RoadsideAssistanceAmount)), 2);
+            model.ExcessAmount = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.ExcessAmount)), 2);
             model.AmountPaid = 0.00m;
-            model.MaxAmounttoPaid = model.TotalPremium;
+            model.MaxAmounttoPaid = Math.Round(Convert.ToDecimal(model.TotalPremium), 2);
             var vehiclewithminpremium = vehicle.OrderBy(x => x.Premium).FirstOrDefault();
-            model.MinAmounttoPaid = vehiclewithminpremium.Premium + vehiclewithminpremium.StampDuty + vehiclewithminpremium.ZTSCLevy + (Convert.ToBoolean(vehiclewithminpremium.IncludeRadioLicenseCost) ? vehiclewithminpremium.RadioLicenseCost : 0.00m) - vehiclewithminpremium.Discount;
+            model.MinAmounttoPaid = Math.Round(Convert.ToDecimal(vehiclewithminpremium.Premium + vehiclewithminpremium.StampDuty + vehiclewithminpremium.ZTSCLevy + (Convert.ToBoolean(vehiclewithminpremium.IncludeRadioLicenseCost) ? vehiclewithminpremium.RadioLicenseCost : 0.00m)), 2);
 
             return View(model);
         }
@@ -659,7 +714,7 @@ namespace InsuranceClaim.Controllers
         {
             if (model != null)
             {
-                if (ModelState.IsValid)
+                if (ModelState.IsValid && (model.AmountPaid >= model.MinAmounttoPaid && model.AmountPaid <= model.MaxAmounttoPaid))
                 {
                     #region Add All info to database
 
@@ -733,6 +788,11 @@ namespace InsuranceClaim.Controllers
                             policy.EndDate = null;
                             policy.TransactionDate = null;
                             policy.RenewalDate = null;
+                            policy.RenewalDate = null;
+                            policy.StartDate = null;
+                            policy.TransactionDate = null;
+                            policy.CreatedBy = customer.Id;
+                            policy.CreatedOn = DateTime.Now;
                             InsuranceContext.PolicyDetails.Insert(policy);
                             Session["PolicyData"] = policy;
                         }
@@ -751,6 +811,8 @@ namespace InsuranceClaim.Controllers
                             policydata.RenewalDate = null;
                             policydata.StartDate = null;
                             policydata.TransactionDate = null;
+                            policy.ModifiedBy = customer.Id;
+                            policy.ModifiedOn = DateTime.Now;
                             InsuranceContext.PolicyDetails.Update(policydata);
                         }
 
@@ -769,7 +831,6 @@ namespace InsuranceClaim.Controllers
                                 var service = new RiskDetailService();
                                 _item.CustomerId = customer.Id;
                                 _item.PolicyId = policy.Id;
-
                                 //if (model.AmountPaid < model.TotalPremium)
                                 //{
                                 //    _item.BalanceAmount = (_item.Premium + _item.ZTSCLevy + _item.StampDuty + (_item.IncludeRadioLicenseCost ? _item.RadioLicenseCost : 0.00m) - _item.Discount) - (model.AmountPaid / vehicle.Count);
@@ -780,9 +841,22 @@ namespace InsuranceClaim.Controllers
                                 vehicles[Convert.ToInt32(_item.NoOfCarsCovered) - 1] = _item;
                                 Session["VehicleDetails"] = vehicles;
 
+
+                                // Delivery Address Save
+                                var LicenseAddress = new LicenceDiskDeliveryAddress();
+                                LicenseAddress.Address1 = _item.LicenseAddress1;
+                                LicenseAddress.Address2 = _item.LicenseAddress2;
+                                LicenseAddress.City = _item.LicenseCity;
+                                LicenseAddress.VehicleId = _item.Id;
+                                LicenseAddress.CreatedBy = customer.Id;
+                                LicenseAddress.CreatedOn = DateTime.Now;
+                                LicenseAddress.ModifiedBy = customer.Id;
+                                LicenseAddress.ModifiedOn = DateTime.Now;
+
+                                InsuranceContext.LicenceDiskDeliveryAddresses.Insert(LicenseAddress);
+
+
                                 ///Licence Ticket
-                                ///
-                               
                                 if (_item.IsLicenseDiskNeeded)
                                 {
 
@@ -806,16 +880,16 @@ namespace InsuranceClaim.Controllers
                                         }
                                         TicketNo += tNumber;
                                         var ticketnumber = "GEN" + TicketNo;
-                                                                               
-                                        LicenceTicket.TicketNo = ticketnumber;                                       
+
+                                        LicenceTicket.TicketNo = ticketnumber;
                                     }
                                     else
                                     {
                                         var TicketNo = ConfigurationManager.AppSettings["TicketNo"];
-                                        
-                                        LicenceTicket.TicketNo = TicketNo;                                      
 
-                                       
+                                        LicenceTicket.TicketNo = TicketNo;
+
+
                                     }
 
                                     LicenceTicket.VehicleId = _item.Id;
@@ -847,8 +921,12 @@ namespace InsuranceClaim.Controllers
 
                                 if (ReinsuranceCase != null && ReinsuranceCase.MaxTreatyCapacity != null)
                                 {
-                                    var basicPremium = item.Premium - item.StampDuty - item.ZTSCLevy;
+                                    var basicPremium = item.Premium;
                                     var ReinsuranceBroker = InsuranceContext.ReinsuranceBrokers.Single(where: $"ReinsuranceBrokerCode='{ReinsuranceCase.ReinsuranceBrokerCode}'");
+                                    var AutoFacSumInsured = 0.00m;
+                                    var AutoFacPremium = 0.00m;
+                                    var FacSumInsured = 0.00m;
+                                    var FacPremium = 0.00m;
 
                                     if (ReinsuranceCase.MinTreatyCapacity > 200000)
                                     {
@@ -858,13 +936,17 @@ namespace InsuranceClaim.Controllers
 
                                         var _reinsurance = new ReinsuranceTransaction();
                                         _reinsurance.ReinsuranceAmount = autofacSumInsured;
-                                        _reinsurance.ReinsurancePremium = ((_reinsurance.ReinsuranceAmount / item.SumInsured) * basicPremium);
+                                        AutoFacSumInsured = Convert.ToDecimal(_reinsurance.ReinsuranceAmount);
+                                        _reinsurance.ReinsurancePremium = Math.Round(Convert.ToDecimal((_reinsurance.ReinsuranceAmount / item.SumInsured) * basicPremium), 2);
+                                        AutoFacPremium = Convert.ToDecimal(_reinsurance.ReinsurancePremium);
                                         _reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(autofacReinsuranceBroker.Commission);
-                                        _reinsurance.ReinsuranceCommission = ((_reinsurance.ReinsurancePremium * _reinsurance.ReinsuranceCommissionPercentage) / 100);
+                                        _reinsurance.ReinsuranceCommission = Math.Round(Convert.ToDecimal((_reinsurance.ReinsurancePremium * _reinsurance.ReinsuranceCommissionPercentage) / 100), 2);
                                         _reinsurance.VehicleId = item.Id;
                                         _reinsurance.ReinsuranceBrokerId = autofacReinsuranceBroker.Id;
                                         _reinsurance.TreatyName = autofaccase.TreatyName;
                                         _reinsurance.TreatyCode = autofaccase.TreatyCode;
+                                        _reinsurance.CreatedOn = DateTime.Now;
+                                        _reinsurance.CreatedBy = customer.Id;
 
                                         InsuranceContext.ReinsuranceTransactions.Insert(_reinsurance);
 
@@ -874,13 +956,17 @@ namespace InsuranceClaim.Controllers
 
                                         var __reinsurance = new ReinsuranceTransaction();
                                         __reinsurance.ReinsuranceAmount = _item.SumInsured - ownRetention - autofacSumInsured;
-                                        __reinsurance.ReinsurancePremium = ((__reinsurance.ReinsuranceAmount / item.SumInsured) * basicPremium);
+                                        FacSumInsured = Convert.ToDecimal(__reinsurance.ReinsuranceAmount);
+                                        __reinsurance.ReinsurancePremium = Math.Round(Convert.ToDecimal((__reinsurance.ReinsuranceAmount / item.SumInsured) * basicPremium), 2);
+                                        FacPremium = Convert.ToDecimal(__reinsurance.ReinsurancePremium);
                                         __reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(ReinsuranceBroker.Commission);
-                                        __reinsurance.ReinsuranceCommission = ((__reinsurance.ReinsurancePremium * __reinsurance.ReinsuranceCommissionPercentage) / 100);
+                                        __reinsurance.ReinsuranceCommission = Math.Round(Convert.ToDecimal((__reinsurance.ReinsurancePremium * __reinsurance.ReinsuranceCommissionPercentage) / 100), 2);
                                         __reinsurance.VehicleId = item.Id;
                                         __reinsurance.ReinsuranceBrokerId = ReinsuranceBroker.Id;
                                         __reinsurance.TreatyName = ReinsuranceCase.TreatyName;
                                         __reinsurance.TreatyCode = ReinsuranceCase.TreatyCode;
+                                        __reinsurance.CreatedOn = DateTime.Now;
+                                        __reinsurance.CreatedBy = customer.Id;
 
                                         InsuranceContext.ReinsuranceTransactions.Insert(__reinsurance);
 
@@ -893,13 +979,17 @@ namespace InsuranceClaim.Controllers
 
                                         var reinsurance = new ReinsuranceTransaction();
                                         reinsurance.ReinsuranceAmount = _item.SumInsured - ownRetention;
-                                        reinsurance.ReinsurancePremium = ((reinsurance.ReinsuranceAmount / item.SumInsured) * basicPremium);
+                                        AutoFacSumInsured = Convert.ToDecimal(reinsurance.ReinsuranceAmount);
+                                        reinsurance.ReinsurancePremium = Math.Round(Convert.ToDecimal((reinsurance.ReinsuranceAmount / item.SumInsured) * basicPremium), 2);
+                                        AutoFacPremium = Convert.ToDecimal(reinsurance.ReinsurancePremium);
                                         reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(ReinsuranceBroker.Commission);
-                                        reinsurance.ReinsuranceCommission = ((reinsurance.ReinsurancePremium * reinsurance.ReinsuranceCommissionPercentage) / 100);
+                                        reinsurance.ReinsuranceCommission = Math.Round(Convert.ToDecimal((reinsurance.ReinsurancePremium * reinsurance.ReinsuranceCommissionPercentage) / 100), 2);
                                         reinsurance.VehicleId = item.Id;
                                         reinsurance.ReinsuranceBrokerId = ReinsuranceBroker.Id;
                                         reinsurance.TreatyName = ReinsuranceCase.TreatyName;
                                         reinsurance.TreatyCode = ReinsuranceCase.TreatyCode;
+                                        reinsurance.CreatedOn = DateTime.Now;
+                                        reinsurance.CreatedBy = customer.Id;
 
                                         InsuranceContext.ReinsuranceTransactions.Insert(reinsurance);
 
@@ -915,7 +1005,7 @@ namespace InsuranceClaim.Controllers
 
                                     string vehicledescription = vehiclemodel.ModelDescription + " / " + vehiclemake.MakeDescription;
 
-                                    SummeryofVehicleInsured += "<tr><td>" + vehicledescription + "</td><td>" + item.RegistrationNo + "</td><td>" + (item.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : (item.CoverTypeId == 2 ? eCoverType.ThirdParty.ToString() : eCoverType.FullThirdParty.ToString())) + "</td><td>" + Convert.ToString(item.SumInsured) + "</td><td>" + Convert.ToString(item.Premium) + "</td></tr>";
+                                    SummeryofVehicleInsured += "<tr><td>" + vehicledescription + "</td><td>" + Convert.ToString(item.SumInsured) + "</td><td>" + Convert.ToString(item.Premium) + "</td><td>" + AutoFacSumInsured.ToString() + "</td><td>" + AutoFacPremium.ToString() + "</td><td>" + FacSumInsured.ToString() + "</td><td>" + FacPremium.ToString() + "</td></tr>";
 
 
                                 }
@@ -1021,6 +1111,8 @@ namespace InsuranceClaim.Controllers
                             //DbEntry.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
                             //DbEntry.VehicleDetailId = vehicle[0].Id;
                             DbEntry.CustomerId = vehicle[0].CustomerId;
+                            DbEntry.CreatedBy = customer.Id;
+                            DbEntry.CreatedOn = DateTime.Now;
                             InsuranceContext.SummaryDetails.Insert(DbEntry);
                             model.Id = DbEntry.Id;
                             Session["SummaryDetailed"] = model;
@@ -1031,6 +1123,8 @@ namespace InsuranceClaim.Controllers
 
                             //summarydata.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
                             //summarydata.VehicleDetailId = vehicle[0].Id;
+                            DbEntry.ModifiedBy = customer.Id;
+                            DbEntry.ModifiedOn = DateTime.Now;
                             summarydata.CustomerId = vehicle[0].CustomerId;
 
                             InsuranceContext.SummaryDetails.Update(summarydata);
@@ -1070,6 +1164,8 @@ namespace InsuranceClaim.Controllers
                             var summarydetails = new SummaryVehicleDetail();
                             summarydetails.SummaryDetailId = summary.Id;
                             summarydetails.VehicleDetailsId = item.Id;
+                            summarydetails.CreatedBy = customer.Id;
+                            summarydetails.CreatedOn = DateTime.Now;
                             InsuranceContext.SummaryVehicleDetails.Insert(summarydetails);
 
 
@@ -1083,13 +1179,16 @@ namespace InsuranceClaim.Controllers
                     {
                         int _vehicleId = 0;
                         int count = 0;
+                        bool MailSent = false;
                         foreach (var item in listReinsuranceTransaction)
                         {
+                            
                             count++;
                             if (_vehicleId == 0)
                             {
                                 SummeryofReinsurance = "<tr><td>" + Convert.ToString(item.Id) + "</td><td>" + item.TreatyCode + "</td><td>" + item.TreatyName + "</td><td>" + Convert.ToString(item.ReinsuranceAmount) + "</td><td>" + MiscellaneousService.GetReinsuranceBrokerNamebybrokerid(item.ReinsuranceBrokerId) + "</td><td>" + Convert.ToString(Math.Round(Convert.ToDecimal(item.ReinsurancePremium), 2)) + "</td><td>" + Convert.ToString(item.ReinsuranceCommissionPercentage) + "%</td></tr>";
                                 _vehicleId = item.VehicleId;
+                                MailSent = false;
                             }
                             else
                             {
@@ -1102,21 +1201,21 @@ namespace InsuranceClaim.Controllers
                                     var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == summary.PaymentTermId);
                                     string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/Reinsurance_Admin.cshtml";
                                     string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
-                                    var Body = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##SummeryofReinsurance##", SummeryofReinsurance).Replace("##SummeryofVehicleInsured##", SummeryofVehicleInsured).Replace("##PostalAddress##", customer.Zipcode);
-                                    objEmailService.SendEmail(AdminEmail, "", "", "Reinsurance Case: " + policy.PolicyNumber.ToString(), Body, null);
-
+                                    var Body = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##SummeryofVehicleInsured##", SummeryofVehicleInsured);
+                                    objEmailService.SendEmail(ZimnatEmail, "", "", "Reinsurance Case: " + policy.PolicyNumber.ToString(), Body, null);
+                                    MailSent = true;
                                     //MiscellaneousService.ScheduleMotorPdf(Body, policy.CustomerId, policy.PolicyNumber, "Reinsurance Case- " + policy.PolicyNumber.ToString(), item.VehicleId);
                                 }
                                 else
                                 {
                                     SummeryofReinsurance = "<tr><td>" + Convert.ToString(item.Id) + "</td><td>" + item.TreatyCode + "</td><td>" + item.TreatyName + "</td><td>" + Convert.ToString(item.ReinsuranceAmount) + "</td><td>" + MiscellaneousService.GetReinsuranceBrokerNamebybrokerid(item.ReinsuranceBrokerId) + "</td><td>" + Convert.ToString(Math.Round(Convert.ToDecimal(item.ReinsurancePremium), 2)) + "</td><td>" + Convert.ToString(item.ReinsuranceCommissionPercentage) + "%</td></tr>";
-
+                                    MailSent = false;
                                 }
                                 _vehicleId = item.VehicleId;
                             }
 
 
-                            if (count == listReinsuranceTransaction.Count)
+                            if (count == listReinsuranceTransaction.Count && !MailSent)
                             {
 
 
@@ -1126,8 +1225,8 @@ namespace InsuranceClaim.Controllers
                                 var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == summary.PaymentTermId);
                                 string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/Reinsurance_Admin.cshtml";
                                 string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
-                                var Body = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##SummeryofReinsurance##", SummeryofReinsurance).Replace("##SummeryofVehicleInsured##", SummeryofVehicleInsured).Replace("##PostalAddress##", customer.Zipcode);
-                                objEmailService.SendEmail(AdminEmail, "", "", "Reinsurance Case: " + policy.PolicyNumber.ToString(), Body, null);
+                                var Body = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##SummeryofVehicleInsured##", SummeryofVehicleInsured);
+                                objEmailService.SendEmail(ZimnatEmail, "", "", "Reinsurance Case: " + policy.PolicyNumber.ToString(), Body, null);
 
                                 //MiscellaneousService.ScheduleMotorPdf(Body, policy.CustomerId, policy.PolicyNumber, "Reinsurance Case- " + policy.PolicyNumber.ToString(), item.VehicleId);
                             }
@@ -1155,7 +1254,7 @@ namespace InsuranceClaim.Controllers
         }
 
         [HttpPost]
-        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost, int policytermid)
+        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost, int policytermid, Boolean isVehicleRegisteredonICEcash, string BasicPremium, string StampDuty, string ZTSCLevy)
         {
             //var policytermid = (int)Session["policytermid"];
             JsonResult json = new JsonResult();
@@ -1174,7 +1273,7 @@ namespace InsuranceClaim.Controllers
             {
                 eexcessType = eExcessType.FixedAmount;
             }
-            var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover, eexcessType, excess, policytermid, AddThirdPartyAmount, NumberofPersons, Addthirdparty, PassengerAccidentCover, ExcessBuyBack, RoadsideAssistance, MedicalExpenses, RadioLicenseCost, IncludeRadioLicenseCost);
+            var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover, eexcessType, excess, policytermid, AddThirdPartyAmount, NumberofPersons, Addthirdparty, PassengerAccidentCover, ExcessBuyBack, RoadsideAssistance, MedicalExpenses, RadioLicenseCost, IncludeRadioLicenseCost, isVehicleRegisteredonICEcash, BasicPremium, StampDuty, ZTSCLevy);
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             json.Data = premium;
             return json;
@@ -1202,7 +1301,7 @@ namespace InsuranceClaim.Controllers
         }
 
         [HttpPost]
-        public JsonResult checkVRNwithICEcash(string regNo)
+        public JsonResult checkVRNwithICEcash(string regNo, string PaymentTerm)
         {
             checkVRNwithICEcashResponse response = new checkVRNwithICEcashResponse();
             JsonResult json = new JsonResult();
@@ -1215,6 +1314,7 @@ namespace InsuranceClaim.Controllers
             #region get ICE cash token
             if (Session["ICEcashToken"] != null)
             {
+                ICEcashService.getToken();
                 tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
             }
             else
@@ -1225,13 +1325,68 @@ namespace InsuranceClaim.Controllers
             #endregion
 
             List<RiskDetailModel> objVehicles = new List<RiskDetailModel>();
-            objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo });
+            //objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo });
+            objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo, PaymentTermId = Convert.ToInt32(PaymentTerm) });
 
             if (tokenObject.Response.PartnerToken != "")
             {
-                ICEcashQuoteResponse quoteresponse = ICEcashService.RequestQuote(objVehicles, tokenObject.Response.PartnerToken);
+                ResultRootObject quoteresponse = ICEcashService.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken);
                 response.result = quoteresponse.Response.Result;
-                response.message = quoteresponse.Response.Quotes[0].Message;
+                if (response.result == 0)
+                {
+                    response.message = quoteresponse.Response.Quotes[0].Message;
+                }
+                else
+                {
+                    response.Data = quoteresponse;
+                }
+            }
+
+            json.Data = response;
+
+            return json;
+        }
+
+        [HttpPost]
+        public JsonResult getPolicyDetailsFromICEcash(string regNo, string PaymentTerm, string SumInsured, string make, string model, int VehicleYear, int CoverTypeId, int VehicleUsage)
+        {
+            checkVRNwithICEcashResponse response = new checkVRNwithICEcashResponse();
+            JsonResult json = new JsonResult();
+            json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            //json.Data = "";
+
+            Insurance.Service.ICEcashService ICEcashService = new Insurance.Service.ICEcashService();
+            var tokenObject = new ICEcashTokenResponse();
+
+            #region get ICE cash token
+            if (Session["ICEcashToken"] != null)
+            {
+                ICEcashService.getToken();
+                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+            }
+            else
+            {
+                ICEcashService.getToken();
+                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+            }
+            #endregion
+
+            List<RiskDetailModel> objVehicles = new List<RiskDetailModel>();
+            //objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo });
+            objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo, PaymentTermId = Convert.ToInt32(PaymentTerm) });
+
+            if (tokenObject.Response.PartnerToken != "")
+            {
+                ResultRootObject quoteresponse = ICEcashService.RequestQuote(tokenObject.Response.PartnerToken, regNo, SumInsured, make, model, Convert.ToInt32(PaymentTerm), VehicleYear, CoverTypeId, VehicleUsage);
+                response.result = quoteresponse.Response.Result;
+                if (response.result == 0)
+                {
+                    response.message = quoteresponse.Response.Quotes[0].Message;
+                }
+                else
+                {
+                    response.Data = quoteresponse;
+                }
             }
 
             json.Data = response;
@@ -1277,6 +1432,43 @@ namespace InsuranceClaim.Controllers
             return PartialView();
         }
 
+        public JsonResult getproductidbyvehicleusage(int vehicleusageId)
+        {
+            try
+            {
+                var ProductId = InsuranceContext.VehicleUsages.Single(vehicleusageId).ProductId;
+                return Json(ProductId, JsonRequestBehavior.AllowGet);
+
+            }
+            catch (Exception ex)
+            {
+
+                return Json(0, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [HttpGet]
+        public JsonResult GetLicenseAddress()
+        {
+            var customerData = (CustomerModel)Session["CustomerDataModal"];
+            //LicenseAddress licenseAddress = new LicenseAddress();
+            RiskDetailModel riskDetailModel = new RiskDetailModel();
+            riskDetailModel.LicenseAddress1 = customerData.AddressLine1;
+            riskDetailModel.LicenseAddress2 = customerData.AddressLine2;
+            riskDetailModel.LicenseCity = customerData.City;
+            return Json(riskDetailModel, JsonRequestBehavior.AllowGet);
+        }
+
+        //public class LicenseAddress
+        //{
+        //    public string Address1 { get; set; }
+        //    public string Address2 { get; set; }
+        //    public string City { get; set; }
+        //}
+
+
+
         public class Country
         {
             public string code { get; set; }
@@ -1303,7 +1495,9 @@ namespace InsuranceClaim.Controllers
         {
             public int result { get; set; }
             public string message { get; set; }
+            public ResultRootObject Data { get; set; }
         }
+
     }
 }
 

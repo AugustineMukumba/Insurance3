@@ -6,11 +6,21 @@
 
 <div class="productsave-section ReinuranceReport">
 
-    <div class="container">
+    <div class="container" id="content">
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
                 <div class="head-title">
                     <h2>Reinsurance Report</h2>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 add-btn">
+                <div class="text-right">
+                   
+                    @*<input class="btn btn-primary" type="button" value="Generate PDF" id="generatePdf" />*@
+                    <input class="btn btn-primary" type="button" value="Generate Excel" id="generateExcel" />
+
+
+
                 </div>
             </div>
 
@@ -26,7 +36,7 @@
         </div>
 
         <div class="product-table-grid">
-            <table class="table table-striped tablesorter">
+            <table class="table table-striped tablesorter" id="report2excel">
                 <thead>
                     <tr>
                         <th style="width:180px;">Customer Name</th>
@@ -46,8 +56,31 @@
                     </tr>
                 </thead>
                 <tbody>
+
+                    @{ 
+                        decimal sumInsuredTotal = 0;
+                        decimal autoFacSumInsuredTotal = 0;
+                        decimal facSumInsuredTotal = 0;
+                        decimal premiumTotal = 0;
+                        decimal autoFacPremiumTotal = 0;
+                        decimal facPremiumTotal = 0;
+                        decimal autoFacCommissionTotal = 0;
+                        decimal facCommissionTotal = 0;
+                    }
+
+
                     @foreach (var item in Model)
-            {
+                    {
+                       
+                            sumInsuredTotal += Convert.ToDecimal(item.SumInsured);
+                            autoFacSumInsuredTotal += item.AutoFacSumInsured;
+                            facSumInsuredTotal += item.FacSumInsured;
+                            premiumTotal += Convert.ToDecimal(item.Premium);
+                            autoFacPremiumTotal += item.AutoFacPremium;
+                            facPremiumTotal += item.FacPremium;
+                            autoFacCommissionTotal += item.AutoFacCommission;
+                            facCommissionTotal += item.FacCommission;
+
                         <tr>
                             <td>@item.FirstName @item.LastName</td>
                             <td>@item.PhoneNumber</td>
@@ -105,7 +138,7 @@
                                 </table>
                             </td>
                             @*<td>@item.AutoFacPremium</td>
-                            <td>@item.FacPremium</td>*@
+                                <td>@item.FacPremium</td>*@
                             <td>
                                 <table class="sub-table">
                                     <tr>
@@ -115,7 +148,7 @@
                                     <tr>
                                         <td><b>Fac Commission : </b><br />$ @item.FacCommission<br /></td>
 
-                                    </tr>                                  
+                                    </tr>
                                 </table>
                             </td>
                             @*<td>@item.FacCommission</td>*@
@@ -127,6 +160,58 @@
                         </tr>
                     }
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td><strong>Total:</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <table class="sub-table">
+                                <tr>
+                                    <td><b>Total Sum Insured :</b><br /><b>$@sumInsuredTotal</b><br /></td>
+
+                                </tr>
+                                <tr>
+                                    <td><b>Auto-Fac Sum Inured : </b><br /><b>$@autoFacSumInsuredTotal</b><br /></td>
+
+                                </tr>
+                                <tr>
+                                    <td><b>Fac Sum Inured :</b><br /><b>$@facSumInsuredTotal</b><br /></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table class="sub-table">
+                                <tr>
+                                    <td><b>Total Premium :</b><br /><b>$@premiumTotal</b><br /></td>
+
+                                </tr>
+                                <tr>
+                                    <td><b>Auto-Fac Premium : </b><br /><b>$@autoFacPremiumTotal</b><br /></td>
+
+                                </tr>
+                                <tr>
+                                    <td><b>Fac Premium :</b><br /><b>$@facPremiumTotal</b><br /></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table class="sub-table">
+                                <tr>
+                                    <td><b>Auto-Fac Commission :</b><br /><b>$@autoFacCommissionTotal</b><br /></td>
+
+                                </tr>
+                                <tr>
+                                    <td><b>Fac Commission : </b><br /><b>$@facCommissionTotal</b><br /></td>
+
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </tfoot>
+
+
             </table>
         </div>
     </div>
@@ -152,5 +237,36 @@
             }
         });
     });
+
+
+    $("#generateExcel").click(function () {
+        debugger;
+        $("#report2excel").table2excel({
+            // exclude CSS class
+            exclude: ".noExl",
+            name: "Worksheet Name",
+            filename: "ReinsuranceReport" //do not include extension
+
+        });
+    });
+
+    var doc = new jsPDF({ format: [600, 600] });
+    var specialElementHandlers = {
+        '#editor': function (element, renderer) {
+            return true;
+        }
+    };
+
+    $('#generatePdf').click(function () {
+
+        doc.fromHTML($('#content').html(), 15, 15, {
+            'width': 500,
+            'elementHandlers': specialElementHandlers
+        });
+        doc.save('ReinsuranceReport.pdf');
+
+    });
+
+
 
 </script>

@@ -68,6 +68,9 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http">
+      <HintPath>..\Insurance.Service\bin\Debug\System.Net.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -87,8 +90,6 @@
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http">
     </Reference>
     <Reference Include="System.Net.Http.WebRequest">
     </Reference>
@@ -204,14 +205,18 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CommissionController.cs" />
+    <Compile Include="Controllers\ContactCentreController.cs" />
     <Compile Include="Controllers\CovertypeController.cs" />
     <Compile Include="Controllers\CustomerRegistrationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InsuranceHomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\PayNowController.cs" />
     <Compile Include="Controllers\PaypalController.cs" />
-    <Compile Include="Controllers\PolicyController.cs" />
+    <Compile Include="Controllers\PolicyInsurerController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\RenewController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\VehicleUsageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -222,7 +227,11 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Cities.txt" />
+    <Content Include="Content\Countries.txt" />
     <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\select2.css" />
+    <Content Include="Content\style-sorting.css" />
     <Content Include="Content\style.css" />
     <Content Include="Content\toastr.css" />
     <Content Include="CustomerRegistration\PaymentDetail\images\amex.png" />
@@ -237,14 +246,18 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\asc-desc.png" />
     <Content Include="Images\add.png" />
     <Content Include="Images\amex.png" />
     <Content Include="Images\arrow-top.png" />
+    <Content Include="Images\asc.gif" />
     <Content Include="Images\banner.png" />
     <Content Include="Images\calender_icon.png" />
     <Content Include="Images\call-me-back.png" />
+    <Content Include="Images\desc.gif" />
     <Content Include="Images\diners.png" />
     <Content Include="Images\discover.png" />
+    <Content Include="Images\loading.svg" />
     <Content Include="Images\geneinsure-logo.png" />
     <Content Include="Images\icon-1.png" />
     <Content Include="Images\icon-2.png" />
@@ -255,9 +268,11 @@
     <Content Include="Images\maestro.png" />
     <Content Include="Images\mastercard.png" />
     <Content Include="Images\mastercard_images.jpg" />
+    <Content Include="Images\Sort_both_small.png" />
     <Content Include="Images\top-header-bg.png" />
     <Content Include="Images\visa.png" />
     <Content Include="Images\visa_images.jpg" />
+    <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -276,16 +291,20 @@
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.creditCardValidator.js" />
+    <Content Include="Scripts\jquery.table2excel.min.js" />
+    <Content Include="Scripts\jquery.tablesorter.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\jspdf.debug.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\npm.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\select2.js" />
     <Content Include="Scripts\toastr.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -336,9 +355,6 @@
     <Content Include="Views\Commission\Index.cshtml" />
     <Content Include="Views\Commission\CommissionList.cshtml" />
     <Content Include="Views\Commission\CommissionEdit.cshtml" />
-    <Content Include="Views\Policy\Index.cshtml" />
-    <Content Include="Views\Policy\PolicyList.cshtml" />
-    <Content Include="Views\Policy\EditPolicy.cshtml" />
     <Content Include="Views\Covertype\Index.cshtml" />
     <Content Include="Views\Covertype\CoverList.cshtml" />
     <Content Include="Views\Covertype\EditCovertype.cshtml" />
@@ -348,6 +364,56 @@
     <Content Include="Views\Paypal\SaveDetailList.cshtml" />
     <Content Include="Views\Shared\EmaiTemplates\UserRegisteration.cshtml" />
     <Content Include="Views\Shared\EmaiTemplates\UserPaymentEmail.cshtml" />
+    <Content Include="Views\Renew\RiskDetail.cshtml" />
+    <Content Include="Views\Renew\SummaryDetail.cshtml" />
+    <Content Include="Views\PolicyInsurer\EditPolicy.cshtml" />
+    <Content Include="Views\PolicyInsurer\PolicyInsurerList.cshtml" />
+    <Content Include="Views\Account\AddReinsuranceBroker.cshtml" />
+    <Content Include="Views\Account\Dashboard.cshtml" />
+    <Content Include="Views\Account\EditSetting.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Account\ListReinsuranceBroker.cshtml" />
+    <Content Include="Views\Account\MyPolicies.cshtml" />
+    <Content Include="Views\Account\PolicyList.cshtml" />
+    <Content Include="Views\Account\RoleManagement.cshtml" />
+    <Content Include="Views\Account\RoleManagementList.cshtml" />
+    <Content Include="Views\Account\SettingList.cshtml" />
+    <Content Include="Views\Account\UserManagement.cshtml" />
+    <Content Include="Views\Account\UserManagementList.cshtml" />
+    <Content Include="Views\Renew\PaymentDetail.cshtml" />
+    <Content Include="Views\Renew\SaveDetailList.cshtml" />
+    <Content Include="Views\Paypal\InitiatePaynowTransaction.cshtml" />
+    <Content Include="Views\Renew\InitiatePaynowTransaction.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\Reciept.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\Reinsurance_Admin.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\SeheduleMotor.cshtml" />
+    <Content Include="Views\CustomerRegistration\Addvehicle.cshtml" />
+    <Content Include="Views\VehicleUsage\EditVehicleUsage.cshtml" />
+    <Content Include="Views\VehicleUsage\VehicalUserList.cshtml" />
+    <Content Include="Views\VehicleUsage\VehicleUsageList.cshtml" />
+    <Content Include="Views\Report\StampDutyReport.cshtml" />
+    <Content Include="Views\Report\ZTSCLevyReport.cshtml" />
+    <Content Include="Views\Report\ReinsuranceCommissionReport.cshtml" />
+    <Content Include="Views\Report\GrossWrittenPremiumReport.cshtml" />
+    <Content Include="Views\Report\VehicleRiskAboutExpire.cshtml" />
+    <Content Include="Views\Report\ReinsuranceReport.cshtml" />
+    <Content Include="Views\Report\BasicCommissionReport.cshtml" />
+    <Content Include="Views\Report\CustomerListingReport.cshtml" />
+    <Content Include="Views\Report\DailyReceiptsReport.cshtml" />
+    <Content Include="Views\Report\RadioLicenceReport.cshtml" />
+    <Content Include="Views\Account\LicenceTickets.cshtml" />
+    <Content Include="Views\Account\RiskDetail-2.cshtml" />
+    <Content Include="Views\Account\SummaryDetail.cshtml" />
+    <Content Include="Views\Account\RiskDetail.cshtml" />
+    <Content Include="Views\PolicyInsurer\Index.cshtml" />
+    <Content Include="Views\Paypal\ThankYou.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\RenewReminderEmail.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\LicenceDiskReminder.cshtml" />
+    <Content Include="Views\Account\ListPolicyRenewReminderSetting.cshtml" />
+    <Content Include="Views\Account\PolicyRenewReminderSetting.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\LoyaltyPoints.cshtml" />
+    <Content Include="Views\ContactCentre\RiskDetail.cshtml" />
+    <Content Include="Views\Report\LapsedPoliciesReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

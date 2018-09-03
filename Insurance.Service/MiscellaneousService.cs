@@ -33,35 +33,44 @@ namespace Insurance.Service
                     var listVehicles = new List<VehicleDetail>();
                     foreach (var item in _SummaryVehicleDetails)
                     {
-                        listVehicles.Add(InsuranceContext.VehicleDetails.Single(item.VehicleDetailsId));
+                        var vehicle = InsuranceContext.VehicleDetails.Single(item.VehicleDetailsId);
+                        if (vehicle != null)
+                        {
+                            listVehicles.Add(vehicle);
+                        }
+
                     }
 
-                    listVehicles = listVehicles.OrderBy(x => x.Premium).ToList();
-
-                    foreach (var _item in listVehicles)
+                    if (listVehicles != null && listVehicles.Count > 0)
                     {
+                        listVehicles = listVehicles.OrderBy(x => x.Premium).ToList();
 
-                        var vehicletotalPremium = _item.Premium + _item.StampDuty + _item.ZTSCLevy + (Convert.ToBoolean(_item.IncludeRadioLicenseCost) ? _item.RadioLicenseCost : 0.00m) - _item.Discount;
-                        if (balanceFromAmountPaid > 0.00m)
+                        foreach (var _item in listVehicles)
                         {
-                            if (balanceFromAmountPaid >= vehicletotalPremium)
+
+                            var vehicletotalPremium = _item.Premium + _item.StampDuty + _item.ZTSCLevy + (Convert.ToBoolean(_item.IncludeRadioLicenseCost) ? _item.RadioLicenseCost : 0.00m);
+                            if (balanceFromAmountPaid > 0.00m)
                             {
-                                balanceFromAmountPaid = Convert.ToDecimal(balanceFromAmountPaid - vehicletotalPremium);
-                                _item.BalanceAmount = 0.00m;
+                                if (balanceFromAmountPaid >= vehicletotalPremium)
+                                {
+                                    balanceFromAmountPaid = Convert.ToDecimal(balanceFromAmountPaid - vehicletotalPremium);
+                                    _item.BalanceAmount = 0.00m;
+                                }
+                                else
+                                {
+                                    _item.BalanceAmount = vehicletotalPremium - balanceFromAmountPaid;
+                                    balanceFromAmountPaid = 0.00m;
+                                }
                             }
                             else
                             {
-                                _item.BalanceAmount = vehicletotalPremium - balanceFromAmountPaid;
-                                balanceFromAmountPaid = 0.00m;
+                                _item.BalanceAmount = vehicletotalPremium;
                             }
-                        }
-                        else
-                        {
-                            _item.BalanceAmount = vehicletotalPremium;
-                        }
 
-                        InsuranceContext.VehicleDetails.Update(_item);
+                            InsuranceContext.VehicleDetails.Update(_item);
+                        }
                     }
+
                 }
             }
         }
@@ -251,6 +260,17 @@ namespace Insurance.Service
             objLoyaltydetails.CreatedOn = DateTime.Now;
 
             InsuranceContext.LoyaltyDetails.Insert(objLoyaltydetails);
+
+            Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
+
+            var customer = InsuranceContext.Customers.Single(CustomerId);
+            var TotalLoyaltyPoints = InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={CustomerId}").Sum(x => x.PointsEarned);
+
+            string ReminderEmailPath = "/Views/Shared/EmaiTemplates/LoyaltyPoints.cshtml";
+            string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(ReminderEmailPath));
+            var body = EmailBody2.Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##CreditedWalletAmount##", Convert.ToString(loyaltyPoint)).Replace("##TotalWalletBalance##", Convert.ToString(TotalLoyaltyPoints));
+
+            objEmailService.SendEmail(HttpContext.Current.User.Identity.Name, "", "", "Loyalty Reward | Points Credited to your Wallet", body, null);
 
             return "";
         }

@@ -8,7 +8,7 @@
 
 <div class="productsave-section">
 
-    <div class="container">
+    <div class="container" id="content">
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
                 <div class="head-title">
@@ -18,7 +18,8 @@
             <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 add-btn">
                 <div class="text-right">
                     @*<button type="button" class="btn btn-primary">Add</button>*@
-
+                    <input class="btn btn-primary" type="button" value="Generate PDF" id="generatePdf" />
+                    <input class="btn btn-primary" type="button" value="Generate Excel" id="generateExcel" />
 
 
 
@@ -26,7 +27,7 @@
             </div>
         </div>
         <div class="product-table-grid">
-            <table class="table table-striped tablesorter">
+            <table class="table table-striped tablesorter" id="report2excel">
                 <thead>
                     <tr>
                         <th>Customer Name</th>
@@ -34,13 +35,28 @@
                         <th>Transaction Date</th>
                         <th>Sum Insured</th>
                         <th>Premium Due</th>
-                        <th>Commission %</th>
-                        <th style="text-align: left;">Commission Amount</th>
+                        <th>Commission </th>
+                        <th style="text-align: left;">Management Commission</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @{ 
+                        decimal sumInsuredTotal = 0;
+                        decimal premiumDueTotal = 0;
+                        decimal commissionTotal = 0;
+                        decimal managementCommissionTotal = 0;
+                    }
+
+
+
                     @foreach (var item in Model)
-            {
+                    {
+                       
+                            sumInsuredTotal += Convert.ToDecimal(item.SumInsured);
+                            premiumDueTotal += Convert.ToDecimal(item.Premium);
+                            commissionTotal += Convert.ToDecimal(item.Commission);
+                            managementCommissionTotal += Convert.ToDecimal(item.ManagementCommission);
+
                         <tr>
                             <td>@item.FirstName @item.LastName</td>
                             @*<td>@item.LastName</td>*@
@@ -48,16 +64,27 @@
                             <td>@item.TransactionDate</td>
                             <td>$ @item.SumInsured</td>
                             <td>$ @item.Premium</td>
-                            <td>$ 0.00</td>
-                            <td>$ 0.00</td>
-                            <td>
+                            <td>$ @item.Commission</td>
+                            <td>$ @item.ManagementCommission</td>
+                            @*<td>
                                 <div class="tbl-btn-list">
                                     <ul class="list-inline"></ul>
                                 </div>
-                            </td>
+                            </td>*@
                         </tr>
                     }
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td><strong>Total:</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td><strong>$@sumInsuredTotal</strong></td>
+                        <td><strong>$@premiumDueTotal</strong></td>
+                        <td><strong>$@commissionTotal</strong></td>
+                        <td><strong>$@managementCommissionTotal</strong></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -68,5 +95,34 @@
 
         $(".tablesorter").tablesorter();
     });
+
+    $("#generateExcel").click(function () {
+        debugger;
+        $("#report2excel").table2excel({
+            // exclude CSS class
+            exclude: ".noExl",
+            name: "Worksheet Name",
+            filename: "BasicCommissionReport" //do not include extension
+
+        });
+    });
+
+    var doc = new jsPDF({ format: [600, 600] });
+    var specialElementHandlers = {
+        '#editor': function (element, renderer) {
+            return true;
+        }
+    };
+
+    $('#generatePdf').click(function () {
+
+        doc.fromHTML($('#content').html(), 80, 15, {
+            'width': 500,
+            'elementHandlers': specialElementHandlers
+        });
+        doc.save('BasicCommissionReport.pdf');
+
+    });
+
 
 </script>

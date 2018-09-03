@@ -127,42 +127,45 @@ namespace InsuranceClaim.Controllers
                 var make = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'");
                 var model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
                 var vehicleSUmmarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
+                if (vehicleSUmmarydetail !=null)
+                {
+                    var summary = InsuranceContext.SummaryDetails.Single(vehicleSUmmarydetail.SummaryDetailId);
+                    obj.Payment_Term = InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name;
+                    obj.Payment_Mode = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name;
+                    obj.Customer_Name = customer.FirstName + " " + customer.LastName;
+                    obj.Policy_Number = policy.PolicyNumber;
+                    obj.Policy_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("dd/MM/yyy");
+                    obj.Policy_endate = Convert.ToDateTime(item.CoverEndDate).ToString("dd/MM/yyy");
+                    obj.Vehicle_makeandmodel = make.MakeDescription + "/" + model.ModelDescription;
+                    obj.Stamp_duty = Convert.ToDecimal(item.StampDuty);
+                    obj.ZTSC_Levy = Convert.ToDecimal(item.ZTSCLevy);
+                    obj.Sum_Insured = Convert.ToDecimal(item.SumInsured);
+
+                    obj.Net_Premium = item.Premium;
+                    obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("dd/MM/yyy");
+
+                    if (item.PaymentTermId == 1)
+                    {
+                        obj.Annual_Premium = Convert.ToDecimal(item.Premium);
+
+                        obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
+                    }
+                    if (item.PaymentTermId == 3)
+                    {
+                        obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
+                        obj.Annual_Premium = obj.Premium_due * 4;
+
+                    }
+                    if (item.PaymentTermId == 4)
+                    {
+                        obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
+                        obj.Annual_Premium = obj.Premium_due * 3;
+
+                    }
+
+                    obj.RadioLicenseCost = item.RadioLicenseCost;
+                }
                
-                var summary = InsuranceContext.SummaryDetails.Single(vehicleSUmmarydetail.SummaryDetailId);
-                obj.Payment_Term = InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name;
-                obj.Payment_Mode = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name;
-                obj.Customer_Name = customer.FirstName + " " + customer.LastName;
-                obj.Policy_Number = policy.PolicyNumber;
-                obj.Policy_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("dd/MM/yyy");
-                obj.Policy_endate = Convert.ToDateTime(item.CoverEndDate).ToString("dd/MM/yyy");
-                obj.Vehicle_makeandmodel = make.MakeDescription + "/" + model.ModelDescription;
-                obj.Stamp_duty = Convert.ToDecimal(item.StampDuty);
-                obj.ZTSC_Levy = Convert.ToDecimal(item.ZTSCLevy);
-                obj.Sum_Insured = Convert.ToDecimal(item.SumInsured);
-
-                obj.Net_Premium = item.Premium;
-                obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("dd/MM/yyy");
-
-                if (item.PaymentTermId == 1)
-                {
-                    obj.Annual_Premium = Convert.ToDecimal(item.Premium);
-
-                    obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
-                }
-                if (item.PaymentTermId == 3)
-                {
-                    obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
-                    obj.Annual_Premium = obj.Premium_due * 4;
-
-                }
-                if (item.PaymentTermId == 4)
-                {
-                    obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
-                    obj.Annual_Premium = obj.Premium_due * 3;
-
-                }
-
-                obj.RadioLicenseCost = item.RadioLicenseCost;
 
                 ListGrossWrittenPremiumReport.Add(obj);
             }
@@ -217,17 +220,20 @@ namespace InsuranceClaim.Controllers
             {
                 var Policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
                 var Customer = InsuranceContext.Customers.Single(item.CustomerId);
-                var Vehicle = InsuranceContext.VehicleDetails.Single(item.Id);
-                var ReinsuranceTransaction = InsuranceContext.ReinsuranceTransactions.All(where: $"VehicleId={Vehicle.Id}").ToList();
+                //var Vehicle = InsuranceContext.VehicleDetails.Single(item.Id);
+                var ReinsuranceTransaction = InsuranceContext.ReinsuranceTransactions.All(where: $"VehicleId={item.Id}").ToList();
+                var commision = InsuranceContext.AgentCommissions.Single(item.AgentCommissionId);
 
                 ListBasicCommissionReport.Add(new BasicCommissionReportModel()
                 {
                     FirstName = Customer.FirstName,
                     LastName = Customer.LastName,
                     PolicyNumber = Policy.PolicyNumber,
-                    TransactionDate = Vehicle.TransactionDate == null ? null : Vehicle.TransactionDate.Value.ToString("dd/MM/yyyy"),
-                    SumInsured = Vehicle.SumInsured,
-                    Premium = Vehicle.Premium
+                    TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy"),
+                    SumInsured = item.SumInsured,
+                    Premium = item.Premium,
+                    Commission = (item.Premium - item.RoadsideAssistanceAmount - item.PassengerAccidentCoverAmount - item.ExcessBuyBackAmount - item.ExcessAmount - item.MedicalExpensesAmount) * Convert.ToDecimal(commision.CommissionAmount) / 100,
+                    ManagementCommission = (item.Premium - item.RoadsideAssistanceAmount - item.PassengerAccidentCoverAmount - item.ExcessBuyBackAmount - item.ExcessAmount - item.MedicalExpensesAmount) * Convert.ToDecimal(commision.ManagementCommission) / 100,
                 });
             }
             return View(ListBasicCommissionReport);
@@ -303,31 +309,36 @@ namespace InsuranceClaim.Controllers
                 // var Vehicle = InsuranceContext.VehicleDetails.Single(item.Id);
 
                 var vehicleSummarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
-                var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
-                var _User = UserManager.FindById(Customer.UserID.ToString());
+
+                if (vehicleSummarydetail != null) {
+
+                    var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
+                    var _User = UserManager.FindById(Customer.UserID.ToString());
 
 
-                ListCustomerListingReport.Add(new CustomerListingReportModel()
-                {
+                    ListCustomerListingReport.Add(new CustomerListingReportModel()
+                    {
 
 
-                    FirstName = Customer.FirstName,
-                    LastName = Customer.LastName,
-                    Gender = Customer.Gender,
-                    EmailAddress = _User.Email,
-                    ContactNumber = Customer.Countrycode + "-" + Customer.PhoneNumber,
-                    Dateofbirth = Convert.ToDateTime(Customer.DateOfBirth),
-                    NationalIdentificationNumber = Customer.NationalIdentificationNumber,
-                    City = Customer.City,
-                    Product = InsuranceContext.Products.Single(item.ProductId).ProductName,
-                    VehicleMake = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'").MakeDescription,
-                    VehicleModel = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription,
-                    VehicleUsage = InsuranceContext.VehicleUsages.Single(item.VehicleUsage).VehUsage,
-                    PaymentTerm = InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name,
-                    PaymentType = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name,
-                });
+                        FirstName = Customer.FirstName,
+                        LastName = Customer.LastName,
+                        Gender = Customer.Gender,
+                        EmailAddress = _User.Email,
+                        ContactNumber = Customer.Countrycode + "-" + Customer.PhoneNumber,
+                        Dateofbirth = Convert.ToDateTime(Customer.DateOfBirth),
+                        NationalIdentificationNumber = Customer.NationalIdentificationNumber,
+                        City = Customer.City,
+                        Product = InsuranceContext.Products.Single(item.ProductId).ProductName,
+                        VehicleMake = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'").MakeDescription,
+                        VehicleModel = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription,
+                        VehicleUsage = InsuranceContext.VehicleUsages.Single(item.VehicleUsage).VehUsage,
+                        PaymentTerm = InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name,
+                        PaymentType = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name,
+                    });
 
+                }
             }
+               
 
             return View(ListCustomerListingReport);
         }
@@ -344,26 +355,67 @@ namespace InsuranceClaim.Controllers
                 //var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId); 
 
                 var vehicleSummarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
-                var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
 
-                ListDailyReceiptsReport.Add(new DailyReceiptsReportModel()
+                if (vehicleSummarydetail != null)
                 {
+                    var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
 
-                    FirstName = Customer.FirstName,
-                    LastName = Customer.LastName,
-                    Contact = Customer.Countrycode + "-" + Customer.PhoneNumber,
-                    Product = InsuranceContext.Products.Single(item.ProductId).ProductName,
-                    PolicyNumber = Policy.PolicyNumber,
-                    TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy"),
-                    PremiumDue = item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost,
-                    AmountPaid = Convert.ToString(item.SumInsured),
-                    Balance = "0.00",
-                    PaymentType = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name,
-                    ReceiptNumber = summary.DebitNote,
-                });
+                    ListDailyReceiptsReport.Add(new DailyReceiptsReportModel()
+                    {
+
+                        FirstName = Customer.FirstName,
+                        LastName = Customer.LastName,
+                        Contact = Customer.Countrycode + "-" + Customer.PhoneNumber,
+                        Product = InsuranceContext.Products.Single(item.ProductId).ProductName,
+                        PolicyNumber = Policy.PolicyNumber,
+                        TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy"),
+                        PremiumDue = item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost,
+                        AmountPaid = Convert.ToString(item.SumInsured),
+                        Balance = Convert.ToString(item.BalanceAmount),
+                        PaymentType = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name,
+                        ReceiptNumber = summary.DebitNote,
+                    });
+                }
+
+                
             }
 
             return View(ListDailyReceiptsReport);
         }
+
+        public ActionResult LapsedPoliciesReport()
+        {
+            var ListLapsedPoliciesReport = new List<LapsedPoliciesReportModels>();
+
+            var VehicleDetails = InsuranceContext.VehicleDetails.All(where: "isLapsed=1").ToList();
+
+            foreach (var item in VehicleDetails)
+            {
+                var Policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
+                var Customer = InsuranceContext.Customers.Single(item.CustomerId);
+                var Vehicle = InsuranceContext.VehicleDetails.Single(item.Id);
+                var make = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'");
+                var model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
+                var ReinsuranceTransaction = InsuranceContext.ReinsuranceTransactions.All(where: $"VehicleId={Vehicle.Id}").ToList();
+
+                ListLapsedPoliciesReport.Add(new LapsedPoliciesReportModels()
+                {
+                    customerName = Customer.FirstName + " " + Customer.LastName,
+                    contactDetails = Customer.Countrycode + "-" + Customer.PhoneNumber,
+                    Premium = Vehicle.Premium,
+                    sumInsured = Vehicle.SumInsured,
+                    vehicleMake = make.MakeDescription,
+                    vehicleModel = model.ModelDescription,
+                    startDate = Vehicle.CoverStartDate == null ? null : Vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy"),
+                    endDate = Vehicle.CoverEndDate == null ? null : Vehicle.CoverEndDate.Value.ToString("dd/MM/yyyy")
+
+
+                });
+            }
+            return View(ListLapsedPoliciesReport);
+        }
+
+
+
     }
 }

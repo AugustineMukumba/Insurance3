@@ -61,6 +61,9 @@ namespace Insurance.Domain
         public static SummaryVehicleDetails SummaryVehicleDetails { get { return new SummaryVehicleDetails(); } }
         public static LicenceTickets LicenceTickets { get { return new LicenceTickets(); } }
         public static PolicyDocuments PolicyDocuments { get { return new PolicyDocuments(); } }
+        public static PolicyRenewReminderSettings PolicyRenewReminderSettings { get { return new PolicyRenewReminderSettings(); } }
+        public static ReminderFaileds ReminderFaileds { get { return new ReminderFaileds(); } }
+        public static LicenceDiskDeliveryAddresses LicenceDiskDeliveryAddresses { get { return new LicenceDiskDeliveryAddresses(); } }
 
 
         // general purpose operations

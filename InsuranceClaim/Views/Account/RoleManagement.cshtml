@@ -5,8 +5,8 @@
 }
 
 <div class="body-content-section">
-    <br />
-    <br /><br />
+    @*<br />
+        <br /><br />*@
     <div class="form-section-top">
         <div class="container">
             <div class="row">
@@ -33,11 +33,20 @@
                                 <div class="col-md-12 next-btn">
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6">
-
+                                            <div class="text-left">
+                                                <button type="button" class="btn" onclick="window.location.href='@Url.Action("RoleManagementList","Account")'">Cancel</button>
+                                            </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6">
                                             <div class="text-right">
-                                                <button type="submit" id="buttonAdd" class="btn">ADD</button>
+                                                @if ( Model.Id =="" )
+                                                {
+                                                    <button type="submit" id="buttonAdd" class="btn">Add</button>
+                                                }
+                                                else
+                                                {
+                                                    <button type="submit" id="buttonAdd" class="btn">Update</button>
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -49,4 +58,4 @@
             </div>
         </div>
     </div>
-    </div>
+</div>

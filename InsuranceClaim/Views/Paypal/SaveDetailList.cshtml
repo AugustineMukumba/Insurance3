@@ -57,7 +57,7 @@
 </div>
 <script>
     function saveAndRedirect() {
-        var isCheck = $(this).is(':checked');
+        @*var isCheck = $(this).is(':checked');
         var id = "@Model.SummaryDetailId"
         $.ajax({
             url: "/Paypal/SaveDeleverLicence",
@@ -68,6 +68,6 @@
                     window.location.href = "/InsuranceHome/Index";
                 }
             }
-        })
+        })*@
     }
 </script>

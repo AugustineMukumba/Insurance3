@@ -1,7 +1,20 @@
 ﻿@model InsuranceClaim.Models.RiskDetailModel
+@using System.Security.Claims;
+@using Insurance.Domain;
+@using Microsoft.AspNet.Identity;
 @{
     ViewBag.Title = "RiskDetail";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+
+    bool userLoggedin = ((System.Web.HttpContext.Current.User != null) && (System.Web.HttpContext.Current.User.Identity.IsAuthenticated));
+    string userId = User.Identity.GetUserId();
+    var role = "";
+
+    if (userLoggedin)
+    {
+        role = System.Web.HttpContext.Current.User.IsInRole("Administrator") ? "Administrator" : (System.Web.HttpContext.Current.User.IsInRole("Customer") ? "Customer" : "");
+
+    }
 }
 <div class="top-banner-section">
     <div class="container">
@@ -48,7 +61,25 @@
                             </div>
                             <div class="form-group-input">
                                 <div id="contact-form" class="contact-form">
-                                    <fieldset disabled="disabled">
+                                    <div id="divVehicleList" style="display:block;">
+                                        <table class="table table-striped" id="tblVehicleList">
+                                            <thead>
+                                                <tr>
+                                                    <th>Make</th>
+                                                    <th>Model</th>
+                                                    <th>Cover Type</th>
+                                                    <th>Sum Insured</th>
+                                                    <th>Premium</th>
+                                                    <th style="text-align: center;">Option(s)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                            <tfoot style="background: white;font-weight:bold;">
+                                                <tr><td colspan="4">Total Premium</td><td colspan="2" id="tdTotalPremium">0.00</td></tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                    <fieldset disabled="disabled" id="frmviewpolicyDetails">
                                         <div class="row">
                                             <div class="col-sm-6 col-md-6 form-group-text">
                                                 <div class="form-group">
@@ -70,13 +101,13 @@
                                             <div class="col-sm-6 col-md-6 form-group-select">
                                                 <div class="form-group">
                                                     @Html.Label("Make", new { @class = "gender-label" })
-                                                    @Html.DropDownListFor(x => x.MakeId, new SelectList(ViewBag.Makers, "MakeCode", "MakeDescription"), new { @class = "form-control" })
+                                                    @Html.DropDownListFor(x => x.MakeId, new SelectList(ViewBag.Makers, "MakeCode", "MakeDescription"), "Select Vehicle Make", new { @class = "form-control" })
                                                 </div>
                                             </div>
                                             <div class="col-sm-6 col-md-6 form-group-select">
                                                 <div class="form-group">
                                                     @Html.Label("Model", new { @class = "gender-label" })
-                                                    @Html.DropDownListFor(x => x.ModelId, new SelectList(ViewBag.Model, "ModelCode", "ModelDescription"), new { @class = "form-control" })
+                                                    @Html.DropDownListFor(x => x.ModelId, new SelectList(ViewBag.Model, "ModelCode", "ModelDescription"), "Select Vehicle Model", new { @class = "form-control" })
                                                 </div>
                                             </div>
                                         </div>
@@ -123,7 +154,7 @@
                                                 <div class="form-group">
                                                     @*@Html.TextBoxFor(x => x.PolicyName, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Name" })*@
                                                     @Html.Label("Product Name", new { @class = "gender-label" })
-                                                    @Html.DropDownListFor(x => x.ProductId, new SelectList(ViewBag.Products, "Id", "ProductName"), new { @class = "form-control" })
+                                                    @Html.DropDownListFor(x => x.ProductId, new SelectList(ViewBag.Products, "Id", "ProductName"),"Select Product Name", new { @class = "form-control" })
                                                     @Html.ValidationMessageFor(x => x.ProductId, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
@@ -144,13 +175,13 @@
                                                     @Html.Label("Vehicle Usage", new { @class = "gender-label" })
 
 
-                                                    @Html.DropDownListFor(x => x.VehicleUsage, new SelectList(ViewBag.VehicleUsage, "Id", "VehUsage"), new { @class = "form-control" })
+                                                    @Html.DropDownListFor(x => x.VehicleUsage, new SelectList(ViewBag.VehicleUsage, "Id", "VehUsage"), "Select Vehicle Usage", new { @class = "form-control" })
                                                 </div>
                                             </div>
                                             <div class="col-sm-6 col-md-6 form-group-select">
                                                 <div class="form-group">
                                                     @Html.Label("Cover Type", new { @class = "gender-label" })
-                                                    @Html.DropDownListFor(x => x.CoverTypeId, new SelectList(ViewBag.CoverType, "id", "Name"), new { @class = "form-control" })
+                                                    @Html.DropDownListFor(x => x.CoverTypeId, new SelectList(ViewBag.CoverType, "id", "Name"), "Select Cover Type", new { @class = "form-control" })
                                                 </div>
                                             </div>
                                         </div>
@@ -296,6 +327,7 @@
                                                 <div class="form-group">
                                                     @Html.Label("Excess Type", new { @class = "gender-label" })
                                                     <select name="ExcessType" class="form-control" id="ExcessType">
+                                                        <option value="">Select Excess Type</option>
                                                         <option value="1">Percentage</option>
                                                         <option value="2">Fixed Amount</option>
                                                     </select>
@@ -304,13 +336,13 @@
                                         </div>
 
                                         <div class="row">
-
-                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="col-sm-6 col-md-6 form-group-text" id="Containernumberofpersons">
                                                 <div class="form-group">
-                                                    @Html.Label("Excess", new { @class = "gender-label" })
-                                                    @Html.TextBoxFor(m => m.Excess, new { @class = "form-control", @autocomplete = "off", @placeholder = "Excess", maxlength = "5" })
+                                                    @Html.Label("Discount", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(x => x.Discount, null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Discount", @disabled = "disabled" })
                                                 </div>
                                             </div>
+                                           
                                             <div class="col-sm-6 col-md-6 form-group-select">
                                                 <div class="form-group">
                                                     @Html.Label("Want the licence disk to be delivered ?", new { @class = "gender-label" })
@@ -354,61 +386,66 @@
                                                 </div>
 
                                             </div>
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Excess", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.Excess, new { @class = "form-control", @autocomplete = "off", @placeholder = "Excess", maxlength = "5" })
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+
+                                        <div class="row">
                                             <div class="col-sm-6 col-md-6 form-group-text" id="Containernumberofpersons">
                                                 <div class="form-group">
                                                     @Html.Label("Number of Persons", new { @class = "gender-label" })
                                                     @Html.TextBoxFor(x => x.NumberofPersons, null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Number of Persons", @disabled = "disabled" })
                                                 </div>
                                             </div>
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Vehicle Licence Fee", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(x => x.VehicleLicenceFee, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Licence Fee" })
+                                                </div>
+                                            </div>
                                         </div>
 
                                     </fieldset>
 
-                                    <div id="divVehicleList" style="display:block;">
-                                        <table class="table table-striped" id="tblVehicleList">
-                                            <thead>
-                                                <tr>
-                                                    <th>Make</th>
-                                                    <th>Model</th>
-                                                    <th>Cover Type</th>
-                                                    <th>Sum Insured</th>
-                                                    <th>Premium</th>
-                                                    <th style="text-align: center;">Option(s)</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody></tbody>
-                                            <tfoot style="background: white;font-weight:bold;">
-                                                <tr><td colspan="4">Total Premium</td><td colspan="2" id="tdTotalPremium">0.00</td></tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
+                              
                                     <hr />
                                     <div class="row">
                                         <div class="col-md-12 next-btn">
                                             <div class="row">
 
+                                                @if (ViewBag.RedirectedFrom == "MyPolicy")
+                                                {
+                                                    <div class="col-sm-6 col-md-6">
+                                                        <div class="text-left">
+                                                            <div class="back-left"><button type="button" onclick="gotoMyPolicyList()" class="btn">Back to List</button></div>
+
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="col-sm-6 col-md-6">
+                                                        <div class="text-left">
+                                                            <div class="back-left"><button type="button" onclick="gotoPolicyList()" class="btn">Back to List</button></div>
+
+                                                        </div>
+                                                    </div>
+                                                }
+
 
                                                 <div class="col-sm-6 col-md-6">
-                                                    <div class="text-left">
-                                                        <div class="back-left"><button type="button" onclick="gotoPolicyList()" class="btn">Back to List</button></div>
-
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-6 col-md-6">
                                                     <div class="text-right">
-                                                        <button type="button" onclick="redirectToRiskDetails();" class="btn">Next</button>
+                                                        <button type="button" onclick="redirectToRiskDetails();" class="btn">Summary Details</button>
                                                     </div>
                                                 </div>
 
 
-                                                @*<div class="text-left">
-
-                                                        <div class="back-left"><a href="/Account/PolicyList" class="btn">Back to List</a></div>
-
-                                                    </div>
-                                                    <div class="text-right">
-
-                                                    </div>*@
+                                              
 
 
 
@@ -434,6 +471,10 @@
 <script>
     function gotoPolicyList() {
         location.href = '@Url.Action("PolicyList", "Account", new { id=0 })';
+    }
+
+    function gotoMyPolicyList() {
+        location.href = '@Url.Action("MyPolicies", "Account", new { id=0 })';
     }
 
     function cancelUpdate() {
@@ -484,18 +525,25 @@
     }
 
     function EditVehicleDetails(index) {
-
+        debugger;
 
         var redirecturl = '@Url.Action("RiskDetail", "Account", new { id= 0 })';
         redirecturl = redirecturl.replace("0", index);
         location.href = redirecturl;
 
-
+        return true;
     }
 
+
+
     $(document).ready(function () {
-        //var deepakTeeth =
-        debugger;
+        if ($("#RegistrationNo").val() != "") {
+            $("#frmviewpolicyDetails").show()
+
+        }
+
+
+
         getVehicleList();
 
         if (@Model.VehicleUsage >0)

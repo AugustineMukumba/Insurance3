@@ -111,8 +111,8 @@
 
             this.defaults = {
                 cssHeader: "header",
-                cssAsc: "headerSortUp",
-                cssDesc: "headerSortDown",
+                cssAsc: "headerSortDown",
+                cssDesc: "headerSortUp",
                 cssChildRow: "expand-child",
                 sortInitialOrder: "asc",
                 sortMultiSortKey: "shiftKey",

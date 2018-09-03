@@ -30,7 +30,7 @@ namespace Insurance.Service
         public decimal QuaterlyRiskPremium { get; set; }
         public decimal Discount { get; set; }
 
-        public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType, eExcessType excessType, decimal excess, int PaymentTermid, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost)
+        public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType, eExcessType excessType, decimal excess, int PaymentTermid, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost, Boolean isVehicleRegisteredonICEcash, string BasicPremiumICEcash, string StampDutyICEcash, string ZTSCLevyICEcash)
         {
             var vehicleUsage = InsuranceContext.VehicleUsages.Single(vehicleUsageId);
             var Setting = InsuranceContext.Settings.All();
@@ -71,43 +71,6 @@ namespace Insurance.Service
             if (coverType == eCoverType.ThirdParty)
             {
                 premium = (decimal)InsuranceRate;
-
-                switch (PaymentTermid)
-                {
-                    case 1:
-                        this.AnnualRiskPremium = premium;
-                        if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
-                        {
-                            this.Discount = ((this.AnnualRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
-                        }
-                        if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
-                        {
-                            this.Discount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
-                        }
-                        break;
-                    case 3:
-                        this.QuaterlyRiskPremium = premium / 4;
-                        if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
-                        {
-                            this.Discount = ((this.QuaterlyRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
-                        }
-                        if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
-                        {
-                            this.Discount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
-                        }
-                        break;
-                    case 4:
-                        this.TermlyRiskPremium = premium / 3;
-                        if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
-                        {
-                            this.Discount = ((this.TermlyRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
-                        }
-                        if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
-                        {
-                            this.Discount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
-                        }
-                        break;
-                }
             }
             else if (coverType == eCoverType.FullThirdParty)
             {
@@ -144,6 +107,8 @@ namespace Insurance.Service
             decimal ExcessBuyBackPercentage = Convert.ToInt32(Setting.Where(x => x.keyname == "ExcessBuyBack").Select(x => x.value).FirstOrDefault());
             decimal RoadsideAssistancePercentage = Convert.ToDecimal(Setting.Where(x => x.keyname == "RoadsideAssistance").Select(x => x.value).FirstOrDefault());
             decimal MedicalExpensesPercentage = Convert.ToDecimal(Setting.Where(x => x.keyname == "MedicalExpenses").Select(x => x.value).FirstOrDefault());
+            var StampDutySetting = Setting.Where(x => x.keyname == "Stamp Duty").FirstOrDefault();
+            var ZTSCLevySetting = Setting.Where(x => x.keyname == "ZTSC Levy").FirstOrDefault();
 
             if (Addthirdparty)
             {
@@ -199,25 +164,105 @@ namespace Insurance.Service
             //    InsuranceRate = InsuranceRate + float.Parse(excess.ToString());
             //}
 
-
-
             if (excessType == eExcessType.Percentage && excess > 0)
             {
                 this.ExcessAmount = (sumInsured * excess) / 100;
             }
 
-            var totalPremium = this.Premium + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount;
+            switch (PaymentTermid)
+            {
+                case 1:
+                    this.AnnualRiskPremium = premium;
+                    if (isVehicleRegisteredonICEcash)
+                    {
+                        this.AnnualRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);
+                    }
+                    if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                    {
+                        this.Discount = ((this.AnnualRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
+                    }
+                    if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                    {
+                        this.Discount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
+                    }
+                    break;
+                case 3:
+                    this.QuaterlyRiskPremium = premium / 4;
+                    if (isVehicleRegisteredonICEcash)
+                    {
+                        this.QuaterlyRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);
+                    }
+                    if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                    {
+                        this.Discount = ((this.QuaterlyRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
+                    }
+                    if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                    {
+                        this.Discount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
+                    }
+                    break;
+                case 4:
+                    this.TermlyRiskPremium = premium / 3;
+                    if (isVehicleRegisteredonICEcash)
+                    {
+                        this.TermlyRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);
+                    }
+                    if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                    {
+                        this.Discount = ((this.TermlyRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
+                    }
+                    if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                    {
+                        this.Discount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
+                    }
+                    break;
+            }
+
+            var totalPremium = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) :  this.Premium) + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount - this.Discount;
+
+
+            premium = (decimal)totalPremium;                 
+
+
             this.Premium = Math.Round(totalPremium, 2);
-            var stampDuty = (totalPremium * 5) / 100;
+
+
+            var stampDuty = 0.00m;
+            if (StampDutySetting.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+            {
+                stampDuty = (totalPremium * Convert.ToDecimal(StampDutySetting.value)) / 100;
+            }
+            else
+            {
+                stampDuty = totalPremium + Convert.ToDecimal(StampDutySetting.value);
+            }
+            
+
             if (stampDuty > 2000000)
             {
                 Status = false;
                 this.Message = "Stamp Duty must not exceed $2,000,000";
             }
 
-            var ztscLevy = (totalPremium * 12) / 100;
+            var ztscLevy = 0.00m;
+            if (ZTSCLevySetting.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+            {
+                ztscLevy = (totalPremium * Convert.ToDecimal(ZTSCLevySetting.value)) / 100;
+            }
+            else
+            {
+                ztscLevy = totalPremium + Convert.ToDecimal(ZTSCLevySetting.value);
+            }
+           
+
             this.StamDuty = Math.Round(stampDuty, 2);
             this.ZtscLevy = Math.Round(ztscLevy, 2);
+
+            if (isVehicleRegisteredonICEcash && totalPremium == Convert.ToDecimal(BasicPremiumICEcash))
+            {
+                this.StamDuty = Math.Round(Convert.ToDecimal(StampDutyICEcash), 2);
+                this.ZtscLevy = Math.Round(Convert.ToDecimal(ZTSCLevyICEcash), 2);
+            }
 
             return this;
         }
