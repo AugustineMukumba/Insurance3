@@ -649,7 +649,7 @@ namespace InsuranceClaim.Controllers
                 string EmailBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(emailTemplatePath));
                 var Body = EmailBody.Replace(" #PolicyNumber#", policy.PolicyNumber).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Email#", user.Email).Replace("#change#", callbackUrl);
                 objEmailService.SendEmail(user.Email, "", "", "Account Creation", Body, null);
-
+                MiscellaneousService.EmailPdf(Body, policy.CustomerId, policy.PolicyNumber, "WelCome Letter ");
                 string body = "Hello " + customer.FirstName + "\nWelcome to the GENE-INSURE family, we would like to simplify your life." + "\nYour policy number is : " + policy.PolicyNumber + "\nUsername is : " + user.Email + "\nYour Password : Geneinsure@123" + "\nPlease reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>" + "\nThank you once again.";
                 var result = await objsmsService.SendSMS(customer.Countrycode.Replace("+", "") + user.PhoneNumber, body);
 
@@ -697,7 +697,7 @@ namespace InsuranceClaim.Controllers
             #endregion
 
             #region Payment PDF
-            //MiscellaneousService.ScheduleMotorPdf(Body2, policy.CustomerId, policy.PolicyNumber, "Payment");
+            MiscellaneousService.EmailPdf(Body2, policy.CustomerId, policy.PolicyNumber, "Reciept Payment");
             #endregion
             //}
 
@@ -757,7 +757,7 @@ namespace InsuranceClaim.Controllers
             #endregion
 
             #region Invoice PDF
-            //MiscellaneousService.ScheduleMotorPdf(Bodyy, policy.CustomerId, policy.PolicyNumber, "Schedule-motor");
+            MiscellaneousService.EmailPdf(Bodyy, policy.CustomerId, policy.PolicyNumber, "Schedule-motor");
             #endregion
             //}
 

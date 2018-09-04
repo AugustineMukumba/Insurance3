@@ -75,7 +75,7 @@ namespace Insurance.Service
             }
         }
 
-        public static void ScheduleMotorPdf(string MotorBody, int custid, string policynumber, string filename, int vehcleId = 0)
+        public static void EmailPdf(string MotorBody, int custid, string policynumber, string filename, int vehcleId = 0)
         {
             StringReader sr = new StringReader(MotorBody.ToString());
 
@@ -262,7 +262,7 @@ namespace Insurance.Service
             InsuranceContext.LoyaltyDetails.Insert(objLoyaltydetails);
 
             Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
-
+            var policy = InsuranceContext.PolicyDetails.Single(PolicyId);
             var customer = InsuranceContext.Customers.Single(CustomerId);
             var TotalLoyaltyPoints = InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={CustomerId}").Sum(x => x.PointsEarned);
 
@@ -271,6 +271,7 @@ namespace Insurance.Service
             var body = EmailBody2.Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##CreditedWalletAmount##", Convert.ToString(loyaltyPoint)).Replace("##TotalWalletBalance##", Convert.ToString(TotalLoyaltyPoints));
 
             objEmailService.SendEmail(HttpContext.Current.User.Identity.Name, "", "", "Loyalty Reward | Points Credited to your Wallet", body, null);
+            MiscellaneousService.EmailPdf(body, policy.CustomerId, policy.PolicyNumber, "Loyalty Points");
 
             return "";
         }
