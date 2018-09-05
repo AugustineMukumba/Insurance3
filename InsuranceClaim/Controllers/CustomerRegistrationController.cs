@@ -692,7 +692,9 @@ namespace InsuranceClaim.Controllers
             model.MaxAmounttoPaid = Math.Round(Convert.ToDecimal(model.TotalPremium), 2);
             var vehiclewithminpremium = vehicle.OrderBy(x => x.Premium).FirstOrDefault();
             model.MinAmounttoPaid = Math.Round(Convert.ToDecimal(vehiclewithminpremium.Premium + vehiclewithminpremium.StampDuty + vehiclewithminpremium.ZTSCLevy + (Convert.ToBoolean(vehiclewithminpremium.IncludeRadioLicenseCost) ? vehiclewithminpremium.RadioLicenseCost : 0.00m)), 2);
-
+            model.AmountPaid = Convert.ToDecimal(model.TotalPremium);
+            model.BalancePaidDate = DateTime.Now;
+            model.Notes = "";
             return View(model);
         }
 
@@ -714,7 +716,8 @@ namespace InsuranceClaim.Controllers
         {
             if (model != null)
             {
-                if (ModelState.IsValid && (model.AmountPaid >= model.MinAmounttoPaid && model.AmountPaid <= model.MaxAmounttoPaid))
+                //if (ModelState.IsValid && (model.AmountPaid >= model.MinAmounttoPaid && model.AmountPaid <= model.MaxAmounttoPaid))
+                if (ModelState.IsValid)
                 {
                     #region Add All info to database
 
@@ -779,6 +782,30 @@ namespace InsuranceClaim.Controllers
 
 
                     var policy = (PolicyDetail)Session["PolicyData"];
+
+
+                    // Genrate new policy number
+                    string policyNumber = string.Empty;
+
+                    var objList = InsuranceContext.PolicyDetails.All(orderBy: "Id desc").FirstOrDefault();
+                    if (objList != null)
+                    {
+                        string number = objList.PolicyNumber.Split('-')[0].Substring(4, objList.PolicyNumber.Length - 6);
+                        long pNumber = Convert.ToInt64(number.Substring(2, number.Length - 2)) + 1;
+                       
+                        int length = 7;
+                        length = length - pNumber.ToString().Length;
+                        for (int i = 0; i < length; i++)
+                        {
+                            policyNumber += "0";
+                        }
+                        policyNumber += pNumber;
+                        policy.PolicyNumber = "GMCC" + DateTime.Now.Year.ToString().Substring(2, 2) + policyNumber + "-1";
+                       
+                    }
+                    // end genrate policy number
+
+
                     if (policy != null)
                     {
                         if (policy.Id == null || policy.Id == 0)
@@ -1113,6 +1140,14 @@ namespace InsuranceClaim.Controllers
                             DbEntry.CustomerId = vehicle[0].CustomerId;
                             DbEntry.CreatedBy = customer.Id;
                             DbEntry.CreatedOn = DateTime.Now;
+                            if (DbEntry.BalancePaidDate.Value.Year == 0001)
+                            {
+                                DbEntry.BalancePaidDate = DateTime.Now;
+                            }
+                            if (DbEntry.Notes == null)
+                            {
+                                DbEntry.Notes = "";
+                            }
                             InsuranceContext.SummaryDetails.Insert(DbEntry);
                             model.Id = DbEntry.Id;
                             Session["SummaryDetailed"] = model;
@@ -1123,8 +1158,16 @@ namespace InsuranceClaim.Controllers
 
                             //summarydata.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
                             //summarydata.VehicleDetailId = vehicle[0].Id;
-                            DbEntry.ModifiedBy = customer.Id;
-                            DbEntry.ModifiedOn = DateTime.Now;
+                            summarydata.ModifiedBy = customer.Id;
+                            summarydata.ModifiedOn = DateTime.Now;
+                            if (summarydata.BalancePaidDate.Value.Year == 0001)
+                            {
+                                summarydata.BalancePaidDate = DateTime.Now;
+                            }
+                            if (DbEntry.Notes == null)
+                            {
+                                summarydata.Notes = "";
+                            }
                             summarydata.CustomerId = vehicle[0].CustomerId;
 
                             InsuranceContext.SummaryDetails.Update(summarydata);

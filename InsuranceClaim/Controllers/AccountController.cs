@@ -1003,7 +1003,9 @@ namespace InsuranceClaim.Controllers
             Session["ViewlistVehicles"] = null;
             ListPolicy policylist = new ListPolicy();
             policylist.listpolicy = new List<PolicyListViewModel>();
-            var SummaryList = InsuranceContext.SummaryDetails.All().OrderByDescending(x => x.Id).ToList();
+         //   var SummaryList = InsuranceContext.SummaryDetails.All().OrderByDescending(x => x.Id).ToList(); // commented 
+
+            var SummaryList = InsuranceContext.SummaryDetails.All().OrderByDescending(x => x.Id).ToList().Take(50);
 
             foreach (var item in SummaryList)
             {
@@ -1378,7 +1380,7 @@ namespace InsuranceClaim.Controllers
             ListPolicy policylist = new ListPolicy();
             policylist.listpolicy = new List<PolicyListViewModel>();
             var customerID = InsuranceContext.Customers.Single(where: $"userid='{User.Identity.GetUserId().ToString()}'").Id;
-            var SummaryList = InsuranceContext.SummaryDetails.All(where: $"customerid={customerID}").OrderByDescending(x => x.Id).ToList();
+            var SummaryList = InsuranceContext.SummaryDetails.All(where: $"customerid={customerID}").OrderByDescending(x => x.Id).ToList().Take(50);
 
 
             foreach (var item in SummaryList)

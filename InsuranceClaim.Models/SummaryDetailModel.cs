@@ -35,6 +35,7 @@ namespace InsuranceClaim.Models
         public decimal AmountPaid { get; set; }
         public decimal? MaxAmounttoPaid { get; set; }        
         public decimal? MinAmounttoPaid { get; set; }
-
+        public DateTime BalancePaidDate { get; set; }
+        public string Notes { get; set; }
     }
 }
