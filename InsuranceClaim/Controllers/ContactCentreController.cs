@@ -36,7 +36,8 @@ namespace InsuranceClaim.Controllers
             //                       };
 
             //ViewBag.ePaymentTermData = new SelectList(ePaymentTermData, "ID", "Name");
-            ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All().ToList();
+           // ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All().ToList();
+            ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All(where: "IsActive = 'True' or IsActive is Null").ToList();
 
             var eExcessTypeData = from eExcessType e in Enum.GetValues(typeof(eExcessType))
                                   select new

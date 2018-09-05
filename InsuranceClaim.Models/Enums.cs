@@ -21,7 +21,7 @@ namespace InsuranceClaim.Models
     {
         Annual = 1,
         //Monthly = 2,
-        Quarterly = 3,
+      //  Quarterly = 3,
         Termly = 4
     }
 

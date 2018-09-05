@@ -385,35 +385,45 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult LapsedPoliciesReport()
         {
-            var ListLapsedPoliciesReport = new List<LapsedPoliciesReportModels>();
-
-            var VehicleDetails = InsuranceContext.VehicleDetails.All(where: "isLapsed=1").ToList();
-
-            foreach (var item in VehicleDetails)
+            try
             {
-                var Policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
-                var Customer = InsuranceContext.Customers.Single(item.CustomerId);
-                var Vehicle = InsuranceContext.VehicleDetails.Single(item.Id);
-                var make = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'");
-                var model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
-                var ReinsuranceTransaction = InsuranceContext.ReinsuranceTransactions.All(where: $"VehicleId={Vehicle.Id}").ToList();
-
-                ListLapsedPoliciesReport.Add(new LapsedPoliciesReportModels()
+                var ListLapsedPoliciesReport = new List<LapsedPoliciesReportModels>();
+                var whereClause = "isLapsed = 'True' or " + $"CAST(RenewalDate as date) < '{DateTime.Now.ToString("yyyy-MM-dd")}'";
+                var VehicleDetails = InsuranceContext.VehicleDetails.All(where: whereClause).ToList();
+                foreach (var item in VehicleDetails)
                 {
-                    customerName = Customer.FirstName + " " + Customer.LastName,
-                    contactDetails = Customer.Countrycode + "-" + Customer.PhoneNumber,
-                    Premium = Vehicle.Premium,
-                    sumInsured = Vehicle.SumInsured,
-                    vehicleMake = make.MakeDescription,
-                    vehicleModel = model.ModelDescription,
-                    startDate = Vehicle.CoverStartDate == null ? null : Vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy"),
-                    endDate = Vehicle.CoverEndDate == null ? null : Vehicle.CoverEndDate.Value.ToString("dd/MM/yyyy")
+                    var Policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
+                    var Customer = InsuranceContext.Customers.Single(item.CustomerId);
+                    var Vehicle = InsuranceContext.VehicleDetails.Single(item.Id);
+                    var make = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'");
+                    var model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
+                    var ReinsuranceTransaction = InsuranceContext.ReinsuranceTransactions.All(where: $"VehicleId={Vehicle.Id}").ToList();
+
+                    ListLapsedPoliciesReport.Add(new LapsedPoliciesReportModels()
+                    {
+                        customerName = Customer.FirstName + " " + Customer.LastName,
+                        contactDetails = Customer.Countrycode + "-" + Customer.PhoneNumber,
+                        Premium = Vehicle.Premium,
+                        sumInsured = Vehicle.SumInsured,
+                        vehicleMake = make.MakeDescription,
+                        vehicleModel = model.ModelDescription,
+                        startDate = Vehicle.CoverStartDate == null ? null : Vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy"),
+                        endDate = Vehicle.CoverEndDate == null ? null : Vehicle.CoverEndDate.Value.ToString("dd/MM/yyyy")
 
 
-                });
+                    });
+                }
+                return View(ListLapsedPoliciesReport);
             }
-            return View(ListLapsedPoliciesReport);
-        }
+            catch (Exception ex)
+            {
+                //    return View(ListLapsedPoliciesReport);
+                return View();
+            }
+        } 
+
+
+
 
 
 

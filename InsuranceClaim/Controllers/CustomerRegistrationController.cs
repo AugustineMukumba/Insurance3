@@ -258,7 +258,8 @@ namespace InsuranceClaim.Controllers
 
             //ViewBag.ePaymentTermData = new SelectList(ePaymentTermData, "ID", "Name");
 
-            ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All().ToList();
+            // ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All().ToList();
+            ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All(where: "IsActive = 'True' or IsActive is null").ToList();
 
             int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
             var PolicyData = (PolicyDetail)Session["PolicyData"];
