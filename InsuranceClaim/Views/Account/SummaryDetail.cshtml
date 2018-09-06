@@ -64,7 +64,7 @@
 
                                                     <h4>Quarterly</h4>
                                                     <div class="plan-white-box">
-                                                        @*<h3>$ @Math.Round(Convert.ToDouble(Model.TotalPremium)/4,2)</h3>*@
+                                                     
                                                         <h3>$@Math.Round(Convert.ToDouble(item.Premium), 2)</h3>
                                                         <p>Vehicle Model : @Insurance.Domain.InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription</p>
                                                         <a href="javascript:void(0);" style="pointer-events:none;">PAY FOR 3 MONTHS</a>
@@ -196,8 +196,7 @@
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                                @*@Html.LabelFor(x => x.RoadsideAssistanceAmount, new { @class = "gender-label" })
-                                                    @Html.TextBoxFor(m => m.RoadsideAssistanceAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Roadside Assistance Amount", @readonly = "readonly" })*@
+                                              
                                             </div>
                                         </div>
                                     </div>
@@ -241,15 +240,9 @@
         $("#previouselink")[0].click();
 
     }
-    f@*unction Replacable() {
-        debugger;
-        window.location.href = "@Url.Action("RiskDetail", "Account")";
-    }
-    function SelectPlan(element) {
-        debugger;
-        $(".choose-plan-box").removeClass("active");
-        var planPurchase = $(element).attr("planpurchase");
-        $("#PaymentTermId").val(planPurchase);
-        $(element).addClass("active");
-    }*@
+  
 </script>
+
+
+
+

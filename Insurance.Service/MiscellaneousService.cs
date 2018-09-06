@@ -80,7 +80,7 @@ namespace Insurance.Service
             StringReader sr = new StringReader(MotorBody.ToString());
 
             Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 10f, 0f);
-            HTMLWorker htmlparser = new HTMLWorker(pdfDoc);
+           HTMLWorker htmlparser = new HTMLWorker(pdfDoc);
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 PdfWriter writer = PdfWriter.GetInstance(pdfDoc, memoryStream);
@@ -139,12 +139,10 @@ namespace Insurance.Service
                 }
 
 
-
-
-
-
-
             }
+
+            sr.Close();
+
         }
 
         public static string GetCustomerNamebyID(int id)

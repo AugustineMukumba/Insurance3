@@ -67,14 +67,30 @@ namespace InsuranceClaim.Controllers
             ViewBag.Makers = makers;
             viewModel.isUpdate = false;
             ViewBag.Products = InsuranceContext.Products.All().ToList();
-            var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm))
-                                   select new
-                                   {
-                                       ID = (int)e,
-                                       Name = e.ToString()
-                                   };
+            //var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm))
+            //                       select new
+            //                       {
+            //                           ID = (int)e,
+            //                           Name = e.ToString()
+            //                       };
 
-            ViewBag.ePaymentTermData = new SelectList(ePaymentTermData, "ID", "Name");
+            //ViewBag.ePaymentTermData = new SelectList(ePaymentTermData, "ID", "Name");
+
+
+            ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All().ToList();
+
+            var eExcessTypeData = from eExcessType e in Enum.GetValues(typeof(eExcessType))
+                                  select new
+                                  {
+                                      ID = (int)e,
+                                      Name = e.ToString()
+                                  };
+
+            ViewBag.eExcessTypeData = new SelectList(eExcessTypeData, "ID", "Name");
+
+
+
+
             //TempData["Policy"] = service.GetPolicy(id);
             if (makers.Count > 0)
             {
@@ -631,6 +647,17 @@ namespace InsuranceClaim.Controllers
 
 
             return View(objSaveDetailListModel);
+        }
+
+        public JsonResult GetLicenseAddress()
+        {
+            var customerData = (CustomerModel)Session["CustomerDataModal"];
+            //LicenseAddress licenseAddress = new LicenseAddress();
+            RiskDetailModel riskDetailModel = new RiskDetailModel();
+            riskDetailModel.LicenseAddress1 = customerData.AddressLine1;
+            riskDetailModel.LicenseAddress2 = customerData.AddressLine2;
+            riskDetailModel.LicenseCity = customerData.City;
+            return Json(riskDetailModel, JsonRequestBehavior.AllowGet);
         }
 
         public async Task<ActionResult> InitiatePaynowTransaction(Int32 id, string TotalPremiumPaid, string PolicyNumber, string Email)
