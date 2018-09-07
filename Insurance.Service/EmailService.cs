@@ -34,7 +34,7 @@ namespace Insurance.Service
                 client.UseDefaultCredentials = false;
                 MailMessage _mailMessage = new MailMessage();
                 _mailMessage.To.Add(new MailAddress(pTo));
-                _mailMessage.From = new MailAddress(FromMailAddress, "Insurance Claim");
+                _mailMessage.From = new MailAddress(FromMailAddress, "GeneInsure");
                 _mailMessage.Subject = pSubject;
                 _mailMessage.IsBodyHtml = true;
 

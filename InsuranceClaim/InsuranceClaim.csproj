@@ -257,6 +257,9 @@
     <Content Include="Images\desc.gif" />
     <Content Include="Images\diners.png" />
     <Content Include="Images\discover.png" />
+    <Content Include="Images\geneinsure-logo.jpeg" />
+    <Content Include="Images\geneinsure-logo1.png" />
+    <Content Include="Images\Geneinsuresign.png" />
     <Content Include="Images\loading.svg" />
     <Content Include="Images\geneinsure-logo.png" />
     <Content Include="Images\icon-1.png" />
