@@ -187,7 +187,7 @@ namespace Insurance.Service
                     }
                     break;
                 case 3:
-                    this.QuaterlyRiskPremium = premium / 4;
+                    this.QuaterlyRiskPremium = premium;
                     if (isVehicleRegisteredonICEcash)
                     {
                         this.QuaterlyRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);
@@ -202,7 +202,7 @@ namespace Insurance.Service
                     }
                     break;
                 case 4:
-                    this.TermlyRiskPremium = premium / 3;
+                    this.TermlyRiskPremium = premium;
                     if (isVehicleRegisteredonICEcash)
                     {
                         this.TermlyRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);

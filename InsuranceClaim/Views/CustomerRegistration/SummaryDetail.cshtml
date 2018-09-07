@@ -139,18 +139,21 @@
                             <table class="table table-striped" id="tblVehicleList">
                                 <thead>
                                     <tr>
-                                        <th>Make</th>
-                                        <th>Model</th>
-                                        <th>Cover Type</th>
-                                        <th>Sum Insured</th>
-                                        <th>Premium</th>
+                                        <th>VEHICLE</th>
+                                        <th>SUM INSURED</th>
+                                        <th>Basic Premium</th>
+                                        <th>RADIO LICENCE FEE</th>
+                                        <th>EXCESS</th>
+                                        <th>VEHICLE LICENCE FEE</th>                                     
+                                        <th> STAMP DUTY</th>    
+                                        <th> TOTAL</th>                                                                     
                                         <th style="text-align: center;">Option(s)</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
-                                <tfoot style="background: white;font-weight:bold;">
+                                @*<tfoot style="background: white;font-weight:bold;">
                                     <tr><td colspan="4">Total Premium</td><td colspan="2" id="tdTotalPremium">0.00</td></tr>
-                                </tfoot>
+                                </tfoot>*@
                             </table>
                             <hr class="higlighter" />
                         </div>
@@ -425,7 +428,7 @@
                 var totalpremium = 0.00;
                 $.each(list, function (index, value) {
                     count++;
-                    bodyHTML += "<tr><td>" + value.make + "</td><td>" + value.model + "</td><td>" + value.covertype + "</td><td>$" + value.suminsured + "</td><td>$" + value.premium + "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >Edit</button></li><li><button type='button' onclick='DeleteVehicleDetails(" + count + ")' class='btn-sm btn-danger' >Delete</button></li></ul></div></td></tr>"
+                    bodyHTML += "<tr><td>" + value.make + " "+ value.model+ "</td><td>" + value.suminsured + "</td><td>" + value.premium + "</td><td>$" + value.radio_license_fee + "</td><td>$" + value.excess + "</td><td>$" + value.vehicle_license_fee+ "</td> <td>$" + value.stampDuty+ "</td><td>$" + value.total+ "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >Edit</button></li><li><button type='button' onclick='DeleteVehicleDetails(" + count + ")' class='btn-sm btn-danger' >Delete</button></li></ul></div></td></tr>"
                     totalpremium += parseFloat(value.premium);
                 });
 

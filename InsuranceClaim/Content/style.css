@@ -42,6 +42,26 @@ tfoot {
     background: lightgray !important;
 }
 
+#divVehicleList table th {
+    vertical-align: top;
+    font-size: 12px;
+    background: #333;
+    color: #fff;
+    font-weight: normal;
+}
+
+.logo-img a {
+    display: inline-block;
+    background: #fff;
+    padding: 5px;
+}
+
+.logo-img  {
+    display: inline-block;
+    background: #fff;
+    padding: 5px;
+}
+
 .btn-primary {
     border: none !important;
 }

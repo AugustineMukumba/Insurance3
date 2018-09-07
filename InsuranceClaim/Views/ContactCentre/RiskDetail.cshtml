@@ -802,24 +802,41 @@
         });
     }
 
+    function updateEndDate() {
+        debugger;
+        var selectedTerm = $("#PaymentTermId option:selected").val();
+        switch (parseInt(selectedTerm)) {
+            case 1:
+                setPolicyEndDate(12);
+                break;
+            case 2:
+                setPolicyEndDate(1)
+                break;
+            case 3:
+                setPolicyEndDate(3);
+                break;
+            case 4:
+                setPolicyEndDate(4);
+                break;
+        }
+    }
+
     $(document).ready(function () {
 
         $("#datetimepicker2").datetimepicker({
             format: 'MM/D/YYYY',
             minDate: new Date()
         })
-
-
-
-
         $("#datetimepicker1").datetimepicker({
-            format: 'MM/D/YYYY'
+            format: 'MM/D/YYYY',
+            minDate: new Date()
         }).on('dp.change', function (e) {
             debugger;
             var incrementDay = moment(new Date(e.date));
             incrementDay.add(1, 'days');
             $('#datetimepicker2').data('DateTimePicker').minDate(incrementDay);
             $(this).data("DateTimePicker").hide();
+            updateEndDate();
         });
 
         var data= '@Model.isUpdate';
@@ -1253,10 +1270,15 @@
                         var GovernmentLevy = policy.GovernmentLevy;
                         $("#ZTSCLevy").val(parseFloat(GovernmentLevy).toFixed(2));
                         var CoverAmount = policy.CoverAmount;
-                        $("#Premium").val(parseFloat(CoverAmount).toFixed(2));
+                        //$("#Premium").val(parseFloat(CoverAmount).toFixed(2));
                         $("#Discount").val(parseFloat(data.Data.LoyaltyDiscount).toFixed(2));
 
-                        $("#basicPremiumICEcash").val(parseFloat(CoverAmount).toFixed(2))
+                        var calulatePremium = CoverAmount-data.Data.LoyaltyDiscount;
+
+                        $("#Premium").val(parseFloat(calulatePremium).toFixed(2));
+
+                        $("#basicPremiumICEcash").val(parseFloat(CoverAmount).toFixed(2));
+
                         $("#stampDutyICEcash").val(parseFloat(StampDuty).toFixed(2))
                         $("#LevyICEcash").val(parseFloat(GovernmentLevy).toFixed(2))
                         QuoteCalculation()
@@ -1302,10 +1324,9 @@
             }
         });
     }
-
     function setPolicyEndDate(numberOfMonth) {
-        debugger;
-        today = new Date();
+        //debugger;
+        today = $('#datetimepicker1').data('DateTimePicker').date()._d;//new Date();
         today.setMonth(today.getMonth() + numberOfMonth);
 
         var dd = "";
@@ -1332,7 +1353,7 @@
         }
         var today = mm + '/' + dd + '/' + yyyy;
         $("#CoverEndDate").val(today);
-        debugger;
+        //debugger;
         var dateParts = today.split("/");
         today = new Date(dateParts[2], dateParts[0] - 1, dateParts[1]);
         today.setDate(today.getDate() + 1);
@@ -1349,6 +1370,52 @@
         var today = mm + '/' + dd + '/' + yyyy;
         $("#RenewalDate").val(today);
     }
+    //function setPolicyEndDate(numberOfMonth) {
+    //    debugger;
+    //    today = new Date();
+    //    today.setMonth(today.getMonth() + numberOfMonth);
+
+    //    var dd = "";
+    //    if (today.getDate() == 1) {
+    //        today = new Date(today.getFullYear(), today.getMonth(), 0);
+    //        dd = today.getDate();
+    //    }
+    //    else {
+    //        dd = today.getDate() - 1;
+    //    }
+
+
+    //    var mm = today.getMonth() + 1; //January is 0!
+
+    //    //var dd = today.getDate()-1;
+    //    //var mm = today.getMonth() + 1; //January is 0!
+
+    //    var yyyy = today.getFullYear();
+    //    if (dd < 10) {
+    //        dd = '0' + dd;
+    //    }
+    //    if (mm < 10) {
+    //        mm = '0' + mm;
+    //    }
+    //    var today = mm + '/' + dd + '/' + yyyy;
+    //    $("#CoverEndDate").val(today);
+    //    debugger;
+    //    var dateParts = today.split("/");
+    //    today = new Date(dateParts[2], dateParts[0] - 1, dateParts[1]);
+    //    today.setDate(today.getDate() + 1);
+    //    dd = today.getDate();
+    //    mm = today.getMonth() + 1; //January is 0!
+
+    //    yyyy = today.getFullYear();
+    //    if (dd < 10) {
+    //        dd = '0' + dd;
+    //    }
+    //    if (mm < 10) {
+    //        mm = '0' + mm;
+    //    }
+    //    var today = mm + '/' + dd + '/' + yyyy;
+    //    $("#RenewalDate").val(today);
+    //}
 
     function replacableRedirect() {
         window.location.href = "@Url.Action("SummaryDetail", "CustomerRegistration")";

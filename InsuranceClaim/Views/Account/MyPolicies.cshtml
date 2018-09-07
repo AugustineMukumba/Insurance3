@@ -86,7 +86,7 @@
 
 
 
-                       
+
                         <tr class="policynumber-tr">
 
                             <td>@item.PolicyNumber</td>
@@ -119,7 +119,7 @@
                                         <th>Status</th>
                                         <th>Actions(s)</th>
                                     </tr>
-                                    @foreach (var _item in item.Vehicles)
+                                    @*@foreach (var _item in item.Vehicles)
                                     {
                                         <tr>
                                             <td>@MiscellaneousService.GetMakeNamebyMakeCode(_item.MakeId)/@MiscellaneousService.GetModelNamebyModelCode(_item.ModelId)</td>
@@ -145,7 +145,7 @@
                                             else if (DateTime.Now < _item.RenewalDate.AddDays(-21))
                                             {
                                                 <td>In Force</td>
-                                                
+
                                                 if (_item.BalanceAmount > 0.00m)
                                                 {
                                                     <td><button type="button" class="btn-sm btn-danger" onclick="javascript: alert('Your Balance Amount is : $ @_item.BalanceAmount');">Pay Balance Amount</button><br /><br /><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
@@ -169,7 +169,7 @@
                                             }
 
                                         </tr>
-                                    }
+                                    }*@
                                 </table>
                             </td>
                         </tr>
@@ -431,10 +431,7 @@
         });
     }
 
-    function removeSearchBoxText() {
-        window.location.href = "/Account/PolicyList";
-
-    }
+   
 
 </script>
 

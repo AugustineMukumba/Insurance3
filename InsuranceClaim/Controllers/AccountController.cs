@@ -1887,16 +1887,7 @@ namespace InsuranceClaim.Controllers
                         viewModel.ExcessAmount = data.ExcessAmount;
                         viewModel.ProductId = data.ProductId;
                         viewModel.PaymentTermId = data.PaymentTermId;
-                        if (viewModel.RadioLicenseCost == 0)
-                        {
-                            viewModel.IncludeRadioLicenseCost = false;
-
-                        }
-                        else
-                        {
-                            viewModel.IncludeRadioLicenseCost = true;
-                        }
-
+                        viewModel.IncludeRadioLicenseCost = data.IncludeRadioLicenseCost;
                         viewModel.Discount = data.Discount;
                         viewModel.VehicleLicenceFee = Convert.ToDecimal(data.VehicleLicenceFee);
 
@@ -1986,6 +1977,7 @@ namespace InsuranceClaim.Controllers
                 model.PassengerAccidentCoverAmount = vehicle.Sum(item => item.PassengerAccidentCoverAmount);
                 model.RoadsideAssistanceAmount = vehicle.Sum(item => item.RoadsideAssistanceAmount);
                 model.ExcessAmount = vehicle.Sum(item => item.ExcessAmount);
+                model.Discount = vehicle.Sum(item => item.Discount);
 
                 //var Model = Mapper.Map<SummaryDetailModel, SummaryDetail>(summarydetail);
                 //InsuranceContext.SummaryDetails.Insert(Model);

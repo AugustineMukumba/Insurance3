@@ -8,13 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Insurance.Domain;
 using InsuranceClaim.Models;
+using System.IO;
 
 namespace Insurance.Service
 {
     public class EmailService
     {
 
-        public void SendEmail(string pTo, string pCc, string pBcc, string pSubject, string pBody, string[] pAttachments)
+        public void SendEmail(string pTo, string pCc, string pBcc, string pSubject, string pBody, string pAttachments)
         {
             try
             {
@@ -30,11 +31,22 @@ namespace Insurance.Service
                 {
                     Credentials = new NetworkCredential(FromMailAddress, password),
                 };
+                client.UseDefaultCredentials = false;
                 MailMessage _mailMessage = new MailMessage();
                 _mailMessage.To.Add(new MailAddress(pTo));
                 _mailMessage.From = new MailAddress(FromMailAddress, "Insurance Claim");
                 _mailMessage.Subject = pSubject;
                 _mailMessage.IsBodyHtml = true;
+
+                if(!string.IsNullOrEmpty(pAttachments))
+                {
+
+                    System.Net.Mail.Attachment attachment;
+                    attachment = new System.Net.Mail.Attachment(System.Web.HttpContext.Current.Server.MapPath(pAttachments));
+                    _mailMessage.Attachments.Add(attachment);
+                }
+      
+
                 AlternateView plainView = AlternateView.CreateAlternateViewFromString(pBody, null, "text/plain");
                 AlternateView htmlView = AlternateView.CreateAlternateViewFromString(pBody, null, "text/html");
                 _mailMessage.AlternateViews.Add(plainView);
@@ -49,6 +61,7 @@ namespace Insurance.Service
                     }
                     catch (Exception ex)
                     {
+                        WriteLog(ex.Message);
                     }
                 }
                 //populateMailAddresses(pTo, _message.To);
@@ -72,9 +85,39 @@ namespace Insurance.Service
             }
             catch (Exception ex)
             {
-                string strMsg = ex.Message;
+
+
+                WriteLog(ex.Message);
+
             }
         }
+
+
+        public void WriteLog(string error)
+        {
+            string message = string.Format("Error Time: {0}", DateTime.Now);
+            message += error;
+            message += "-----------------------------------------------------------";
+
+            message += Environment.NewLine;
+         
+
+
+
+            string path = System.Web.HttpContext.Current.Server.MapPath("~/LogFile.txt");
+            using (StreamWriter writer = new StreamWriter(path, true))
+            {
+                writer.WriteLine(message);
+                writer.Close();
+            }
+        }
+
+
+
+
+
+
+
 
 
         private void populateMailAddresses(string pAddresses, MailAddressCollection pObj)

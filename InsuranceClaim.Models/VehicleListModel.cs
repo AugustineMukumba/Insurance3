@@ -13,5 +13,10 @@ public class VehicleListModel
         public string covertype { get; set; }
         public string suminsured { get; set; }
         public string premium { get; set; }
+        public string radio_license_fee { get; set; }
+        public string excess { get; set; }
+        public string vehicle_license_fee { get; set; }
+        public string stampDuty { get; set; }
+        public string total { get; set; }
     }
 }

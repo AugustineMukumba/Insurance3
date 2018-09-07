@@ -75,73 +75,102 @@ namespace Insurance.Service
             }
         }
 
-        public static void EmailPdf(string MotorBody, int custid, string policynumber, string filename, int vehcleId = 0)
+        public static string EmailPdf(string MotorBody, int custid, string policynumber, string filename, int vehcleId = 0)
         {
             StringReader sr = new StringReader(MotorBody.ToString());
 
-            Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 10f, 0f);
-           HTMLWorker htmlparser = new HTMLWorker(pdfDoc);
-            using (MemoryStream memoryStream = new MemoryStream())
+            string path = "";
+
+            try
             {
-                PdfWriter writer = PdfWriter.GetInstance(pdfDoc, memoryStream);
-                pdfDoc.Open();
-                htmlparser.Parse(sr);
-                pdfDoc.Close();
-                byte[] bytes = memoryStream.ToArray();
-                memoryStream.Close();
 
-                string custfolderpath = HttpContext.Current.Server.MapPath("~/Documents/" + custid + "/");
-                string policyfolderpath = HttpContext.Current.Server.MapPath("~/Documents/" + custid + "/" + policynumber + "/");
+                Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 10f, 0f);
+                HTMLWorker htmlparser = new HTMLWorker(pdfDoc);
                 string vehiclefolderpath = "";
-                if (vehcleId > 0)
-                {
-                    vehiclefolderpath = HttpContext.Current.Server.MapPath("~/Documents/" + custid + "/" + policynumber + "/" + vehcleId + "/");
-                }
+               
 
 
-                if (!Directory.Exists(custfolderpath))
+
+                using (MemoryStream memoryStream = new MemoryStream())
                 {
-                    Directory.CreateDirectory(custfolderpath);
-                    Directory.CreateDirectory(policyfolderpath);
-                }
-                else
-                {
-                    if (!Directory.Exists(policyfolderpath))
+                    PdfWriter writer = PdfWriter.GetInstance(pdfDoc, memoryStream);
+                    pdfDoc.Open();
+                    htmlparser.Parse(sr);
+                    pdfDoc.Close();
+                    byte[] bytes = memoryStream.ToArray();
+                    memoryStream.Close();
+
+                    string custfolderpath = HttpContext.Current.Server.MapPath("~/Documents/" + custid + "/");
+                    string policyfolderpath = HttpContext.Current.Server.MapPath("~/Documents/" + custid + "/" + policynumber + "/");
+
+                    if (vehcleId > 0)
                     {
+                        vehiclefolderpath = HttpContext.Current.Server.MapPath("~/Documents/" + custid + "/" + policynumber + "/" + vehcleId + "/");
+                    }
+
+
+                    if (!Directory.Exists(custfolderpath))
+                    {
+                        Directory.CreateDirectory(custfolderpath);
                         Directory.CreateDirectory(policyfolderpath);
-                        if (vehcleId > 0)
+                    }
+                    else
+                    {
+                        if (!Directory.Exists(policyfolderpath))
                         {
-                            Directory.CreateDirectory(vehiclefolderpath);
+                            Directory.CreateDirectory(policyfolderpath);
+                            if (vehcleId > 0)
+                            {
+                                Directory.CreateDirectory(vehiclefolderpath);
+                            }
+
+
+                        }
+                        else
+                        {
+                            if (vehcleId > 0)
+                            {
+                                if (!Directory.Exists(vehiclefolderpath))
+                                {
+                                    Directory.CreateDirectory(vehiclefolderpath);
+                                }
+                            }
+
                         }
 
+                    }
+                    if (vehcleId > 0)
+                    {
+
+                        System.IO.File.WriteAllBytes(vehiclefolderpath + filename + ".pdf", memoryStream.ToArray());
+                        path = "~/Documents/" + custid + "/" + policynumber + "/" + vehcleId + "/" + filename + ".pdf";
 
                     }
                     else
                     {
-                        if (vehcleId > 0)
-                        {
-                            if (!Directory.Exists(vehiclefolderpath))
-                            {
-                                Directory.CreateDirectory(vehiclefolderpath);
-                            }
-                        }
+                        System.IO.File.WriteAllBytes(policyfolderpath + filename + ".pdf", memoryStream.ToArray());
+
+                        //    path = "http://" + HttpContext.Current.Request.Url.Authority + "/" + "~/Documents/" + custid + "/" + policynumber + "/" + filename + ".pdf";
+
+
+                        path = "~/Documents/" + custid + "/" + policynumber + "/" + filename + ".pdf";
+
 
                     }
 
-                }
-                if (vehcleId > 0)
-                {
-                    System.IO.File.WriteAllBytes(vehiclefolderpath + filename + ".pdf", memoryStream.ToArray());
-                }
-                else
-                {
-                    System.IO.File.WriteAllBytes(policyfolderpath + filename + ".pdf", memoryStream.ToArray());
+
+
                 }
 
+            }
+            catch (Exception ex)
+            {
 
             }
 
             sr.Close();
+
+            return path;
 
         }
 
@@ -267,9 +296,9 @@ namespace Insurance.Service
             string ReminderEmailPath = "/Views/Shared/EmaiTemplates/LoyaltyPoints.cshtml";
             string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(ReminderEmailPath));
             var body = EmailBody2.Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##CreditedWalletAmount##", Convert.ToString(loyaltyPoint)).Replace("##TotalWalletBalance##", Convert.ToString(TotalLoyaltyPoints));
+            var attacheMentPath = MiscellaneousService.EmailPdf(body, policy.CustomerId, policy.PolicyNumber, "Loyalty Points");
+            objEmailService.SendEmail(HttpContext.Current.User.Identity.Name, "", "", "Loyalty Reward | Points Credited to your Wallet", body, attacheMentPath);
 
-            objEmailService.SendEmail(HttpContext.Current.User.Identity.Name, "", "", "Loyalty Reward | Points Credited to your Wallet", body, null);
-            MiscellaneousService.EmailPdf(body, policy.CustomerId, policy.PolicyNumber, "Loyalty Points");
 
             return "";
         }

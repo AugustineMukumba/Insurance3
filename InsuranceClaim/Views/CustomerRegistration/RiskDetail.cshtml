@@ -1181,7 +1181,8 @@
                         var GovernmentLevy = policy.GovernmentLevy;
                         $("#ZTSCLevy").val(parseFloat(GovernmentLevy).toFixed(2));
                         var CoverAmount = policy.CoverAmount;
-                        $("#Premium").val(parseFloat(CoverAmount).toFixed(2));
+                        var calulatePremium = CoverAmount-data.Data.LoyaltyDiscount;
+                        $("#Premium").val(parseFloat(calulatePremium).toFixed(2));
                         $("#Discount").val(parseFloat(data.Data.LoyaltyDiscount).toFixed(2));
 
                         $("#basicPremiumICEcash").val(parseFloat(CoverAmount).toFixed(2))
@@ -1232,7 +1233,7 @@
     }
 
     function setPolicyEndDate(numberOfMonth) {
-        //debugger;
+        debugger;
         today = $('#datetimepicker1').data('DateTimePicker').date()._d;//new Date();
         today.setMonth(today.getMonth() + numberOfMonth);
 

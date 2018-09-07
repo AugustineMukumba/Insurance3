@@ -272,6 +272,7 @@
     <Content Include="Images\top-header-bg.png" />
     <Content Include="Images\visa.png" />
     <Content Include="Images\visa_images.jpg" />
+    <Content Include="LogFile.txt" />
     <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap.js" />
