@@ -1374,6 +1374,11 @@ namespace InsuranceClaim.Controllers
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             //json.Data = "";
 
+            try
+            {
+
+           
+
             Insurance.Service.ICEcashService ICEcashService = new Insurance.Service.ICEcashService();
             var tokenObject = new ICEcashTokenResponse();
 
@@ -1410,6 +1415,16 @@ namespace InsuranceClaim.Controllers
 
             json.Data = response;
 
+            }
+            catch (Exception ex)
+            {
+                response.message = "Error occured in api, please add registration number manually.";
+                response.result = 0;
+                json.Data = response;
+
+ 
+            }
+
             return json;
         }
 
@@ -1420,6 +1435,11 @@ namespace InsuranceClaim.Controllers
             JsonResult json = new JsonResult();
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             //json.Data = "";
+
+            try
+            {
+
+            
 
             Insurance.Service.ICEcashService ICEcashService = new Insurance.Service.ICEcashService();
             var tokenObject = new ICEcashTokenResponse();
@@ -1456,6 +1476,15 @@ namespace InsuranceClaim.Controllers
             }
 
             json.Data = response;
+
+            }
+            catch (Exception ex)
+            {
+
+
+                response.message = "Error occured.";
+            }
+
 
             return json;
         }

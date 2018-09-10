@@ -52,6 +52,12 @@ namespace Insurance.Service
         public ICEcashTokenResponse getToken()
         {
 
+            ICEcashTokenResponse json = null;
+            try
+            {
+
+           
+
             //string json = "%7B%20%20%20%22PartnerReference%22%3A%20%228eca64cb-ccf8-4304-a43f-a6eaef441918%22%2C%0A%20%20%20%20%22Date%22%3A%20%22201801080615165001%22%2C%0A%20%20%20%20%22Version%22%3A%20%222.0%22%2C%0A%20%20%20%20%22Request%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22Function%22%3A%20%22PartnerToken%22%7D%7D";
             //string PSK = "127782435202916376850511";
             string _json = "";//"{'PartnerReference':'" + Convert.ToString(Guid.NewGuid()) + "','Date':'" + DateTime.Now.ToString("yyyyMMddhhmmss") + "','Version':'2.0','Request':{'Function':'PartnerToken'}}";
@@ -102,9 +108,15 @@ namespace Insurance.Service
             request.AddParameter("application/x-www-form-urlencoded", jsonobject, ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
 
-            ICEcashTokenResponse json = JsonConvert.DeserializeObject<ICEcashTokenResponse>(response.Content);
+             json = JsonConvert.DeserializeObject<ICEcashTokenResponse>(response.Content);
 
             HttpContext.Current.Session["ICEcashToken"] = json;
+
+            }
+            catch (Exception ex)
+            {
+                json = new ICEcashTokenResponse() { Date = "", PartnerReference = "", Version = "", Response = new TokenReposone() { Result = "0", Message = "A Connection Error Occured ! Please add manually registration number", ExpireDate = "", Function = "", PartnerToken = "" } };
+            }
 
             return json;
         }
