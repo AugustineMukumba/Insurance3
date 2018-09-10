@@ -1266,7 +1266,11 @@ namespace InsuranceClaim.Controllers
 
                                 var attachementPath=    MiscellaneousService.EmailPdf(Body, policy.CustomerId, policy.PolicyNumber, "Reinsurance Case");
 
-                                    objEmailService.SendEmail(ZimnatEmail, "", "", "Reinsurance Case: " + policy.PolicyNumber.ToString(), Body, attachementPath);
+
+                                    List<string> attachements = new List<string>();
+                                    attachements.Add(attachementPath);
+
+                                    objEmailService.SendEmail(ZimnatEmail, "", "", "Reinsurance Case: " + policy.PolicyNumber.ToString(), Body, attachements);
                                     MailSent = true;
                                 }
                                 else
@@ -1292,8 +1296,9 @@ namespace InsuranceClaim.Controllers
 
                              var attacehMentFilePath=   MiscellaneousService.EmailPdf(Body, policy.CustomerId, policy.PolicyNumber, "Reinsurance Case");
 
-
-                                objEmailService.SendEmail(ZimnatEmail, "", "", "Reinsurance Case: " + policy.PolicyNumber.ToString(), Body, attacehMentFilePath);
+                                List<string> _attachements = new List<string>();
+                                _attachements.Add(attacehMentFilePath);
+                                objEmailService.SendEmail(ZimnatEmail, "", "", "Reinsurance Case: " + policy.PolicyNumber.ToString(), Body, _attachements);
                                 //MiscellaneousService.ScheduleMotorPdf(Body, policy.CustomerId, policy.PolicyNumber, "Reinsurance Case- " + policy.PolicyNumber.ToString(), item.VehicleId);
                             }
                         }

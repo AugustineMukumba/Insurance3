@@ -289,6 +289,7 @@
     <Content Include="fonts\fontawesome-webfont.woff2" />
     <Content Include="fonts\FontAwesome.otf" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Pdf\14809 Gene Insure Motor Policy Book.pdf" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\CustomerRegistration\CustomerRegistration.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

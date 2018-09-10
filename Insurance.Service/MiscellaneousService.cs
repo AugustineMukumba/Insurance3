@@ -296,8 +296,16 @@ namespace Insurance.Service
             string ReminderEmailPath = "/Views/Shared/EmaiTemplates/LoyaltyPoints.cshtml";
             string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(ReminderEmailPath));
             var body = EmailBody2.Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##CreditedWalletAmount##", Convert.ToString(loyaltyPoint)).Replace("##TotalWalletBalance##", Convert.ToString(TotalLoyaltyPoints));
+          
+           // var yAtter = "E:/Deepak/insuranceClaim10-9-2018/InsuranceClaim/Pdf";
             var attacheMentPath = MiscellaneousService.EmailPdf(body, policy.CustomerId, policy.PolicyNumber, "Loyalty Points");
-            objEmailService.SendEmail(HttpContext.Current.User.Identity.Name, "", "", "Loyalty Reward | Points Credited to your Wallet", body, attacheMentPath);
+
+            List<string> attachements = new List<string>();
+            attachements.Add(attacheMentPath);
+            
+
+
+       objEmailService.SendEmail(HttpContext.Current.User.Identity.Name, "", "", "Loyalty Reward | Points Credited to your Wallet", body, attachements);
 
 
             return "";
