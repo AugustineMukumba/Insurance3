@@ -1418,11 +1418,9 @@ namespace InsuranceClaim.Controllers
             }
             catch (Exception ex)
             {
-                response.message = "Error occured in api, please add registration number manually.";
+                response.message = "A Connection Error Occured, please add manually.";
                 response.result = 0;
                 json.Data = response;
-
- 
             }
 
             return json;

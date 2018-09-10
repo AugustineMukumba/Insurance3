@@ -1903,14 +1903,16 @@ namespace InsuranceClaim.Controllers
                     }
                 }
             }
-
-
-
-
-
-
-
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public ActionResult RenewPolicies(int policyId=0)
+        {
+
+
+
+            return View();
         }
 
 

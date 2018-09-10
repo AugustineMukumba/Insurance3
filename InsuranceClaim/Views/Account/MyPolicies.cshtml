@@ -83,10 +83,6 @@
 
                     @foreach (var item in Model.listpolicy.ToList())
                     {
-
-
-
-
                         <tr class="policynumber-tr">
 
                             <td>@item.PolicyNumber</td>
@@ -100,80 +96,95 @@
                                     <ul class="list-inline">
                                         <li>@Html.ActionLink("View Policy", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>
 
+                                    
+                                            @foreach (var _item in item.Vehicles)
+                                            {
+                                                if (DateTime.Now >= _item.RenewalDate &&  DateTime.Now >= _item.RenewalDate.AddDays(-21) )
+                                                {
+                                                    <li>@Html.ActionLink("Renew Policy", "RiskDetail", "Account", new { id = item.PolicyNumber }, new { @class = "btn-sm btn-primary" })</li>
+
+                                                    break;
+                                                }
+                                            }
+
+
+                                       
+
+
                                     </ul>
                                 </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td colspan="7">
-                                <table class="policy-table-grid policyList" style="width:100%">
-                                    <tr>
-                                        <th>Vehicle</th>
-                                        <th>Sum Insured</th>
-                                        <th>Auto-Fac Sum Insured</th>
-                                        <th>AutoFac Premium</th>
-                                        <th>Fac Sum Insured</th>
-                                        <th>Fac Premium</th>
-                                        <th>Reinsurance Broker Commission</th>
-                                        <th>Facultative Commission</th>
-                                        <th>Status</th>
-                                        <th>Actions(s)</th>
-                                    </tr>
-                                    @*@foreach (var _item in item.Vehicles)
-                                    {
+                        @*<tr>
+                                <td colspan="7">
+                                    <table class="policy-table-grid policyList" style="width:100%">
                                         <tr>
-                                            <td>@MiscellaneousService.GetMakeNamebyMakeCode(_item.MakeId)/@MiscellaneousService.GetModelNamebyModelCode(_item.ModelId)</td>
-                                            <td>$@_item.SumInsured</td>
-                                            <td>$@_item.AutoFacReinsuranceAmount</td>
-                                            <td>$@_item.AutoFacPremium</td>
-                                            <td>$@_item.FacReinsuranceAmount</td>
-                                            <td>$@_item.FacPremium</td>
-                                            <td>$@_item.BrokerCommission</td>
-                                            <td>$@_item.FacultativeCommission</td>
-
-
-                                            @if (_item.isLapsed)
-                                            {
-                                                <td>Lapsed</td>
-                                                <td></td>
-                                            }
-                                            else if (!_item.isActive)
-                                            {
-                                                <td>Disabled</td>
-                                                <td><button type="button" class="btn-sm btn-primary" onclick="javascript:confirm('In Progress !!');">Pay To Activate</button></td>
-                                            }
-                                            else if (DateTime.Now < _item.RenewalDate.AddDays(-21))
-                                            {
-                                                <td>In Force</td>
-
-                                                if (_item.BalanceAmount > 0.00m)
-                                                {
-                                                    <td><button type="button" class="btn-sm btn-danger" onclick="javascript: alert('Your Balance Amount is : $ @_item.BalanceAmount');">Pay Balance Amount</button><br /><br /><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
-                                                }
-                                                else
-                                                {
-                                                    <td><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
-                                                }
-
-                                            }
-                                            else if (DateTime.Now >= _item.RenewalDate.AddDays(-21) && DateTime.Now <= _item.RenewalDate)
-                                            {
-                                                <td>Renew</td>
-                                                <td>@Html.ActionLink("Pay Premium", "RiskDetail", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-danger", @style = "    width: 100%;    float: left;    text-align: center;" })<br /><br /><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
-
-                                            }
-                                            else if (DateTime.Now > _item.RenewalDate && _item.isLapsed != true)
-                                            {
-                                                <td>Lapsed</td>
-                                                <td>@Html.ActionLink("Renew", "RiskDetail", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-danger", @style = "    width: 100%;    float: left;    text-align: center;" })</td>
-                                            }
-
+                                            <th>Vehicle</th>
+                                            <th>Sum Insured</th>
+                                            <th>Auto-Fac Sum Insured</th>
+                                            <th>AutoFac Premium</th>
+                                            <th>Fac Sum Insured</th>
+                                            <th>Fac Premium</th>
+                                            <th>Reinsurance Broker Commission</th>
+                                            <th>Facultative Commission</th>
+                                            <th>Status</th>
+                                            <th>Actions(s)</th>
                                         </tr>
-                                    }*@
-                                </table>
-                            </td>
-                        </tr>
-                    }
+                                       @foreach (var _item in item.Vehicles)
+                                        {
+                                            <tr>
+                                                <td>@MiscellaneousService.GetMakeNamebyMakeCode(_item.MakeId)/@MiscellaneousService.GetModelNamebyModelCode(_item.ModelId)</td>
+                                                <td>$@_item.SumInsured</td>
+                                                <td>$@_item.AutoFacReinsuranceAmount</td>
+                                                <td>$@_item.AutoFacPremium</td>
+                                                <td>$@_item.FacReinsuranceAmount</td>
+                                                <td>$@_item.FacPremium</td>
+                                                <td>$@_item.BrokerCommission</td>
+                                                <td>$@_item.FacultativeCommission</td>
+
+
+                                                @if (_item.isLapsed)
+                                                {
+                                                    <td>Lapsed</td>
+                                                    <td></td>
+                                                }
+                                                else if (!_item.isActive)
+                                                {
+                                                    <td>Disabled</td>
+                                                    <td><button type="button" class="btn-sm btn-primary" onclick="javascript:confirm('In Progress !!');">Pay To Activate</button></td>
+                                                }
+                                                else if (DateTime.Now < _item.RenewalDate.AddDays(-21))
+                                                {
+                                                    <td>In Force</td>
+
+                                                    if (_item.BalanceAmount > 0.00m)
+                                                    {
+                                                        <td><button type="button" class="btn-sm btn-danger" onclick="javascript: alert('Your Balance Amount is : $ @_item.BalanceAmount');">Pay Balance Amount</button><br /><br /><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
+                                                    }
+
+                                                }
+                                                else if (DateTime.Now >= _item.RenewalDate.AddDays(-21) && DateTime.Now <= _item.RenewalDate)
+                                                {
+                                                    <td>Renew</td>
+                                                    <td>@Html.ActionLink("Pay Premium", "RiskDetail", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-danger", @style = "    width: 100%;    float: left;    text-align: center;" })<br /><br /><button type="button" class="btn-sm btn-primary" onclick="showPopuppDocument('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId')">View/Upload Document</button></td>
+
+                                                }
+                                                else if (DateTime.Now > _item.RenewalDate && _item.isLapsed != true)
+                                                {
+                                                    <td>Lapsed</td>
+                                                    <td>@Html.ActionLink("Renew", "RiskDetail", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-danger", @style = "    width: 100%;    float: left;    text-align: center;" })</td>
+                                                }
+
+                                            </tr>
+
+                                    </table>
+                                </td>
+                            </tr>*@
+                                            }
                 </tbody>
 
             </table>
@@ -431,7 +442,7 @@
         });
     }
 
-   
+
 
 </script>
 
