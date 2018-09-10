@@ -748,12 +748,12 @@
     $(document).ready(function () {      
 
         $("#datetimepicker2").datetimepicker({
-            format: 'MM/D/YYYY',
+            format: 'DD/MM/YYYY',
             minDate: new Date()
         });
 
         $("#datetimepicker1").datetimepicker({
-            format: 'MM/D/YYYY',
+            format: 'DD/MM/YYYY',
             minDate: new Date()
         }).on('dp.change', function (e) {
             var incrementDay = moment(new Date(e.date));
@@ -765,7 +765,7 @@
 
         var data= '@Model.isUpdate';
         if (data == 'True') {
-            $("#CoverEndDate").val('@(Model.CoverEndDate != null ? Model.CoverEndDate.Value.ToString("MM/dd/yyyy") : DateTime.Now.ToString("MM/dd/yyyy"))');
+            $("#CoverEndDate").val('@(Model.CoverEndDate != null ? Model.CoverEndDate.Value.ToString("dd/MM/yyyy") : DateTime.Now.ToString("dd/MM/yyyy"))');
         }
 
         $("#isVehicleRegisteredonICEcash").val(0);
@@ -796,7 +796,7 @@
         if (mm < 10) {
             mm = '0' + mm;
         }
-        var today = mm + '/' + dd + '/' + yyyy;
+        var today = dd + '/' + mm + '/' + yyyy;
 
         $("#CoverStartDate").val(today);
         $("#TransactionDate").val(today).css("background-color", "lightgray");
@@ -1259,7 +1259,7 @@
         if (mm < 10) {
             mm = '0' + mm;
         }
-        var today = mm + '/' + dd + '/' + yyyy;
+        var today = dd + '/' + mm + '/' + yyyy;
         $("#CoverEndDate").val(today);
         //debugger;
         var dateParts = today.split("/");
@@ -1275,7 +1275,7 @@
         if (mm < 10) {
             mm = '0' + mm;
         }
-        var today = mm + '/' + dd + '/' + yyyy;
+        var today = dd + '/' + mm + '/' + yyyy;
         $("#RenewalDate").val(today);
     }
 

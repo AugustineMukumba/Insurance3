@@ -820,7 +820,7 @@
         if (mm < 10) {
             mm = '0' + mm;
         }
-        var today = mm + '/' + dd + '/' + yyyy;
+        var today = dd + '/' + mm + '/' + yyyy;
 
         $("#CoverStartDate").val(today);
         $("#TransactionDate").val(today).css("background-color", "lightgray");
@@ -1089,7 +1089,7 @@
         if (mm < 10) {
             mm = '0' + mm;
         }
-        var today = mm + '/' + dd + '/' + yyyy;
+        var today = dd + '/' + mm + '/' + yyyy;
         $("#CoverEndDate").val(today);
         debugger;
         var dateParts = today.split("/");
@@ -1105,7 +1105,7 @@
         if (mm < 10) {
             mm = '0' + mm;
         }
-        var today = mm + '/' + dd + '/' + yyyy;
+        var today = dd + '/' + mm + '/' + yyyy;
         $("#RenewalDate").val(today);
     }
 
