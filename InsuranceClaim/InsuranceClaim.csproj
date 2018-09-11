@@ -419,6 +419,7 @@
     <Content Include="Views\Shared\EmaiTemplates\LoyaltyPoints.cshtml" />
     <Content Include="Views\ContactCentre\RiskDetail.cshtml" />
     <Content Include="Views\Report\LapsedPoliciesReport.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\QuotationEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
