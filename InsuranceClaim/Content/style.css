@@ -1221,6 +1221,20 @@ table.policy-table-grid {
     width: 100%;
 }
 
+.payment-card ul li {
+    background: #333;
+    text-align: center;
+    height: 34px;
+    line-height: 30px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    color: #fff;
+    padding: 0 15px;
+    font-size: 13px;
+    border: 2px solid #000;
+}
+
+
 /**15 june css end**/
 
 @media(max-width:767px) {

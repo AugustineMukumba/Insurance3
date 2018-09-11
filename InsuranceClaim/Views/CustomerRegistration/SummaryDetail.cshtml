@@ -172,16 +172,9 @@
                                     {
                                         <div class="row">
 
-                                            <div class="col-sm-6 col-md-6 form-group-select">
-                                                <div class="form-group">
-                                                    @Html.Label("Payment Type", new { @class = "gender-label" })
-                                                    <select id="PaymentMethodId" name="PaymentMethodId" class="form-control">
-                                                        <option value="1">Cash</option>
-                                                        <option value="2">Credit Card</option>
-                                                        <option value="3">PayNow</option>
-                                                    </select>
-                                                </div>
-                                            </div>
+                                            
+
+
                                             <div class="col-md-6 form-group-text">
                                                 <div class="form-group">
                                                     @Html.Label("Amount Due", new { @class = "gender-label" })
@@ -216,7 +209,7 @@
                                     {
                                         <div class="row">
 
-                                            <div class="col-sm-6 col-md-6 form-group-select">
+                                            @*<div class="col-sm-6 col-md-6 form-group-select">
 
                                                 <div class="form-group">
                                                     @Html.Label("Payment Type", new { @class = "gender-label" })
@@ -226,7 +219,7 @@
                                                         <option value="3">PayNow</option>
                                                     </select>
                                                 </div>
-                                            </div>
+                                            </div>*@
                                             <div class="col-md-6 form-group-text">
                                                 <div class="form-group">
                                                     @Html.Label("Amount Due", new { @class = "gender-label" })
@@ -346,6 +339,39 @@
                                         </div>
                                     </div>
 
+
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                            <div class="form-group">
+                                                @Html.Label("Payment Type", new { @class = "gender-label" })
+                                                @*<select id="PaymentMethodId" name="PaymentMethodId" class="form-control">
+                                                    <option value="1">Cash</option>
+                                                    <option value="2">Credit Card</option>
+                                                    <option value="3">PayNow</option>
+                                                </select>*@
+
+                                              @Html.HiddenFor(m => m.PaymentMethodId)
+                                                <div class="payment-card">
+                                                    <ul class="list-inline">
+                                                        <li onclick="PaymentMethod(1)"> Cash   </li>
+                                                        <li onclick="PaymentMethod(2)"> Credit Card </li>
+                                                        <li onclick="PaymentMethod(3)"> PayNow  </li>
+
+
+                                                    </ul>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                   
+
+
+
+
+
                                     <div class="row">
                                         <div class="col-md-12 next-btn">
                                             <div class="row">
@@ -376,6 +402,13 @@
 </div>
 @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
 <script>
+
+    function PaymentMethod(paymentMethod)
+    {
+        $("#PaymentMethodId").val(paymentMethod);
+    }
+
+
     function EditVehicleDetails(index) {
         var isUserStaff = '@User.IsInRole("Staff")';
         var redirecturl = "";
