@@ -626,7 +626,7 @@ namespace InsuranceClaim.Controllers
 
         }
 
-        public ActionResult SummaryDetail()
+        public ActionResult SummaryDetail(int summaryDetailId = 0)
         {
             if (Session["CustomerDataModal"] == null)
             {
@@ -650,9 +650,54 @@ namespace InsuranceClaim.Controllers
             {
                 return View(summarydetail);
             }
+
+
             var model = new SummaryDetailModel();
             var summary = new SummaryDetailService();
             var vehicle = (List<RiskDetailModel>)Session["VehicleDetails"];// summary.GetVehicleInformation(id);
+
+            List<RiskDetailModel> vehicleList = new List<RiskDetailModel>();
+            if (summaryDetailId != 0)
+            {
+                //vehicle = summary.GetVehicleInformation(id);
+                var summaryVichalList = InsuranceContext.SummaryVehicleDetails.All(where: $" SummaryDetailId='{summaryDetailId}'");
+
+                foreach (var item in summaryVichalList)
+                {
+                    var vehicleDetails = InsuranceContext.VehicleDetails.Single(where: $" Id='{item.Id}'");
+
+                    RiskDetailModel vehicleModel = new RiskDetailModel();
+
+                    vehicleModel.Premium = vehicleDetails.Premium;
+                    vehicleModel.ZTSCLevy = vehicleDetails.ZTSCLevy;
+                    vehicleModel.StampDuty = vehicleDetails.StampDuty;
+                    vehicleModel.IncludeRadioLicenseCost = vehicleDetails.IncludeRadioLicenseCost.Value;
+                    vehicleModel.RadioLicenseCost = vehicleDetails.RadioLicenseCost;
+                    vehicleModel.Discount = vehicleDetails.Discount;
+                    vehicleModel.SumInsured = vehicleDetails.SumInsured;
+                    vehicleModel.ExcessBuyBackAmount = vehicleDetails.ExcessBuyBackAmount;
+
+                    vehicleModel.MedicalExpensesAmount = vehicleDetails.MedicalExpensesAmount;
+                    vehicleModel.PassengerAccidentCoverAmount = vehicleDetails.PassengerAccidentCoverAmount;
+                    vehicleModel.RoadsideAssistanceAmount = vehicleDetails.RoadsideAssistanceAmount;
+
+                    vehicleModel.ExcessAmount = vehicleDetails.ExcessAmount;
+                    vehicleModel.PassengerAccidentCoverAmount = vehicleDetails.PassengerAccidentCoverAmount;
+                    vehicleModel.RoadsideAssistanceAmount = vehicleDetails.RoadsideAssistanceAmount;
+
+
+                    vehicleList.Add(vehicleModel);
+
+                }
+                vehicle = vehicleList;
+
+                Session["VehicleDetails"] = vehicle;
+
+            }
+
+
+
+          
             var DiscountSettings = InsuranceContext.Settings.Single(where: $"keyname='Discount On Renewal'");
             model.CarInsuredCount = vehicle.Count;
             model.DebitNote = "INV" + Convert.ToString(SummaryDetailServiceObj.getNewDebitNote());
@@ -1375,6 +1420,7 @@ namespace InsuranceClaim.Controllers
                         objEmailService.SendEmail(user.Email, "", "", "Quotation", Bodyy, _attachementss);
                         #endregion
 
+                        TempData["SucessMsg"] = "Qutation has been sent email sucessfully.";
                         return RedirectToAction("SummaryDetail");
                     }
 
