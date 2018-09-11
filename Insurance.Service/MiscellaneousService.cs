@@ -15,6 +15,7 @@ namespace Insurance.Service
 {
     public static class MiscellaneousService
     {
+
         public static void UpdateBalanceForVehicles(decimal amountPaid, int SummaryID, decimal totalPremium, bool isRenew, int renewVehicleID = 0)
         {
             List<SummaryVehicleDetail> _SummaryVehicleDetails = new List<SummaryVehicleDetail>();
@@ -240,7 +241,7 @@ namespace Insurance.Service
 
         }
 
-        public static string AddLoyaltyPoints(int CustomerId, int PolicyId, RiskDetailModel vehicle)
+        public static string AddLoyaltyPoints(int CustomerId, int PolicyId, RiskDetailModel vehicle, string email="")
         {
             var loaltyPointsSettings = InsuranceContext.Settings.Single(where: $"keyname='Points On Renewal'");
             var loyaltyPoint = 0.00m;
@@ -289,15 +290,34 @@ namespace Insurance.Service
             InsuranceContext.LoyaltyDetails.Insert(objLoyaltydetails);
 
             Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
+            bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             var policy = InsuranceContext.PolicyDetails.Single(PolicyId);
             var customer = InsuranceContext.Customers.Single(CustomerId);
-            var TotalLoyaltyPoints = InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={CustomerId}").Sum(x => x.PointsEarned);
+           
+  
 
+
+             var TotalLoyaltyPoints = InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={CustomerId}").Sum(x => x.PointsEarned);
             string ReminderEmailPath = "/Views/Shared/EmaiTemplates/LoyaltyPoints.cshtml";
             string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(ReminderEmailPath));
             var body = EmailBody2.Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##CreditedWalletAmount##", Convert.ToString(loyaltyPoint)).Replace("##TotalWalletBalance##", Convert.ToString(TotalLoyaltyPoints));
+            var yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
             var attacheMentPath = MiscellaneousService.EmailPdf(body, policy.CustomerId, policy.PolicyNumber, "Loyalty Points");
-            objEmailService.SendEmail(HttpContext.Current.User.Identity.Name, "", "", "Loyalty Reward | Points Credited to your Wallet", body, attacheMentPath);
+
+            List<string> attachements = new List<string>();
+            attachements.Add(attacheMentPath);
+            if (!userLoggedin)
+            {
+                attachements.Add(yAtter);
+                objEmailService.SendEmail(email, "", "", "Loyalty Reward | Points Credited to your Wallet", body, attachements);
+
+            }
+            else
+            {
+                objEmailService.SendEmail(HttpContext.Current.User.Identity.Name, "", "", "Loyalty Reward | Points Credited to your Wallet", body, attachements);
+
+            }
+
 
 
             return "";

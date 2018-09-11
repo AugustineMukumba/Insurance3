@@ -15,7 +15,7 @@ namespace Insurance.Service
     public class EmailService
     {
 
-        public void SendEmail(string pTo, string pCc, string pBcc, string pSubject, string pBody, string pAttachments)
+        public void SendEmail(string pTo, string pCc, string pBcc, string pSubject, string pBody, List<string> pAttachments)
         {
             try
             {
@@ -38,12 +38,18 @@ namespace Insurance.Service
                 _mailMessage.Subject = pSubject;
                 _mailMessage.IsBodyHtml = true;
 
-                if(!string.IsNullOrEmpty(pAttachments))
+                if(pAttachments!=null)
                 {
 
-                    System.Net.Mail.Attachment attachment;
-                    attachment = new System.Net.Mail.Attachment(System.Web.HttpContext.Current.Server.MapPath(pAttachments));
-                    _mailMessage.Attachments.Add(attachment);
+                    foreach(var item in pAttachments)
+                    {
+                        System.Net.Mail.Attachment attachment;
+                        attachment = new System.Net.Mail.Attachment(System.Web.HttpContext.Current.Server.MapPath(item.ToString()));
+                        _mailMessage.Attachments.Add(attachment);
+                    }
+
+
+                 
                 }
       
 

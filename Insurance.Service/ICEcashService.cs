@@ -115,7 +115,7 @@ namespace Insurance.Service
             }
             catch (Exception ex)
             {
-                json = new ICEcashTokenResponse() { Date = "", PartnerReference = "", Version = "", Response = new TokenReposone() { Result = "0", Message = "A Connection Error Occured ! Please add manually registration number", ExpireDate = "", Function = "", PartnerToken = "" } };
+                json = new ICEcashTokenResponse() { Date = "", PartnerReference = "", Version = "", Response = new TokenReposone() { Result = "0", Message = "A Connection Error Occured ! Please add manually", ExpireDate = "", Function = "", PartnerToken = "" } };
             }
 
             return json;
