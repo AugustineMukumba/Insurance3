@@ -610,6 +610,7 @@ namespace InsuranceClaim.Controllers
             var currency = InsuranceContext.Currencies.Single(policy.CurrencyId);
             var paymentInformations = InsuranceContext.PaymentInformations.SingleCustome(id);
             var user = UserManager.FindById(customer.UserID);
+        
             var DebitNote = summaryDetail.DebitNote;
             PaymentInformation objSaveDetailListModel = new PaymentInformation();
             objSaveDetailListModel.CurrencyId = policy.CurrencyId;
@@ -638,7 +639,7 @@ namespace InsuranceClaim.Controllers
                 var itemVehicle = InsuranceContext.VehicleDetails.Single(itemSummaryVehicleDetails.VehicleDetailsId);
                 //if (itemVehicle.CoverTypeId == Convert.ToInt32(eCoverType.ThirdParty))
                 //{
-                MiscellaneousService.AddLoyaltyPoints(summaryDetail.CustomerId.Value, policy.Id, Mapper.Map<VehicleDetail, RiskDetailModel>(itemVehicle));
+                MiscellaneousService.AddLoyaltyPoints(summaryDetail.CustomerId.Value, policy.Id, Mapper.Map<VehicleDetail, RiskDetailModel>(itemVehicle), user.Email);
                 //}
                 ListOfVehicles.Add(itemVehicle);
             }
@@ -682,7 +683,7 @@ namespace InsuranceClaim.Controllers
            
             #region Payment Email
             var attachementFile = MiscellaneousService.EmailPdf(Body2, policy.CustomerId, policy.PolicyNumber, "Reciept Payment");
-           
+            var yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
             #region Payment Email
             //objEmailService.SendEmail(User.Identity.Name, "", "", "Payment", Body2, attachementFile);
             #endregion
@@ -690,8 +691,12 @@ namespace InsuranceClaim.Controllers
 
             List<string> attachements = new List<string>();
             attachements.Add(attachementFile);
-           // attachements.Add(yAtter);
-            objEmailService.SendEmail(User.Identity.Name, "", "", "Payment", Body2, attachements);
+            if (!userLoggedin)
+            {
+                attachements.Add(yAtter);
+            }
+           
+            objEmailService.SendEmail(user.Email, "", "", "Payment", Body2, attachements);
             #endregion
 
             #region Send Payment SMS
@@ -713,7 +718,7 @@ namespace InsuranceClaim.Controllers
             #endregion
 
             #region Payment PDF
-            MiscellaneousService.EmailPdf(Body2, policy.CustomerId, policy.PolicyNumber, "Reciept Payment");
+            //MiscellaneousService.EmailPdf(Body2, policy.CustomerId, policy.PolicyNumber, "Reciept Payment");
             #endregion
             //}
 
@@ -771,12 +776,16 @@ namespace InsuranceClaim.Controllers
 
             #region Invoice PDF
             var attacehmetnFile=   MiscellaneousService.EmailPdf(Bodyy, policy.CustomerId, policy.PolicyNumber, "Schedule-motor");
-            var yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
+            var Atter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
 
             #endregion
             List<string> __attachements = new List<string>();
             __attachements.Add(attacehmetnFile);
-            __attachements.Add(yAtter);
+            if (!userLoggedin)
+            {
+                __attachements.Add(Atter);
+            }
+          
             #region Invoice EMail
             objEmailService.SendEmail(user.Email, "", "", "Schedule-motor", Bodyy, __attachements);
             #endregion
