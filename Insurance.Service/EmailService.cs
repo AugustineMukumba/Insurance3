@@ -40,7 +40,10 @@ namespace Insurance.Service
 
                 if(pAttachments!=null)
                 {
+                    if(pAttachments[0]!="")
+                    {
 
+                  
                     foreach(var item in pAttachments)
                     {
                         System.Net.Mail.Attachment attachment;
@@ -48,8 +51,8 @@ namespace Insurance.Service
                         _mailMessage.Attachments.Add(attachment);
                     }
 
+                    }
 
-                 
                 }
       
 
