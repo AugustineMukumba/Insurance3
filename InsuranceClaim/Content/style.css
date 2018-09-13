@@ -1222,16 +1222,17 @@ table.policy-table-grid {
 }
 
 .payment-card ul li {
-    background: #333;
+    background: #f58220;
     text-align: center;
     height: 34px;
     line-height: 30px;
     border-radius: 2px;
     text-transform: uppercase;
-    color: #fff;
+    color: #000;
+    cursor:pointer;
     padding: 0 15px;
     font-size: 13px;
-    border: 2px solid #000;
+    border: 2px solid #f58220;
 }
 
 

@@ -195,7 +195,7 @@
                                                     @Html.Label("Cover Start Date", new { @class = "gender-label" })
                                                     <div class='input-group' id='datetimepicker1'>
                                                         @Html.TextBoxFor(m => m.CoverStartDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Cover Start Date" })
-                                                        @Html.ValidationMessageFor(m => m.CoverEndDate, "", new { @class = "text-danger" })
+                                                        @Html.ValidationMessageFor(m => m.CoverStartDate, "", new { @class = "text-danger" })
                                                         <span class="input-group-addon">
                                                             <span class="glyphicon glyphicon-calendar"></span>
 
@@ -442,7 +442,7 @@
                                             <div class="col-sm-6 col-md-6 form-group-text">
                                                 <div class="form-group">
                                                     @Html.Label("Vehicle Licence Fee", new { @class = "gender-label" })
-                                                    @Html.TextBoxFor(x => x.VehicleLicenceFee, new { @class = "form-control inputDisabled", @autocomplete = "off", @placeholder = "Vehicle Licence Fee" })
+                                                    @Html.TextBoxFor(x => x.VehicleLicenceFee, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Licence Fee" })
                                                 </div>
                                             </div>
                                         </div>
@@ -822,13 +822,13 @@
     }
 
     $(document).ready(function () {
-
+ 
         $("#datetimepicker2").datetimepicker({
-            format: 'DD/MM/YYYY',
+            format: 'MM/D/YYYY',
             minDate: new Date()
         })
         $("#datetimepicker1").datetimepicker({
-            format: 'DD/MM/YYYY',
+            format: 'MM/D/YYYY',
             minDate: new Date()
         }).on('dp.change', function (e) {
             debugger;
@@ -841,7 +841,8 @@
 
         var data= '@Model.isUpdate';
         if (data == 'True') {
-            $("#CoverEndDate").val('@(Model.CoverEndDate != null ? Model.CoverEndDate.Value.ToString("dd/MM/yyyy") : DateTime.Now.ToString("dd/MM/yyyy"))');
+            $("#CoverEndDate").val('@(Model.CoverEndDate != null ? Model.CoverEndDate.Value.ToString("MM/dd/yyyy") : DateTime.Now.ToString("MM/dd/yyyy"))');
+
         }
 
         $("#isVehicleRegisteredonICEcash").val(0);
@@ -872,7 +873,7 @@
         if (mm < 10) {
             mm = '0' + mm;
         }
-        var today = dd + '/' + mm + '/' + yyyy;
+        var today = mm + '/' + dd + '/' + yyyy;
 
         $("#CoverStartDate").val(today);
         $("#TransactionDate").val(today).css("background-color", "lightgray");
@@ -1351,7 +1352,7 @@
         if (mm < 10) {
             mm = '0' + mm;
         }
-        var today = dd + '/' + mm + '/' + yyyy;
+        var today = mm + '/' + dd + '/' + yyyy;
         $("#CoverEndDate").val(today);
         //debugger;
         var dateParts = today.split("/");
@@ -1367,7 +1368,7 @@
         if (mm < 10) {
             mm = '0' + mm;
         }
-        var today = dd + '/' + mm + '/' + yyyy;
+        var today = mm + '/' + dd + '/' + yyyy;
         $("#RenewalDate").val(today);
     }
     //function setPolicyEndDate(numberOfMonth) {

@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
-    bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+    bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated && ViewBag.CurrentUserRole!="Staff";
 }
 
 <div class="top-banner-section">
@@ -104,8 +104,7 @@
                                             @Html.ValidationMessageFor(x => x.EmailAddress, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        
+                                    <div class="col-sm-6 col-md-6 form-group-text">                                        
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.PhoneNumber, new { @class = "gender-label" })
                                             @*@Html.TextBoxFor(x => x.CountryCode, new { @class = "form-control countrycode", @name = "CountryCode", @autocomplete = "off", @id = "CountryCode", @placeholder = "Code", @maxlength = "4" })*@
@@ -115,6 +114,8 @@
                                             @*@Html.ValidationMessageFor(x => x.CountryCode, "", new { @class = "text-danger" })*@
                                         </div>
                                     </div>
+
+
                                 </div>
                                             <div class="row">
                                                 <div class="col-md-6 form-group-text">

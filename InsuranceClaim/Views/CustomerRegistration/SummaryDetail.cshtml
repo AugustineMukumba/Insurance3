@@ -9,11 +9,7 @@
     {
         isUserStaff = true;
     }
-
-    
 }
-
-
 
 
 <div class="top-banner-section">
@@ -146,16 +142,16 @@
                                         <th>Basic Premium</th>
                                         <th>RADIO LICENCE FEE</th>
                                         <th>EXCESS</th>
-                                        <th>VEHICLE LICENCE FEE</th>                                     
-                                        <th> STAMP DUTY</th>    
-                                        <th> TOTAL</th>                                                                     
+                                        <th>VEHICLE LICENCE FEE</th>
+                                        <th> STAMP DUTY</th>
+                                        <th> TOTAL</th>
                                         <th style="text-align: center;">Option(s)</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
                                 @*<tfoot style="background: white;font-weight:bold;">
-                                    <tr><td colspan="4">Total Premium</td><td colspan="2" id="tdTotalPremium">0.00</td></tr>
-                                </tfoot>*@
+                                        <tr><td colspan="4">Total Premium</td><td colspan="2" id="tdTotalPremium">0.00</td></tr>
+                                    </tfoot>*@
                             </table>
                             <hr class="higlighter" />
                         </div>
@@ -174,7 +170,7 @@
                                     {
                                         <div class="row">
 
-                                            
+
 
 
                                             <div class="col-md-6 form-group-text">
@@ -213,15 +209,15 @@
 
                                             @*<div class="col-sm-6 col-md-6 form-group-select">
 
-                                                <div class="form-group">
-                                                    @Html.Label("Payment Type", new { @class = "gender-label" })
-                                                    <select id="PaymentMethodId" name="PaymentMethodId" class="form-control">
-                                                        <option value="1">Cash</option>
-                                                        <option value="2">Credit Card</option>
-                                                        <option value="3">PayNow</option>
-                                                    </select>
-                                                </div>
-                                            </div>*@
+                                                    <div class="form-group">
+                                                        @Html.Label("Payment Type", new { @class = "gender-label" })
+                                                        <select id="PaymentMethodId" name="PaymentMethodId" class="form-control">
+                                                            <option value="1">Cash</option>
+                                                            <option value="2">Credit Card</option>
+                                                            <option value="3">PayNow</option>
+                                                        </select>
+                                                    </div>
+                                                </div>*@
                                             <div class="col-md-6 form-group-text">
                                                 <div class="form-group">
                                                     @Html.Label("Amount Due", new { @class = "gender-label" })
@@ -347,15 +343,18 @@
                                             <div class="form-group">
                                                 @Html.Label("Payment Type", new { @class = "gender-label" })
                                                 @*<select id="PaymentMethodId" name="PaymentMethodId" class="form-control">
-                                                    <option value="1">Cash</option>
-                                                    <option value="2">Credit Card</option>
-                                                    <option value="3">PayNow</option>
-                                                </select>*@
+                                                        <option value="1">Cash</option>
+                                                        <option value="2">Credit Card</option>
+                                                        <option value="3">PayNow</option>
+                                                    </select>*@
 
-                                              @Html.HiddenFor(m => m.PaymentMethodId)
+                                                @Html.HiddenFor(m => m.PaymentMethodId)
+                                                @Html.HiddenFor(m => m.Id)
+                                                @Html.HiddenFor(m => m.CustomSumarryDetilId)
+
                                                 <div class="payment-card">
                                                     <ul class="list-inline">
-                                                        <li onclick="PaymentMethod(1)"> Cash   </li>
+                                                        <li onclick="PaymentMethod(1)">  Cash   </li>
                                                         <li onclick="PaymentMethod(2)"> Credit Card </li>
                                                         <li onclick="PaymentMethod(3)"> PayNow  </li>
 
@@ -364,11 +363,12 @@
                                                 </div>
 
 
+
                                             </div>
                                         </div>
                                     </div>
 
-                                   
+
 
 
 
@@ -379,27 +379,61 @@
                                             <div class="row">
                                                 <div class="col-sm-6 col-md-6">
                                                     <div class="text-left">
-                                                        <div class="back-left"><button type="button" onclick="gotoPeriviouse()" class="btn">Back</button></div>
+                                                        <div class="back-left"><button type="button" onclick="gotoPeriviouse();" class="btn">Back</button></div>
                                                         <a style="display:none" id="previouselink" href="/CustomerRegistration/RiskDetail" class="back"></a>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-6 col-md-6">
-                                                    <div class="text-right">
-                                                        <button type="submit" id="btnNext" onclick="return checkAmountPaid();" class="btn">Next</button>
-                                                        
+
+                                                @if (ViewBag.CurrentUserRole == "Staff" && ViewBag.SummaryDetailId == 0)
+                                                {
+                                                    <div class="col-sm-6 col-md-6">
+                                                        <br />
+                                                        <div class="text-right">
+                                                            <button type="submit" id="btnNext1" name="btnSendQuatation" value="sendQuatation" class="btn">Send Quotation</button>
+
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-sm-6 col-md-6">
-                                                    <div class="text-right">
-                                                        <button type="submit" id="btnNext1" name="btnSendQuatation" value="sendQuatation" class="btn">Send Quotation</button>
-                                                        
+                                                }
+                                                else
+                                                {
+
+                                                    <div class="col-sm-6 col-md-6">
+                                                        <div class="text-right">
+                                                            <button type="submit" id="btnNext" onclick="return checkAmountPaid();" class="btn">Next</button>
+
+                                                        </div>
                                                     </div>
-                                                </div>
-                                               
+
+
+
+                                                }
+
+
+
                                             </div>
+
+                                            @*@if (ViewBag.SummaryDetailId == 0)
+                                                {
+                                                    <div class="row">
+
+                                                        <div class="col-sm-6 col-md-6">
+                                                        </div>
+
+                                                        <div class="col-sm-6 col-md-6">
+                                                            <br />
+                                                            <div class="text-right">
+                                                                <button type="submit" id="btnNext1" name="btnSendQuatation" value="sendQuatation" class="btn">Send Quotation</button>
+
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                }*@
+
+
                                         </div>
                                     </div>
-                                   
+
                                 </div>
                             }
                         </div>
@@ -424,7 +458,8 @@
         var isUserStaff = '@User.IsInRole("Staff")';
         var redirecturl = "";
 
-        if (isUserStaff == "True") {
+        if(isUserStaff=='True')
+        {
             redirecturl = '@Url.Action("RiskDetail", "ContactCentre", new { id= 0 })';
         }
         else
@@ -459,10 +494,12 @@
     function getVehicleList() {
 
 
+        debugger;
 
         $.ajax({
             url: "@Url.Action("getVehicleList", "CustomerRegistration")",
             type: "GET",
+            data: { summaryDetailId: @ViewBag.SummaryDetailId },
             dataType: "json",
             success: function (result) {
                 var list = result;
@@ -490,7 +527,22 @@
         });
     }
     function gotoPeriviouse() {
-        $("#previouselink")[0].click();
+       // $("#previouselink")[0].click();
+
+        debugger;
+        var isUserStaff = '@User.IsInRole("Staff")';
+
+
+
+        if(isUserStaff=='True')
+        {
+            window.location.href  = '@Url.Action("RiskDetail", "ContactCentre", new { id= 0 })';
+        }
+        else
+        {
+            window.location.href = '@Url.Action("RiskDetail", "CustomerRegistration", new { id= 0 })';
+        }
+
 
     }
     function Replacable() {
@@ -527,6 +579,8 @@
             format: 'MM/D/YYYY',
             minDate: new Date()
         });
+
+
 
         getVehicleList();
 

@@ -30,7 +30,7 @@ namespace Insurance.Service
         public decimal QuaterlyRiskPremium { get; set; }
         public decimal Discount { get; set; }
 
-        public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType, eExcessType excessType, decimal excess, int PaymentTermid, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost, Boolean isVehicleRegisteredonICEcash, string BasicPremiumICEcash, string StampDutyICEcash, string ZTSCLevyICEcash)
+        public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType, eExcessType excessType, decimal excess, int PaymentTermid, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost, Boolean isVehicleRegisteredonICEcash, string BasicPremiumICEcash, string StampDutyICEcash, string ZTSCLevyICEcash, int ProductId=0)
         {
             var vehicleUsage = InsuranceContext.VehicleUsages.Single(vehicleUsageId);
             var Setting = InsuranceContext.Settings.All();
@@ -236,13 +236,14 @@ namespace Insurance.Service
             {
                 stampDuty = totalPremium + Convert.ToDecimal(StampDutySetting.value);
             }
-            
 
-            if (stampDuty > 2000000)
-            {
-                Status = false;
-                this.Message = "Stamp Duty must not exceed $2,000,000";
-            }
+
+            //if (stampDuty > 2000000)
+            //{
+            //    Status = false;
+            //    this.Message = "Stamp Duty must not exceed $2,000,000";
+            //}
+
 
             var ztscLevy = 0.00m;
             if (ZTSCLevySetting.ValueType == Convert.ToInt32(eSettingValueType.percentage))
@@ -263,6 +264,31 @@ namespace Insurance.Service
                 this.StamDuty = Math.Round(Convert.ToDecimal(StampDutyICEcash), 2);
                 this.ZtscLevy = Math.Round(Convert.ToDecimal(ZTSCLevyICEcash), 2);
             }
+
+
+            if ( !string.IsNullOrEmpty(StampDutyICEcash) &&   Convert.ToDecimal(StampDutyICEcash) > 100000)
+            {
+                this.StamDuty = 100000;
+            }
+
+            // if product "Private car"
+            if(ProductId==1)
+            {
+                if (!string.IsNullOrEmpty(ZTSCLevyICEcash) && Convert.ToDouble(ZTSCLevyICEcash) > 10.80)
+                {
+                    this.ZtscLevy = Math.Round(Convert.ToDecimal(10.80), 2);
+                }
+            }
+
+            if (ProductId == 3)
+            {
+                if (!string.IsNullOrEmpty(ZTSCLevyICEcash) &&  Convert.ToDouble(ZTSCLevyICEcash) > 22.00)
+                {
+                    this.ZtscLevy = Math.Round(Convert.ToDecimal(22.00), 2);;
+                }
+            }
+
+
 
             return this;
         }

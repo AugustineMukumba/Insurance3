@@ -634,15 +634,7 @@ namespace InsuranceClaim.Controllers
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
 
-            foreach (var itemSummaryVehicleDetails in SummaryVehicleDetails)
-            {
-                var itemVehicle = InsuranceContext.VehicleDetails.Single(itemSummaryVehicleDetails.VehicleDetailsId);
-                //if (itemVehicle.CoverTypeId == Convert.ToInt32(eCoverType.ThirdParty))
-                //{
-                MiscellaneousService.AddLoyaltyPoints(summaryDetail.CustomerId.Value, policy.Id, Mapper.Map<VehicleDetail, RiskDetailModel>(itemVehicle), user.Email);
-                //}
-                ListOfVehicles.Add(itemVehicle);
-            }
+            
 
             if (!userLoggedin)
             {
@@ -717,6 +709,17 @@ namespace InsuranceClaim.Controllers
 
             #endregion
 
+            foreach (var itemSummaryVehicleDetails in SummaryVehicleDetails)
+            {
+                var itemVehicle = InsuranceContext.VehicleDetails.Single(itemSummaryVehicleDetails.VehicleDetailsId);
+                //if (itemVehicle.CoverTypeId == Convert.ToInt32(eCoverType.ThirdParty))
+                //{
+                MiscellaneousService.AddLoyaltyPoints(summaryDetail.CustomerId.Value, policy.Id, Mapper.Map<VehicleDetail, RiskDetailModel>(itemVehicle), user.Email);
+                //}
+                ListOfVehicles.Add(itemVehicle);
+            }
+
+
             #region Payment PDF
             //MiscellaneousService.EmailPdf(Body2, policy.CustomerId, policy.PolicyNumber, "Reciept Payment");
             #endregion
@@ -758,7 +761,10 @@ namespace InsuranceClaim.Controllers
                 PassengerAccidentCoverAmount = PassengerAccidentCoverAmount + Convert.ToDecimal(item.PassengerAccidentCoverAmount);
                 ExcessAmount = ExcessAmount + Convert.ToDecimal(item.ExcessAmount);
 
-                Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + (item.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>$0.00</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Excess) + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
+                //Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + (item.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>$0.00</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Excess) + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
+                Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + vehicledescription + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>$" + item.SumInsured + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + (item.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>$0.00</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>$" + Convert.ToString(item.Excess) + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>$" + Convert.ToString(item.Premium) + "</font></td></tr>";
+
+
             }
             //for (int i = 0; i < SummaryVehicleDetails.Count; i++)
             //{
