@@ -13,6 +13,9 @@ using System.Configuration;
 using System.Globalization;
 using Insurance.Service;
 using System.Web.Configuration;
+using Newtonsoft.Json.Linq;
+using RestSharp;
+using Newtonsoft.Json;
 
 namespace InsuranceClaim.Controllers
 {
@@ -804,7 +807,7 @@ namespace InsuranceClaim.Controllers
             model.Discount = 0.00m;
             foreach (var item in vehicle)
             {
-                model.TotalPremium += item.Premium + item.ZTSCLevy + item.StampDuty;
+                model.TotalPremium += item.Premium + item.ZTSCLevy + item.StampDuty + item.VehicleLicenceFee;
                 if (item.IncludeRadioLicenseCost)
                 {
                     model.TotalPremium += item.RadioLicenseCost;
@@ -869,6 +872,16 @@ namespace InsuranceClaim.Controllers
             return new string(chars);
         }
 
+
+
+
+   
+
+
+
+
+
+
         [HttpPost]
         public async Task<ActionResult> SubmitPlan(SummaryDetailModel model, string btnSendQuatation = "")
         {
@@ -879,6 +892,23 @@ namespace InsuranceClaim.Controllers
                     //if (ModelState.IsValid && (model.AmountPaid >= model.MinAmounttoPaid && model.AmountPaid <= model.MaxAmounttoPaid))
                     if (ModelState.IsValid)
                     {
+
+
+                        List<RiskDetailModel> list = new List<RiskDetailModel>();
+                        string PartnerToken = "";
+
+                        if(Session["ICEcashToken"]!=null)
+                        {
+                            var tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+
+                            PartnerToken = tokenObject.Response.PartnerToken;
+                        }
+              
+
+
+                        ICEcashService.TPIQuoteUpdate(list, PartnerToken);
+
+
 
                         if (model.CustomSumarryDetilId != 0) // cehck if request is comming from agent email
                         {
@@ -903,7 +933,15 @@ namespace InsuranceClaim.Controllers
                         bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
                         var customer = (CustomerModel)Session["CustomerDataModal"];
 
-                        var role = UserManager.GetRoles(System.Web.HttpContext.Current.User.Identity.GetUserId()).FirstOrDefault();
+
+                        var role = "";
+
+                        if(System.Web.HttpContext.Current.User.Identity.GetUserId()!=null)
+                        {
+                            role = UserManager.GetRoles(System.Web.HttpContext.Current.User.Identity.GetUserId()).FirstOrDefault();
+
+                        }
+
 
                         //if user staff
 
@@ -926,14 +964,8 @@ namespace InsuranceClaim.Controllers
                                     customer.Id = customerDetials.Id;
                                 }
 
-                               
                             }
                         }
-
-
-
-
-
 
                         if (!userLoggedin)
                         {
@@ -1610,6 +1642,26 @@ namespace InsuranceClaim.Controllers
                             objEmailService.SendEmail(user.Email, "", "", "Quotation", Bodyy, _attachementss);
                             #endregion
 
+                            #region Send Quotation SMS
+                            Insurance.Service.smsService objsmsService = new Insurance.Service.smsService();
+
+                            string Recieptbody = "Hello " + customer.FirstName + "\nWelcome to GeneInsure. Please pay" + "\n$" + Convert.ToString(summaryDetail.AmountPaid) + " to this merchant code 249341 to activate your policy. You can use the shortcode *151*2*2*249341*<amount>#." + "\n" + "\nThank you.";
+                            var Recieptresult = await objsmsService.SendSMS(customer.CountryCode.Replace("+", "") + user.PhoneNumber, Recieptbody);
+
+                            SmsLog objRecieptsmslog = new SmsLog()
+                            {
+                                Sendto = user.PhoneNumber,
+                                Body = Recieptbody,
+                                Response = Recieptresult,
+                                CreatedBy = customer.Id,
+                                CreatedOn = DateTime.Now
+                            };
+
+                            InsuranceContext.SmsLogs.Insert(objRecieptsmslog);
+
+
+                            #endregion
+
                             TempData["SucessMsg"] = "Qutation has been sent email sucessfully.";
                             return RedirectToAction("SummaryDetail");
                         }
@@ -1714,8 +1766,9 @@ namespace InsuranceClaim.Controllers
                     if (IceDateNowtime> IceExpery)
                     {
                         ICEcashService.getToken();
-                        tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
                     }
+
+                    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
                 }
                 else
                 {
@@ -1796,8 +1849,9 @@ namespace InsuranceClaim.Controllers
                     if (IceExpery > IceDateNowtime)
                     {
                         ICEcashService.getToken();
-                        tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
                     }
+
+                    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
                 }
                 else
                 {

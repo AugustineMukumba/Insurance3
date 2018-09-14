@@ -301,6 +301,84 @@ namespace Insurance.Service
 
             return json;
         }
+
+
+        public static ResultRootObject TPIQuoteUpdate(List<RiskDetailModel> listofvehicles, string PartnerToken)
+        {
+            //string PSK = "127782435202916376850511";
+            string _json = "";
+
+            List<VehicleObject> obj = new List<VehicleObject>();
+
+            //   var CustomerInfo = (CustomerModel)HttpContext.Current.Session["CustomerDataModal"];
+
+            var CustomerInfo = InsuranceContext.Customers.Single(1170);
+
+            var item = InsuranceContext.VehicleDetails.Single(4497);
+
+           // obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 0, YearManufacture = 0, InsuranceType = 0, VehicleType = 0, TaxClass = 0, Make = "", Model = "", EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = "01" + CustomerInfo.PhoneNumber });
+
+            List<QuoteDetial> qut = new List<QuoteDetial>();
+
+           qut.Add(new QuoteDetial { InsuranceID="1", Status="1" });
+
+            var quotesDetial = new RequestTPIQuoteUpdate { Function= "TPIQuoteUpdate", PaymentMethod = "2", Identifier = "1", MSISDN= "263711231234", Quotes= qut };
+
+
+
+            QuoteArgumentsTPIQuote objArg = new QuoteArgumentsTPIQuote();
+            objArg.PartnerReference = Guid.NewGuid().ToString();
+            objArg.Date = DateTime.Now.ToString("yyyyMMddhhmmss");
+            objArg.Version = "2.0";
+            objArg.PartnerToken = PartnerToken;
+            objArg.Request = quotesDetial;
+
+
+
+              _json = Newtonsoft.Json.JsonConvert.SerializeObject(objArg);
+
+            //string  = json.Reverse()
+            string reversejsonString = new string(_json.Reverse().ToArray());
+            string reversepartneridString = new string(PSK.Reverse().ToArray());
+
+            string concatinatedString = reversejsonString + reversepartneridString;
+
+            byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(concatinatedString);
+
+            string returnValue = System.Convert.ToBase64String(toEncodeAsBytes);
+
+            string GetSHA512encrypted = SHA512(returnValue);
+
+            string MAC = "";
+
+            for (int i = 0; i < 16; i++)
+            {
+                MAC += GetSHA512encrypted.Substring((i * 8), 1);
+            }
+
+            MAC = MAC.ToUpper();
+
+            ICEQuoteRequestTPIQuote objroot = new ICEQuoteRequestTPIQuote();
+            objroot.Arguments = objArg;
+            objroot.MAC = MAC;
+            objroot.Mode = "SH";
+
+            var data = Newtonsoft.Json.JsonConvert.SerializeObject(objroot);
+
+            JObject jsonobject = JObject.Parse(data);
+
+            var client = new RestClient("http://api-test.icecash.com/request/20523588");
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("cache-control", "no-cache");
+            request.AddHeader("content-type", "application/x-www-form-urlencoded");
+            request.AddParameter("application/x-www-form-urlencoded", jsonobject, ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+
+            ResultRootObject json = JsonConvert.DeserializeObject<ResultRootObject>(response.Content);
+
+            return json;
+        }
+
     }
 
     public class Arguments
@@ -452,4 +530,42 @@ namespace Insurance.Service
         public string Version { get; set; }
         public ResultResponse Response { get; set; }
     }
+
+
+    public class RequestTPIQuoteUpdate
+    {
+        public string Function { get; set; }
+        public string PaymentMethod { get; set; }
+        public string Identifier { get; set; }
+        public string MSISDN { get; set; }
+        public List<QuoteDetial> Quotes { get; set; }
+    }
+    public class QuoteDetial
+    {
+        public string InsuranceID { get; set; }
+
+        public string Status { get; set; }
+
+    }
+
+
+
+    public class QuoteArgumentsTPIQuote
+    {
+        public string PartnerReference { get; set; }
+        public string Date { get; set; }
+        public string Version { get; set; }
+        public string PartnerToken { get; set; }
+        public RequestTPIQuoteUpdate Request { get; set; }
+    }
+
+
+    public class ICEQuoteRequestTPIQuote
+    {
+        public QuoteArgumentsTPIQuote Arguments { get; set; }
+        public string MAC { get; set; }
+        public string Mode { get; set; }
+    }
+
+
 }

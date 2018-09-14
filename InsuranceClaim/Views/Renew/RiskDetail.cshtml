@@ -1426,6 +1426,7 @@
         var IncludeRadioLicenseCost = $("#IncludeRadioLicenseCost").is(":checked");
         var policytermid = $("#PaymentTermId").val();
 
+        var ProductId =$("#ProductId").val();
 
         if (NumberofPersons == undefined || NumberofPersons == null || NumberofPersons == "") {
             NumberofPersons = 0;
@@ -1436,7 +1437,7 @@
         $.ajax({
             type: "POST",
             url: "@Url.Action("CalculatePremium", "CustomerRegistration")",
-            data: { vehicleUsageId: vehicleUsageId, sumInsured: sumInsured, coverType: coverType, excessType: excessType, excess: excess, AddThirdPartyAmount: AddThirdPartyAmount, NumberofPersons: NumberofPersons, Addthirdparty: Addthirdparty, PassengerAccidentCover: PassengerAccidentCover, ExcessBuyBack: ExcessBuyBack, RoadsideAssistance: RoadsideAssistance, MedicalExpenses: MedicalExpenses, RadioLicenseCost: RadioLicenseCost, IncludeRadioLicenseCost: IncludeRadioLicenseCost, policytermid: policytermid, isVehicleRegisteredonICEcash: $("#isVehicleRegisteredonICEcash").val() == "1", BasicPremium : $("#basicPremiumICEcash").val(),StampDuty : $("#stampDutyICEcash").val(), ZTSCLevy : $("#LevyICEcash").val() },
+            data: { vehicleUsageId: vehicleUsageId, sumInsured: sumInsured, coverType: coverType, excessType: excessType, excess: excess, AddThirdPartyAmount: AddThirdPartyAmount, NumberofPersons: NumberofPersons, Addthirdparty: Addthirdparty, PassengerAccidentCover: PassengerAccidentCover, ExcessBuyBack: ExcessBuyBack, RoadsideAssistance: RoadsideAssistance, MedicalExpenses: MedicalExpenses, RadioLicenseCost: RadioLicenseCost, IncludeRadioLicenseCost: IncludeRadioLicenseCost, policytermid: policytermid, isVehicleRegisteredonICEcash: $("#isVehicleRegisteredonICEcash").val() == "1", BasicPremium : $("#basicPremiumICEcash").val(),StampDuty : $("#stampDutyICEcash").val(), ZTSCLevy : $("#LevyICEcash").val(), ProductId: ProductId },
             success: function (data) {
                 debugger;
                 $("#Premium").val(parseFloat(data.Premium).toFixed(2));

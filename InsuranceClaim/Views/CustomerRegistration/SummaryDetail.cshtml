@@ -86,7 +86,7 @@
                                                 <div class="choose-plan-box active" planpurchase="1" style="cursor:pointer" onclick="SelectPlan(this);">
                                                     <h4>Annual</h4>
                                                     <div class="plan-white-box">
-                                                        <h3>$@Math.Round(Convert.ToDouble(item.Premium + item.StampDuty + item.ZTSCLevy + (Convert.ToBoolean(item.IncludeRadioLicenseCost) ? item.RadioLicenseCost : 0.00m)), 2)</h3>
+                                                        <h3>$@Math.Round(Convert.ToDouble(item.Premium + item.StampDuty + item.ZTSCLevy+ item.VehicleLicenceFee + (Convert.ToBoolean(item.IncludeRadioLicenseCost) ? item.RadioLicenseCost : 0.00m)), 2)</h3>
                                                         <p>Vehicle Model : @Insurance.Domain.InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription</p>
                                                         <a href="javascript:void(0);" style="pointer-events:none;">PAY FOR 12 MONTHS</a>
                                                     </div>
@@ -96,7 +96,7 @@
                                                 <div class="choose-plan-box" planpurchase="2" style="cursor:pointer" onclick="SelectPlan(this);">
                                                     <h4>Monthly</h4>
                                                     <div class="plan-white-box">
-                                                        <h3>$@Math.Round(Convert.ToDouble(item.Premium + item.StampDuty + item.ZTSCLevy + (Convert.ToBoolean(item.IncludeRadioLicenseCost) ? item.RadioLicenseCost : 0.00m)), 2)</h3>
+                                                        <h3>$@Math.Round(Convert.ToDouble(item.Premium + item.StampDuty + item.ZTSCLevy + item.VehicleLicenceFee + (Convert.ToBoolean(item.IncludeRadioLicenseCost) ? item.RadioLicenseCost : 0.00m)), 2)</h3>
                                                         <p>Vehicle Model : @Insurance.Domain.InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription</p>
                                                         <a href="javascript:void(0);" style="pointer-events:none;">PAY FOR 1 MONTHS</a>
                                                     </div>
@@ -108,7 +108,7 @@
                                                     <h4>Quarterly</h4>
                                                     <div class="plan-white-box">
                                                         @*<h3>$ @Math.Round(Convert.ToDouble(Model.TotalPremium)/4,2)</h3>*@
-                                                        <h3>$@Math.Round(Convert.ToDouble(item.Premium + item.StampDuty + item.ZTSCLevy + (Convert.ToBoolean(item.IncludeRadioLicenseCost) ? item.RadioLicenseCost : 0.00m)), 2)</h3>
+                                                        <h3>$@Math.Round(Convert.ToDouble(item.Premium + item.StampDuty + item.ZTSCLevy + item.VehicleLicenceFee + (Convert.ToBoolean(item.IncludeRadioLicenseCost) ? item.RadioLicenseCost : 0.00m)), 2)</h3>
                                                         <p>Vehicle Model : @Insurance.Domain.InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription</p>
                                                         <a href="javascript:void(0);" style="pointer-events:none;">PAY FOR 3 MONTHS</a>
                                                     </div>
@@ -119,7 +119,7 @@
                                                 <div class="choose-plan-box" planpurchase="4" style="cursor:pointer" onclick="SelectPlan(this);">
                                                     <h4>Termly</h4>
                                                     <div class="plan-white-box">
-                                                        <h3>$@Math.Round(Convert.ToDouble(item.Premium + item.StampDuty + item.ZTSCLevy + (Convert.ToBoolean(item.IncludeRadioLicenseCost) ? item.RadioLicenseCost : 0.00m)), 2)</h3>
+                                                        <h3>$@Math.Round(Convert.ToDouble(item.Premium + item.StampDuty + item.ZTSCLevy + item.VehicleLicenceFee + (Convert.ToBoolean(item.IncludeRadioLicenseCost) ? item.RadioLicenseCost : 0.00m)), 2)</h3>
                                                         <p>Vehicle Model : @Insurance.Domain.InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription</p>
                                                         <a href="javascript:void(0);" style="pointer-events:none;">PAY FOR 4 MONTHS</a>
                                                     </div>
