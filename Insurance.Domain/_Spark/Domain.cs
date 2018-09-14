@@ -240,6 +240,7 @@ namespace Insurance.Domain
         public bool? IsActive { get; set; }
         public DateTime? BalancePaidDate { get; set; }
         public string Notes { get; set; }
+        public bool isQuotation { get; set; }
     }
 
     public partial class VehicleDetail : Entity<VehicleDetail>

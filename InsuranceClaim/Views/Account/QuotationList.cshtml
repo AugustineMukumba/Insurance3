@@ -1,0 +1,89 @@
+﻿@using Insurance.Service;
+@model InsuranceClaim.Models.ListPolicy
+@{
+    ViewBag.Title = "QuotationList";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+}
+
+<div class="productsave-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
+                <div class="head-title">
+                    <h2>Quotation List</h2>
+                </div>
+            </div>
+        </div>
+ 
+
+
+        <br />
+        <br />
+        <div class="policy-table-grid-main">
+            <table class="table table-striped">
+
+                <tbody>
+
+                    @if (Model != null)
+                    {
+                        if (Model.listpolicy.Count == 0)
+                        {
+                            <label>No Quotation Found</label>
+                        }
+                    }
+
+                    <tr class="policyheading-tr">
+
+                        <th>Policy Number</th>
+                        <th>Customer Name</th>
+                        <th>Payment Method</th>
+                        <th>Total Sum Insured</th>
+                        <th>Total Premium</th>
+                        <th>Created On</th>
+                        @*<th>Action(s)</th>*@
+
+                    </tr>
+
+                    @foreach (var item in Model.listpolicy.ToList())
+                    {
+                        <tr class="policynumber-tr">
+
+                            <td>@item.PolicyNumber</td>
+                            <td>@MiscellaneousService.GetCustomerNamebyID(item.CustomerId)</td>
+                            <td>@MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId)</td>
+                            <td>$@item.TotalSumInsured</td>
+                            <td>$@item.TotalPremium</td>
+                            <td>@item.createdOn.ToString("dd-MM-yyyy")</td>
+                            @*<td>
+                                <div class="tbl-btn-list">
+                                    <ul class="list-inline">
+                                        <li>@Html.ActionLink("View Policy", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>
+
+
+                                        @foreach (var _item in item.Vehicles)
+                                        {
+                                            if (DateTime.Now >= _item.RenewalDate && DateTime.Now >= _item.RenewalDate.AddDays(-21))
+                                            {
+                                                <li>@Html.ActionLink("Renew Policy", "RiskDetail", "Account", new { id = item.PolicyNumber }, new { @class = "btn-sm btn-primary" })</li>
+
+                                                break;
+                                            }
+                                        }
+
+
+
+
+
+                                    </ul>
+                                </div>
+                            </td>*@
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</div>
+

@@ -37,6 +37,7 @@ namespace InsuranceClaim.Models
         public decimal? MinAmounttoPaid { get; set; }
         public DateTime BalancePaidDate { get; set; }
         public string Notes { get; set; }
+        public bool isQuotation { get; set; }
 
         public int CustomSumarryDetilId { get; set; }
 
