@@ -1013,9 +1013,28 @@ namespace InsuranceClaim.Controllers
             var tokenObject = new ICEcashTokenResponse();
 
             #region get ICE cash token
+            //if (Session["ICEcashToken"] != null)
+            //{
+            //    ICEcashService.getToken();
+            //    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+            //}
+            //else
+            //{
+            //    ICEcashService.getToken();
+            //    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+            //}
+
             if (Session["ICEcashToken"] != null)
             {
-                ICEcashService.getToken();
+                var icevalue = (ICEcashTokenResponse)Session["ICEcashToken"];
+                string format = "yyyyMMddHHmmss";
+                var IceDateNowtime = DateTime.Now;
+                var IceExpery = DateTime.ParseExact(icevalue.Response.ExpireDate, format, CultureInfo.InvariantCulture);
+                if (IceDateNowtime > IceExpery)
+                {
+                    ICEcashService.getToken();
+                }
+
                 tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
             }
             else
@@ -1023,6 +1042,9 @@ namespace InsuranceClaim.Controllers
                 ICEcashService.getToken();
                 tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
             }
+
+
+
             #endregion
 
             List<RiskDetailModel> objVehicles = new List<RiskDetailModel>();

@@ -39,6 +39,9 @@ namespace InsuranceClaim.Models
         public string Notes { get; set; }
 
         public int CustomSumarryDetilId { get; set; }
-    
+
+        public string InsuranceId { get; set; }
+
+
     }
 }

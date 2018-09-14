@@ -56,61 +56,61 @@ namespace Insurance.Service
             try
             {
 
-           
-
-            //string json = "%7B%20%20%20%22PartnerReference%22%3A%20%228eca64cb-ccf8-4304-a43f-a6eaef441918%22%2C%0A%20%20%20%20%22Date%22%3A%20%22201801080615165001%22%2C%0A%20%20%20%20%22Version%22%3A%20%222.0%22%2C%0A%20%20%20%20%22Request%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22Function%22%3A%20%22PartnerToken%22%7D%7D";
-            //string PSK = "127782435202916376850511";
-            string _json = "";//"{'PartnerReference':'" + Convert.ToString(Guid.NewGuid()) + "','Date':'" + DateTime.Now.ToString("yyyyMMddhhmmss") + "','Version':'2.0','Request':{'Function':'PartnerToken'}}";
-            Arguments objArg = new Arguments();
-            objArg.PartnerReference = Guid.NewGuid().ToString();
-            objArg.Date = DateTime.Now.ToString("yyyyMMddhhmmss");
-            objArg.Version = "2.0";
-            objArg.Request = new FunctionObject { Function = "PartnerToken" };
-
-            _json = Newtonsoft.Json.JsonConvert.SerializeObject(objArg);
-
-            //string  = json.Reverse()
-            string reversejsonString = new string(_json.Reverse().ToArray());
-            string reversepartneridString = new string(PSK.Reverse().ToArray());
-
-            string concatinatedString = reversejsonString + reversepartneridString;
-
-            byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(concatinatedString);
-
-            string returnValue = System.Convert.ToBase64String(toEncodeAsBytes);
-
-            string GetSHA512encrypted = SHA512(returnValue);
-
-            string MAC = "";
-
-            for (int i = 0; i < 16; i++)
-            {
-                MAC += GetSHA512encrypted.Substring((i * 8), 1);
-            }
-
-            MAC = MAC.ToUpper();
 
 
-            ICERootObject objroot = new ICERootObject();
-            objroot.Arguments = objArg;
-            objroot.MAC = MAC;
-            objroot.Mode = "SH";
+                //string json = "%7B%20%20%20%22PartnerReference%22%3A%20%228eca64cb-ccf8-4304-a43f-a6eaef441918%22%2C%0A%20%20%20%20%22Date%22%3A%20%22201801080615165001%22%2C%0A%20%20%20%20%22Version%22%3A%20%222.0%22%2C%0A%20%20%20%20%22Request%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22Function%22%3A%20%22PartnerToken%22%7D%7D";
+                //string PSK = "127782435202916376850511";
+                string _json = "";//"{'PartnerReference':'" + Convert.ToString(Guid.NewGuid()) + "','Date':'" + DateTime.Now.ToString("yyyyMMddhhmmss") + "','Version':'2.0','Request':{'Function':'PartnerToken'}}";
+                Arguments objArg = new Arguments();
+                objArg.PartnerReference = Guid.NewGuid().ToString();
+                objArg.Date = DateTime.Now.ToString("yyyyMMddhhmmss");
+                objArg.Version = "2.0";
+                objArg.Request = new FunctionObject { Function = "PartnerToken" };
 
-            var data = Newtonsoft.Json.JsonConvert.SerializeObject(objroot);
+                _json = Newtonsoft.Json.JsonConvert.SerializeObject(objArg);
+
+                //string  = json.Reverse()
+                string reversejsonString = new string(_json.Reverse().ToArray());
+                string reversepartneridString = new string(PSK.Reverse().ToArray());
+
+                string concatinatedString = reversejsonString + reversepartneridString;
+
+                byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(concatinatedString);
+
+                string returnValue = System.Convert.ToBase64String(toEncodeAsBytes);
+
+                string GetSHA512encrypted = SHA512(returnValue);
+
+                string MAC = "";
+
+                for (int i = 0; i < 16; i++)
+                {
+                    MAC += GetSHA512encrypted.Substring((i * 8), 1);
+                }
+
+                MAC = MAC.ToUpper();
 
 
-            JObject jsonobject = JObject.Parse(data);
+                ICERootObject objroot = new ICERootObject();
+                objroot.Arguments = objArg;
+                objroot.MAC = MAC;
+                objroot.Mode = "SH";
 
-            var client = new RestClient("http://api-test.icecash.com/request/20523588");
-            var request = new RestRequest(Method.POST);
-            request.AddHeader("cache-control", "no-cache");
-            request.AddHeader("content-type", "application/x-www-form-urlencoded");
-            request.AddParameter("application/x-www-form-urlencoded", jsonobject, ParameterType.RequestBody);
-            IRestResponse response = client.Execute(request);
+                var data = Newtonsoft.Json.JsonConvert.SerializeObject(objroot);
 
-             json = JsonConvert.DeserializeObject<ICEcashTokenResponse>(response.Content);
 
-            HttpContext.Current.Session["ICEcashToken"] = json;
+                JObject jsonobject = JObject.Parse(data);
+
+                var client = new RestClient("http://api-test.icecash.com/request/20523588");
+                var request = new RestRequest(Method.POST);
+                request.AddHeader("cache-control", "no-cache");
+                request.AddHeader("content-type", "application/x-www-form-urlencoded");
+                request.AddParameter("application/x-www-form-urlencoded", jsonobject, ParameterType.RequestBody);
+                IRestResponse response = client.Execute(request);
+
+                json = JsonConvert.DeserializeObject<ICEcashTokenResponse>(response.Content);
+
+                HttpContext.Current.Session["ICEcashToken"] = json;
 
             }
             catch (Exception ex)
@@ -303,7 +303,7 @@ namespace Insurance.Service
         }
 
 
-        public static ResultRootObject TPIQuoteUpdate(List<RiskDetailModel> listofvehicles, string PartnerToken)
+        public static ResultRootObject TPIQuoteUpdate(Customer customer, VehicleDetail vehicleDetail, string PartnerToken, int? paymentMethod)
         {
             //string PSK = "127782435202916376850511";
             string _json = "";
@@ -312,17 +312,17 @@ namespace Insurance.Service
 
             //   var CustomerInfo = (CustomerModel)HttpContext.Current.Session["CustomerDataModal"];
 
-            var CustomerInfo = InsuranceContext.Customers.Single(1170);
+            var CustomerInfo = customer;
 
-            var item = InsuranceContext.VehicleDetails.Single(4497);
+            var item = vehicleDetail;
 
-           // obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 0, YearManufacture = 0, InsuranceType = 0, VehicleType = 0, TaxClass = 0, Make = "", Model = "", EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = "01" + CustomerInfo.PhoneNumber });
+            // obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 0, YearManufacture = 0, InsuranceType = 0, VehicleType = 0, TaxClass = 0, Make = "", Model = "", EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = "01" + CustomerInfo.PhoneNumber });
 
             List<QuoteDetial> qut = new List<QuoteDetial>();
 
-           qut.Add(new QuoteDetial { InsuranceID="1", Status="1" });
+            qut.Add(new QuoteDetial { InsuranceID = item.InsuranceId, Status = "1" });
 
-            var quotesDetial = new RequestTPIQuoteUpdate { Function= "TPIQuoteUpdate", PaymentMethod = "2", Identifier = "1", MSISDN= "263711231234", Quotes= qut };
+            var quotesDetial = new RequestTPIQuoteUpdate { Function = "TPIQuoteUpdate", PaymentMethod = Convert.ToString(paymentMethod), Identifier = "1", MSISDN = "01" + CustomerInfo.PhoneNumber, Quotes = qut };
 
 
 
@@ -335,7 +335,7 @@ namespace Insurance.Service
 
 
 
-              _json = Newtonsoft.Json.JsonConvert.SerializeObject(objArg);
+            _json = Newtonsoft.Json.JsonConvert.SerializeObject(objArg);
 
             //string  = json.Reverse()
             string reversejsonString = new string(_json.Reverse().ToArray());
@@ -378,6 +378,82 @@ namespace Insurance.Service
 
             return json;
         }
+
+
+        public static ResultRootObject TPIPolicy(VehicleDetail vehicleDetail, string PartnerToken)
+        {
+            //string PSK = "127782435202916376850511";
+            string _json = "";
+
+            List<VehicleObject> obj = new List<VehicleObject>();
+
+            //   var CustomerInfo = (CustomerModel)HttpContext.Current.Session["CustomerDataModal"];
+
+
+            var item = vehicleDetail;
+
+            // obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 0, YearManufacture = 0, InsuranceType = 0, VehicleType = 0, TaxClass = 0, Make = "", Model = "", EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = "01" + CustomerInfo.PhoneNumber });
+
+            //List<QuoteDetial> qut = new List<QuoteDetial>();
+
+            TPIPolicyDetial qut = new TPIPolicyDetial  { InsuranceID = item.InsuranceId, Function= "TPIPolicy" };
+
+            // var quotesDetial = new RequestTPIQuoteUpdate { Function = "TPIQuoteUpdate", PaymentMethod = Convert.ToString(paymentMethod), Identifier = "1", MSISDN = "01" + CustomerInfo.PhoneNumber, Quotes = qut };
+
+
+
+            QuoteArgumentsTPIPolicy objArg = new QuoteArgumentsTPIPolicy();
+            objArg.PartnerReference = Guid.NewGuid().ToString();
+            objArg.Date = DateTime.Now.ToString("yyyyMMddhhmmss");
+            objArg.Version = "2.0";
+            objArg.PartnerToken = PartnerToken;
+            objArg.Request = qut;
+
+            _json = Newtonsoft.Json.JsonConvert.SerializeObject(objArg);
+
+            //string  = json.Reverse()
+            string reversejsonString = new string(_json.Reverse().ToArray());
+            string reversepartneridString = new string(PSK.Reverse().ToArray());
+
+            string concatinatedString = reversejsonString + reversepartneridString;
+
+            byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(concatinatedString);
+
+            string returnValue = System.Convert.ToBase64String(toEncodeAsBytes);
+
+            string GetSHA512encrypted = SHA512(returnValue);
+
+            string MAC = "";
+
+            for (int i = 0; i < 16; i++)
+            {
+                MAC += GetSHA512encrypted.Substring((i * 8), 1);
+            }
+
+            MAC = MAC.ToUpper();
+
+            ICEQuoteRequestTPIPolicy objroot = new ICEQuoteRequestTPIPolicy();
+            objroot.Arguments = objArg;
+            objroot.MAC = MAC;
+            objroot.Mode = "SH";
+
+            var data = Newtonsoft.Json.JsonConvert.SerializeObject(objroot);
+
+            JObject jsonobject = JObject.Parse(data);
+
+            var client = new RestClient("http://api-test.icecash.com/request/20523588");
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("cache-control", "no-cache");
+            request.AddHeader("content-type", "application/x-www-form-urlencoded");
+            request.AddParameter("application/x-www-form-urlencoded", jsonobject, ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+
+            ResultRootObject json = JsonConvert.DeserializeObject<ResultRootObject>(response.Content);
+
+            return json;
+        }
+
+
 
     }
 
@@ -452,6 +528,8 @@ namespace Insurance.Service
         public string Date { get; set; }
         public string Version { get; set; }
         public TokenReposone Response { get; set; }
+
+        public Quote Quotes { get; set; }
     }
     public class Quote
     {
@@ -563,6 +641,31 @@ namespace Insurance.Service
     public class ICEQuoteRequestTPIQuote
     {
         public QuoteArgumentsTPIQuote Arguments { get; set; }
+        public string MAC { get; set; }
+        public string Mode { get; set; }
+    }
+
+
+    public class TPIPolicyDetial
+    {
+        public string InsuranceID { get; set; }
+        public string Function { get; set; }
+    }
+
+
+    public class QuoteArgumentsTPIPolicy
+    {
+        public string PartnerReference { get; set; }
+        public string Date { get; set; }
+        public string Version { get; set; }
+        public string PartnerToken { get; set; }
+        public TPIPolicyDetial Request { get; set; }
+    }
+
+
+    public class ICEQuoteRequestTPIPolicy
+    {
+        public QuoteArgumentsTPIPolicy Arguments { get; set; }
         public string MAC { get; set; }
         public string Mode { get; set; }
     }

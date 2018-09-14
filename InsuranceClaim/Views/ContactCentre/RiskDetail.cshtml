@@ -85,6 +85,8 @@
                             @Html.Hidden("basicPremiumICEcash")
                             @Html.Hidden("stampDutyICEcash")
                             @Html.Hidden("LevyICEcash")
+
+                            @Html.HiddenFor(m => m.InsuranceId)
                         </div>
                         <div class="form-group-section">
                             <div class="form-title">
@@ -1277,6 +1279,7 @@
                         var calulatePremium = CoverAmount-data.Data.LoyaltyDiscount;
 
                         $("#Premium").val(parseFloat(calulatePremium).toFixed(2));
+                        $("#InsuranceId").val(data.Data.Response.Quotes[0].InsuranceID);
 
                         $("#basicPremiumICEcash").val(parseFloat(CoverAmount).toFixed(2));
 

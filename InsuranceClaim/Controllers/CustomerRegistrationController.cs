@@ -874,14 +874,6 @@ namespace InsuranceClaim.Controllers
 
 
 
-
-   
-
-
-
-
-
-
         [HttpPost]
         public async Task<ActionResult> SubmitPlan(SummaryDetailModel model, string btnSendQuatation = "")
         {
@@ -894,34 +886,96 @@ namespace InsuranceClaim.Controllers
                     {
 
 
+                        Insurance.Service.ICEcashService ICEcashService = new Insurance.Service.ICEcashService();
+
                         List<RiskDetailModel> list = new List<RiskDetailModel>();
                         string PartnerToken = "";
 
-                        if(Session["ICEcashToken"]!=null)
+
+
+                        #region update  TPIQuoteUpdate
+                        var customerDetails = new Customer();
+
+                        var policyDetils = new PolicyDetail();
+
+                        var customerEmail = "";
+                        var policyNum = "";
+                        var InsuranceID = "";
+                        var vichelDetails = new VehicleDetail();
+
+                        var summaryDetial = InsuranceContext.SummaryVehicleDetails.Single(where: $"SummaryDetailId = '" + model.CustomSumarryDetilId + "'");
+
+                        if(summaryDetial!=null)
                         {
-                            var tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                             vichelDetails = InsuranceContext.VehicleDetails.Single(summaryDetial.VehicleDetailsId);
+                            if(vichelDetails != null)
+                            {
+                                InsuranceID = vichelDetails.InsuranceId;
+
+                                 customerDetails = InsuranceContext.Customers.Single(vichelDetails.CustomerId);
+
+                                if(customerDetails != null)
+                                {
+                                    var _user = UserManager.FindById(customerDetails.UserID);
+
+                                    customerEmail = _user.Email;
+                                }
+
+                                 policyDetils = InsuranceContext.PolicyDetails.Single(vichelDetails.PolicyId);
+
+                                if(policyDetils!=null)
+                                {
+                                    policyNum = policyDetils.PolicyNumber;
+                                }
+                            }
+
+                            var tokenObject = new ICEcashTokenResponse();
+                            if (Session["ICEcashToken"] != null)
+                            {
+                                var icevalue = (ICEcashTokenResponse)Session["ICEcashToken"];
+                                string format = "yyyyMMddHHmmss";
+                                var IceDateNowtime = DateTime.Now;
+                                var IceExpery = DateTime.ParseExact(icevalue.Response.ExpireDate, format, CultureInfo.InvariantCulture);
+                                if (IceDateNowtime > IceExpery)
+                                {
+                                    ICEcashService.getToken();
+                                }
+
+                                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                            }
+                            else
+                            {
+                                ICEcashService.getToken();
+                                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                            }
+
 
                             PartnerToken = tokenObject.Response.PartnerToken;
+
+
+                            ICEcashService.TPIQuoteUpdate(customerDetails, vichelDetails, PartnerToken, model.PaymentMethodId);
+
+                            ICEcashService.TPIPolicy(vichelDetails, PartnerToken);
+
+
+                            if (model.CustomSumarryDetilId != 0) // cehck if request is comming from agent email
+                            {
+                                if (model.PaymentMethodId == 1)
+                                    return RedirectToAction("SaveDetailList", "Paypal", new { id = model.CustomSumarryDetilId });
+                                if (model.PaymentMethodId == 3)
+                                    return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policyNum, Email = customerEmail });
+                                else
+                                    return RedirectToAction("PaymentDetail", new { id = model.CustomSumarryDetilId });
+                            }
+
+
                         }
-              
 
 
-                        ICEcashService.TPIQuoteUpdate(list, PartnerToken);
+                        #endregion
 
 
-
-                        if (model.CustomSumarryDetilId != 0) // cehck if request is comming from agent email
-                        {
-
-                            if (model.PaymentMethodId == 1)
-                                return RedirectToAction("SaveDetailList", "Paypal", new { id = model.CustomSumarryDetilId });
-                            if (model.PaymentMethodId == 3)
-                                return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = "GMCC180000001-1", Email = "test1@test2.com" });
-                            else
-                                return RedirectToAction("PaymentDetail", new { id = model.CustomSumarryDetilId });
-                        }
-
-
+                        
 
 
                         #region Add All info to database
@@ -1598,6 +1652,13 @@ namespace InsuranceClaim.Controllers
 
 
                             var summaryDetail = InsuranceContext.SummaryDetails.Single(model.Id);
+
+                            if(summaryDetail!=null)
+                            {
+                                model.CustomSumarryDetilId = summaryDetail.Id;
+                            }
+
+                           
                             var customerQuotation = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
                             var user = UserManager.FindById(customerQuotation.UserID);
                             var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={model.Id}").ToList();
@@ -1667,6 +1728,88 @@ namespace InsuranceClaim.Controllers
                         }
 
                         #endregion
+
+
+
+
+
+                        #region update  TPIQuoteUpdate
+
+
+                         summaryDetial = InsuranceContext.SummaryVehicleDetails.Single(where: $"SummaryDetailId = '" + model.Id + "'");
+
+                        if (summaryDetial != null)
+                        {
+                            vichelDetails = InsuranceContext.VehicleDetails.Single(summaryDetial.VehicleDetailsId);
+                            if (vichelDetails != null)
+                            {
+                                InsuranceID = vichelDetails.InsuranceId;
+
+                                customerDetails = InsuranceContext.Customers.Single(vichelDetails.CustomerId);
+
+                                if (customerDetails != null)
+                                {
+                                    var _user = UserManager.FindById(customerDetails.UserID);
+
+                                    customerEmail = _user.Email;
+                                }
+
+                                policyDetils = InsuranceContext.PolicyDetails.Single(vichelDetails.PolicyId);
+
+                                if (policyDetils != null)
+                                {
+                                    policyNum = policyDetils.PolicyNumber;
+                                }
+                            }
+
+                            var tokenObject = new ICEcashTokenResponse();
+                            if (Session["ICEcashToken"] != null)
+                            {
+                                var icevalue = (ICEcashTokenResponse)Session["ICEcashToken"];
+                                string format = "yyyyMMddHHmmss";
+                                var IceDateNowtime = DateTime.Now;
+                                var IceExpery = DateTime.ParseExact(icevalue.Response.ExpireDate, format, CultureInfo.InvariantCulture);
+                                if (IceDateNowtime > IceExpery)
+                                {
+                                    ICEcashService.getToken();
+                                }
+
+                                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                            }
+                            else
+                            {
+                                ICEcashService.getToken();
+                                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                            }
+
+
+                            PartnerToken = tokenObject.Response.PartnerToken;
+
+
+                            ICEcashService.TPIQuoteUpdate(customerDetails, vichelDetails, PartnerToken, model.PaymentMethodId);
+
+                            ICEcashService.TPIPolicy(vichelDetails, PartnerToken);
+
+
+
+                            if (model.CustomSumarryDetilId != 0) // cehck if request is comming from agent email
+                            {
+                                if (model.PaymentMethodId == 1)
+                                    return RedirectToAction("SaveDetailList", "Paypal", new { id = model.CustomSumarryDetilId });
+                                if (model.PaymentMethodId == 3)
+                                    return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policyNum, Email = customerEmail });
+                                else
+                                    return RedirectToAction("PaymentDetail", new { id = model.CustomSumarryDetilId });
+                            }
+                        }
+
+
+                        #endregion
+
+
+
+
+
 
 
 
@@ -1846,7 +1989,7 @@ namespace InsuranceClaim.Controllers
 
                 if (Session["ICEcashToken"] != null)
                 {
-                    if (IceExpery > IceDateNowtime)
+                    if (IceDateNowtime >IceExpery)
                     {
                         ICEcashService.getToken();
                     }
