@@ -424,6 +424,7 @@
     <Content Include="Views\ContactCentre\RiskDetail.cshtml" />
     <Content Include="Views\Report\LapsedPoliciesReport.cshtml" />
     <Content Include="Views\Shared\EmaiTemplates\QuotationEmail.cshtml" />
+    <Content Include="Views\Account\QuotationList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

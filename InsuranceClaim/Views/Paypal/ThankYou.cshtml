@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Payment Confirmation";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+    var error = TempData["SucessMsg"];
 }
 
 <div class="top-banner-section">
@@ -55,7 +56,17 @@
     <br />
   
 </div>
+
 <script>
+    $(document).ready(function () {
+
+        if(@error=="Qutation has been sent email sucessfully."){
+            alert(@error);
+        }
+
+
+
+    });
     function saveAndRedirect() {
         window.location.href = "/InsuranceHome/Index";
         @*var isCheck = $(this).is(':checked');
