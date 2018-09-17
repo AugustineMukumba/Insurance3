@@ -1756,6 +1756,10 @@ namespace InsuranceClaim.Controllers
             {
                 ViewBag.RedirectedFrom = "PolicyList";
             }
+            else if (TempData["RedirectedFrom"] != null && Convert.ToString(TempData["RedirectedFrom"]) == "QuotationList")
+            {
+                ViewBag.RedirectedFrom = "QuotationList";
+            }
             else
             {
                 ViewBag.RedirectedFrom = "PolicyList";
@@ -2260,7 +2264,7 @@ namespace InsuranceClaim.Controllers
         {
 
 
-            TempData["RedirectedFrom"] = "MyPolicy";
+            TempData["RedirectedFrom"] = "QuotationList";
             Session["ViewlistVehicles"] = null;
             ListPolicy policylist = new ListPolicy();
             policylist.listpolicy = new List<PolicyListViewModel>();

@@ -1096,7 +1096,8 @@ namespace InsuranceClaim.Controllers
                             }
                             else
                             {
-                                var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+                                //  var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+                                var user = UserManager.FindByEmail(customer.EmailAddress);
                                 //var objCustomer = InsuranceContext.Customers.Single(where: $"Userid=@0", parms: new object[] { User.Identity.GetUserId() });
                                 var number = user.PhoneNumber;
                                 if (number != customer.PhoneNumber)
@@ -1104,7 +1105,8 @@ namespace InsuranceClaim.Controllers
                                     user.PhoneNumber = customer.PhoneNumber;
                                     UserManager.Update(user);
                                 }
-                                customer.UserID = User.Identity.GetUserId().ToString();
+                                // customer.UserID = User.Identity.GetUserId().ToString();
+                                customer.UserID = user.Id;
                                 var customerdata = Mapper.Map<CustomerModel, Customer>(customer);
                                 InsuranceContext.Customers.Update(customerdata);
                             }
@@ -1481,6 +1483,12 @@ namespace InsuranceClaim.Controllers
                                 {
                                     DbEntry.Notes = "";
                                 }
+
+                                if (!string.IsNullOrEmpty(btnSendQuatation))
+                                {
+                                    DbEntry.isQuotation = true;
+                                }
+
                                 InsuranceContext.SummaryDetails.Insert(DbEntry);
                                 model.Id = DbEntry.Id;
                                 Session["SummaryDetailed"] = model;
@@ -1671,7 +1679,10 @@ namespace InsuranceClaim.Controllers
 
                             string QuotationEmailPath = "/Views/Shared/EmaiTemplates/QuotationEmail.cshtml";
 
-                            string rootPath = HttpContext.Request.Url.Authority + "/CustomerRegistration/SummaryDetail?summaryDetailId=" + summaryDetail.Id;
+                            string urlPath = WebConfigurationManager.AppSettings["urlPath"];
+
+
+                            string rootPath = urlPath + "/CustomerRegistration/SummaryDetail?summaryDetailId=" + summaryDetail.Id;
 
 
 
@@ -1934,7 +1945,17 @@ namespace InsuranceClaim.Controllers
                     }
                     else
                     {
-                        response.Data = quoteresponse;
+                        // Handle excepton token expired
+                        if (quoteresponse.Response.Quotes[0].Message == "Partner Token has expired.")
+                        {
+                            response.message = "A Connection Error Occured, please add manually.";
+                            response.result = 0;
+                            json.Data = response;
+                        }
+                        else
+                        {
+                            response.Data = quoteresponse;
+                        }
                     }
                 }
 

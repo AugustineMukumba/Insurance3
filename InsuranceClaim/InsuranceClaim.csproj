@@ -275,6 +275,7 @@
     <Content Include="Images\maestro.png" />
     <Content Include="Images\mastercard.png" />
     <Content Include="Images\mastercard_images.jpg" />
+    <Content Include="Images\savers-moloko.jpg" />
     <Content Include="Images\Sort_both_small.png" />
     <Content Include="Images\top-header-bg.png" />
     <Content Include="Images\visa.png" />

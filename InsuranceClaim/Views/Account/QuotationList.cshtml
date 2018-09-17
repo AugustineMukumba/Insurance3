@@ -40,7 +40,7 @@
                         <th>Total Sum Insured</th>
                         <th>Total Premium</th>
                         <th>Created On</th>
-                        @*<th>Action(s)</th>*@
+                        <th>Action(s)</th>
 
                     </tr>
 
@@ -54,13 +54,13 @@
                             <td>$@item.TotalSumInsured</td>
                             <td>$@item.TotalPremium</td>
                             <td>@item.createdOn.ToString("dd-MM-yyyy")</td>
-                            @*<td>
+                            <td>
                                 <div class="tbl-btn-list">
                                     <ul class="list-inline">
-                                        <li>@Html.ActionLink("View Policy", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>
+                                        <li>@Html.ActionLink("View Quotation", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>
 
 
-                                        @foreach (var _item in item.Vehicles)
+                                        @*@foreach (var _item in item.Vehicles)
                                         {
                                             if (DateTime.Now >= _item.RenewalDate && DateTime.Now >= _item.RenewalDate.AddDays(-21))
                                             {
@@ -68,7 +68,7 @@
 
                                                 break;
                                             }
-                                        }
+                                        }*@
 
 
 
@@ -76,7 +76,7 @@
 
                                     </ul>
                                 </div>
-                            </td>*@
+                            </td>
                         </tr>
                     }
                 </tbody>

@@ -16,7 +16,11 @@ namespace Insurance.Service
 {
     public class ICEcashService
     {
-        public static string PSK = "127782435202916376850511";
+        //public static string PSK = "127782435202916376850511";
+        public static string SandboxIceCashApi = "http://api-test.icecash.com/request/20523588";
+
+        public static string PSK = "565205790573235453203546";
+        public static string LiveIceCashApi = "https://api.icecash.co.zw/request/20350763";
         private static string GetSHA512(string text)
         {
             UnicodeEncoding UE = new UnicodeEncoding();
@@ -101,7 +105,8 @@ namespace Insurance.Service
 
                 JObject jsonobject = JObject.Parse(data);
 
-                var client = new RestClient("http://api-test.icecash.com/request/20523588");
+                //  var client = new RestClient(SandboxIceCashApi);
+                var client = new RestClient(LiveIceCashApi);
                 var request = new RestRequest(Method.POST);
                 request.AddHeader("cache-control", "no-cache");
                 request.AddHeader("content-type", "application/x-www-form-urlencoded");
@@ -174,7 +179,8 @@ namespace Insurance.Service
 
             JObject jsonobject = JObject.Parse(data);
 
-            var client = new RestClient("http://api-test.icecash.com/request/20523588");
+            //  var client = new RestClient("http://api-test.icecash.com/request/20523588");
+            var client = new RestClient(LiveIceCashApi);
             var request = new RestRequest(Method.POST);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
@@ -240,7 +246,8 @@ namespace Insurance.Service
 
             JObject jsonobject = JObject.Parse(data);
 
-            var client = new RestClient("http://api-test.icecash.com/request/20523588");
+            //var client = new RestClient("http://api-test.icecash.com/request/20523588");
+            var client = new RestClient(LiveIceCashApi);
             var request = new RestRequest(Method.POST);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
@@ -367,7 +374,8 @@ namespace Insurance.Service
 
             JObject jsonobject = JObject.Parse(data);
 
-            var client = new RestClient("http://api-test.icecash.com/request/20523588");
+            // var client = new RestClient("http://api-test.icecash.com/request/20523588");
+            var client = new RestClient(LiveIceCashApi);
             var request = new RestRequest(Method.POST);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
@@ -441,7 +449,8 @@ namespace Insurance.Service
 
             JObject jsonobject = JObject.Parse(data);
 
-            var client = new RestClient("http://api-test.icecash.com/request/20523588");
+            //  var client = new RestClient("http://api-test.icecash.com/request/20523588");
+            var client = new RestClient(LiveIceCashApi);
             var request = new RestRequest(Method.POST);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("content-type", "application/x-www-form-urlencoded");

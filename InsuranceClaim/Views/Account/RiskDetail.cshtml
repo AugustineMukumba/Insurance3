@@ -684,7 +684,7 @@
                                                         </div>
                                                     </div>
                                                 }
-                                                else
+                                                else if (ViewBag.RedirectedFrom == "PolicyList")
                                                 {
                                                     <div class="col-sm-6 col-md-6">
                                                         <div class="text-left">
@@ -693,6 +693,17 @@
                                                         </div>
                                                     </div>
                                                 }
+                                                else if (ViewBag.RedirectedFrom == "QuotationList")
+                                                {
+                                                    <div class="col-sm-6 col-md-6">
+                                                        <div class="text-left">
+                                                            <div class="back-left"><button type="button" onclick="gotoQuotationList()" class="btn">Back to List</button></div>
+
+                                                        </div>
+                                                    </div>
+                                                }
+
+
 
 
                                                 <div class="col-sm-6 col-md-6">
@@ -732,6 +743,9 @@
 
     function gotoMyPolicyList() {
         location.href = '@Url.Action("MyPolicies", "Account", new { id=0 })';
+    }
+    function gotoQuotationList(){
+        location.href = '@Url.Action("QuotationList", "Account", new { id=0 })';
     }
 
     function cancelUpdate() {
@@ -820,7 +834,7 @@
         if (mm < 10) {
             mm = '0' + mm;
         }
-        var today = dd + '/' + mm + '/' + yyyy;
+        var today = mm + '/' + dd + '/' + yyyy;
 
         $("#CoverStartDate").val(today);
         $("#TransactionDate").val(today).css("background-color", "lightgray");
@@ -1089,7 +1103,7 @@
         if (mm < 10) {
             mm = '0' + mm;
         }
-        var today = dd + '/' + mm + '/' + yyyy;
+        var today = mm + '/' + dd + '/' + yyyy;
         $("#CoverEndDate").val(today);
         debugger;
         var dateParts = today.split("/");
@@ -1105,7 +1119,7 @@
         if (mm < 10) {
             mm = '0' + mm;
         }
-        var today = dd + '/' + mm + '/' + yyyy;
+        var today = mm + '/' + dd + '/' + yyyy;
         $("#RenewalDate").val(today);
     }
 
@@ -1226,8 +1240,6 @@
 
         }
     });
-
-
 
 
 
