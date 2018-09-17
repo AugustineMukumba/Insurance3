@@ -203,7 +203,7 @@ namespace InsuranceClaim.Controllers
                 Item item = new Item();
                 item.name = make.MakeDescription + "/" + _model.ModelDescription;
                 item.currency = "USD";
-                item.price = Convert.ToString((_vehicle.Premium + _vehicle.StampDuty + _vehicle.ZTSCLevy + (Convert.ToBoolean(_vehicle.IncludeRadioLicenseCost) ? _vehicle.RadioLicenseCost : 0.00m)) - _vehicle.BalanceAmount);
+                item.price = Convert.ToString((_vehicle.Premium + _vehicle.StampDuty + _vehicle.ZTSCLevy + _vehicle.VehicleLicenceFee + (Convert.ToBoolean(_vehicle.IncludeRadioLicenseCost) ? _vehicle.RadioLicenseCost : 0.00m)) - _vehicle.BalanceAmount);
                 item.quantity = "1";
                 item.sku = _vehicle.RegistrationNo;
 
@@ -641,11 +641,11 @@ namespace InsuranceClaim.Controllers
                 string emailTemplatePath = "/Views/Shared/EmaiTemplates/UserRegisteration.cshtml";
                 string EmailBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(emailTemplatePath));
                 var Body = EmailBody.Replace(" #PolicyNumber#", policy.PolicyNumber).Replace("#TodayDate#", DateTime.Now.ToShortDateString()).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Email#", user.Email).Replace("#change#", callbackUrl);
-                var _yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
+                //var _yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
                 var attachementFile1= MiscellaneousService.EmailPdf(Body, policy.CustomerId, policy.PolicyNumber, "WelCome Letter ");
                 List<string> _attachements = new List<string>();
                 _attachements.Add(attachementFile1);
-                _attachements.Add(_yAtter);
+                //_attachements.Add(_yAtter);
 
                 objEmailService.SendEmail(user.Email, "", "", "Account Creation", Body, _attachements);
               
@@ -675,7 +675,7 @@ namespace InsuranceClaim.Controllers
            
             #region Payment Email
             var attachementFile = MiscellaneousService.EmailPdf(Body2, policy.CustomerId, policy.PolicyNumber, "Reciept Payment");
-            var yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
+            //var yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
             #region Payment Email
             //objEmailService.SendEmail(User.Identity.Name, "", "", "Payment", Body2, attachementFile);
             #endregion
@@ -683,10 +683,10 @@ namespace InsuranceClaim.Controllers
 
             List<string> attachements = new List<string>();
             attachements.Add(attachementFile);
-            if (!userLoggedin)
-            {
-                attachements.Add(yAtter);
-            }
+            //if (!userLoggedin)
+            //{
+            //    attachements.Add(yAtter);
+            //}
            
             objEmailService.SendEmail(user.Email, "", "", "Payment", Body2, attachements);
             #endregion
@@ -791,7 +791,7 @@ namespace InsuranceClaim.Controllers
             {
                 __attachements.Add(Atter);
             }
-          
+
             #region Invoice EMail
             objEmailService.SendEmail(user.Email, "", "", "Schedule-motor", Bodyy, __attachements);
             #endregion

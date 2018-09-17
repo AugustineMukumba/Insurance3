@@ -1965,9 +1965,7 @@ namespace InsuranceClaim.Controllers
 
             if (summarydetail != null)
             {
-
-
-
+                
 
                 var model = Mapper.Map<SummaryDetail, SummaryDetailModel>(summarydetail);
                 model.CarInsuredCount = vehicle.Count;
@@ -1977,7 +1975,7 @@ namespace InsuranceClaim.Controllers
                 model.ReceiptNumber = "";
                 model.SMSConfirmation = false;
 
-                model.TotalPremium = vehicle.Sum(item => item.Premium + item.ZTSCLevy + item.StampDuty + (item.IncludeRadioLicenseCost ? item.RadioLicenseCost : 0.00m));// + vehicle.StampDuty + vehicle.ZTSCLevy;
+                model.TotalPremium = vehicle.Sum(item => item.Premium + item.ZTSCLevy + item.StampDuty + item.VehicleLicenceFee + (item.IncludeRadioLicenseCost ? item.RadioLicenseCost : 0.00m));// + vehicle.StampDuty + vehicle.ZTSCLevy;
                 model.TotalRadioLicenseCost = vehicle.Sum(item => item.RadioLicenseCost);
                 model.TotalStampDuty = vehicle.Sum(item => item.StampDuty);
                 model.TotalSumInsured = vehicle.Sum(item => item.SumInsured);
@@ -2263,14 +2261,29 @@ namespace InsuranceClaim.Controllers
         public ActionResult QuotationList()
         {
 
-
+            //bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
+            var role = UserManager.GetRoles(_User.Id.ToString()).FirstOrDefault();
             TempData["RedirectedFrom"] = "QuotationList";
             Session["ViewlistVehicles"] = null;
             ListPolicy policylist = new ListPolicy();
             policylist.listpolicy = new List<PolicyListViewModel>();
             var customerID = InsuranceContext.Customers.Single(where: $"userid='{User.Identity.GetUserId().ToString()}'").Id;
-            var SummaryList = InsuranceContext.SummaryDetails.All(where: $"customerid={customerID}").OrderByDescending(x => x.Id).ToList().Take(50);
+      
+            var SummaryList = new List<SummaryDetail>();
 
+
+
+            if (role == "Staff")
+            {
+               SummaryList = InsuranceContext.SummaryDetails.All(where: $"CreatedBy={customerID}").OrderByDescending(x => x.Id).ToList();
+
+            }
+            else
+            {
+                    SummaryList = InsuranceContext.SummaryDetails.All(where: $"customerid={customerID}").OrderByDescending(x => x.Id).ToList();
+
+            }
 
             foreach (var item in SummaryList)
             {

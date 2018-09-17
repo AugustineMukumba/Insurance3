@@ -301,23 +301,19 @@ namespace Insurance.Service
             string ReminderEmailPath = "/Views/Shared/EmaiTemplates/LoyaltyPoints.cshtml";
             string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(ReminderEmailPath));
             var body = EmailBody2.Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##CreditedWalletAmount##", Convert.ToString(loyaltyPoint)).Replace("##TotalWalletBalance##", Convert.ToString(TotalLoyaltyPoints));
-            var yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
+           // var yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
             var attacheMentPath = MiscellaneousService.EmailPdf(body, policy.CustomerId, policy.PolicyNumber, "Loyalty Points");
 
             List<string> attachements = new List<string>();
             attachements.Add(attacheMentPath);
-            if (!userLoggedin)
-            {
-                attachements.Add(yAtter);
-                objEmailService.SendEmail(email, "", "", "Loyalty Reward | Points Credited to your Wallet", body, attachements);
+            //if (!userLoggedin)
+            //{
+            //    attachements.Add(yAtter);
+            //    objEmailService.SendEmail(email, "", "", "Loyalty Reward | Points Credited to your Wallet", body, attachements);
 
-            }
-            else
-            {
+            //}
+            
                 objEmailService.SendEmail(HttpContext.Current.User.Identity.Name, "", "", "Loyalty Reward | Points Credited to your Wallet", body, attachements);
-
-            }
-
 
 
             return "";

@@ -1472,8 +1472,12 @@ namespace InsuranceClaim.Controllers
                             {
                                 //DbEntry.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
                                 //DbEntry.VehicleDetailId = vehicle[0].Id;
+                                bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+                                var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
+                                var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{User.Identity.GetUserId().ToString()}'").FirstOrDefault();
+                               
                                 DbEntry.CustomerId = vehicle[0].CustomerId;
-                                DbEntry.CreatedBy = customer.Id;
+                                DbEntry.CreatedBy = _customerData.Id;
                                 DbEntry.CreatedOn = DateTime.Now;
                                 if (DbEntry.BalancePaidDate.Value.Year == 0001)
                                 {
