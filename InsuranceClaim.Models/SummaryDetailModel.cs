@@ -43,6 +43,9 @@ namespace InsuranceClaim.Models
 
         public string InsuranceId { get; set; }
 
+     
+        public string InvoiceNumber { get; set; }
+
 
     }
 }

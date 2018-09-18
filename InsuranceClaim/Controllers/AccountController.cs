@@ -1996,33 +1996,93 @@ namespace InsuranceClaim.Controllers
         }
 
         [HttpGet]
-        public JsonResult DisablePolicy(int VehicleId)
+        public async Task<JsonResult> DisablePolicy(int VehicleId)
         {
             try
             {
-                var vehicle = InsuranceContext.VehicleDetails.Single(VehicleId);
-                vehicle.IsActive = false;
-                InsuranceContext.VehicleDetails.Update(vehicle);
+                var _vehicle = InsuranceContext.VehicleDetails.Single(VehicleId);
+                var costomerId = _vehicle.CustomerId;
+                var _customer = InsuranceContext.Customers.Single(costomerId);
+
+                Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
+                var policylist = InsuranceContext.PolicyDetails.Single(where: $"CustomerId = {_customer.Id}");
+                var _user = UserManager.FindById(_customer.UserID);
+
+                _vehicle.IsActive = false;
+
+                string DeActivePolicyPath = "/Views/Shared/EmaiTemplates/PolicyDeActivation.cshtml";
+                string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(DeActivePolicyPath));
+                var body = EmailBody2.Replace("##RenewDate##", _vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##FirstName##", _customer.FirstName).Replace("##LastName##", _customer.LastName).Replace("##Address1##", _customer.AddressLine1).Replace("##Address2##", _customer.AddressLine2).Replace("##PolicyNumber##", policylist.PolicyNumber).Replace("##RegistrationNo##", _vehicle.RegistrationNo);
+
+                objEmailService.SendEmail(_user.Email, "", "", "Policy DeActivation", body, null);
+
+
+                string Body = "Hello " + _customer.FirstName + "\nYour Policy Number " + policylist.PolicyNumber + " And Vehicle  " + _vehicle.RegistrationNo + " has been DeActivated ." + "\nThank you .";
+                var result = await objsmsService.SendSMS(_customer.Countrycode.Replace("+", "") + _user.PhoneNumber, Body);
+
+                SmsLog objsmslog = new SmsLog()
+                {
+                    Sendto = _user.PhoneNumber,
+                    Body = Body,
+                    Response = result,
+                    CreatedBy = _customer.Id,
+                    CreatedOn = DateTime.Now
+                };
+
+                InsuranceContext.SmsLogs.Insert(objsmslog);
+
+
+                InsuranceContext.VehicleDetails.Update(_vehicle);
                 return Json(true, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+
                 return Json(false, JsonRequestBehavior.AllowGet);
                 throw;
             }
 
         }
 
-        public JsonResult ActivateVehicle(int VehicleId)
+        public async Task<JsonResult> ActivateVehicle(int VehicleId)
         {
             try
             {
                 var vehicle = InsuranceContext.VehicleDetails.Single(VehicleId);
+                var _customerid = vehicle.CustomerId;
+                var customer = InsuranceContext.Customers.Single(_customerid);
+
+                Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
+                var policylist = InsuranceContext.PolicyDetails.Single(where: $"CustomerId = {customer.Id}");
+                var user = UserManager.FindById(customer.UserID);
+
+
                 vehicle.IsActive = true;
+
+                string ActivePolicyPath = "/Views/Shared/EmaiTemplates/PolicyActivation.cshtml";
+                string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(ActivePolicyPath));
+                var body = EmailBody2.Replace("##RenewDate##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##PolicyNumber##", policylist.PolicyNumber).Replace("##RegistrationNo##", vehicle.RegistrationNo);
+                objEmailService.SendEmail(user.Email, "", "", "Policy Activation", body, null);
+
+
+                string Body = "Hello " + customer.FirstName + "\nYour Policy Number " + policylist.PolicyNumber + " And Vehicle  " + vehicle.RegistrationNo + " has been Activated ." + "\nThank you .";
+                var result = await objsmsService.SendSMS(customer.Countrycode.Replace("+", "") + user.PhoneNumber, Body);
+
+                SmsLog objsmslog = new SmsLog()
+                {
+                    Sendto = user.PhoneNumber,
+                    Body = Body,
+                    Response = result,
+                    CreatedBy = customer.Id,
+                    CreatedOn = DateTime.Now
+                };
+
+                InsuranceContext.SmsLogs.Insert(objsmslog);
+
                 InsuranceContext.VehicleDetails.Update(vehicle);
                 return Json(true, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return Json(false, JsonRequestBehavior.AllowGet);
                 throw;

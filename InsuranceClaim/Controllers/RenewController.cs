@@ -1053,7 +1053,7 @@ namespace InsuranceClaim.Controllers
 
             if (tokenObject.Response.PartnerToken != "")
             {
-                ResultRootObject quoteresponse = ICEcashService.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken);
+                ResultRootObject quoteresponse = ICEcashService.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
                 response.result = quoteresponse.Response.Result;
                 if (response.result == 0)
                 {
@@ -1100,7 +1100,7 @@ namespace InsuranceClaim.Controllers
 
             if (tokenObject.Response.PartnerToken != "")
             {
-                ResultRootObject quoteresponse = ICEcashService.RequestQuote(tokenObject.Response.PartnerToken, regNo, SumInsured, make, model, Convert.ToInt32(PaymentTerm), VehicleYear, CoverTypeId, VehicleUsage);
+                ResultRootObject quoteresponse = ICEcashService.RequestQuote(tokenObject.Response.PartnerToken, regNo, SumInsured, make, model, Convert.ToInt32(PaymentTerm), VehicleYear, CoverTypeId, VehicleUsage, tokenObject.PartnerReference);
                 response.result = quoteresponse.Response.Result;
                 if (response.result == 0)
                 {

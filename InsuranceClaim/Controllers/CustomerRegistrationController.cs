@@ -797,7 +797,18 @@ namespace InsuranceClaim.Controllers
             var DiscountSettings = InsuranceContext.Settings.Single(where: $"keyname='Discount On Renewal'");
             model.CarInsuredCount = vehicle.Count;
             model.DebitNote = "INV" + Convert.ToString(SummaryDetailServiceObj.getNewDebitNote());
-            model.PaymentMethodId = 1;
+
+            //default selection 
+            if (User.IsInRole("Staff"))
+            {
+                model.PaymentMethodId = 1;
+            }
+            else
+            {
+                model.PaymentMethodId = 2;
+            }
+
+
             model.PaymentTermId = 1;
             model.ReceiptNumber = "";
             model.SMSConfirmation = false;
@@ -882,6 +893,20 @@ namespace InsuranceClaim.Controllers
                 if (model != null)
                 {
                     //if (ModelState.IsValid && (model.AmountPaid >= model.MinAmounttoPaid && model.AmountPaid <= model.MaxAmounttoPaid))
+
+                    if (User.IsInRole("Staff") && model.PaymentMethodId==1)
+                    {
+                        //  ModelState.Remove("InvoiceNumber");
+                        if(model.InvoiceNumber=="")
+                        {
+                            TempData["ErroMsg"] = "Please enter invoice number.";
+                            return RedirectToAction("SummaryDetail");
+                        }
+
+                        
+                    }
+
+
                     if (ModelState.IsValid)
                     {
 
@@ -905,25 +930,25 @@ namespace InsuranceClaim.Controllers
 
                         var summaryDetial = InsuranceContext.SummaryVehicleDetails.Single(where: $"SummaryDetailId = '" + model.CustomSumarryDetilId + "'");
 
-                        if(summaryDetial!=null)
+                        if (summaryDetial != null)
                         {
-                             vichelDetails = InsuranceContext.VehicleDetails.Single(summaryDetial.VehicleDetailsId);
-                            if(vichelDetails != null)
+                            vichelDetails = InsuranceContext.VehicleDetails.Single(summaryDetial.VehicleDetailsId);
+                            if (vichelDetails != null)
                             {
                                 InsuranceID = vichelDetails.InsuranceId;
 
-                                 customerDetails = InsuranceContext.Customers.Single(vichelDetails.CustomerId);
+                                customerDetails = InsuranceContext.Customers.Single(vichelDetails.CustomerId);
 
-                                if(customerDetails != null)
+                                if (customerDetails != null)
                                 {
                                     var _user = UserManager.FindById(customerDetails.UserID);
 
                                     customerEmail = _user.Email;
                                 }
 
-                                 policyDetils = InsuranceContext.PolicyDetails.Single(vichelDetails.PolicyId);
+                                policyDetils = InsuranceContext.PolicyDetails.Single(vichelDetails.PolicyId);
 
-                                if(policyDetils!=null)
+                                if (policyDetils != null)
                                 {
                                     policyNum = policyDetils.PolicyNumber;
                                 }
@@ -975,7 +1000,7 @@ namespace InsuranceClaim.Controllers
                         #endregion
 
 
-                        
+
 
 
                         #region Add All info to database
@@ -990,7 +1015,7 @@ namespace InsuranceClaim.Controllers
 
                         var role = "";
 
-                        if(System.Web.HttpContext.Current.User.Identity.GetUserId()!=null)
+                        if (System.Web.HttpContext.Current.User.Identity.GetUserId() != null)
                         {
                             role = UserManager.GetRoles(System.Web.HttpContext.Current.User.Identity.GetUserId()).FirstOrDefault();
 
@@ -1013,7 +1038,7 @@ namespace InsuranceClaim.Controllers
 
                                 var customerDetials = InsuranceContext.Customers.Single(where: $"UserID = '" + user.Id + "'");
 
-                                if(customerDetials!=null)
+                                if (customerDetials != null)
                                 {
                                     customer.Id = customerDetials.Id;
                                 }
@@ -1472,10 +1497,11 @@ namespace InsuranceClaim.Controllers
                             {
                                 //DbEntry.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
                                 //DbEntry.VehicleDetailId = vehicle[0].Id;
-                                bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-                                var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
-                                var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{User.Identity.GetUserId().ToString()}'").FirstOrDefault();
-                               
+                                //  bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+
+                                var _User = UserManager.FindByEmail(customer.EmailAddress);
+                                var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{_User.Id}'").FirstOrDefault();
+
                                 DbEntry.CustomerId = vehicle[0].CustomerId;
                                 DbEntry.CreatedBy = _customerData.Id;
                                 DbEntry.CreatedOn = DateTime.Now;
@@ -1665,12 +1691,12 @@ namespace InsuranceClaim.Controllers
 
                             var summaryDetail = InsuranceContext.SummaryDetails.Single(model.Id);
 
-                            if(summaryDetail!=null)
+                            if (summaryDetail != null)
                             {
                                 model.CustomSumarryDetilId = summaryDetail.Id;
                             }
 
-                           
+
                             var customerQuotation = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
                             var user = UserManager.FindById(customerQuotation.UserID);
                             var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={model.Id}").ToList();
@@ -1751,7 +1777,7 @@ namespace InsuranceClaim.Controllers
                         #region update  TPIQuoteUpdate
 
 
-                         summaryDetial = InsuranceContext.SummaryVehicleDetails.Single(where: $"SummaryDetailId = '" + model.Id + "'");
+                        summaryDetial = InsuranceContext.SummaryVehicleDetails.Single(where: $"SummaryDetailId = '" + model.Id + "'");
 
                         if (summaryDetial != null)
                         {
@@ -1797,14 +1823,9 @@ namespace InsuranceClaim.Controllers
                                 tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
                             }
 
-
                             PartnerToken = tokenObject.Response.PartnerToken;
-
-
                             ICEcashService.TPIQuoteUpdate(customerDetails, vichelDetails, PartnerToken, model.PaymentMethodId);
-
                             ICEcashService.TPIPolicy(vichelDetails, PartnerToken);
-
 
 
                             if (model.CustomSumarryDetilId != 0) // cehck if request is comming from agent email
@@ -1822,14 +1843,8 @@ namespace InsuranceClaim.Controllers
                         #endregion
 
 
-
-
-
-
-
-
                         if (model.PaymentMethodId == 1)
-                            return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id });
+                            return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id, invoiceNumer= model.InvoiceNumber });
                         if (model.PaymentMethodId == 3)
                             return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
                         else
@@ -1848,7 +1863,7 @@ namespace InsuranceClaim.Controllers
             }
             catch (Exception ex)
             {
-                return View(model);
+                return RedirectToAction("SummaryDetail");
             }
         }
 
@@ -1921,7 +1936,7 @@ namespace InsuranceClaim.Controllers
                     string format = "yyyyMMddHHmmss";
                     var IceDateNowtime = DateTime.Now;
                     var IceExpery = DateTime.ParseExact(icevalue.Response.ExpireDate, format, CultureInfo.InvariantCulture);
-                    if (IceDateNowtime> IceExpery)
+                    if (IceDateNowtime > IceExpery)
                     {
                         ICEcashService.getToken();
                     }
@@ -1941,7 +1956,7 @@ namespace InsuranceClaim.Controllers
 
                 if (tokenObject.Response.PartnerToken != "")
                 {
-                    ResultRootObject quoteresponse = ICEcashService.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken);
+                    ResultRootObject quoteresponse = ICEcashService.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
                     response.result = quoteresponse.Response.Result;
                     if (response.result == 0)
                     {
@@ -2014,7 +2029,7 @@ namespace InsuranceClaim.Controllers
 
                 if (Session["ICEcashToken"] != null)
                 {
-                    if (IceDateNowtime >IceExpery)
+                    if (IceDateNowtime > IceExpery)
                     {
                         ICEcashService.getToken();
                     }
@@ -2039,7 +2054,7 @@ namespace InsuranceClaim.Controllers
 
                 if (tokenObject.Response.PartnerToken != "")
                 {
-                    ResultRootObject quoteresponse = ICEcashService.RequestQuote(tokenObject.Response.PartnerToken, regNo, SumInsured, make, model, Convert.ToInt32(PaymentTerm), VehicleYear, CoverTypeId, VehicleUsage);
+                    ResultRootObject quoteresponse = ICEcashService.RequestQuote(tokenObject.Response.PartnerToken, regNo, SumInsured, make, model, Convert.ToInt32(PaymentTerm), VehicleYear, CoverTypeId, VehicleUsage, tokenObject.PartnerReference);
                     response.result = quoteresponse.Response.Result;
                     if (response.result == 0)
                     {

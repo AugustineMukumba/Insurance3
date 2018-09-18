@@ -16,8 +16,8 @@ namespace Insurance.Service
 {
     public class ICEcashService
     {
-        //public static string PSK = "127782435202916376850511";
-        public static string SandboxIceCashApi = "http://api-test.icecash.com/request/20523588";
+      // public static string PSK = "127782435202916376850511";
+      //  public static string SandboxIceCashApi = "http://api-test.icecash.com/request/20523588";
 
         public static string PSK = "565205790573235453203546";
         public static string LiveIceCashApi = "https://api.icecash.co.zw/request/20350763";
@@ -126,7 +126,7 @@ namespace Insurance.Service
             return json;
         }
 
-        public ResultRootObject checkVehicleExists(List<RiskDetailModel> listofvehicles, string PartnerToken)
+        public ResultRootObject checkVehicleExists(List<RiskDetailModel> listofvehicles, string PartnerToken, string PartnerReference)
         {
             //string PSK = "127782435202916376850511";
             string _json = "";
@@ -192,7 +192,7 @@ namespace Insurance.Service
             return json;
         }
 
-        public ResultRootObject RequestQuote(string PartnerToken, string RegistrationNo, string suminsured, string make, string model, int PaymentTermId, int VehicleYear, int CoverTypeId, int VehicleUsage)
+        public ResultRootObject RequestQuote(string PartnerToken, string RegistrationNo, string suminsured, string make, string model, int PaymentTermId, int VehicleYear, int CoverTypeId, int VehicleUsage, string PartnerReference)
         {
             //string PSK = "127782435202916376850511";
             string _json = "";
@@ -203,12 +203,13 @@ namespace Insurance.Service
 
             //foreach (var item in listofvehicles)
             //{
-            //obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 10000, YearManufacture = Convert.ToInt32(item.VehicleYear), InsuranceType = (item.CoverTypeId == 1 ? 4 : Convert.ToInt32(item.CoverTypeId)), VehicleType = 1, TaxClass = 1, Make = "ACTM", Model = "MONTELIMAR", EntityType = "Personal", Town = "Dummy Town", Address1 = "Add1", Address2 = "Add2", CompanyName = "Dummy Company", FirstName = "Constantine", LastName = "Mambariza", IDNumber = "14-104864Y27", MSISDN = "+2630775308520" });
-            obj.Add(new VehicleObject { VRN = RegistrationNo, DurationMonths = (PaymentTermId == 1 ? 12 : PaymentTermId), VehicleValue = Convert.ToInt32(suminsured), YearManufacture = Convert.ToInt32(VehicleYear), InsuranceType = (CoverTypeId == 1 ? 4 : Convert.ToInt32(CoverTypeId)), VehicleType = Convert.ToInt32(VehicleUsage), TaxClass = 1, Make = make, Model = model, EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber });
+
+            obj.Add(new VehicleObject { VRN = RegistrationNo, DurationMonths = (PaymentTermId == 1 ? 12 : PaymentTermId), VehicleValue = Convert.ToInt32(suminsured), YearManufacture = Convert.ToInt32(VehicleYear), InsuranceType =  Convert.ToInt32(CoverTypeId), VehicleType = Convert.ToInt32(VehicleUsage), TaxClass = 1, Make = make, Model = model, EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber });
+        
             //}
 
             QuoteArguments objArg = new QuoteArguments();
-            objArg.PartnerReference = Guid.NewGuid().ToString();
+            objArg.PartnerReference = Guid.NewGuid().ToString(); ;
             objArg.Date = DateTime.Now.ToString("yyyyMMddhhmmss");
             objArg.Version = "2.0";
             objArg.PartnerToken = PartnerToken;
@@ -246,7 +247,7 @@ namespace Insurance.Service
 
             JObject jsonobject = JObject.Parse(data);
 
-            //var client = new RestClient("http://api-test.icecash.com/request/20523588");
+           // var client = new RestClient("http://api-test.icecash.com/request/20523588");
             var client = new RestClient(LiveIceCashApi);
             var request = new RestRequest(Method.POST);
             request.AddHeader("cache-control", "no-cache");
@@ -504,6 +505,30 @@ namespace Insurance.Service
         public int TaxClass { get; set; }
         public int YearManufacture { get; set; }
     }
+
+
+    public class VehicleObjectWithNullable
+    {
+        public string VRN { get; set; }
+        public string IDNumber { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string MSISDN { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string Town { get; set; }
+        public string EntityType { get; set; }
+        public string CompanyName { get; set; }
+        public string DurationMonths { get; set; }
+        public string VehicleValue { get; set; }
+        public string InsuranceType { get; set; }
+        public string VehicleType { get; set; }
+        public string Make { get; set; }
+        public string Model { get; set; }
+        public string TaxClass { get; set; }
+        public string YearManufacture { get; set; }
+    }
+
     public class QuoteArguments
     {
         public string PartnerReference { get; set; }

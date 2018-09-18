@@ -10,6 +10,7 @@
         isUserStaff = true;
     }
     var sucessalert = TempData["SucessMsg"];
+    var errMsg = TempData["ErroMsg"];
 }
 
 
@@ -87,7 +88,7 @@
                                                 <div class="choose-plan-box active" planpurchase="1" style="cursor:pointer" onclick="SelectPlan(this);">
                                                     <h4>Annual</h4>
                                                     <div class="plan-white-box">
-                                                        <h3>$@Math.Round(Convert.ToDouble(item.Premium + item.StampDuty + item.ZTSCLevy+ item.VehicleLicenceFee + (Convert.ToBoolean(item.IncludeRadioLicenseCost) ? item.RadioLicenseCost : 0.00m)), 2)</h3>
+                                                        <h3>$@Math.Round(Convert.ToDouble(item.Premium + item.StampDuty + item.ZTSCLevy + item.VehicleLicenceFee + (Convert.ToBoolean(item.IncludeRadioLicenseCost) ? item.RadioLicenseCost : 0.00m)), 2)</h3>
                                                         <p>Vehicle Model : @Insurance.Domain.InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription</p>
                                                         <a href="javascript:void(0);" style="pointer-events:none;">PAY FOR 12 MONTHS</a>
                                                     </div>
@@ -164,7 +165,7 @@
                                 <div id="contact-form" class="contact-form">
                                     @Html.HiddenFor(m => m.PaymentTermId)
                                     @Html.HiddenFor(m => m.Id)
-                                    @Html.HiddenFor(m=>m.InsuranceId)
+                                    @Html.HiddenFor(m => m.InsuranceId)
 
 
 
@@ -357,15 +358,37 @@
 
                                                 <div class="payment-card">
                                                     <ul class="list-inline">
-                                                        <li id="payment_1" class="payment_type active" onclick="PaymentMethod(1)">  Cash   </li>
+
+
+
+                                                        @if (User.IsInRole("Staff"))
+                                                        {
+                                                            <li id="payment_1" class="payment_type active" onclick="PaymentMethod(1)">  Cash   </li>
+                                                        }
+
                                                         <li id="payment_2" class="payment_type" onclick="PaymentMethod(2)"> Credit Card </li>
                                                         <li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"> PayNow  </li>
                                                     </ul>
                                                 </div>
 
 
-
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" id="invoiceNumberDiv">
+                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                            <div class="form-group">
+                                              
+
+                                               
+                                                @Html.TextBoxFor(c => c.InvoiceNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Invoice number" })
+                                          </div>
+                                            
+                                              </div>
+
+                                        <div class="col-sm-6 col-md-6 form-group-select">
+
                                         </div>
                                     </div>
 
@@ -395,22 +418,23 @@
                                                         </div>
                                                     </div>
                                                 }
-                                                else
-                                                {
+                                                @*//else
+                                                    //{*@
 
-                                                    <div class="col-sm-6 col-md-6">
-                                                        <div class="text-right">
-                                                            <button type="submit" id="btnNext" onclick="return checkAmountPaid();" class="btn">Next</button>
+                                                @*}*@
 
-                                                        </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-sm-6 col-md-6">
+                                                </div>
+
+                                                <div class="col-sm-6 col-md-6" style="margin-top:5px;">
+                                                    <div class="text-right">
+                                                        <button type="submit" id="btnNext" onclick="return checkAmountPaid();" class="btn">Next</button>
+
                                                     </div>
-
-
-
-                                                }
-
-
-
+                                                </div>
                                             </div>
 
                                             @*@if (ViewBag.SummaryDetailId == 0)
@@ -432,6 +456,7 @@
                                                 }*@
 
                                             <input type="hidden" id="sucessmsg" name="sucessmsg" value="@sucessalert" />
+                                            <input type="hidden" id="errMsg" value="@errMsg" />
                                         </div>
                                     </div>
 
@@ -454,6 +479,15 @@
         $("li").removeClass("active");
         $("#payment_"+paymentMethod).addClass("active");
         $("#PaymentMethodId").val(paymentMethod);
+
+        if(paymentMethod=="1")
+        {
+            $("#invoiceNumberDiv").show();
+        }
+        else
+        {
+            $("#invoiceNumberDiv").hide();
+        }
     }
 
 
@@ -530,10 +564,10 @@
         });
     }
     function gotoPeriviouse() {
-       // $("#previouselink")[0].click();
-
+        // $("#previouselink")[0].click();
         debugger;
         var isUserStaff = '@User.IsInRole("Staff")';
+
 
 
 
@@ -577,11 +611,23 @@
     }
 
     $(document).ready(function () {
+        var isUserStaff = '@User.IsInRole("Staff")';
 
-
+        if(isUserStaff == "False")
+        {
+            $("#payment_2").addClass("active");
+            $("#invoiceNumberDiv").hide();
+        }
+        else{
+            $("#invoiceNumberDiv").show();
+        }
 
         if ($("#sucessmsg").val()=="Qutation has been sent email sucessfully.") {
             alert("Qutation has been sent email sucessfully.");
+        }
+
+        if ($("#errMsg").val()!="") {
+            alert("Please enter invoice number.");
         }
 
         $("#datetimepicker1").datetimepicker({

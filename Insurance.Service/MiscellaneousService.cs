@@ -313,7 +313,7 @@ namespace Insurance.Service
 
             //}
             
-                objEmailService.SendEmail(HttpContext.Current.User.Identity.Name, "", "", "Loyalty Reward | Points Credited to your Wallet", body, attachements);
+                objEmailService.SendEmail(email, "", "", "Loyalty Reward | Points Credited to your Wallet", body, attachements);
 
 
             return "";

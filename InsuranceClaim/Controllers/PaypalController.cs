@@ -597,7 +597,7 @@ namespace InsuranceClaim.Controllers
             return this.payment.Create(apiContext);
 
         }
-        public async Task<ActionResult> SaveDetailList(Int32 id)
+        public async Task<ActionResult> SaveDetailList(Int32 id, string invoiceNumber="")
         {
             var PaymentId = Session["PaymentId"];
             var InvoiceId = Session["InvoiceId"];

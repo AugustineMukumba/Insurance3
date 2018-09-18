@@ -126,14 +126,14 @@ tfoot {
 
 .renew-btn a.wallet-btn {
     font-weight: 500;
-    font-size: 14px;
-    background: #a2ba51;
-    color: #fff;
+    font-size: 16px;
+    background:none;
+    color: #333;
     display: inline-block;
     padding: 1px 10px;
     margin: 0;
     border-radius: 13px;
-    width: 145px;
+    /* width: 145px; */
     text-align: center;
 }
 
@@ -142,7 +142,7 @@ tfoot {
     display: inline-block;
     text-transform: uppercase;
     text-decoration: none;
-    margin:0 10px 0 0;
+    margin:0 0px 0 0;
     color: #333;
     font-size: 14px;
     text-align: left;
@@ -151,14 +151,14 @@ tfoot {
 .skype-details{margin:0 0 15px}
 .skype-details ul li span {
     font-weight: 500;
-    font-size: 14px;
-    background: #16909d;
-    color: #fff;
+    font-size: 16px;
+    background: none;
+    color:#000;
     display: inline-block;
     padding: 1px 10px;
     border-radius: 13px;
     margin:0 10px 0px 0;
-     width: 145px;
+     /* width: 145px; */
     text-align: center;
 }
 .skype-details ul li span:last-child{margin:0}
@@ -193,13 +193,13 @@ tfoot {
 
 .renew-btn a strong {
     font-weight: 500;
-    font-size: 14px;
-    background: #16909d;
-    color: #fff;
+    font-size: 16px;
+    background: none;
+    color:#000;
     display: inline-block;
     padding: 1px 10px;
     border-radius: 13px;
-     width: 145px;
+     /* width: 145px; */
     text-align: center;
 }
 

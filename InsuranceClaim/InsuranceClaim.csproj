@@ -250,6 +250,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\baaner 1600pX550p-01.jpg" />
     <Content Include="Images\asc-desc.png" />
     <Content Include="Images\add.png" />
     <Content Include="Images\amex.png" />
@@ -427,6 +428,8 @@
     <Content Include="Views\Report\LapsedPoliciesReport.cshtml" />
     <Content Include="Views\Shared\EmaiTemplates\QuotationEmail.cshtml" />
     <Content Include="Views\Account\QuotationList.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\PolicyActivation.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\PolicyDeActivation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

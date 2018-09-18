@@ -27,7 +27,7 @@ namespace Insurance.Service
         }
         public List<CoverType> GetCoverType()
         {
-            var list = InsuranceContext.CoverTypes.All().ToList();
+            var list = InsuranceContext.CoverTypes.All(where: $"IsActive=1").ToList();
             return list;
         }
         public List<AgentCommission> GetAgentCommission()
