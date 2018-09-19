@@ -445,8 +445,16 @@ namespace InsuranceClaim.Controllers
                     listriskdetailmodel[model.vehicleindex - 1] = model;
                     Session["VehicleDetails"] = listriskdetailmodel;
                 }
+                if (User.IsInRole("Staff"))
+                {
+                    return RedirectToAction("RiskDetail", "ContactCentre");
+                }
+                else
+                {
+                    return RedirectToAction("RiskDetail");
 
-                return RedirectToAction("RiskDetail");
+                }
+
             }
             else
             {
@@ -487,8 +495,16 @@ namespace InsuranceClaim.Controllers
                         Session["VehicleDetails"] = listriskdetailmodel;
 
                     }
+                    if (User.IsInRole("Staff"))
+                    {
+                        return RedirectToAction("RiskDetail", "ContactCentre");
+                    }
+                    else
+                    {
+                        return RedirectToAction("RiskDetail");
 
-                    return RedirectToAction("RiskDetail");
+                    }
+
                 }
                 else
                 {
@@ -1662,8 +1678,17 @@ namespace InsuranceClaim.Controllers
                         #region Quotation Email
                         if (!string.IsNullOrEmpty(btnSendQuatation))
                         {
-
                             List<VehicleDetail> ListOfVehicles = new List<VehicleDetail>();
+                            var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={model.Id}").ToList();
+                            foreach (var itemSummaryVehicleDetails in SummaryVehicleDetails)
+                            {
+                                var itemVehicle = InsuranceContext.VehicleDetails.Single(itemSummaryVehicleDetails.VehicleDetailsId);
+                                ListOfVehicles.Add(itemVehicle);
+                            }
+
+
+
+                            //List<VehicleDetail> ListOfVehicles = new List<VehicleDetail>();
                             string Summeryofcover = "";
                             var RoadsideAssistanceAmount = 0.00m;
                             var MedicalExpensesAmount = 0.00m;
@@ -1699,7 +1724,7 @@ namespace InsuranceClaim.Controllers
 
                             var customerQuotation = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
                             var user = UserManager.FindById(customerQuotation.UserID);
-                            var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={model.Id}").ToList();
+                            //var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={model.Id}").ToList();
                             var vehicleQuotation = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
                             var policyQuotation = InsuranceContext.PolicyDetails.Single(vehicleQuotation.PolicyId);
                             var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
@@ -1764,7 +1789,7 @@ namespace InsuranceClaim.Controllers
 
                             #endregion
 
-                            TempData["SucessMsg"] = "Qutation has been sent email sucessfully.";
+                            TempData["SucessMsg"] = "Quotation has been sent email sucessfully.";
                             return RedirectToAction("SummaryDetail");
                         }
 
@@ -1874,11 +1899,11 @@ namespace InsuranceClaim.Controllers
             JsonResult json = new JsonResult();
             var quote = new QuoteLogic();
             var typeCover = eCoverType.Comprehensive;
-            if (coverType == 2)
+            if (coverType == 1)
             {
                 typeCover = eCoverType.ThirdParty;
             }
-            if (coverType == 3)
+            if (coverType == 2)
             {
                 typeCover = eCoverType.FullThirdParty;
             }
