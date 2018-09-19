@@ -237,32 +237,37 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row" style="display:none">
-                                            <div class="col-sm-6 col-md-6 form-group-text">
-                                                <div class="form-group">
-                                                    @Html.Label("Renewal Date", new { @class = "gender-label" })
-                                                    <div class='input-group date' id='datetimepicker3'>
-                                                        @Html.TextBoxFor(x => x.RenewalDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Renewal Date" })
-                                                        <span class="input-group-addon">
-                                                            <span class="glyphicon glyphicon-calendar"></span>
-                                                        </span>
-                                                    </div>
 
+                                  
+                                            <div class="row" style="display:none">
+                                                <div class="col-sm-6 col-md-6 form-group-text">
+                                                    <div class="form-group">
+                                                        @Html.Label("Renewal Date", new { @class = "gender-label" })
+                                                        <div class='input-group date' id='datetimepicker3'>
+                                                            @Html.TextBoxFor(x => x.RenewalDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Renewal Date" })
+                                                            <span class="input-group-addon">
+                                                                <span class="glyphicon glyphicon-calendar"></span>
+                                                            </span>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 form-group-text">
+                                                    <div class="form-group">
+                                                        @Html.Label("Transaction Date", new { @class = "gender-label" })
+                                                        <div class='input-group' id='datetimepicker4'>
+                                                            @Html.TextBoxFor(x => x.TransactionDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Transaction/Effective Date" })
+                                                            <span class="input-group-addon">
+                                                                <span class="glyphicon glyphicon-calendar"></span>
+                                                            </span>
+                                                        </div>
+
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6 col-md-6 form-group-text">
-                                                <div class="form-group">
-                                                    @Html.Label("Transaction Date", new { @class = "gender-label" })
-                                                    <div class='input-group' id='datetimepicker4'>
-                                                        @Html.TextBoxFor(x => x.TransactionDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Policy Transaction/Effective Date" })
-                                                        <span class="input-group-addon">
-                                                            <span class="glyphicon glyphicon-calendar"></span>
-                                                        </span>
-                                                    </div>
+                                   
 
-                                                </div>
-                                            </div>
-                                        </div>
+
                                         <div class="row">
                                             <div class="col-sm-6 col-md-6 form-group-text">
                                                 <div class="form-group">
@@ -913,7 +918,7 @@
     $("#CoverTypeId").on('change', function () {
         debugger;
         var coverytype = $('#CoverTypeId option:selected').val();
-        if (coverytype != 1) {
+        if (coverytype != 4) {
 
             $("#thridparty").hide();
         }

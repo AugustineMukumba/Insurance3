@@ -139,9 +139,6 @@ namespace InsuranceClaim.Controllers
                 return View(customerModel);
             }
 
-
-
-
         }
 
 
@@ -756,34 +753,9 @@ namespace InsuranceClaim.Controllers
 
                     if (vehicleDetails != null)
                     {
-
                         RiskDetailModel vehicleModel = Mapper.Map<VehicleDetail, RiskDetailModel>(vehicleDetails);
-
-
-
-                        //vehicleModel.Premium = vehicleDetails.Premium;
-                        //vehicleModel.ZTSCLevy = vehicleDetails.ZTSCLevy;
-                        //vehicleModel.StampDuty = vehicleDetails.StampDuty;
-                        //vehicleModel.IncludeRadioLicenseCost = vehicleDetails.IncludeRadioLicenseCost.Value;
-                        //vehicleModel.RadioLicenseCost = vehicleDetails.RadioLicenseCost;
-                        //vehicleModel.Discount = vehicleDetails.Discount;
-                        //vehicleModel.SumInsured = vehicleDetails.SumInsured;
-                        //vehicleModel.ExcessBuyBackAmount = vehicleDetails.ExcessBuyBackAmount;
-
-                        //vehicleModel.MedicalExpensesAmount = vehicleDetails.MedicalExpensesAmount;
-                        //vehicleModel.PassengerAccidentCoverAmount = vehicleDetails.PassengerAccidentCoverAmount;
-                        //vehicleModel.RoadsideAssistanceAmount = vehicleDetails.RoadsideAssistanceAmount;
-
-                        //vehicleModel.ExcessAmount = vehicleDetails.ExcessAmount;
-                        //vehicleModel.PassengerAccidentCoverAmount = vehicleDetails.PassengerAccidentCoverAmount;
-                        //vehicleModel.RoadsideAssistanceAmount = vehicleDetails.RoadsideAssistanceAmount;
-                        //vehicleModel.ModelId = vehicleDetails.ModelId;
-
                         vehicleList.Add(vehicleModel);
                     }
-
-
-
                 }
                 vehicle = vehicleList;
 
@@ -894,7 +866,7 @@ namespace InsuranceClaim.Controllers
                 {
                     //if (ModelState.IsValid && (model.AmountPaid >= model.MinAmounttoPaid && model.AmountPaid <= model.MaxAmounttoPaid))
 
-                    if (User.IsInRole("Staff") && model.PaymentMethodId==1)
+                    if (User.IsInRole("Staff") && model.PaymentMethodId==1 && btnSendQuatation=="")
                     {
                         //  ModelState.Remove("InvoiceNumber");
                         if(string.IsNullOrEmpty(model.InvoiceNumber))
@@ -1663,13 +1635,51 @@ namespace InsuranceClaim.Controllers
                         if (!string.IsNullOrEmpty(btnSendQuatation))
                         {
 
-                            List<VehicleDetail> ListOfVehicles = new List<VehicleDetail>();
+                            List<RiskDetailModel> ListOfVehicles = new List<RiskDetailModel>();
                             string Summeryofcover = "";
                             var RoadsideAssistanceAmount = 0.00m;
                             var MedicalExpensesAmount = 0.00m;
                             var ExcessBuyBackAmount = 0.00m;
                             var PassengerAccidentCoverAmount = 0.00m;
                             var ExcessAmount = 0.00m;
+
+
+                            var summaryDetail = InsuranceContext.SummaryDetails.Single(model.Id);
+
+                            if (summaryDetail != null)
+                            {
+                                model.CustomSumarryDetilId = summaryDetail.Id;
+                            }
+
+
+                            if (model.Id != 0)
+                            {
+                                model.CustomSumarryDetilId = model.Id;
+                                //vehicle = summary.GetVehicleInformation(id);
+                                var summaryVichalList = InsuranceContext.SummaryVehicleDetails.All(where: $" SummaryDetailId='{summaryDetail.Id}'");
+
+                                foreach (var item in summaryVichalList)
+                                {
+                                    var vehicleDetails = InsuranceContext.VehicleDetails.Single(item.VehicleDetailsId);
+
+                                    if (vehicleDetails != null)
+                                    {
+                                        RiskDetailModel vehicleModel = Mapper.Map<VehicleDetail, RiskDetailModel>(vehicleDetails);
+                                        ListOfVehicles.Add(vehicleModel);
+                                    }
+                                }
+                               // vehicle = ListOfVehicles;
+
+                                //Session["VehicleDetails"] = vehicle;
+
+                            }
+
+
+
+
+
+
+
 
                             foreach (var item in ListOfVehicles)
                             {
@@ -1689,12 +1699,7 @@ namespace InsuranceClaim.Controllers
                             }
 
 
-                            var summaryDetail = InsuranceContext.SummaryDetails.Single(model.Id);
-
-                            if (summaryDetail != null)
-                            {
-                                model.CustomSumarryDetilId = summaryDetail.Id;
-                            }
+                           
 
 
                             var customerQuotation = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
