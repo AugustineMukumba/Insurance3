@@ -547,6 +547,8 @@ namespace Insurance.Domain
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
 
+        public string InvoiceNumber { get; set; }
+
     }
 
     public partial class SmsLog : Entity<SmsLog>

@@ -913,7 +913,7 @@ namespace InsuranceClaim.Controllers
                     if (User.IsInRole("Staff") && model.PaymentMethodId==1)
                     {
                         //  ModelState.Remove("InvoiceNumber");
-                        if(model.InvoiceNumber=="")
+                        if(string.IsNullOrEmpty(model.InvoiceNumber))
                         {
                             TempData["ErroMsg"] = "Please enter invoice number.";
                             return RedirectToAction("SummaryDetail");
