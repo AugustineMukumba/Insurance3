@@ -1140,7 +1140,7 @@
 
     function generateQuotewithICEcash() {
         var flag = true;
-        if ($("#CoverTypeId").val() == "1") {
+        if ($("#CoverTypeId").val() == "4") {
             if($("#SumInsured").val() == "" || $("#SumInsured").val() == "0.00")
             {
                 flag = false;
@@ -1412,7 +1412,7 @@
     $("#CoverTypeId").on('change', function () {
         debugger;
         var coverytype = $('#CoverTypeId option:selected').val();
-        if (coverytype != 1) {
+        if (coverytype != 4) {
             $("#thridparty").hide();
         }
         else {

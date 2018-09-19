@@ -623,6 +623,7 @@ namespace InsuranceClaim.Controllers
             objSaveDetailListModel.InvoiceId = InvoiceId == null ? "" : InvoiceId.ToString();
             objSaveDetailListModel.CreatedBy = customer.Id;
             objSaveDetailListModel.CreatedOn = DateTime.Now;
+            objSaveDetailListModel.InvoiceNumber = invoiceNumber;
 
             List<VehicleDetail> ListOfVehicles = new List<VehicleDetail>();
 
