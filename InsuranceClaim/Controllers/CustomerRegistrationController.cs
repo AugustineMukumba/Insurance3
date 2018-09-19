@@ -910,29 +910,22 @@ namespace InsuranceClaim.Controllers
                 {
                     //if (ModelState.IsValid && (model.AmountPaid >= model.MinAmounttoPaid && model.AmountPaid <= model.MaxAmounttoPaid))
 
-                    if (User.IsInRole("Staff") && model.PaymentMethodId==1)
+                    if (User.IsInRole("Staff") && model.PaymentMethodId == 1 && btnSendQuatation == "")
                     {
                         //  ModelState.Remove("InvoiceNumber");
                         if(string.IsNullOrEmpty(model.InvoiceNumber))
                         {
                             TempData["ErroMsg"] = "Please enter invoice number.";
                             return RedirectToAction("SummaryDetail");
-                        }
-
-                        
+                        }             
                     }
 
 
                     if (ModelState.IsValid)
                     {
-
-
                         Insurance.Service.ICEcashService ICEcashService = new Insurance.Service.ICEcashService();
-
                         List<RiskDetailModel> list = new List<RiskDetailModel>();
                         string PartnerToken = "";
-
-
 
                         #region update  TPIQuoteUpdate
                         var customerDetails = new Customer();
@@ -1710,7 +1703,25 @@ namespace InsuranceClaim.Controllers
                                 PassengerAccidentCoverAmount = PassengerAccidentCoverAmount + Convert.ToDecimal(item.PassengerAccidentCoverAmount);
                                 ExcessAmount = ExcessAmount + Convert.ToDecimal(item.ExcessAmount);
 
-                                Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + (item.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>$0.00</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Excess) + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
+
+                                string converType = "";
+
+                                if(item.CoverTypeId==1)
+                                {
+                                    converType = eCoverType.ThirdParty.ToString();
+                                }
+                                if (item.CoverTypeId == 2)
+                                {
+                                    converType = eCoverType.FullThirdParty.ToString();
+                                }
+
+                                if (item.CoverTypeId == 4)
+                                {
+                                    converType = eCoverType.Comprehensive.ToString();
+                                }
+
+
+                                Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>$0.00</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Excess) + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
                             }
 
 
