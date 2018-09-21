@@ -139,9 +139,6 @@ namespace InsuranceClaim.Controllers
                 return View(customerModel);
             }
 
-
-
-
         }
 
 
@@ -910,14 +907,15 @@ namespace InsuranceClaim.Controllers
                 {
                     //if (ModelState.IsValid && (model.AmountPaid >= model.MinAmounttoPaid && model.AmountPaid <= model.MaxAmounttoPaid))
 
+                    TempData["ErroMsg"] = null;
                     if (User.IsInRole("Staff") && model.PaymentMethodId == 1 && btnSendQuatation == "")
                     {
                         //  ModelState.Remove("InvoiceNumber");
-                        if(string.IsNullOrEmpty(model.InvoiceNumber))
+                        if (string.IsNullOrEmpty(model.InvoiceNumber))
                         {
                             TempData["ErroMsg"] = "Please enter invoice number.";
                             return RedirectToAction("SummaryDetail");
-                        }             
+                        }
                     }
 
 
@@ -939,70 +937,17 @@ namespace InsuranceClaim.Controllers
 
                         var summaryDetial = InsuranceContext.SummaryVehicleDetails.Single(where: $"SummaryDetailId = '" + model.CustomSumarryDetilId + "'");
 
-                        if (summaryDetial != null)
+                        if (summaryDetial != null && btnSendQuatation == "") // while user come from qutation email
                         {
-                            vichelDetails = InsuranceContext.VehicleDetails.Single(summaryDetial.VehicleDetailsId);
-                            if (vichelDetails != null)
-                            {
-                                InsuranceID = vichelDetails.InsuranceId;
-
-                                customerDetails = InsuranceContext.Customers.Single(vichelDetails.CustomerId);
-
-                                if (customerDetails != null)
-                                {
-                                    var _user = UserManager.FindById(customerDetails.UserID);
-
-                                    customerEmail = _user.Email;
-                                }
-
-                                policyDetils = InsuranceContext.PolicyDetails.Single(vichelDetails.PolicyId);
-
-                                if (policyDetils != null)
-                                {
-                                    policyNum = policyDetils.PolicyNumber;
-                                }
-                            }
-
-                            var tokenObject = new ICEcashTokenResponse();
-                            if (Session["ICEcashToken"] != null)
-                            {
-                                var icevalue = (ICEcashTokenResponse)Session["ICEcashToken"];
-                                string format = "yyyyMMddHHmmss";
-                                var IceDateNowtime = DateTime.Now;
-                                var IceExpery = DateTime.ParseExact(icevalue.Response.ExpireDate, format, CultureInfo.InvariantCulture);
-                                if (IceDateNowtime > IceExpery)
-                                {
-                                    ICEcashService.getToken();
-                                }
-
-                                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
-                            }
-                            else
-                            {
-                                ICEcashService.getToken();
-                                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
-                            }
-
-
-                            PartnerToken = tokenObject.Response.PartnerToken;
-
-
-                            ICEcashService.TPIQuoteUpdate(customerDetails, vichelDetails, PartnerToken, model.PaymentMethodId);
-
-                            ICEcashService.TPIPolicy(vichelDetails, PartnerToken);
-
-
-                            if (model.CustomSumarryDetilId != 0) // cehck if request is comming from agent email
+                            if (model.CustomSumarryDetilId != 0 && btnSendQuatation == "") // cehck if request is comming from agent email
                             {
                                 if (model.PaymentMethodId == 1)
-                                    return RedirectToAction("SaveDetailList", "Paypal", new { id = model.CustomSumarryDetilId });
+                                    return RedirectToAction("SaveDetailList", "Paypal", new { id = model.CustomSumarryDetilId, invoiceNumber=model.InvoiceNumber });
                                 if (model.PaymentMethodId == 3)
-                                    return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policyNum, Email = customerEmail });
+                                    return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(1), PolicyNumber = policyNum, Email = customerEmail });
                                 else
                                     return RedirectToAction("PaymentDetail", new { id = model.CustomSumarryDetilId });
                             }
-
-
                         }
 
 
@@ -1706,7 +1651,7 @@ namespace InsuranceClaim.Controllers
 
                                 string converType = "";
 
-                                if(item.CoverTypeId==1)
+                                if (item.CoverTypeId == 1)
                                 {
                                     converType = eCoverType.ThirdParty.ToString();
                                 }
@@ -1761,14 +1706,13 @@ namespace InsuranceClaim.Controllers
                                 Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (vehicleQuotation.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + vehicleQuotation.PaymentTermId.ToString() + "Months)")).
                                 Replace("##TotalPremiumDue##", Convert.ToString(summaryDetail.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty)).
                                 Replace("##MotorLevy##", Convert.ToString(summaryDetail.TotalZTSCLevies)).
-                                Replace("##PremiumDue##", Convert.ToString(summaryDetail.TotalPremium - summaryDetail.TotalStampDuty - summaryDetail.TotalZTSCLevies - summaryDetail.TotalRadioLicenseCost + ListOfVehicles.Sum(x => x.Discount))).
+                                Replace("##PremiumDue##", Convert.ToString(summaryDetail.TotalPremium - summaryDetail.TotalStampDuty - summaryDetail.TotalZTSCLevies - summaryDetail.TotalRadioLicenseCost + ListOfVehicles.Sum(x => x.Discount) - ListOfVehicles.Sum(x => x.VehicleLicenceFee))).
                                 Replace("##PostalAddress##", customerQuotation.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(ExcessBuyBackAmount)).
                                 Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount)).
                                 Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount)).Replace("##RadioLicence##", Convert.ToString(summaryDetail.TotalRadioLicenseCost)).
-                                Replace("##Discount##", Convert.ToString(vehicleQuotation.Discount)).Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).
+                                Replace("##Discount##", Convert.ToString(ListOfVehicles.Sum(x => x.Discount))).Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).
                                 Replace("##SummaryDetailsPath##", Convert.ToString(rootPath)).
-                                Replace("##NINumber##", customerQuotation.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(vehicleQuotation.VehicleLicenceFee));
-
+                                Replace("##NINumber##", customerQuotation.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(ListOfVehicles.Sum(x => x.VehicleLicenceFee)));
 
                             #region Invoice PDF
                             var attacehmetn_File = MiscellaneousService.EmailPdf(Bodyy, policyQuotation.CustomerId, policyQuotation.PolicyNumber, "Quotation");
@@ -1800,7 +1744,7 @@ namespace InsuranceClaim.Controllers
 
                             #endregion
 
-                            TempData["SucessMsg"] = "Quotation has been sent email sucessfully.";
+                            TempData["SucessMsg"] = "Qutation has been sent email sucessfully.";
                             return RedirectToAction("SummaryDetail");
                         }
 
@@ -1808,81 +1752,12 @@ namespace InsuranceClaim.Controllers
 
 
 
-
-
-                        #region update  TPIQuoteUpdate
-
-
-                        summaryDetial = InsuranceContext.SummaryVehicleDetails.Single(where: $"SummaryDetailId = '" + model.Id + "'");
-
-                        if (summaryDetial != null)
-                        {
-                            vichelDetails = InsuranceContext.VehicleDetails.Single(summaryDetial.VehicleDetailsId);
-                            if (vichelDetails != null)
-                            {
-                                InsuranceID = vichelDetails.InsuranceId;
-
-                                customerDetails = InsuranceContext.Customers.Single(vichelDetails.CustomerId);
-
-                                if (customerDetails != null)
-                                {
-                                    var _user = UserManager.FindById(customerDetails.UserID);
-
-                                    customerEmail = _user.Email;
-                                }
-
-                                policyDetils = InsuranceContext.PolicyDetails.Single(vichelDetails.PolicyId);
-
-                                if (policyDetils != null)
-                                {
-                                    policyNum = policyDetils.PolicyNumber;
-                                }
-                            }
-
-                            var tokenObject = new ICEcashTokenResponse();
-                            if (Session["ICEcashToken"] != null)
-                            {
-                                var icevalue = (ICEcashTokenResponse)Session["ICEcashToken"];
-                                string format = "yyyyMMddHHmmss";
-                                var IceDateNowtime = DateTime.Now;
-                                var IceExpery = DateTime.ParseExact(icevalue.Response.ExpireDate, format, CultureInfo.InvariantCulture);
-                                if (IceDateNowtime > IceExpery)
-                                {
-                                    ICEcashService.getToken();
-                                }
-
-                                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
-                            }
-                            else
-                            {
-                                ICEcashService.getToken();
-                                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
-                            }
-
-                            PartnerToken = tokenObject.Response.PartnerToken;
-                            ICEcashService.TPIQuoteUpdate(customerDetails, vichelDetails, PartnerToken, model.PaymentMethodId);
-                            ICEcashService.TPIPolicy(vichelDetails, PartnerToken);
-
-
-                            if (model.CustomSumarryDetilId != 0) // cehck if request is comming from agent email
-                            {
-                                if (model.PaymentMethodId == 1)
-                                    return RedirectToAction("SaveDetailList", "Paypal", new { id = model.CustomSumarryDetilId });
-                                if (model.PaymentMethodId == 3)
-                                    return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policyNum, Email = customerEmail });
-                                else
-                                    return RedirectToAction("PaymentDetail", new { id = model.CustomSumarryDetilId });
-                            }
-                        }
-
-
-                        #endregion
-
+                        //return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
 
                         if (model.PaymentMethodId == 1)
-                            return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id, invoiceNumer= model.InvoiceNumber });
+                            return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id, invoiceNumer = model.InvoiceNumber });
                         if (model.PaymentMethodId == 3)
-                            return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
+                            return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(1), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
                         else
                             return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
                     }
@@ -1965,6 +1840,8 @@ namespace InsuranceClaim.Controllers
                 var tokenObject = new ICEcashTokenResponse();
 
                 #region get ICE cash token
+
+                Session["ICEcashToken"] = null;
 
                 if (Session["ICEcashToken"] != null)
                 {

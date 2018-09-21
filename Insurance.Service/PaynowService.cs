@@ -16,8 +16,13 @@ namespace Insurance.Service
     {
 
         private static readonly HttpClient client = new HttpClient();
-        private static String IntegrationID = "5623";
-        private static string IntegrationKey = "7c1cd190-5046-4292-806a-0dbb85b949f6";
+        // sendbox
+        //private static String IntegrationID = "5623";
+        //private static string IntegrationKey = "7c1cd190-5046-4292-806a-0dbb85b949f6";
+
+        // live
+        private static String IntegrationID = "5624";
+        private static string IntegrationKey = "9d8eca06-ce38-46d5-948d-f7b94664c9f1";
 
         public async Task<InsuranceClaim.Models.PaynowResponse> initiateTransaction(string id, string amount, string additionalinfo, string authemail, bool isRenew = false)
         {
@@ -32,7 +37,7 @@ namespace Insurance.Service
             string PaymentId = "PAYNOW-" + Guid.NewGuid().ToString();
             HttpContext.Current.Session["PaymentId"] = PaymentId;
 
-
+            authemail = "constantine@gene-insure.com";
             if (isRenew)
             {
                 var values = new Dictionary<string, string>
@@ -43,8 +48,8 @@ namespace Insurance.Service
                { "reference", PaymentId },
                { "amount",Convert.ToString(amount)},
                { "id", IntegrationID },
-               { "additionalinfo", "additional" },
-               { "authemail", "ankit.dhiman@kindlebit.com" },
+               { "additionalinfo", additionalinfo},
+               { "authemail", authemail },
                { "status", "Message" }
             };
 
@@ -57,8 +62,8 @@ namespace Insurance.Service
                { "reference", PaymentId },
                { "amount",Convert.ToString(amount)},
                { "id", IntegrationID },
-               { "additionalinfo", "additional" },
-               { "authemail", "ankit.dhiman@kindlebit.com" },
+               { "additionalinfo", additionalinfo },
+               { "authemail", authemail },
                { "status", "Message" },
                { "hash", generatedhash.ToUpper() }
             };
@@ -79,8 +84,8 @@ namespace Insurance.Service
                { "reference", PaymentId },
                { "amount",Convert.ToString(amount)},
                { "id", IntegrationID },
-               { "additionalinfo", "additional" },
-               { "authemail", "ankit.dhiman@kindlebit.com" },
+               { "additionalinfo", additionalinfo },
+               { "authemail", authemail },
                { "status", "Message" }
             };
 
@@ -93,8 +98,8 @@ namespace Insurance.Service
                { "reference", PaymentId },
                { "amount",Convert.ToString(amount)},
                { "id", IntegrationID },
-               { "additionalinfo", "additional" },
-               { "authemail", "ankit.dhiman@kindlebit.com" },
+               { "additionalinfo", additionalinfo },
+               { "authemail", authemail },
                { "status", "Message" },
                { "hash", generatedhash.ToUpper() }
             };

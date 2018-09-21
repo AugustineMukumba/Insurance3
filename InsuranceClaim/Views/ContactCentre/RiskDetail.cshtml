@@ -1250,6 +1250,10 @@
             toastr.warning("Please Select A Payment Term !!");
         }
 
+       
+     
+
+
         if (flag) {
             $(".loading-area").show();
             $.ajax({
@@ -1279,6 +1283,11 @@
                         var calulatePremium = CoverAmount-data.Data.LoyaltyDiscount;
 
                         $("#Premium").val(parseFloat(calulatePremium).toFixed(2));
+
+                        
+
+
+
                         $("#InsuranceId").val(data.Data.Response.Quotes[0].InsuranceID);
 
                         $("#basicPremiumICEcash").val(parseFloat(CoverAmount).toFixed(2));
@@ -1522,7 +1531,7 @@
                 $("#TermlyRiskPremium").val(parseFloat(data.TermlyRiskPremium).toFixed(2));
                 $("#QuaterlyRiskPremium").val(parseFloat(data.QuaterlyRiskPremium).toFixed(2));
                 $("#Discount").val(parseFloat(data.Discount).toFixed(2));
-
+               // $("#InsuranceId").val(data.Data.Response.Quotes[0].InsuranceID);
 
                 //$("#NumberofPersons").val(data.NumberofPersons);
                 //$("#AddThirdPartyAmount").val(data.AddThirdPartyAmount);

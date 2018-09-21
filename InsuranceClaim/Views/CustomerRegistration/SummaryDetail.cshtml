@@ -366,31 +366,31 @@
                                                             <li id="payment_1" class="payment_type active" onclick="PaymentMethod(1)">  Cash   </li>
                                                         }
 
-                                                        <li id="payment_2" class="payment_type" onclick="PaymentMethod(2)"> Credit Card </li>
-                                                        <li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"> PayNow  </li>
+                                                        <li id="payment_2" class="payment_type" onclick="PaymentMethod(2)"><img src="http://geneinsureclaim.kindlebit.com/Images/master-card.png" /></li>
+                                                        <li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"><img src="http://geneinsureclaim.kindlebit.com/Images/Paynow-logo.png" /></li>
                                                     </ul>
                                                 </div>
 
 
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="row" id="invoiceNumberDiv">
-                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                        <div id="invoiceNumberDiv" class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                              
-
-                                               
                                                 @Html.TextBoxFor(c => c.InvoiceNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Invoice number" })
-                                          </div>
-                                            
-                                              </div>
-
-                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                            </div>
 
                                         </div>
+
                                     </div>
+
+                                    @*<div class="row" id="">
+
+
+                                            <div class="col-sm-6 col-md-6 form-group-select">
+
+                                            </div>
+                                        </div>*@
 
 
 
@@ -401,23 +401,34 @@
                                     <div class="row">
                                         <div class="col-md-12 next-btn">
                                             <div class="row">
-                                                <div class="col-sm-6 col-md-6">
+                                                <div class="col-sm-12 col-md-12">
                                                     <div class="text-left">
-                                                        <div class="back-left"><button type="button" onclick="gotoPeriviouse();" class="btn">Back</button></div>
-                                                        <a style="display:none" id="previouselink" href="/CustomerRegistration/RiskDetail" class="back"></a>
+                                                        <ul class="list-inline">
+                                                            <li>
+                                                                <div class="back-left"><button type="button" onclick="gotoPeriviouse();" class="btn">Back</button></div>
+                                                                <a style="display:none" id="previouselink" href="/CustomerRegistration/RiskDetail" class="back"></a>
+                                                            </li>
+                                                            <li class="pull-right">
+                                                                @if (ViewBag.CurrentUserRole == "Staff" && ViewBag.SummaryDetailId == 0)
+                                                                {
+                                                                    <div class="text-right">
+                                                                        <button type="submit" id="btnNext1" name="btnSendQuatation" value="sendQuatation" class="btn">Send Quotation</button>
+
+                                                                    </div>
+                                                                }
+                                                                <div class="text-right">
+                                                                    <button type="submit" id="btnNext" onclick="return checkAmountPaid();" class="btn">Next</button>
+
+                                                                </div>
+                                                            </li>
+                                                            <li>
+
+                                                            </li>
+                                                        </ul>
                                                     </div>
                                                 </div>
 
-                                                @if (ViewBag.CurrentUserRole == "Staff" && ViewBag.SummaryDetailId == 0)
-                                                {
-                                                    <div class="col-sm-6 col-md-6">
-                                                        <br />
-                                                        <div class="text-right">
-                                                            <button type="submit" id="btnNext1" name="btnSendQuatation" value="sendQuatation" class="btn">Send Quotation</button>
 
-                                                        </div>
-                                                    </div>
-                                                }
                                                 @*//else
                                                     //{*@
 
@@ -430,13 +441,9 @@
                                                 </div>
 
                                                 <div class="col-sm-6 col-md-6" style="margin-top:5px;">
-                                                    <div class="text-right">
-                                                        <button type="submit" id="btnNext" onclick="return checkAmountPaid();" class="btn">Next</button>
 
-                                                    </div>
                                                 </div>
                                             </div>
-
                                             @*@if (ViewBag.SummaryDetailId == 0)
                                                 {
                                                     <div class="row">
@@ -613,6 +620,12 @@
     $(document).ready(function () {
         var isUserStaff = '@User.IsInRole("Staff")';
 
+
+        if('@Model.CustomSumarryDetilId'!="")
+        {
+            $("#invoiceNumberDiv").hide();
+        }
+
         if(isUserStaff == "False")
         {
             $("#payment_2").addClass("active");
@@ -622,11 +635,11 @@
             $("#invoiceNumberDiv").show();
         }
 
-        if ($("#sucessmsg").val()=="Qutation has been sent email sucessfully.") {
-            alert("Qutation has been sent email sucessfully.");
+        if ($("#sucessmsg").val()!="") {
+            alert("Quotation has been sent email sucessfully.");
         }
 
-        if ($("#errMsg").val()!="") {
+        if ($("#errMsg").val()=="Please enter invoice number.") {
             alert("Please enter invoice number.");
         }
 

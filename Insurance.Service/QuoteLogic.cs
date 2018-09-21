@@ -56,7 +56,7 @@ namespace Insurance.Service
             }
             else if (coverType == eCoverType.ThirdParty)
             {
-                InsuranceRate = (float)vehicleUsage.AnnualTPAmount;
+                InsuranceRate = vehicleUsage.AnnualTPAmount==null ? 0 :(float)vehicleUsage.AnnualTPAmount;
                 InsuranceMinAmount = vehicleUsage.MinThirdAmount;
             }
             else if (coverType == eCoverType.FullThirdParty)
@@ -246,13 +246,17 @@ namespace Insurance.Service
 
 
             var ztscLevy = 0.00m;
+            var totalPremiumForZtscLevy = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount;
+
             if (ZTSCLevySetting.ValueType == Convert.ToInt32(eSettingValueType.percentage))
             {
-                ztscLevy = (totalPremium * Convert.ToDecimal(ZTSCLevySetting.value)) / 100;
+                // ztscLevy = (totalPremium * Convert.ToDecimal(ZTSCLevySetting.value)) / 100;
+                 ztscLevy = (totalPremiumForZtscLevy * Convert.ToDecimal(ZTSCLevySetting.value)) / 100;
             }
             else
             {
-                ztscLevy = totalPremium + Convert.ToDecimal(ZTSCLevySetting.value);
+                // ztscLevy = totalPremium + Convert.ToDecimal(ZTSCLevySetting.value);
+                ztscLevy = totalPremiumForZtscLevy + Convert.ToDecimal(ZTSCLevySetting.value);
             }
            
 

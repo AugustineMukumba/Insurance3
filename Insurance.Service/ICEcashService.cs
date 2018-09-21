@@ -61,7 +61,6 @@ namespace Insurance.Service
             {
 
 
-
                 //string json = "%7B%20%20%20%22PartnerReference%22%3A%20%228eca64cb-ccf8-4304-a43f-a6eaef441918%22%2C%0A%20%20%20%20%22Date%22%3A%20%22201801080615165001%22%2C%0A%20%20%20%20%22Version%22%3A%20%222.0%22%2C%0A%20%20%20%20%22Request%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22Function%22%3A%20%22PartnerToken%22%7D%7D";
                 //string PSK = "127782435202916376850511";
                 string _json = "";//"{'PartnerReference':'" + Convert.ToString(Guid.NewGuid()) + "','Date':'" + DateTime.Now.ToString("yyyyMMddhhmmss") + "','Version':'2.0','Request':{'Function':'PartnerToken'}}";
@@ -324,6 +323,11 @@ namespace Insurance.Service
 
             var item = vehicleDetail;
 
+            if(paymentMethod==2 || paymentMethod == 3) // it's represent to visa
+            {
+                paymentMethod =1;
+            }
+
             // obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 0, YearManufacture = 0, InsuranceType = 0, VehicleType = 0, TaxClass = 0, Make = "", Model = "", EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = "01" + CustomerInfo.PhoneNumber });
 
             List<QuoteDetial> qut = new List<QuoteDetial>();
@@ -401,6 +405,7 @@ namespace Insurance.Service
 
             var item = vehicleDetail;
 
+           
             // obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 0, YearManufacture = 0, InsuranceType = 0, VehicleType = 0, TaxClass = 0, Make = "", Model = "", EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = "01" + CustomerInfo.PhoneNumber });
 
             //List<QuoteDetial> qut = new List<QuoteDetial>();

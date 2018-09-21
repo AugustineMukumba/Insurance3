@@ -53,7 +53,7 @@ tfoot {
 .logo-img a {
     display: inline-block;
     /*background: #fff;
-    padding: 5px;*/
+    padding: 5px;*/ margin:-35px 0 0;
 }
 
 .logo-img  {
@@ -82,11 +82,7 @@ tfoot {
 .menu-navigation .navbar-nav li a.DashboardButton {
     border: 1px solid #a2ba51;
     border-radius: 30px;
-    padding: 7px 17px !important;
     font-weight: 400;
-    font-size: 15px;
-    background: #a2ba51;
-    color: #fff;
 }
 
 /*.GrossWrittenPremiumReport .container {
@@ -111,6 +107,42 @@ tfoot {
     float: left;
     width: 100%;
 }
+.dropdown-top .dropdown-menu {
+    border-radius: 0;
+    border: 0;
+    color: #000;
+    background: #fff;
+    margin: 5px 0 0;
+    right: 0;
+    width: 160px;
+    left: auto;
+    min-width: inherit; padding: 0;     top:100%;
+} 
+.dropdown-top .dropdown-menu .list-inline li {
+      display: inline-block;
+    width: 100%;     padding: 0;
+}
+.menu-navigation .dropdown-top .dropdown-menu .list-inline li a {
+    color: #000;
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+    padding: 7px 10px;
+    border-bottom: 1px solid #eee;
+}
+.dropdown-top .dropdown-menu:before {
+    content: "";
+    border-bottom: 8px solid #fff;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    top: -8px;
+    position: absolute;
+    right: 1px;
+    margin: auto;
+}
+.dropdown-top .dropdown-menu .list-inline {
+    margin: 0;
+}
 
 /*******END***************************(Saturday - 11 aug 2018)********/
 
@@ -120,10 +152,13 @@ tfoot {
 }
 
 .logo-section-details {
-    background:#f3f3f3;
-    padding: 15px 0;
+    background: #fff;
+    padding: 10px 0;
+    /*box-shadow: 0 2px 1px rgba(0, 0, 0, 0.2);*/
 }
-
+.menu-navigation {
+    margin-top: 11px;
+}
 .renew-btn a.wallet-btn {
     font-weight: 500;
     font-size: 16px;
@@ -143,15 +178,15 @@ tfoot {
     text-transform: uppercase;
     text-decoration: none;
     margin:0 0px 0 0;
-    color: #333;
+    color: #fff;
     font-size: 14px;
     text-align: left;
     padding: 0 0 0px;
 }
-.skype-details{margin:0 0 15px}
+.skype-details{margin:15px 0 0px; text-align:right}
 .skype-details ul li span {
     font-weight: 500;
-    font-size: 16px;
+    font-size: 14px;
     background: none;
     color:#000;
     display: inline-block;
@@ -165,37 +200,62 @@ tfoot {
 .login-btn {
     margin:0px 0 0; 
 }
+.skype-details ul li a {
+    font-size: 15px;
+    color: #333;
+}
+.skype-details ul li a img {
+    width: 40px; margin:-2px 5px 0 0
+}
+.skype-details ul li a i {
+    font-size: 26px;
+    float: left;
+    margin: -2px 10px 0 0;
+}
+.skype-details ul li {
+    margin: 0 30px 0 0;
+    padding: 0;
+}
 
+.skype-details ul li:last-child {
+    margin: 0 0px 0 0;
+}
 
 .payment-card ul li.active {
-    background: #666;
-    border-color: #666;
+    background: #73cdda;
+    border-color: #a2ba51;
     color: #fff;
+    font-weight: bold;
 }
 
     .login-btn ul li a {
         text-transform: uppercase;
-         color:#268794;  
+         color:#fff;  
         text-decoration: none;  font-size:14px;
     }
     .login-btn ul li {
     margin: 0;
     font-size: 14px;
-    color: #333;
+    color: #fff;
 }
 .menu-navigation .navbar.navbar-default {
-    background:#f3f3f3;
+   background: #9db753;
     margin: 0;
     border: none;
-    border-top:1px solid #e0e0e0;
-    border-radius: 0;
+    border-top: 0px solid #e0e0e0;
+    border-radius: 0;     min-height: inherit; padding:15px 0
 }
-
+.gray-top-header {
+    background: #9db753;
+    padding:0px 0;
+    display: inline-block;
+    width: 100%;
+}
 .renew-btn a strong {
     font-weight: 500;
-    font-size: 16px;
+    font-size: 14px;
     background: none;
-    color:#000;
+    color:#fff;
     display: inline-block;
     padding: 1px 10px;
     border-radius: 13px;
@@ -203,9 +263,7 @@ tfoot {
     text-align: center;
 }
 
-.menu-navigation .navbar-nav {
-    text-align: center;
-}
+
 
     .menu-navigation .navbar-nav li {
         display: inline-block;
@@ -213,15 +271,19 @@ tfoot {
     }
 
         .menu-navigation .navbar-nav li a {
-    padding: 22px 20px;
-    color: #555;
-    font-size: 16px;
+    padding: 0px 10px;
+    color: #fff;
+    font-size: 13px;
     letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border-right: 2px solid #fff;
 }
+.menu-navigation .navbar-nav li:last-child a{border:none;}
+
 .menu-navigation .navbar-nav {
-    text-align: center;
-    width: 100%;
+    text-align:center;
 }
+
 
 .non-editable {
     pointer-events: none;
@@ -419,6 +481,7 @@ tfoot {
     transition-duration: 0.3s;
     -webkit-transition-property: box-shadow, transform;
     transition-property: box-shadow, transform;
+    margin-bottom: 15px;
 }
 
     .hvr-grow-shadow:hover, .hvr-grow-shadow:focus, .hvr-grow-shadow:active {
@@ -587,8 +650,8 @@ input:checked + .outside .inside {
 }
 
 .footer-section {
-    background: #3b3b3b;
-    padding: 30px 0 70px;
+    background:#f2f2f2;
+    padding: 30px 0 70px;     position: relative;     margin: 50px 0 0;
 }
 
 .ftr-about-content p {
@@ -781,9 +844,9 @@ span.online-dot {
 
 .policy-option li {
     display: inline-block;
-    float: none;
-    margin:0px 0px;
-    width: 19%;
+    float: left;
+    margin: 0px 0px;
+    width: 20%;
 }
 
 .policy-option p {
@@ -1278,19 +1341,26 @@ table.policy-table-grid {
 }
 
 .payment-card ul li {
-    background: #f58220;
+    background: #fff;
     text-align: center;
-    height: 34px;
-    line-height: 30px;
+    height: 40px;
+    line-height: 36px;
     border-radius: 2px;
     text-transform: uppercase;
     color: #000;
-    cursor:pointer;
-    padding: 0 15px;
+    cursor: pointer;
+    padding: 0 25px;
     font-size: 13px;
-    border: 2px solid #f58220;
+    border: 1px solid #c6dd7c;
 }
-
+#payment_2 img {
+    width: 40px;
+    height: auto;
+}
+#payment_3 img {
+    width: 100px;
+    height: auto;
+}
 
 /***/
 
@@ -1331,17 +1401,159 @@ table.policy-table-grid {
     margin: 0 0 40px;
 }
 .insurance-text h4 {
-    font-size: 16px;
-    font-weight: 600;
-    color: #444;
+    font-size: 24px;
+    font-weight: 400;
+    color:#9db753;
     margin: 0 0 7px;
 }
 .insurance-text p {
-    font-size: 23px;
-    font-weight: 300;
+    font-size: 22px;
+    font-weight: 400;
+    color: #666;
+}
+
+.next-btn .text-left ul li {
+    float: left;
+}
+.next-btn .text-left ul li .text-right {
+    float: left;
+    margin: 0 10px 0 0;
+}
+.next-btn .text-left ul li .text-right:last-child {
+    margin: 0 0px 0 0;
+}
+div#invoiceNumberDiv .form-group {
+    margin: 26px 0 0;
+}
+.top-header-left {
+    padding-left: 30px;
+    padding-top: 0px;
+    float: left;
+}
+.top-header-left ul {
+    float: left;
+    margin-right: 20px;
+    color: #fff;
     text-transform: uppercase;
+}
+.top-header-left.skype-details ul li span {
+    padding: 0;
+}
+.top-header-left.skype-details .renew-btn {
+    margin: 0;
+}
+.top-header-left.skype-details {
+    margin: 0;
+    margin-top: 3px;
+}
+
+.top-header-right.text-right .login-btn {
+    margin: 3px 0 0;
+    padding-right: 20px;
+}
+
+.top-header-white {
+    position: relative;
+    height: 33px;
+    background: #fff;
+}
+
+ .top-header-white:after {
+    content: "";
+    border-left: 30px solid #fff;
+    border-top: 33px solid transparent;
+    border-bottom: 0 solid transparent;
+    position: absolute;
+    left: 100%;
+    top: 0;
+}
+
+.menu-navigation .navbar-nav.login-btn li a {
+    border: none ;
+    background:none !important;
+    color: #fff ;
+}
+
+.menu-navigation .navbar-nav.login-btn li:hover .dropdown-menu {
+    display: block;
+}
+.policy-option ul li img {
+    width: 145px;
+}
+.touch-heading{margin-bottom:30px;}
+.touch-heading h3 {
+    color: #16909d;
+    text-transform: uppercase;
+    font-size: 30px;
+    font-weight: 400;
+}
+.contact-details { margin:15px 0 0
+}
+.contact-details h4 {
+    color: #000;
+    font-size: 16px; margin-bottom:5px;
+}
+.contact-details p {
+    color: #000;
+    font-size: 14px;
+    margin-bottom:5px;
+}
+.contact-details h4 small {
+    color:#333;
+    font-size: 14px;
+}
+.footer-content-logo {
+    border-right: 1px solid #ddd;
+    padding-bottom: 15px;
+    padding-top: 5px;
+}
+.touch-heading {
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+
+.click-here {
+    position: absolute;
+    top: -62px;
+    background: #fff;
+    left: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    line-height: 135px;
+    text-align: center;
+    border-radius: 50px;
+    margin: auto;
+}
+.click-here a {
+    text-decoration: none;
     color: #16909d;
 }
+    .click-here.bottom-here {
+        top: auto;
+    }
+
+    .click-here.bottom-here {
+    top: auto;
+    bottom:-30px;
+    background: #53c4d4;     z-index: 9999;
+}
+.click-here.bottom-here a{color:#fff;}
+.reset-heading h1 {
+    font-size: 30px;
+    margin: 0 0 10px;
+    font-weight: 600;
+}
+.reset-heading {
+    text-align: center;
+    margin: 0 0 80px;
+}
+.reset-section {
+    display: inline-block;
+    width: 100%;
+    padding: 50px 0 0;
+}
+.home-slider-sectopn .item img{width:100%;}
 
 /**15 june css end**/
 

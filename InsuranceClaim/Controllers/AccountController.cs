@@ -32,6 +32,8 @@ namespace InsuranceClaim.Controllers
         Insurance.Service.smsService objsmsService = new Insurance.Service.smsService();
         public AccountController()
         {
+           
+
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -935,9 +937,10 @@ namespace InsuranceClaim.Controllers
                 return RedirectToAction("Index", "CustomerRegistration");
             }
 
+            
 
             List<CustomerModel> ListUserViewModel = new List<CustomerModel>();
-            var user = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).ToList();
+            var user = InsuranceContext.Customers.All(where: "IsActive = 'True' or IsActive is null").OrderByDescending(x => x.Id).ToList();
 
 
             foreach (var item in user)
@@ -981,16 +984,15 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult DeleteUserManagement(int id)
         {
-
-
-
             var data = InsuranceContext.Customers.Single(id);
 
             var userid = data.UserID;
-            InsuranceContext.Customers.Delete(data);
+            data.IsActive = false;
+            InsuranceContext.Customers.Update(data);
+            // InsuranceContext.Customers.Delete(data);
 
             var currentUser = UserManager.FindById(userid);
-            UserManager.Delete(currentUser);
+          //  UserManager.Delete(currentUser);
 
 
 

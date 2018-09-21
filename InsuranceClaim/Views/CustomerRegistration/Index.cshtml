@@ -108,8 +108,8 @@
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.PhoneNumber, new { @class = "gender-label" })
                                             @*@Html.TextBoxFor(x => x.CountryCode, new { @class = "form-control countrycode", @name = "CountryCode", @autocomplete = "off", @id = "CountryCode", @placeholder = "Code", @maxlength = "4" })*@
-                                            @Html.DropDownListFor(x => x.CountryCode, new SelectList(ViewBag.Countries, "code", "DisplayName"), new { @class = "form-control countrycode" })
-                                            @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control phonenumber", @name = "PhoneNumber", @autocomplete = "off", @id = "PhoneNumber", @placeholder = "Phone Number", @maxlength = "10" })
+                                            @Html.DropDownListFor(x => x.CountryCode, new SelectList(ViewBag.Countries, "code", "DisplayName","+263"), new { @class = "form-control countrycode" })
+                                            @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control phonenumber", @name = "PhoneNumber", @autocomplete = "off", @id = "PhoneNumber", @placeholder = "Phone Number", @maxlength = "10", onkeypress = "return isNumber(event)" })
                                             @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
                                             @*@Html.ValidationMessageFor(x => x.CountryCode, "", new { @class = "text-danger" })*@
                                         </div>
@@ -179,8 +179,8 @@
                                                 <div class="col-sm-6 col-md-6 form-group-select">
                                                     <div class="form-group">
                                                         @Html.LabelFor(x => x.City, new { @class = "gender-label" })
-                                                        @Html.DropDownListFor(x => x.City, new SelectList(ViewBag.Cities, "name", "name"), "----Select City----" , new { @class = "form-control " })
-                                                        @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
+                                                        @Html.DropDownListFor(x => x.City, new SelectList(ViewBag.Cities, "name", "name"), "----Select City----", new { @class = "form-control ", @onchange = "removeValidation(this)" })
+                                                        @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger valMessage" })
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6 col-md-6 form-group-text">
@@ -195,7 +195,7 @@
                                                 <div class="col-sm-6 col-md-6 form-group-text">
                                                     <div class="form-group">
                                                         @Html.LabelFor(x => x.Zipcode, new { @class = "gender-label" })
-                                                        @Html.TextBoxFor(x => x.Zipcode, new { @class = "form-control", @name = "Zipcode", @autocomplete = "off", @id = "Zipcode", @placeholder = "Zip Code" })
+                                                        @Html.TextBoxFor(x => x.Zipcode, new { @class = "form-control", @name = "Zipcode", @autocomplete = "off", @id = "Zipcode", @placeholder = "Zip Code", @maxlength = "10" })
                                                         @Html.ValidationMessageFor(x => x.Zipcode, "", new { @class = "text-danger" })
                                                     </div>
                                                     @*<div class="col-sm-6 col-md-6 form-group-text">
@@ -249,6 +249,27 @@
 
 
 <script type="text/javascript">
+
+
+
+    function removeValidation(e) {
+        debugger
+        if (e.value != "") {
+            $(".valMessage").text('');
+        } else {
+            $(".valMessage").text('The City field is required.');
+
+        }
+    }
+    function isNumber(evt) {
+        debugger;
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
 
 
     $(document).ready(function () { // will trigger when the document is ready
