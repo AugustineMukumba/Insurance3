@@ -1566,6 +1566,7 @@ namespace InsuranceClaim.Controllers
                             obj.VehicleId = _vehicle.Id;
                             obj.startdate = Convert.ToDateTime(_vehicle.CoverStartDate);
                             obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
+                            obj.RenewalDate = Convert.ToDateTime(_vehicle.RenewalDate);
                             if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
                             {
                                 obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
