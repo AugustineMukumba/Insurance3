@@ -111,8 +111,8 @@
                         <div class="col-md-9 col-sm-9 col-xs-12 col-lg-9">
                             <div class="skype-details">
                                 <ul class="list-inline">
-                                    <li><a href="tel:+2638677223344"><img src="~/Images/call-icon.png" />  8677 223 344 </a></li>
-                                    <li><a href=""><img src="~/Images/whatsapp-icon.png" />  719 884 884 ,  732 884 884</a></li>
+                                    <li><a href="tel:+2638677223344"><img src="~/Images/call-icon.png" />  08677 223 344 </a></li>
+                                    <li><a href=""><img src="~/Images/whatsapp-icon.png" />  0719 884 884 ,  0732 884 884</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -183,7 +183,7 @@
                                 <li><a href="#">About Us</a></li>
                                 @*<li><a href="#">Contact</a></li>*@
 
-                                @if (User.IsInRole("Administrator") || User.IsInRole("Staff"))
+                                @if (User.IsInRole("Administrator"))
                                 {
                                     <li><a class="DashboardButton" href="@Url.Action("Dashboard","Account")">Dashboard</a></li>
                                 }
@@ -191,7 +191,7 @@
                             </ul>
                             <ul class="navbar-nav navbar-right login-btn" style="@(userLoggedin ? "display:none;" : "display:inline-block;")">
                                 <li><a href="/Account/Login">Login</a></li>
-                                <li><a href="">Register</a></li>
+                                @*<li><a href="">Register</a></li>*@
                             </ul>
                             <ul class="navbar-nav navbar-right login-btn dropdown-top" style="@(userLoggedin ? "display:block;" : "display:none;")">
                                 <li><a class="wallet-btn" href="javascript:void(0);">Wallet : $ @LoyalyPoints  </a></li>
@@ -248,8 +248,8 @@
 
                 <div class="col-sm-9 footer-links">
                     <div class="contact-details">
-                        <h4><strong>Key Contact Details:<small> Liquid:</small></strong>  8677223344,</h4>
-                        <p><strong>Netone:</strong>  719 884 884, <strong>Telone</strong> :  8688 003 999,</p>
+                        <h4><strong>Key Contact Details:<small> Liquid:</small></strong>  08677223344,</h4>
+                        <p><strong>Netone:</strong>  719 884 884, <strong>Telone</strong> :  08688 003 999,</p>
                         <p><strong>Telecel</strong> : WIP,Email : info@gene.co.zw, Website: www.gene.co.zw</p>
                     </div>
                 </div>

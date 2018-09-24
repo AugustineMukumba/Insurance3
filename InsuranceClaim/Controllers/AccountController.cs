@@ -106,7 +106,7 @@ namespace InsuranceClaim.Controllers
                     Session["lastname"] = customer.LastName;
 
 
-                    if (role == "Administrator" || role == "Staff")
+                    if (role == "Administrator")
                     {
 
                         return RedirectToAction("Dashboard", "Account");
@@ -659,7 +659,7 @@ namespace InsuranceClaim.Controllers
             return RedirectToAction("RoleManagementList");
         }
 
-        [Authorize(Roles = "Staff,Administrator")]
+        [Authorize(Roles = "Administrator")]
         public ActionResult RoleManagementList()
         {
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
@@ -918,7 +918,7 @@ namespace InsuranceClaim.Controllers
             return RedirectToAction("UserManagementList");
         }
 
-        [Authorize(Roles = "Staff,Administrator")]
+        [Authorize(Roles = "Administrator")]
         public ActionResult UserManagementList()
         {
 
@@ -1077,7 +1077,7 @@ namespace InsuranceClaim.Controllers
 
 
         // GET: Dashboard
-        [Authorize(Roles = "Staff,Administrator")]
+        [Authorize(Roles = "Administrator")]
         public ActionResult Dashboard()
         {
             return View();
@@ -1240,7 +1240,7 @@ namespace InsuranceClaim.Controllers
 
             return RedirectToAction("SettingList");
         }
-        [Authorize(Roles = "Staff,Administrator")]
+        [Authorize(Roles = "Administrator")]
         public ActionResult SettingList()
         {
 
@@ -1289,7 +1289,7 @@ namespace InsuranceClaim.Controllers
 
             return RedirectToAction("SettingList");
         }
-        [Authorize(Roles = "Staff,Administrator")]
+        [Authorize(Roles = "Administrator")]
         public ActionResult ListReinsuranceBroker()
         {
 

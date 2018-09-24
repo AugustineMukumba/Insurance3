@@ -1178,7 +1178,10 @@
                     vehicle = data.Data.Response.Quotes[0].Vehicle;
 
                     var vMake = vehicle.Make;
-                    $("#MakeId option:contains(" + vMake + ")").attr('selected', 'selected');
+
+                    debugger;
+
+                    $("#MakeId option:contains(" + vMake.toUpperCase() + ")").attr('selected', 'selected');
                     $("#MakeId").addClass("inputDisabled");
                     var vModel = vehicle.Model;
                     GetVehicleModels(vModel);
@@ -1327,7 +1330,7 @@
                     $dropdown.append($("<option />").val(this.ModelCode).text(this.ModelDescription));
                 });
                 if (ModelName != "") {
-                    $("#ModelId option:contains(" + ModelName + ")").attr('selected', 'selected');
+                    $("#ModelId option:contains(" + ModelName.toUpperCase() + ")").attr('selected', 'selected');
                     //$("#ModelId").attr("readonly","readonly");
                     $("#ModelId").addClass("inputDisabled")
                     $("#ProductId").addClass("inputDisabled")
