@@ -12,7 +12,7 @@ namespace InsuranceClaim.Models
         public int Id { get; set; }
         [Display(Name = "Product Name")]
         public int ProductId { get; set; }
-        [Display(Name = "Veh Usage")]
+        [Display(Name = "Vehicle Usage")]
         [Required(ErrorMessage = "Please Enter Veh Usage.")]
         public string VehUsage { get; set; }
         [Display(Name = "Comprehensive Rate")]

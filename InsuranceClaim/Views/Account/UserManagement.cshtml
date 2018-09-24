@@ -54,7 +54,7 @@
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.PhoneNumber, new { @class = "gender-label" })
                                             @Html.DropDownListFor(x => x.CountryCode, new SelectList(ViewBag.Countries, "code", "code"), new { @class = "form-control countrycode" })
-                                            @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control phonenumber", @name = "PhoneNumber", @autocomplete = "off", @id = "PhoneNumber", @placeholder = "Phone Number" })
+                                            @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control phonenumber", @name = "PhoneNumber", @autocomplete = "off", @id = "PhoneNumber", @placeholder = "Phone Number", onkeypress = "return isNumber(event)",@maxlength="10"})
                                             @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
                                             @Html.ValidationMessageFor(x => x.CountryCode, "", new { @class = "text-danger" })
                                         </div>
@@ -204,6 +204,18 @@
 
 
 <script type="text/javascript">
+
+
+    
+    function isNumber(evt) {
+        debugger;
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
 
 
     $(document).ready(function () { // will trigger when the document is ready
