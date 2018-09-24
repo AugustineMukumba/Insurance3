@@ -32,7 +32,7 @@ namespace InsuranceClaim.Controllers
         Insurance.Service.smsService objsmsService = new Insurance.Service.smsService();
         public AccountController()
         {
-           
+
 
         }
 
@@ -937,7 +937,7 @@ namespace InsuranceClaim.Controllers
                 return RedirectToAction("Index", "CustomerRegistration");
             }
 
-            
+
 
             List<CustomerModel> ListUserViewModel = new List<CustomerModel>();
             var user = InsuranceContext.Customers.All(where: "IsActive = 'True' or IsActive is null").OrderByDescending(x => x.Id).ToList();
@@ -992,7 +992,7 @@ namespace InsuranceClaim.Controllers
             // InsuranceContext.Customers.Delete(data);
 
             var currentUser = UserManager.FindById(userid);
-          //  UserManager.Delete(currentUser);
+            //  UserManager.Delete(currentUser);
 
 
 
@@ -1410,35 +1410,35 @@ namespace InsuranceClaim.Controllers
                     var _vehicle = InsuranceContext.VehicleDetails.Single(_item.VehicleDetailsId);
                     var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.All(where: $"SummaryDetailId={item.Id} and VehicleId={_item.VehicleDetailsId}").ToList();
 
-                 
-                        obj.CoverType = Convert.ToInt32(_vehicle.CoverTypeId);
-                        obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
-                        obj.MakeId = _vehicle.MakeId;
-                        obj.ModelId = _vehicle.ModelId;
-                        //obj.Premium = Convert.ToDecimal(_vehicle.Premium);
-                        obj.RegisterationNumber = _vehicle.RegistrationNo;
-                        obj.SumInsured = Convert.ToDecimal(_vehicle.SumInsured);
-                        obj.VehicleId = _vehicle.Id;
-                        obj.startdate = Convert.ToDateTime(_vehicle.CoverStartDate);
-                        obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
-                        obj.RenewalDate = Convert.ToDateTime(_vehicle.RenewalDate);
-                        obj.isLapsed = _vehicle.isLapsed;
-                        obj.BalanceAmount = Convert.ToDecimal(_vehicle.BalanceAmount);
-                        obj.isActive = Convert.ToBoolean(_vehicle.IsActive);
-                        obj.Premium = Convert.ToDecimal(_vehicle.Premium + _vehicle.StampDuty + _vehicle.ZTSCLevy + (Convert.ToBoolean(_vehicle.IncludeRadioLicenseCost) ? Convert.ToDecimal(_vehicle.RadioLicenseCost) : 0.00m));
-                        if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
-                        {
-                            obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
-                            obj.AutoFacPremium = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsurancePremium);
-                            obj.AutoFacReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceAmount);
 
-                            if (_reinsurenaceTrans.Count > 1)
-                            {
-                                obj.FacultativeCommission = Convert.ToDecimal(_reinsurenaceTrans[1].ReinsuranceCommission);
-                                obj.FacPremium = Convert.ToDecimal(_reinsurenaceTrans[1].ReinsurancePremium);
-                                obj.FacReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans[1].ReinsuranceAmount);
-                            }
-                        
+                    obj.CoverType = Convert.ToInt32(_vehicle.CoverTypeId);
+                    obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
+                    obj.MakeId = _vehicle.MakeId;
+                    obj.ModelId = _vehicle.ModelId;
+                    //obj.Premium = Convert.ToDecimal(_vehicle.Premium);
+                    obj.RegisterationNumber = _vehicle.RegistrationNo;
+                    obj.SumInsured = Convert.ToDecimal(_vehicle.SumInsured);
+                    obj.VehicleId = _vehicle.Id;
+                    obj.startdate = Convert.ToDateTime(_vehicle.CoverStartDate);
+                    obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
+                    obj.RenewalDate = Convert.ToDateTime(_vehicle.RenewalDate);
+                    obj.isLapsed = _vehicle.isLapsed;
+                    obj.BalanceAmount = Convert.ToDecimal(_vehicle.BalanceAmount);
+                    obj.isActive = Convert.ToBoolean(_vehicle.IsActive);
+                    obj.Premium = Convert.ToDecimal(_vehicle.Premium + _vehicle.StampDuty + _vehicle.ZTSCLevy + (Convert.ToBoolean(_vehicle.IncludeRadioLicenseCost) ? Convert.ToDecimal(_vehicle.RadioLicenseCost) : 0.00m));
+                    if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
+                    {
+                        obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
+                        obj.AutoFacPremium = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsurancePremium);
+                        obj.AutoFacReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceAmount);
+
+                        if (_reinsurenaceTrans.Count > 1)
+                        {
+                            obj.FacultativeCommission = Convert.ToDecimal(_reinsurenaceTrans[1].ReinsuranceCommission);
+                            obj.FacPremium = Convert.ToDecimal(_reinsurenaceTrans[1].ReinsurancePremium);
+                            obj.FacReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans[1].ReinsuranceAmount);
+                        }
+
 
 
                         policylistviewmodel.Vehicles.Add(obj);
@@ -1557,6 +1557,7 @@ namespace InsuranceClaim.Controllers
                             obj.VehicleId = _vehicle.Id;
                             obj.startdate = Convert.ToDateTime(_vehicle.CoverStartDate);
                             obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
+                            obj.RenewalDate = Convert.ToDateTime(_vehicle.RenewalDate);
                             if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
                             {
                                 obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
@@ -1967,7 +1968,7 @@ namespace InsuranceClaim.Controllers
 
             if (summarydetail != null)
             {
-                
+
 
                 var model = Mapper.Map<SummaryDetail, SummaryDetailModel>(summarydetail);
                 model.CarInsuredCount = vehicle.Count;
@@ -2331,19 +2332,19 @@ namespace InsuranceClaim.Controllers
             ListPolicy policylist = new ListPolicy();
             policylist.listpolicy = new List<PolicyListViewModel>();
             var customerID = InsuranceContext.Customers.Single(where: $"userid='{User.Identity.GetUserId().ToString()}'").Id;
-      
+
             var SummaryList = new List<SummaryDetail>();
 
 
 
             if (role == "Staff")
             {
-               SummaryList = InsuranceContext.SummaryDetails.All(where: $"CreatedBy={customerID}").OrderByDescending(x => x.Id).ToList();
+                SummaryList = InsuranceContext.SummaryDetails.All(where: $"CreatedBy={customerID}").OrderByDescending(x => x.Id).ToList();
 
             }
             else
             {
-                    SummaryList = InsuranceContext.SummaryDetails.All(where: $"customerid={customerID}").OrderByDescending(x => x.Id).ToList();
+                SummaryList = InsuranceContext.SummaryDetails.All(where: $"customerid={customerID}").OrderByDescending(x => x.Id).ToList();
 
             }
 
