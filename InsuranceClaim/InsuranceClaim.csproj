@@ -221,6 +221,8 @@
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\RenewController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Controllers\VehicleMakeController.cs" />
+    <Compile Include="Controllers\VehicleModelController.cs" />
     <Compile Include="Controllers\VehicleUsageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -430,6 +432,12 @@
     <Content Include="Views\Account\QuotationList.cshtml" />
     <Content Include="Views\Shared\EmaiTemplates\PolicyActivation.cshtml" />
     <Content Include="Views\Shared\EmaiTemplates\PolicyDeActivation.cshtml" />
+    <Content Include="Views\VehicleMake\Index.cshtml" />
+    <Content Include="Views\VehicleMake\VehicleMakeList.cshtml" />
+    <Content Include="Views\VehicleMake\VehicleMakeEdit.cshtml" />
+    <Content Include="Views\VehicleModel\Index.cshtml" />
+    <Content Include="Views\VehicleModel\VehicleModelList.cshtml" />
+    <Content Include="Views\VehicleModel\VehicleModelEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
