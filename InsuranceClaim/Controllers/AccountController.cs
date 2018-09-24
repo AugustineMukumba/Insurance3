@@ -733,19 +733,12 @@ namespace InsuranceClaim.Controllers
                 return RedirectToAction("Index", "CustomerRegistration");
             }
 
-
-
-
-
             CustomerModel obj = new CustomerModel();
             List<IdentityRole> roles = roleManager.Roles.ToList();
             InsuranceClaim.Models.RoleManagementListViewModel _roles = new RoleManagementListViewModel();
 
             _roles.RoleList = roles;
-
             ViewBag.Adduser = _roles.RoleList;
-
-
 
 
 
@@ -790,7 +783,8 @@ namespace InsuranceClaim.Controllers
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             if (userLoggedin)
             {
-                var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                 var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+               // var userid = model.UserID;
                 var roles = UserManager.GetRoles(userid).FirstOrDefault();
                 //if (roles != "SuperAdmin")
                 //{
@@ -947,6 +941,7 @@ namespace InsuranceClaim.Controllers
             {
                 CustomerModel cstmrModel = new CustomerModel();
                 cstmrModel.Id = item.Id;
+                cstmrModel.UserID = item.UserID;
                 cstmrModel.CustomerId = item.CustomerId;
                 cstmrModel.FirstName = item.FirstName;
                 cstmrModel.LastName = item.LastName;
@@ -977,12 +972,9 @@ namespace InsuranceClaim.Controllers
             return View(lstUserModel);
 
 
-
-
-
         }
 
-        public ActionResult DeleteUserManagement(int id)
+        public ActionResult DeleteUserManagement(int id )
         {
             var data = InsuranceContext.Customers.Single(id);
 
@@ -991,13 +983,30 @@ namespace InsuranceClaim.Controllers
             InsuranceContext.Customers.Update(data);
             // InsuranceContext.Customers.Delete(data);
 
-            var currentUser = UserManager.FindById(userid);
+          //  var currentUser = UserManager.FindById(userid);
           //  UserManager.Delete(currentUser);
-
-
 
             return RedirectToAction("UserManagementList");
         }
+
+        [HttpPost]
+        public ActionResult ActiveDeactive(string id, string flag)
+        {
+            var data = InsuranceContext.Customers.Single(id);
+
+            var userid = data.UserID;
+            data.IsActive = Convert.ToBoolean(flag);
+            InsuranceContext.Customers.Update(data);
+            // InsuranceContext.Customers.Delete(data);
+
+            //  var currentUser = UserManager.FindById(userid);
+            //  UserManager.Delete(currentUser);
+
+            return RedirectToAction("UserManagementList");
+        }
+
+
+
         [Authorize(Roles = "Staff,Administrator")]
         public ActionResult PolicyList()
         {

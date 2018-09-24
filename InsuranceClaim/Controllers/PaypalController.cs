@@ -897,9 +897,6 @@ namespace InsuranceClaim.Controllers
                     ICEcashService.TPIQuoteUpdate(customerDetails, vichelDetails, PartnerToken, 1);
                     ICEcashService.TPIPolicy(vichelDetails, PartnerToken);
                 }
-
-
-
             }
 
 

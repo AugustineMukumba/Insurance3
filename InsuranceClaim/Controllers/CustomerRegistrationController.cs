@@ -16,6 +16,9 @@ using System.Web.Configuration;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using Newtonsoft.Json;
+using System.Data.SqlClient;
+
+
 
 namespace InsuranceClaim.Controllers
 {
@@ -42,6 +45,9 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult Index()
         {
+
+            var res = MaxCustoermId();
+
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             string path = Server.MapPath("~/Content/Countries.txt");
             var countries = System.IO.File.ReadAllText(path);
@@ -151,7 +157,6 @@ namespace InsuranceClaim.Controllers
 
                 if (userLoggedin)
                 {
-
                     Session["CustomerDataModal"] = model;
                     return Json(new { IsError = true, error = "" }, JsonRequestBehavior.AllowGet);
                 }
@@ -897,6 +902,68 @@ namespace InsuranceClaim.Controllers
         }
 
 
+        //public int MaxCustoermId1()
+        //{
+        //    int MaxCustomerId = 0;
+        //    string conStr = ConfigurationManager.ConnectionStrings["Insurance"].ConnectionString;
+        //    using (System.Data.SqlClient.SqlConnection cnz = new System.Data.SqlClient.SqlConnection(conStr))
+        //    {
+        //        System.Data.SqlClient.SqlCommand cmdzs = new System.Data.SqlClient.SqlCommand("select max(CustomerId) as MaxCustomerId from [dbo].[Customer ", cnz);
+        //        cmdzs.CommandType = System.Data.CommandType.Text;
+        //        cnz.Open();
+        //        MaxCustomerId = Convert.ToInt32(cnz.ex);
+        //    }
+
+        //    return MaxCustomerId;
+        //}
+
+
+        public int MaxCustoermId()
+        {
+            int count = 0;
+            using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["Insurance"].ConnectionString))
+            {
+                String sqlQuery = "select max(CustomerId) as MaxCustomerId from [dbo].[Customer]";
+                SqlCommand cmd = new SqlCommand(sqlQuery, conn);
+                try
+                {
+                    conn.Open();
+                    //Since return type is System.Object, a typecast is must
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    while (dr.Read())
+                    {
+
+                        if (dr.HasRows)
+                        {
+                            count = dr["MaxCustomerId"] == null ? 0 : Convert.ToInt32(dr["MaxCustomerId"]);
+                        }
+
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+
+            return count;
+        }
+
+
+
+
+
+
+
+
+
+
 
         [HttpPost]
         public async Task<ActionResult> SubmitPlan(SummaryDetailModel model, string btnSendQuatation = "")
@@ -906,6 +973,8 @@ namespace InsuranceClaim.Controllers
                 if (model != null)
                 {
                     //if (ModelState.IsValid && (model.AmountPaid >= model.MinAmounttoPaid && model.AmountPaid <= model.MaxAmounttoPaid))
+
+                    int CustomerUniquId = 0;
 
                     TempData["ErroMsg"] = null;
                     if (User.IsInRole("Staff") && model.PaymentMethodId == 1 && btnSendQuatation == "")
@@ -939,12 +1008,16 @@ namespace InsuranceClaim.Controllers
 
                         if (summaryDetial != null && btnSendQuatation == "") // while user come from qutation email
                         {
+
+
+
+
                             if (model.CustomSumarryDetilId != 0 && btnSendQuatation == "") // cehck if request is comming from agent email
                             {
                                 if (model.PaymentMethodId == 1)
-                                    return RedirectToAction("SaveDetailList", "Paypal", new { id = model.CustomSumarryDetilId, invoiceNumber=model.InvoiceNumber });
+                                    return RedirectToAction("SaveDetailList", "Paypal", new { id = model.CustomSumarryDetilId, invoiceNumber = model.InvoiceNumber });
                                 if (model.PaymentMethodId == 3)
-                                    return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(1), PolicyNumber = policyNum, Email = customerEmail });
+                                    return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policyNum, Email = customerEmail });
                                 else
                                     return RedirectToAction("PaymentDetail", new { id = model.CustomSumarryDetilId });
                             }
@@ -975,7 +1048,7 @@ namespace InsuranceClaim.Controllers
 
                         }
 
-
+                        var userDetials = UserManager.FindByEmail(customer.EmailAddress);
                         //if user staff
 
                         if (role == "Staff")
@@ -995,6 +1068,8 @@ namespace InsuranceClaim.Controllers
                                 if (customerDetials != null)
                                 {
                                     customer.Id = customerDetials.Id;
+
+                                    CustomerUniquId = customerDetials.Id;
                                 }
 
                             }
@@ -1038,12 +1113,14 @@ namespace InsuranceClaim.Controllers
                                 }
                             }
                         }
-                        else //  when user is logged in
+                        else if (userLoggedin && userDetials == null) //  when user is logged in
                         {
 
                             if (customer.Id == null || customer.Id == 0)
                             {
                                 decimal custId = 0;
+
+
                                 var user = new ApplicationUser { UserName = customer.EmailAddress, Email = customer.EmailAddress, PhoneNumber = customer.PhoneNumber };
                                 var result = await UserManager.CreateAsync(user, "Geninsure@123");
                                 if (result.Succeeded)
@@ -1057,6 +1134,10 @@ namespace InsuranceClaim.Controllers
                                     }
 
                                     var objCustomer = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).FirstOrDefault();
+
+
+
+                                    //Query
                                     if (objCustomer != null)
                                     {
                                         custId = objCustomer.CustomerId + 1;
@@ -1073,11 +1154,38 @@ namespace InsuranceClaim.Controllers
                                     customer.Id = customerdata.Id;
                                 }
                             }
+                        }
+                        else if (userLoggedin && userDetials != null && customer.Id == 0) //  when user is logged in
+                        {
+                            decimal custId = 0;
+
+                            var objCustomer = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).FirstOrDefault();
+                            //Query
+                            if (objCustomer != null)
+                            {
+                                custId = objCustomer.CustomerId + 1;
+                            }
                             else
                             {
-                                //  var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-                                var user = UserManager.FindByEmail(customer.EmailAddress);
-                                //var objCustomer = InsuranceContext.Customers.Single(where: $"Userid=@0", parms: new object[] { User.Identity.GetUserId() });
+                                custId = Convert.ToDecimal(ConfigurationManager.AppSettings["CustomerId"]);
+                            }
+
+                            customer.UserID = userDetials.Id;
+                            customer.CustomerId = custId;
+                            var customerdata = Mapper.Map<CustomerModel, Customer>(customer);
+                            InsuranceContext.Customers.Insert(customerdata);
+                            customer.Id = customerdata.Id;
+
+
+                        }
+                        else
+                        {
+                            //  var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+                            var user = UserManager.FindByEmail(customer.EmailAddress);
+                            //var objCustomer = InsuranceContext.Customers.Single(where: $"Userid=@0", parms: new object[] { User.Identity.GetUserId() });
+
+                            if (user != null)
+                            {
                                 var number = user.PhoneNumber;
                                 if (number != customer.PhoneNumber)
                                 {
@@ -1087,6 +1195,13 @@ namespace InsuranceClaim.Controllers
                                 // customer.UserID = User.Identity.GetUserId().ToString();
                                 customer.UserID = user.Id;
                                 var customerdata = Mapper.Map<CustomerModel, Customer>(customer);
+
+                                if(customerdata.CustomerId==0) // if exting record belong to 0
+                                {
+                                    customerdata.CustomerId = customerdata.Id;
+                                }
+                               
+
                                 InsuranceContext.Customers.Update(customerdata);
                             }
                         }
@@ -1757,7 +1872,7 @@ namespace InsuranceClaim.Controllers
                         if (model.PaymentMethodId == 1)
                             return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id, invoiceNumer = model.InvoiceNumber });
                         if (model.PaymentMethodId == 3)
-                            return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(1), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
+                            return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
                         else
                             return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
                     }
