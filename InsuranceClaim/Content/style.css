@@ -267,7 +267,7 @@ tfoot {
 
     .menu-navigation .navbar-nav li {
         display: inline-block;
-        float: none;
+        float: left;
     }
 
         .menu-navigation .navbar-nav li a {
