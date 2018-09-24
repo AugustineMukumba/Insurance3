@@ -130,6 +130,7 @@
     <Compile Include="SummaryVehicleDetailsModel.cs" />
     <Compile Include="UserManagementViewModel.cs" />
     <Compile Include="VehicleListModel.cs" />
+    <Compile Include="VehiclesMakeModel.cs" />
     <Compile Include="VehicleModel.cs" />
     <Compile Include="VehicleRiskAboutExpireModels.cs" />
     <Compile Include="VehicleUsageModel.cs" />
