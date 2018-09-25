@@ -46,7 +46,7 @@ namespace InsuranceClaim.Controllers
         public ActionResult Index()
         {
 
-            var res = MaxCustoermId();
+           // var res = MaxCustoermId();
 
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             string path = Server.MapPath("~/Content/Countries.txt");
@@ -1193,16 +1193,24 @@ namespace InsuranceClaim.Controllers
                                     UserManager.Update(user);
                                 }
                                 // customer.UserID = User.Identity.GetUserId().ToString();
-                                customer.UserID = user.Id;
-                                var customerdata = Mapper.Map<CustomerModel, Customer>(customer);
 
-                                if(customerdata.CustomerId==0) // if exting record belong to 0
+                                var customerDetials = InsuranceContext.Customers.Single(where: $"UserID = '" + user.Id + "'");
+
+                                if(customerDetials!=null)
                                 {
-                                    customerdata.CustomerId = customerdata.Id;
-                                }
-                               
+                                    customer.UserID = user.Id;
+                                    customer.CustomerId = customerDetials.CustomerId;
+                                    var customerdata = Mapper.Map<CustomerModel, Customer>(customer);
 
-                                InsuranceContext.Customers.Update(customerdata);
+                                    if (customerdata.CustomerId == 0) // if exting record belong to 0
+                                    {
+                                        customerdata.CustomerId = customerdata.Id;
+                                    }
+
+
+                                    InsuranceContext.Customers.Update(customerdata);
+                                }
+                                
                             }
                         }
 
