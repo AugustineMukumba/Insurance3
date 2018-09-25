@@ -14,8 +14,10 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please Enter Key Name.")]
         public string keyname { get; set; }
         [Display(Name = "Value")]
-        [Required(ErrorMessage = "Please Enter value.")]
+        [Required(ErrorMessage = "Please Enter Value.")]
         public decimal? value { get; set; }
+        [Display(Name = "Value Type")]
+        [Required(ErrorMessage = "Please Select Value Type.")]
         public int? ValueType { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? CreatedDate { get; set; }

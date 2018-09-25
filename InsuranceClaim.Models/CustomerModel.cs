@@ -54,8 +54,9 @@ namespace InsuranceClaim.Models
         [MaxLength(25, ErrorMessage = "Country must be less than 25 characters long.")]
         public string Country { get; set; }
         [Display(Name = "Date Of Birth")]
-        [Required(ErrorMessage = "Please Enter Date Of Birth .")]
+        [Required(ErrorMessage = "Please Enter Date Of Birth.")]
         public DateTime? DateOfBirth { get; set; }
+        [Required(ErrorMessage = "Please Select Gender.")]
         public string Gender { get; set; }
         public bool? IsWelcomeNoteSent { get; set; }
         public bool? IsPolicyDocSent { get; set; }

@@ -1555,6 +1555,10 @@ div#invoiceNumberDiv .form-group {
 }
 .home-slider-sectopn .item img{width:100%;}
 
+
+.resize-none textarea { resize: none;  height: 90px;}
+.label-top{vertical-align:top;}
+
 /**15 june css end**/
 
 @media(max-width:767px) {

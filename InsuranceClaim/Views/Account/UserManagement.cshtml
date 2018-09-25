@@ -68,6 +68,7 @@
                                                 <label>@Html.RadioButtonFor(model => model.Gender, "Male", true)<span class="outside"><span class="inside"></span></span><strong>Male</strong></label>
                                                 <label>@Html.RadioButtonFor(model => model.Gender, "Female", true)<span class="outside"><span class="inside"></span></span><strong>Female</strong></label>
                                             </div>
+                                            @Html.ValidationMessageFor(x => x.Gender, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-md-6 form-group-text">
