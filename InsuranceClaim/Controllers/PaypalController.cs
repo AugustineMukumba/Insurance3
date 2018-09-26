@@ -607,6 +607,13 @@ namespace InsuranceClaim.Controllers
             var PaymentId = Session["PaymentId"];
             var InvoiceId = Session["InvoiceId"];
             var summaryDetail = InsuranceContext.SummaryDetails.Single(id);
+
+            if (summaryDetail != null && summaryDetail.isQuotation)
+            {
+                summaryDetail.isQuotation = false;
+                InsuranceContext.SummaryDetails.Update(summaryDetail);
+            }
+
             var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={id}").ToList();
             var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
             var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);

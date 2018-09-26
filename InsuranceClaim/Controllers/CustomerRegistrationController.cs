@@ -885,6 +885,14 @@ namespace InsuranceClaim.Controllers
             model.BalancePaidDate = DateTime.Now;
             model.Notes = "";
 
+            if(Session["PolicyData"]!=null)
+            {
+                var PolicyData = (PolicyDetail)Session["PolicyData"];
+                model.InvoiceNumber = PolicyData.PolicyNumber;
+            }
+            
+
+
 
             return View(model);
         }
