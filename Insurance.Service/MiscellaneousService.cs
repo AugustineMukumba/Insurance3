@@ -241,7 +241,7 @@ namespace Insurance.Service
 
         }
 
-        public static string AddLoyaltyPoints(int CustomerId, int PolicyId, RiskDetailModel vehicle, string email="")
+        public static string AddLoyaltyPoints(int CustomerId, int PolicyId, RiskDetailModel vehicle, string email="",string filepath = "")
         {
             var loaltyPointsSettings = InsuranceContext.Settings.Single(where: $"keyname='Points On Renewal'");
             var loyaltyPoint = 0.00m;
@@ -300,7 +300,7 @@ namespace Insurance.Service
              var TotalLoyaltyPoints = InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={CustomerId}").Sum(x => x.PointsEarned);
             string ReminderEmailPath = "/Views/Shared/EmaiTemplates/LoyaltyPoints.cshtml";
             string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(ReminderEmailPath));
-            var body = EmailBody2.Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##CreditedWalletAmount##", Convert.ToString(loyaltyPoint)).Replace("##TotalWalletBalance##", Convert.ToString(TotalLoyaltyPoints));
+            var body = EmailBody2.Replace("##FirstName##", customer.FirstName).Replace("##path##",filepath).Replace("##LastName##", customer.LastName).Replace("##CreditedWalletAmount##", Convert.ToString(loyaltyPoint)).Replace("##TotalWalletBalance##", Convert.ToString(TotalLoyaltyPoints));
            // var yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
             var attacheMentPath = MiscellaneousService.EmailPdf(body, policy.CustomerId, policy.PolicyNumber, "Loyalty Points");
 

@@ -17,6 +17,7 @@ namespace InsuranceClaim.Models
         public decimal TotalPremium { get; set; }
         public int SummaryId { get; set; }
         public DateTime createdOn { get; set; }
+        public bool  IsActive { get; set; }
 
     }
 
