@@ -30,7 +30,7 @@ namespace Insurance.Service
         public decimal QuaterlyRiskPremium { get; set; }
         public decimal Discount { get; set; }
 
-        public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType, eExcessType excessType, decimal excess, int PaymentTermid, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost, Boolean isVehicleRegisteredonICEcash, string BasicPremiumICEcash, string StampDutyICEcash, string ZTSCLevyICEcash, int ProductId=0)
+        public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType, eExcessType excessType, decimal excess, int PaymentTermid, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost, Boolean isVehicleRegisteredonICEcash, string BasicPremiumICEcash, string StampDutyICEcash, string ZTSCLevyICEcash, int ProductId = 0)
         {
             var vehicleUsage = InsuranceContext.VehicleUsages.Single(vehicleUsageId);
             var Setting = InsuranceContext.Settings.All();
@@ -56,7 +56,7 @@ namespace Insurance.Service
             }
             else if (coverType == eCoverType.ThirdParty)
             {
-                InsuranceRate = vehicleUsage.AnnualTPAmount==null ? 0 :(float)vehicleUsage.AnnualTPAmount;
+                InsuranceRate = vehicleUsage.AnnualTPAmount == null ? 0 : (float)vehicleUsage.AnnualTPAmount;
                 InsuranceMinAmount = vehicleUsage.MinThirdAmount;
             }
             else if (coverType == eCoverType.FullThirdParty)
@@ -133,7 +133,27 @@ namespace Insurance.Service
 
             if (RoadsideAssistance)
             {
-                additionalchargersa = (sumInsured * RoadsideAssistancePercentage) / 100;
+                if ((coverType == eCoverType.ThirdParty || coverType == eCoverType.FullThirdParty) && ProductId == 1) // for private car
+                {
+                    var roadsideAssistanceDetails = Setting.Where(x => x.keyname == "third party private cars roadside assistance").FirstOrDefault();
+                    if (roadsideAssistanceDetails != null)
+                    {
+                        additionalchargersa = Math.Round(Convert.ToDecimal(roadsideAssistanceDetails.value), 2);
+                    }
+                }
+                else if ((coverType == eCoverType.ThirdParty || coverType == eCoverType.FullThirdParty) && ProductId == 3) // Commercial vehicles
+                {
+                    var roadsideAssistanceDetails = Setting.Where(x => x.keyname == "third party commercial vehicle roadside assistance").FirstOrDefault();
+                    if (roadsideAssistanceDetails != null)
+                    {
+                        additionalchargersa = Math.Round(Convert.ToDecimal(roadsideAssistanceDetails.value), 2);
+                    }
+                }
+                else
+                {
+                    // it's for compresnsive
+                    additionalchargersa = (sumInsured * RoadsideAssistancePercentage) / 100;
+                }
             }
 
             if (MedicalExpenses)
@@ -151,6 +171,10 @@ namespace Insurance.Service
             this.PassengerAccidentCoverAmount = Math.Round(additionalchargepac, 2);
             this.PassengerAccidentCoverAmountPerPerson = Math.Round(PassengerAccidentCoverAmountPerPerson, 2);
             this.RoadsideAssistanceAmount = Math.Round(additionalchargersa, 2);
+
+
+
+
             this.RoadsideAssistancePercentage = Math.Round(RoadsideAssistancePercentage, 2);
             this.MedicalExpensesAmount = Math.Round(additionalchargeme, 2);
             this.MedicalExpensesPercentage = Math.Round(MedicalExpensesPercentage, 2);
@@ -218,10 +242,10 @@ namespace Insurance.Service
                     break;
             }
 
-            var totalPremium = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) :  this.Premium) + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount - this.Discount;
+            var totalPremium = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount - this.Discount;
 
 
-            premium = (decimal)totalPremium;                 
+            premium = (decimal)totalPremium;
 
 
             this.Premium = Math.Round(totalPremium, 2);
@@ -251,14 +275,14 @@ namespace Insurance.Service
             if (ZTSCLevySetting.ValueType == Convert.ToInt32(eSettingValueType.percentage))
             {
                 // ztscLevy = (totalPremium * Convert.ToDecimal(ZTSCLevySetting.value)) / 100;
-                 ztscLevy = (totalPremiumForZtscLevy * Convert.ToDecimal(ZTSCLevySetting.value)) / 100;
+                ztscLevy = (totalPremiumForZtscLevy * Convert.ToDecimal(ZTSCLevySetting.value)) / 100;
             }
             else
             {
                 // ztscLevy = totalPremium + Convert.ToDecimal(ZTSCLevySetting.value);
                 ztscLevy = totalPremiumForZtscLevy + Convert.ToDecimal(ZTSCLevySetting.value);
             }
-           
+
 
             this.StamDuty = Math.Round(stampDuty, 2);
             this.ZtscLevy = Math.Round(ztscLevy, 2);
@@ -270,13 +294,13 @@ namespace Insurance.Service
             }
 
 
-            if ( !string.IsNullOrEmpty(StampDutyICEcash) &&   Convert.ToDecimal(StampDutyICEcash) > 100000)
+            if (!string.IsNullOrEmpty(StampDutyICEcash) && Convert.ToDecimal(StampDutyICEcash) > 100000)
             {
                 this.StamDuty = 100000;
             }
 
             // if product "Private car"
-            if(ProductId==1)
+            if (ProductId == 1)
             {
                 if (!string.IsNullOrEmpty(ZTSCLevyICEcash) && Convert.ToDouble(ZTSCLevyICEcash) > 10.80)
                 {
@@ -286,9 +310,9 @@ namespace Insurance.Service
 
             if (ProductId == 3)
             {
-                if (!string.IsNullOrEmpty(ZTSCLevyICEcash) &&  Convert.ToDouble(ZTSCLevyICEcash) > 22.00)
+                if (!string.IsNullOrEmpty(ZTSCLevyICEcash) && Convert.ToDouble(ZTSCLevyICEcash) > 22.00)
                 {
-                    this.ZtscLevy = Math.Round(Convert.ToDecimal(22.00), 2);;
+                    this.ZtscLevy = Math.Round(Convert.ToDecimal(22.00), 2); ;
                 }
             }
 
