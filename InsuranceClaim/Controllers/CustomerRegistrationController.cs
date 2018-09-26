@@ -117,6 +117,7 @@ namespace InsuranceClaim.Controllers
                     }
                     customerModel.Zipcode = "00263";
                 }
+                customerModel.Zipcode = "00263";
                 return View(customerModel);
             }
             else
@@ -1668,6 +1669,7 @@ namespace InsuranceClaim.Controllers
 
                         if (listReinsuranceTransaction != null && listReinsuranceTransaction.Count > 0)
                         {
+                            string filepath = System.Configuration.ConfigurationManager.AppSettings["urlPath"];
                             int _vehicleId = 0;
                             int count = 0;
                             bool MailSent = false;
@@ -1692,7 +1694,7 @@ namespace InsuranceClaim.Controllers
                                         var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == summary.PaymentTermId);
                                         string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/Reinsurance_Admin.cshtml";
                                         string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
-                                        var Body = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##SummeryofVehicleInsured##", SummeryofVehicleInsured);
+                                        var Body = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##path##",filepath).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##SummeryofVehicleInsured##", SummeryofVehicleInsured);
 
                                         var attachementPath = MiscellaneousService.EmailPdf(Body, policy.CustomerId, policy.PolicyNumber, "Reinsurance Case");
 
@@ -1722,7 +1724,7 @@ namespace InsuranceClaim.Controllers
                                     var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == summary.PaymentTermId);
                                     string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/Reinsurance_Admin.cshtml";
                                     string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
-                                    var Body = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##SummeryofVehicleInsured##", SummeryofVehicleInsured);
+                                    var Body = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##paath##",filepath).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##SummeryofVehicleInsured##", SummeryofVehicleInsured);
 
                                     var attacehMentFilePath = MiscellaneousService.EmailPdf(Body, policy.CustomerId, policy.PolicyNumber, "Reinsurance Case");
 
@@ -1800,7 +1802,7 @@ namespace InsuranceClaim.Controllers
                                 model.CustomSumarryDetilId = summaryDetail.Id;
                             }
 
-
+                            string filepath = System.Configuration.ConfigurationManager.AppSettings["urlPath"];
                             var customerQuotation = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
                             var user = UserManager.FindById(customerQuotation.UserID);
                             //var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={model.Id}").ToList();
@@ -1821,7 +1823,7 @@ namespace InsuranceClaim.Controllers
 
 
                             string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(QuotationEmailPath));
-                            var Bodyy = MotorBody.Replace("##PolicyNo##", policyQuotation.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).
+                            var Bodyy = MotorBody.Replace("##PolicyNo##", policyQuotation.PolicyNumber).Replace("##path##",filepath).Replace("##Cellnumber##", user.PhoneNumber).
                                 Replace("##FirstName##", customerQuotation.FirstName).Replace("##LastName##", customerQuotation.LastName).Replace("##Email##", user.Email).
                                 Replace("##BirthDate##", customerQuotation.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customerQuotation.AddressLine1).
                                 Replace("##Address2##", customerQuotation.AddressLine2).Replace("##Renewal##", vehicleQuotation.RenewalDate.Value.ToString("dd/MM/yyyy")).
