@@ -156,5 +156,26 @@ namespace InsuranceClaim.Controllers
 
             return View(viewModel);
         }
+        public ActionResult GetRadioLicenseCost(int? id)
+        {
+            JsonResult jsonResult = new JsonResult();
+
+            jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
+
+            if (id == (int)ePaymentTerm.Annual)
+            {
+                jsonResult.Data = RadioLicenseCosts;
+
+            }
+            if (id == (int)ePaymentTerm.Termly)
+            {
+                jsonResult.Data = RadioLicenseCosts / 3;
+            }
+
+
+
+            return jsonResult;
+        }
     }
 }

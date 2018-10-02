@@ -88,9 +88,9 @@ namespace Insurance.Service
                 Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 10f, 0f);
                 HTMLWorker htmlparser = new HTMLWorker(pdfDoc);
                 string vehiclefolderpath = "";
-               
 
 
+                filename = Guid.NewGuid() + "" + filename;
 
                 using (MemoryStream memoryStream = new MemoryStream())
                 {

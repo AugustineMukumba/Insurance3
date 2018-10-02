@@ -90,15 +90,7 @@ namespace Insurance.Service
                 this.Message = "Insurance minimum amount $" + InsuranceMinAmount + " Charge is applicable.";
             }
 
-            switch (PaymentTermid)
-            {
-                case 3:
-                    premium = premium / 4;
-                    break;
-                case 4:
-                    premium = premium / 3;
-                    break;
-            }
+           
 
 
 
@@ -120,6 +112,8 @@ namespace Insurance.Service
                     premium += Convert.ToDecimal((Amount * settingAddThirdparty) / 100);
                 }
             }
+
+
             if (PassengerAccidentCover)
             {
                 int totalAdditionalPACcharge = NumberofPersons * Convert.ToInt32(PassengerAccidentCoverAmountPerPerson);
@@ -172,9 +166,6 @@ namespace Insurance.Service
             this.PassengerAccidentCoverAmountPerPerson = Math.Round(PassengerAccidentCoverAmountPerPerson, 2);
             this.RoadsideAssistanceAmount = Math.Round(additionalchargersa, 2);
 
-
-
-
             this.RoadsideAssistancePercentage = Math.Round(RoadsideAssistancePercentage, 2);
             this.MedicalExpensesAmount = Math.Round(additionalchargeme, 2);
             this.MedicalExpensesPercentage = Math.Round(MedicalExpensesPercentage, 2);
@@ -193,11 +184,38 @@ namespace Insurance.Service
                 this.ExcessAmount = (sumInsured * excess) / 100;
             }
 
+
+            decimal totalPremium = 0;
+            decimal calCulatePremiumWithOptional = 0;
+
+            if (coverType == eCoverType.Comprehensive)
+            {
+                calCulatePremiumWithOptional = this.Premium + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount;
+            }
+            else
+            {
+                calCulatePremiumWithOptional = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount;
+            }
+
+
+           
+
+            switch (PaymentTermid)
+            {
+                case 3:
+                    premium = calCulatePremiumWithOptional / 4;
+                    break;
+                case 4:
+                    premium = calCulatePremiumWithOptional / 3;
+                    break;
+            }
+
+
             switch (PaymentTermid)
             {
                 case 1:
                     this.AnnualRiskPremium = premium;
-                    if (isVehicleRegisteredonICEcash)
+                    if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive))
                     {
                         this.AnnualRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);
                     }
@@ -212,7 +230,7 @@ namespace Insurance.Service
                     break;
                 case 3:
                     this.QuaterlyRiskPremium = premium;
-                    if (isVehicleRegisteredonICEcash)
+                    if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive))
                     {
                         this.QuaterlyRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);
                     }
@@ -227,7 +245,7 @@ namespace Insurance.Service
                     break;
                 case 4:
                     this.TermlyRiskPremium = premium;
-                    if (isVehicleRegisteredonICEcash)
+                    if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive))
                     {
                         this.TermlyRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);
                     }
@@ -242,10 +260,10 @@ namespace Insurance.Service
                     break;
             }
 
-            var totalPremium = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount - this.Discount;
+            totalPremium = premium - this.Discount;
 
 
-            premium = (decimal)totalPremium;
+          //  premium = (decimal)totalPremium;
 
 
             this.Premium = Math.Round(totalPremium, 2);
@@ -270,7 +288,18 @@ namespace Insurance.Service
 
 
             var ztscLevy = 0.00m;
-            var totalPremiumForZtscLevy = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount;
+
+            decimal totalPremiumForZtscLevy = 0;
+
+            //if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive))
+            //{
+            //    totalPremiumForZtscLevy = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount;
+            //}
+            //else
+            //{
+            //    totalPremiumForZtscLevy = (this.Premium) + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount;
+            //}
+            totalPremiumForZtscLevy = calCulatePremiumWithOptional;
 
             if (ZTSCLevySetting.ValueType == Convert.ToInt32(eSettingValueType.percentage))
             {
@@ -287,7 +316,7 @@ namespace Insurance.Service
             this.StamDuty = Math.Round(stampDuty, 2);
             this.ZtscLevy = Math.Round(ztscLevy, 2);
 
-            if (isVehicleRegisteredonICEcash && totalPremium == Convert.ToDecimal(BasicPremiumICEcash))
+            if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive) && totalPremium == Convert.ToDecimal(BasicPremiumICEcash))
             {
                 this.StamDuty = Math.Round(Convert.ToDecimal(StampDutyICEcash), 2);
                 this.ZtscLevy = Math.Round(Convert.ToDecimal(ZTSCLevyICEcash), 2);
@@ -300,20 +329,55 @@ namespace Insurance.Service
             }
 
             // if product "Private car"
+
+
+
+
             if (ProductId == 1)
             {
-                if (!string.IsNullOrEmpty(ZTSCLevyICEcash) && Convert.ToDouble(ZTSCLevyICEcash) > 10.80)
+
+                if (PaymentTermid == 1)
                 {
-                    this.ZtscLevy = Math.Round(Convert.ToDecimal(10.80), 2);
+                    if (Convert.ToDouble(this.ZtscLevy) > 10.80)
+                    {
+                        double maxZTSC = 10.80;
+                        this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
+                    }
+                }
+                else if (PaymentTermid == 4)
+                {
+                    double maxZTSC = 10.80 / 3;
+
+                    if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
+                    {
+
+                        this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
+                    }
                 }
             }
 
             if (ProductId == 3)
             {
-                if (!string.IsNullOrEmpty(ZTSCLevyICEcash) && Convert.ToDouble(ZTSCLevyICEcash) > 22.00)
+
+                if (PaymentTermid == 1)
                 {
-                    this.ZtscLevy = Math.Round(Convert.ToDecimal(22.00), 2); ;
+                    if (Convert.ToDouble(this.ZtscLevy) > 22.00)
+                    {
+                        double maxZTSC = 22.00;
+                        this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
+                    }
                 }
+                else if (PaymentTermid == 4)
+                {
+                    double maxZTSC = 22.00 / 3;
+
+                    if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
+                    {
+
+                        this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
+                    }
+                }
+
             }
 
 

@@ -104,7 +104,7 @@
                             @Html.HiddenFor(m => m.RoadsideAssistance)
                             @Html.HiddenFor(m => m.RoadsideAssistanceAmount)
                             @Html.HiddenFor(m => m.RoadsideAssistancePercentage)
-                           @Html.HiddenFor(m=>m.InsuranceId)
+                            @Html.HiddenFor(m => m.InsuranceId)
 
                             @Html.Hidden("isVehicleRegisteredonICEcash")
                             @Html.Hidden("basicPremiumICEcash")
@@ -727,6 +727,49 @@
         });
     }
 
+    function GetVehicleMake()
+    {
+        $.ajax({
+            url: "@Url.Action("GetVehicleMake", "CustomerRegistration")",
+            type: "POST",
+            data: {},
+            dataType: "json",
+            success: function (result) {
+                //debugger;
+                var $dropdown = $("#MakeId");
+                $dropdown.empty();
+                $.each(result, function () {
+                    $dropdown.append($("<option />").val(this.MakeCode).text(this.MakeDescription));
+                });
+
+                //if ($("fieldset").attr("disabled") != "disabled") {
+                //    if ($("#isVehicleRegisteredonICEcash").val() == 1) {
+                //        generateQuotewithICEcash();
+                //    }
+                //    else{
+                //        QuoteCalculation();
+                //    }
+                //}
+            }
+        });
+    }
+
+
+    function getRadiolicensecost(){
+        debugger;
+        var selectedTerm = $("#PaymentTermId option:selected").val();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("getRadiolicensecost", "CustomerRegistration")",
+            data: { id: selectedTerm },
+            success: function (data ) {
+                $("#RadioLicenseCost").val(data)
+
+            }
+        }
+        )}
+
+
     function updateEndDate() {
 
         var selectedTerm = $("#PaymentTermId option:selected").val();
@@ -746,7 +789,7 @@
         }
     }
 
-    $(document).ready(function () {      
+    $(document).ready(function () {
 
         $("#datetimepicker2").datetimepicker({
             format: 'MM/D/YYYY',
@@ -760,7 +803,7 @@
             var incrementDay = moment(new Date(e.date));
             incrementDay.add(1, 'days');
             $('#datetimepicker2').data('DateTimePicker').minDate(incrementDay);
-            $(this).data("DateTimePicker").hide();  
+            $(this).data("DateTimePicker").hide();
             updateEndDate();
         });
 
@@ -825,6 +868,8 @@
                     toastr.warning("Please Select Valid Payment Term And Vehicle Type And Vehicle Registeration Number.");
                 }
             }
+            getRadiolicensecost();
+
 
         });
 
@@ -897,6 +942,7 @@
 
         $("#ProductId").change(function () {
             GetVehicleUsage();
+            
 
             if ($("fieldset").attr("disabled") == "disabled") {
                 if ($("#PaymentTermId").val() != "" && $("#ProductId").val() != "" && $("#RegistrationNo").val() != "") {
@@ -906,6 +952,10 @@
                     toastr.warning("Please Select Valid Payment Term And Vehicle Type And Vehicle Registeration Number.");
                 }
             }
+
+         //   GetVehicleMake();
+      
+
         });
 
         $("#MakeId").change(function () {
@@ -969,12 +1019,15 @@
                 $("#validationSumIns").css("display", "none");
             }
 
-            if ($("#isVehicleRegisteredonICEcash").val() == 1) {
-                generateQuotewithICEcash();
-            }
-            else{
-                QuoteCalculation();
-            }
+
+            QuoteCalculation();
+
+            //if ($("#isVehicleRegisteredonICEcash").val() == 1) {
+            //    generateQuotewithICEcash();
+            //}
+            //else{
+            //    QuoteCalculation();
+            //}
 
         });
 
@@ -1180,7 +1233,7 @@
                         $("#Premium").val(parseFloat(calulatePremium).toFixed(2));
                         $("#Discount").val(parseFloat(data.Data.LoyaltyDiscount).toFixed(2));
 
-                     
+
                         $("#InsuranceId").val(data.Data.Response.Quotes[0].InsuranceID);
 
                         $("#basicPremiumICEcash").val(parseFloat(CoverAmount).toFixed(2))

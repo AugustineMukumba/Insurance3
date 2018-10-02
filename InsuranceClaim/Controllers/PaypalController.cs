@@ -807,10 +807,10 @@ namespace InsuranceClaim.Controllers
             #endregion
             List<string> __attachements = new List<string>();
             __attachements.Add(attacehmetnFile);
-            if (!userLoggedin)
-            {
+            //if (!userLoggedin)
+            //{
                 __attachements.Add(Atter);
-            }
+            //}
 
             #region Invoice EMail
             objEmailService.SendEmail(user.Email, "", "", "Schedule-motor", Bodyy, __attachements);

@@ -25,13 +25,7 @@
 
 
                                 <div class="row">
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.LabelFor(x => x.ModelDescription, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.ModelDescription, new { @class = "form-control", @name = "MakeDescription", @autocomplete = "off", @id = "MakeDescription", @placeholder = "Enter Make Description" })
-                                            @Html.ValidationMessageFor(x => x.ModelDescription, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
+                                   
                                     <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.MakeCode, new { @class = "gender-label" })
@@ -39,6 +33,16 @@
                                             @Html.ValidationMessageFor(x => x.MakeCode, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
+
+
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.ModelDescription, new { @class = "gender-label" })
+                                            @Html.TextBoxFor(x => x.ModelDescription, new { @class = "form-control", @name = "MakeDescription", @autocomplete = "off", @id = "MakeDescription", @placeholder = "Enter Make Description" })
+                                            @Html.ValidationMessageFor(x => x.ModelDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
                                 </div>
 
 

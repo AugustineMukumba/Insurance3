@@ -253,8 +253,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                      
-                                       
+
+
 
                                         <div class="row">
                                             <div class="col-sm-6 col-md-6 form-group-text">
@@ -272,7 +272,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <hr class="higlighter" />                                       
+                                        <hr class="higlighter" />
                                         <div id="thridparty" class="row">
                                             <div class="col-sm-6 col-md-6 form-group-select">
                                                 <div id="thirdpartycheck" class="form-group">
@@ -289,7 +289,7 @@
                                             </div>
                                         </div>
 
-                                        
+
                                         <div class="row">
                                             <div class="col-sm-6 col-md-6 form-group-select">
                                                 <div class="form-group">
@@ -804,6 +804,21 @@
         });
     }
 
+
+    function GetRadioLicenseCost(){
+        debugger;
+        var selectedTerm = $("#PaymentTermId option:selected").val();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetRadioLicenseCost", "ContactCentre")",
+            data: { id: selectedTerm },
+            success: function (data ) {
+                $("#RadioLicenseCost").val(data)
+            }
+        }
+        )}
+
+
     function updateEndDate() {
         debugger;
         var selectedTerm = $("#PaymentTermId option:selected").val();
@@ -824,7 +839,7 @@
     }
 
     $(document).ready(function () {
- 
+
         $("#datetimepicker2").datetimepicker({
             format: 'MM/D/YYYY',
             minDate: new Date()
@@ -916,6 +931,7 @@
                     toastr.warning("Please Select Valid Payment Term And Vehicle Type And Vehicle Registeration Number.");
                 }
             }
+            GetRadioLicenseCost();
 
         });
 
@@ -1060,12 +1076,15 @@
                 $("#validationSumIns").css("display", "none");
             }
 
-            if ($("#isVehicleRegisteredonICEcash").val() == 1) {
-                generateQuotewithICEcash();
-            }
-            else{
-                QuoteCalculation();
-            }
+
+            QuoteCalculation();
+
+            //if ($("#isVehicleRegisteredonICEcash").val() == 1) {
+            //    generateQuotewithICEcash();
+            //}
+            //else{
+            //    QuoteCalculation();
+            //}
 
         });
 
@@ -1181,7 +1200,10 @@
 
                     debugger;
 
-                    $("#MakeId option:contains(" + vMake.toUpperCase() + ")").attr('selected', 'selected');
+                    // $("#MakeId option:contains(" + vMake.toUpperCase() + ")").attr('selected', 'selected');
+
+                    $("#MakeId option").filter(function() {return this.text == vMake.toUpperCase(); }).attr('selected', true);
+
                     $("#MakeId").addClass("inputDisabled");
                     var vModel = vehicle.Model;
                     GetVehicleModels(vModel);
@@ -1253,8 +1275,8 @@
             toastr.warning("Please Select A Payment Term !!");
         }
 
-       
-     
+
+        debugger;
 
 
         if (flag) {
@@ -1287,7 +1309,7 @@
 
                         $("#Premium").val(parseFloat(calulatePremium).toFixed(2));
 
-                        
+
 
 
 
@@ -1330,7 +1352,12 @@
                     $dropdown.append($("<option />").val(this.ModelCode).text(this.ModelDescription));
                 });
                 if (ModelName != "") {
-                    $("#ModelId option:contains(" + ModelName.toUpperCase() + ")").attr('selected', 'selected');
+
+
+                    $("#ModelId option").filter(function() {return this.text == ModelName.toUpperCase(); }).attr('selected', true);
+
+
+                  //  $("#ModelId option:contains(" + ModelName.toUpperCase() + ")").attr('selected', 'selected');
                     //$("#ModelId").attr("readonly","readonly");
                     $("#ModelId").addClass("inputDisabled")
                     $("#ProductId").addClass("inputDisabled")
@@ -1534,7 +1561,7 @@
                 $("#TermlyRiskPremium").val(parseFloat(data.TermlyRiskPremium).toFixed(2));
                 $("#QuaterlyRiskPremium").val(parseFloat(data.QuaterlyRiskPremium).toFixed(2));
                 $("#Discount").val(parseFloat(data.Discount).toFixed(2));
-               // $("#InsuranceId").val(data.Data.Response.Quotes[0].InsuranceID);
+                // $("#InsuranceId").val(data.Data.Response.Quotes[0].InsuranceID);
 
                 //$("#NumberofPersons").val(data.NumberofPersons);
                 //$("#AddThirdPartyAmount").val(data.AddThirdPartyAmount);

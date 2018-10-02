@@ -46,7 +46,7 @@ namespace InsuranceClaim.Controllers
         public ActionResult Index()
         {
 
-           // var res = MaxCustoermId();
+            // var res = MaxCustoermId();
 
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             string path = Server.MapPath("~/Content/Countries.txt");
@@ -288,7 +288,9 @@ namespace InsuranceClaim.Controllers
             viewModel.NumberofPersons = 0;
             viewModel.AddThirdPartyAmount = 0.00m;
             viewModel.RadioLicenseCost = Convert.ToDecimal(RadioLicenseCosts);
-            var makers = service.GetMakers();
+             var makers = service.GetMakers();
+
+
             ViewBag.CoverType = service.GetCoverType().Where(x => x.Name.Contains("Third Party")).ToList();
             ViewBag.AgentCommission = service.GetAgentCommission();
             ViewBag.Makers = makers;
@@ -885,17 +887,16 @@ namespace InsuranceClaim.Controllers
             model.BalancePaidDate = DateTime.Now;
             model.Notes = "";
 
-            if(Session["PolicyData"]!=null)
+            if (Session["PolicyData"] != null)
             {
                 var PolicyData = (PolicyDetail)Session["PolicyData"];
                 model.InvoiceNumber = PolicyData.PolicyNumber;
             }
-            
-
-
 
             return View(model);
         }
+
+
 
         public static string CreateRandomPassword()
         {
@@ -1205,7 +1206,7 @@ namespace InsuranceClaim.Controllers
 
                                 var customerDetials = InsuranceContext.Customers.Single(where: $"UserID = '" + user.Id + "'");
 
-                                if(customerDetials!=null)
+                                if (customerDetials != null)
                                 {
                                     customer.UserID = user.Id;
                                     customer.CustomerId = customerDetials.CustomerId;
@@ -1219,7 +1220,7 @@ namespace InsuranceClaim.Controllers
 
                                     InsuranceContext.Customers.Update(customerdata);
                                 }
-                                
+
                             }
                         }
 
@@ -1585,11 +1586,28 @@ namespace InsuranceClaim.Controllers
                                 //DbEntry.VehicleDetailId = vehicle[0].Id;
                                 //  bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
 
-                                var _User = UserManager.FindByEmail(customer.EmailAddress);
-                                var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{_User.Id}'").FirstOrDefault();
+
 
                                 DbEntry.CustomerId = vehicle[0].CustomerId;
-                                DbEntry.CreatedBy = _customerData.Id;
+
+                                bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+                                if (_userLoggedin)
+                                {
+                                    var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
+                                    var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{_User.Id}'").FirstOrDefault();
+
+                                    if (_customerData != null)
+                                    {
+                                        DbEntry.CreatedBy = _customerData.Id;
+                                    }
+
+                                }
+
+
+
+
+
+
                                 DbEntry.CreatedOn = DateTime.Now;
                                 if (DbEntry.BalancePaidDate.Value.Year == 0001)
                                 {
@@ -1702,7 +1720,7 @@ namespace InsuranceClaim.Controllers
                                         var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == summary.PaymentTermId);
                                         string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/Reinsurance_Admin.cshtml";
                                         string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
-                                        var Body = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##path##",filepath).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##SummeryofVehicleInsured##", SummeryofVehicleInsured);
+                                        var Body = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##path##", filepath).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##SummeryofVehicleInsured##", SummeryofVehicleInsured);
 
                                         var attachementPath = MiscellaneousService.EmailPdf(Body, policy.CustomerId, policy.PolicyNumber, "Reinsurance Case");
 
@@ -1732,7 +1750,7 @@ namespace InsuranceClaim.Controllers
                                     var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == summary.PaymentTermId);
                                     string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/Reinsurance_Admin.cshtml";
                                     string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
-                                    var Body = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##paath##",filepath).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##SummeryofVehicleInsured##", SummeryofVehicleInsured);
+                                    var Body = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##paath##", filepath).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##SummeryofVehicleInsured##", SummeryofVehicleInsured);
 
                                     var attacehMentFilePath = MiscellaneousService.EmailPdf(Body, policy.CustomerId, policy.PolicyNumber, "Reinsurance Case");
 
@@ -1831,7 +1849,7 @@ namespace InsuranceClaim.Controllers
 
 
                             string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(QuotationEmailPath));
-                            var Bodyy = MotorBody.Replace("##PolicyNo##", policyQuotation.PolicyNumber).Replace("##path##",filepath).Replace("##Cellnumber##", user.PhoneNumber).
+                            var Bodyy = MotorBody.Replace("##PolicyNo##", policyQuotation.PolicyNumber).Replace("##path##", filepath).Replace("##Cellnumber##", user.PhoneNumber).
                                 Replace("##FirstName##", customerQuotation.FirstName).Replace("##LastName##", customerQuotation.LastName).Replace("##Email##", user.Email).
                                 Replace("##BirthDate##", customerQuotation.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customerQuotation.AddressLine1).
                                 Replace("##Address2##", customerQuotation.AddressLine2).Replace("##Renewal##", vehicleQuotation.RenewalDate.Value.ToString("dd/MM/yyyy")).
@@ -1852,8 +1870,10 @@ namespace InsuranceClaim.Controllers
                             #endregion
 
                             #region Invoice EMail
+                            //var _yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
                             List<string> _attachementss = new List<string>();
                             _attachementss.Add(attacehmetn_File);
+                            //_attachementss.Add(_yAtter);
                             objEmailService.SendEmail(user.Email, "", "", "Quotation", Bodyy, _attachementss);
                             #endregion
 
@@ -2020,6 +2040,19 @@ namespace InsuranceClaim.Controllers
                         else
                         {
                             response.Data = quoteresponse;
+
+                            // check make and model exit or not if not then save into table.
+
+                            if (response.Data.Response.Quotes != null && response.Data.Response.Quotes[0].Vehicle != null)
+                            {
+                                string make = response.Data.Response.Quotes[0].Vehicle.Make;
+                                string model = response.Data.Response.Quotes[0].Vehicle.Model;
+                                if (!string.IsNullOrEmpty(make) && !string.IsNullOrEmpty(model))
+                                {
+                                    SaveVehicalMakeAndModel(make, model);
+                                }
+
+                            }
                         }
                     }
                 }
@@ -2035,6 +2068,54 @@ namespace InsuranceClaim.Controllers
             }
 
             return json;
+        }
+
+        public void SaveVehicalMakeAndModel(string make, string model)
+        {
+            var dbVehicalMake = InsuranceContext.VehicleMakes.Single(where: $"MakeDescription = '" + make + "'");
+
+
+            if (dbVehicalMake == null)
+            {
+                VehicleMake veshicalMake = new VehicleMake();
+                veshicalMake.CreatedOn = DateTime.Now;
+                veshicalMake.ModifiedOn = DateTime.Now;
+                veshicalMake.MakeDescription = make.ToUpper();
+                veshicalMake.ShortDescription = make;
+                veshicalMake.MakeCode = make;
+                InsuranceContext.VehicleMakes.Insert(veshicalMake);
+            }
+
+
+            var dbVehicalModel = InsuranceContext.VehicleModels.Single(where: $"ModelDescription = '" + model + "'");
+
+            if (dbVehicalModel == null)
+            {
+                VehicleModel vehicalModel = new VehicleModel();
+                vehicalModel.MakeCode = make;
+                vehicalModel.ModelDescription = model.ToUpper();
+                vehicalModel.ShortDescription = model;
+                vehicalModel.ModelCode = model;
+                InsuranceContext.VehicleModels.Insert(vehicalModel);
+            }
+        }
+
+
+        public JsonResult getRadiolicensecost(int? Id)
+        {
+            JsonResult jsonResult = new JsonResult();
+
+            jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
+            if (Id == (int)ePaymentTerm.Annual)
+            {
+                jsonResult.Data = RadioLicenseCosts;
+            }
+            if (Id == (int)ePaymentTerm.Termly)
+            {
+                jsonResult.Data = RadioLicenseCosts / 3;
+            }
+            return jsonResult;
         }
 
         [HttpPost]
@@ -2144,6 +2225,18 @@ namespace InsuranceClaim.Controllers
             jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             return jsonResult;
         }
+
+        public JsonResult GetVehicleMake()
+        {
+            var service = new VehicleService();
+            var model = service.GetMakers().Select(x => new VehicleMake {MakeCode = x.MakeCode, MakeDescription = x.MakeDescription }).ToList();
+            JsonResult jsonResult = new JsonResult();
+            jsonResult.Data = model;
+            jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            return jsonResult;
+        }
+
+
 
         public ActionResult PaymentDetail(int id)
         {
