@@ -140,6 +140,7 @@
                                 <div id="contact-form" class="contact-form">
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
+
                                             <div class="form-group">
                                                 @Html.Label("Vehicle Number", new { @class = "gender-label" })
                                                 @Html.TextBoxFor(m => m.NoOfCarsCovered, new { @placeholder = "Vehicle Number", @autocomplete = "off", @class = "form-control", @maxlength = "2", @readonly = "readonly" })
@@ -729,29 +730,43 @@
 
     function GetVehicleMake()
     {
-        $.ajax({
-            url: "@Url.Action("GetVehicleMake", "CustomerRegistration")",
-            type: "POST",
-            data: {},
-            dataType: "json",
-            success: function (result) {
-                //debugger;
-                var $dropdown = $("#MakeId");
-                $dropdown.empty();
-                $.each(result, function () {
-                    $dropdown.append($("<option />").val(this.MakeCode).text(this.MakeDescription));
-                });
 
-                //if ($("fieldset").attr("disabled") != "disabled") {
-                //    if ($("#isVehicleRegisteredonICEcash").val() == 1) {
-                //        generateQuotewithICEcash();
-                //    }
-                //    else{
-                //        QuoteCalculation();
-                //    }
-                //}
+        debugger;
+
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "@Url.Action("GetVehicleMake1", "CustomerRegistration")",
+            //url: "/CustomerRegistration/GetVehicleMake",
+            data: "{}",
+            dataType: "json",
+            success: function (Result) {
+                Result=Result.d;
+                $.each(Result, function (key, value) {
+                    $("#Make2").append($("<option></option>").val
+                    (value.MakeCode).html(value.MakeDescription));
+                });
+                // Another way of writing
+                //  for (var i = 0; i < Result.length; i++) {
+                // $("#ddlcountry").append("<option value=" + Result[i].ID + ">" +
+                //     Result[i].Name + "</option>");
+                //  }
+
+                // One more way of writing
+                // for (var i in Result) {
+                //  $("#ddlcountry").append($("<option></option>").val(Result[i].ID).
+                //   text(Result[i].Name));
+                //  }
+
+            },
+            error: function (Result) {
+                alert("Error");
             }
         });
+
+
+
     }
 
 
@@ -790,6 +805,8 @@
     }
 
     $(document).ready(function () {
+
+     
 
         $("#datetimepicker2").datetimepicker({
             format: 'MM/D/YYYY',
@@ -871,6 +888,8 @@
             getRadiolicensecost();
 
 
+
+
         });
 
 
@@ -942,7 +961,7 @@
 
         $("#ProductId").change(function () {
             GetVehicleUsage();
-            
+
 
             if ($("fieldset").attr("disabled") == "disabled") {
                 if ($("#PaymentTermId").val() != "" && $("#ProductId").val() != "" && $("#RegistrationNo").val() != "") {
@@ -954,7 +973,7 @@
             }
 
          //   GetVehicleMake();
-      
+
 
         });
 
@@ -1139,8 +1158,17 @@
                     var vehicle = {};
                     vehicle = data.Data.Response.Quotes[0].Vehicle;
 
+                    debugger;
+
+                   // GetVehicleMake();
+
+
                     var vMake = vehicle.Make;
-                    $("#MakeId option:contains(" + vMake.toUpperCase() + ")").attr('selected', 'selected');
+
+                  
+                    $("#MakeId option").filter(function() {return this.text == vMake.toUpperCase(); }).attr('selected', true);
+
+                    
                     $("#MakeId").addClass("inputDisabled");
                     var vModel = vehicle.Model;
                     GetVehicleModels(vModel);
@@ -1272,7 +1300,11 @@
                     $dropdown.append($("<option />").val(this.ModelCode).text(this.ModelDescription));
                 });
                 if (ModelName != "") {
-                    $("#ModelId option:contains(" + ModelName.toUpperCase() + ")").attr('selected', 'selected');
+                   // $("#ModelId option:contains(" + ModelName.toUpperCase() + ")").attr('selected', 'selected');
+                   
+                    $("#ModelId option").filter(function() {return this.text == ModelName.toUpperCase(); }).attr('selected', true);
+
+                    
                     //$("#ModelId").attr("readonly","readonly");
                     $("#ModelId").addClass("inputDisabled")
                     $("#ProductId").addClass("inputDisabled")

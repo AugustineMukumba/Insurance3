@@ -18,10 +18,7 @@ namespace InsuranceClaim.Controllers
             InsuranceClaim.Models.ClsVehicleModel obj = new InsuranceClaim.Models.ClsVehicleModel();
             List<Insurance.Domain.VehicleModel> objList = new List<Insurance.Domain.VehicleModel>();
             objList = InsuranceContext.VehicleModels.All().ToList();
-
             ViewBag.MakeList = MakeList();
-
-
             return View();
         }
 
@@ -42,19 +39,14 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult VehicleModelList()
         {
-
             var modellist = InsuranceContext.VehicleModels.All(where: "IsActive= 'True' or IsActive is Null").OrderByDescending(x=>x.Id).ToList();
-
             return View(modellist);
         }
-
 
         public ActionResult VehicleModelEdit(int Id)
         {
             var record = InsuranceContext.VehicleModels.All(where: $"Id ={Id}").FirstOrDefault();
-
             var model = Mapper.Map<VehicleModel, ClsVehicleModel>(record);
-
             ViewBag.MakeList = MakeList();
 
             return View(model);

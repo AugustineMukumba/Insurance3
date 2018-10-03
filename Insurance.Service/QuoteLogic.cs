@@ -90,8 +90,16 @@ namespace Insurance.Service
                 this.Message = "Insurance minimum amount $" + InsuranceMinAmount + " Charge is applicable.";
             }
 
-           
 
+            switch (PaymentTermid)
+            {
+                case 3:
+                    premium = premium / 4;
+                    break;
+                case 4:
+                    premium = premium / 3;
+                    break;
+            }
 
 
             var settingAddThirdparty = Convert.ToDecimal(Setting.Where(x => x.keyname == "Addthirdparty").Select(x => x.value).FirstOrDefault());
@@ -185,28 +193,41 @@ namespace Insurance.Service
             }
 
 
-            decimal totalPremium = 0;
-            decimal calCulatePremiumWithOptional = 0;
+            //decimal totalPremium = 0;
+            //decimal calCulatePremiumWithOptional = 0;
 
-            if (coverType == eCoverType.Comprehensive)
-            {
-                calCulatePremiumWithOptional = this.Premium + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount;
-            }
-            else
-            {
-                calCulatePremiumWithOptional = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount;
-            }
+            //if (coverType == eCoverType.Comprehensive)
+            //{
+            //    calCulatePremiumWithOptional = this.Premium + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount;
+            //}
+            //else
+            //{
+            //    calCulatePremiumWithOptional = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount;
+            //}
 
 
-           
+
+
+            //switch (PaymentTermid)
+            //{
+            //    case 3:
+            //        premium = calCulatePremiumWithOptional / 4;
+            //        break;
+            //    case 4:
+            //        premium = calCulatePremiumWithOptional / 3;
+            //        break;
+            //}
+
+
+            var discountField= this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount;
 
             switch (PaymentTermid)
             {
                 case 3:
-                    premium = calCulatePremiumWithOptional / 4;
+                    discountField = discountField / 4;
                     break;
                 case 4:
-                    premium = calCulatePremiumWithOptional / 3;
+                    discountField = discountField / 3;
                     break;
             }
 
@@ -214,7 +235,7 @@ namespace Insurance.Service
             switch (PaymentTermid)
             {
                 case 1:
-                    this.AnnualRiskPremium = premium;
+                    this.AnnualRiskPremium = premium+ discountField;
                     if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive))
                     {
                         this.AnnualRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);
@@ -229,7 +250,7 @@ namespace Insurance.Service
                     }
                     break;
                 case 3:
-                    this.QuaterlyRiskPremium = premium;
+                    this.QuaterlyRiskPremium = premium+ discountField;
                     if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive))
                     {
                         this.QuaterlyRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);
@@ -244,7 +265,7 @@ namespace Insurance.Service
                     }
                     break;
                 case 4:
-                    this.TermlyRiskPremium = premium;
+                    this.TermlyRiskPremium = premium+ discountField;
                     if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive))
                     {
                         this.TermlyRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);
@@ -260,10 +281,22 @@ namespace Insurance.Service
                     break;
             }
 
-            totalPremium = premium - this.Discount;
+            // totalPremium = premium - this.Discount;
+            decimal totalPremium = 0;
+
+            if (coverType == eCoverType.Comprehensive)
+            {
+                totalPremium = (this.Premium + discountField) - this.Discount;
+
+            }
+            else
+            {
+                totalPremium = ((isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium)+ discountField) - this.Discount;
+            }
 
 
-          //  premium = (decimal)totalPremium;
+
+            //  premium = (decimal)totalPremium;
 
 
             this.Premium = Math.Round(totalPremium, 2);
@@ -299,7 +332,19 @@ namespace Insurance.Service
             //{
             //    totalPremiumForZtscLevy = (this.Premium) + this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount;
             //}
-            totalPremiumForZtscLevy = calCulatePremiumWithOptional;
+
+
+            if (coverType == eCoverType.Comprehensive)
+            {
+                totalPremiumForZtscLevy = (this.Premium + discountField) ;
+
+            }
+            else
+            {
+                totalPremiumForZtscLevy = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + discountField;
+
+            }
+
 
             if (ZTSCLevySetting.ValueType == Convert.ToInt32(eSettingValueType.percentage))
             {

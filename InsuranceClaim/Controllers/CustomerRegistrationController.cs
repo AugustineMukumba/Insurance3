@@ -17,8 +17,7 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using Newtonsoft.Json;
 using System.Data.SqlClient;
-
-
+using System.IO;
 
 namespace InsuranceClaim.Controllers
 {
@@ -288,7 +287,7 @@ namespace InsuranceClaim.Controllers
             viewModel.NumberofPersons = 0;
             viewModel.AddThirdPartyAmount = 0.00m;
             viewModel.RadioLicenseCost = Convert.ToDecimal(RadioLicenseCosts);
-             var makers = service.GetMakers();
+            var makers = service.GetMakers();
 
 
             ViewBag.CoverType = service.GetCoverType().Where(x => x.Name.Contains("Third Party")).ToList();
@@ -416,6 +415,10 @@ namespace InsuranceClaim.Controllers
         {
 
 
+
+
+
+
             if (model.NumberofPersons == null)
             {
                 model.NumberofPersons = 0;
@@ -426,66 +429,23 @@ namespace InsuranceClaim.Controllers
                 model.AddThirdPartyAmount = 0.00m;
             }
 
+
+
             if (model.isUpdate)
             {
-                model.Id = 0;
 
-                //if (!model.IncludeRadioLicenseCost)
-                //{
-                //    model.RadioLicenseCost = 0.00m;
-                //}
-
-                if (ModelState.IsValid)
-                {
-                    List<RiskDetailModel> listriskdetailmodel = new List<RiskDetailModel>();
-                    if (Session["VehicleDetails"] != null)
-                    {
-                        List<RiskDetailModel> listriskdetails = (List<RiskDetailModel>)Session["VehicleDetails"];
-                        if (listriskdetails != null && listriskdetails.Count > 0)
-                        {
-                            listriskdetailmodel = listriskdetails;
-                        }
-                    }
-
-                    listriskdetailmodel[model.vehicleindex - 1] = model;
-                    Session["VehicleDetails"] = listriskdetailmodel;
-                }
-                if (User.IsInRole("Staff"))
-                {
-                    return RedirectToAction("RiskDetail", "ContactCentre");
-                }
-                else
-                {
-                    return RedirectToAction("RiskDetail");
-
-                }
-
-            }
-            else
-            {
-
-                if (model.chkAddVehicles)
+                try
                 {
 
-                    DateTimeFormatInfo usDtfi = new CultureInfo("en-US", false).DateTimeFormat;
-                    var service = new RiskDetailService();
-                    var startDate = Request.Form["CoverStartDate"];
-                    var endDate = Request.Form["CoverEndDate"];
-                    if (!string.IsNullOrEmpty(startDate))
-                    {
-                        ModelState.Remove("CoverStartDate");
-                        model.CoverStartDate = Convert.ToDateTime(startDate, usDtfi);
-                    }
-                    if (!string.IsNullOrEmpty(endDate))
-                    {
-                        ModelState.Remove("CoverEndDate");
-                        model.CoverEndDate = Convert.ToDateTime(endDate, usDtfi);
-                    }
+                    model.Id = 0;
+
+                    //if (!model.IncludeRadioLicenseCost)
+                    //{
+                    //    model.RadioLicenseCost = 0.00m;
+                    //}
 
                     if (ModelState.IsValid)
                     {
-                        model.Id = 0;
-
                         List<RiskDetailModel> listriskdetailmodel = new List<RiskDetailModel>();
                         if (Session["VehicleDetails"] != null)
                         {
@@ -496,10 +456,23 @@ namespace InsuranceClaim.Controllers
                             }
                         }
 
-                        listriskdetailmodel.Add(model);
+                        listriskdetailmodel[model.vehicleindex - 1] = model;
                         Session["VehicleDetails"] = listriskdetailmodel;
+                    }
+                    if (User.IsInRole("Staff"))
+                    {
+                        return RedirectToAction("RiskDetail", "ContactCentre");
+                    }
+                    else
+                    {
+                        return RedirectToAction("RiskDetail");
 
                     }
+                }
+                catch (Exception ex)
+                {
+                    WriteLog(ex.Message);
+
                     if (User.IsInRole("Staff"))
                     {
                         return RedirectToAction("RiskDetail", "ContactCentre");
@@ -511,50 +484,138 @@ namespace InsuranceClaim.Controllers
                     }
 
                 }
-                else
+
+            }
+            else
+            {
+
+                try
                 {
 
-                    DateTimeFormatInfo usDtfi = new CultureInfo("en-US", false).DateTimeFormat;
-                    var service = new RiskDetailService();
-                    var startDate = Request.Form["CoverStartDate"];
-                    var endDate = Request.Form["CoverEndDate"];
-                    if (!string.IsNullOrEmpty(startDate))
-                    {
-                        ModelState.Remove("CoverStartDate");
-                        model.CoverStartDate = Convert.ToDateTime(startDate, usDtfi);
-                    }
-                    if (!string.IsNullOrEmpty(endDate))
-                    {
-                        ModelState.Remove("CoverEndDate");
-                        model.CoverEndDate = Convert.ToDateTime(endDate, usDtfi);
-                    }
-                    if (ModelState.IsValid)
-                    {
-                        model.Id = 0;
-
-                        //if (!model.IncludeRadioLicenseCost)
-                        //{
-                        //    model.RadioLicenseCost = 0.00m;
-                        //}
 
 
-                        List<RiskDetailModel> listriskdetailmodel = new List<RiskDetailModel>();
-                        if (Session["VehicleDetails"] != null)
+
+                    if (model.chkAddVehicles)
+                    {
+
+                        DateTimeFormatInfo usDtfi = new CultureInfo("en-US", false).DateTimeFormat;
+                        var service = new RiskDetailService();
+                        var startDate = Request.Form["CoverStartDate"];
+                        var endDate = Request.Form["CoverEndDate"];
+                        if (!string.IsNullOrEmpty(startDate))
                         {
-                            List<RiskDetailModel> listriskdetails = (List<RiskDetailModel>)Session["VehicleDetails"];
-                            if (listriskdetails != null && listriskdetails.Count > 0)
-                            {
-                                listriskdetailmodel = listriskdetails;
-                            }
+                            ModelState.Remove("CoverStartDate");
+                            model.CoverStartDate = Convert.ToDateTime(startDate, usDtfi);
                         }
-                        model.Id = 0;
-                        listriskdetailmodel.Add(model);
-                        Session["VehicleDetails"] = listriskdetailmodel;
+                        if (!string.IsNullOrEmpty(endDate))
+                        {
+                            ModelState.Remove("CoverEndDate");
+                            model.CoverEndDate = Convert.ToDateTime(endDate, usDtfi);
+                        }
+
+                        if (ModelState.IsValid)
+                        {
+                            model.Id = 0;
+
+                            List<RiskDetailModel> listriskdetailmodel = new List<RiskDetailModel>();
+                            if (Session["VehicleDetails"] != null)
+                            {
+                                List<RiskDetailModel> listriskdetails = (List<RiskDetailModel>)Session["VehicleDetails"];
+                                if (listriskdetails != null && listriskdetails.Count > 0)
+                                {
+                                    listriskdetailmodel = listriskdetails;
+                                }
+                            }
+
+                            listriskdetailmodel.Add(model);
+                            Session["VehicleDetails"] = listriskdetailmodel;
+
+                        }
+                        if (User.IsInRole("Staff"))
+                        {
+                            return RedirectToAction("RiskDetail", "ContactCentre");
+                        }
+                        else
+                        {
+                            return RedirectToAction("RiskDetail");
+
+                        }
 
                     }
+                    else
+                    {
+
+                        DateTimeFormatInfo usDtfi = new CultureInfo("en-US", false).DateTimeFormat;
+                        var service = new RiskDetailService();
+                        var startDate = Request.Form["CoverStartDate"];
+                        var endDate = Request.Form["CoverEndDate"];
+                        if (!string.IsNullOrEmpty(startDate))
+                        {
+                            ModelState.Remove("CoverStartDate");
+                            model.CoverStartDate = Convert.ToDateTime(startDate, usDtfi);
+                        }
+                        if (!string.IsNullOrEmpty(endDate))
+                        {
+                            ModelState.Remove("CoverEndDate");
+                            model.CoverEndDate = Convert.ToDateTime(endDate, usDtfi);
+                        }
+                        if (ModelState.IsValid)
+                        {
+                            model.Id = 0;
+
+                            //if (!model.IncludeRadioLicenseCost)
+                            //{
+                            //    model.RadioLicenseCost = 0.00m;
+                            //}
+
+
+                            List<RiskDetailModel> listriskdetailmodel = new List<RiskDetailModel>();
+                            if (Session["VehicleDetails"] != null)
+                            {
+                                List<RiskDetailModel> listriskdetails = (List<RiskDetailModel>)Session["VehicleDetails"];
+                                if (listriskdetails != null && listriskdetails.Count > 0)
+                                {
+                                    listriskdetailmodel = listriskdetails;
+                                }
+                            }
+                            model.Id = 0;
+                            listriskdetailmodel.Add(model);
+                            Session["VehicleDetails"] = listriskdetailmodel;
+
+                        }
+
+                        return RedirectToAction("SummaryDetail");
+                    }
+
+                }
+                catch (Exception ex)
+                {
+
+
+                    WriteLog(ex.Message);
 
                     return RedirectToAction("SummaryDetail");
                 }
+            }
+        }
+
+
+        public void WriteLog(string error)
+        {
+            string message = string.Format("Error Time: {0}", DateTime.Now);
+            message += error;
+            message += "-----------------------------------------------------------";
+
+            message += Environment.NewLine;
+
+
+
+
+            string path = System.Web.HttpContext.Current.Server.MapPath("~/LogFile.txt");
+            using (StreamWriter writer = new StreamWriter(path, true))
+            {
+                writer.WriteLine(message);
+                writer.Close();
             }
         }
 
@@ -735,8 +796,12 @@ namespace InsuranceClaim.Controllers
                 //return RedirectToAction("RiskDetail", "CustomerRegistration");
                 return Redirect("/CustomerRegistration/RiskDetail");
             }
+            var model = new SummaryDetailModel();
+            try
+            {
 
-
+            
+           
 
             Session["issummaryformvisited"] = true;
             var summarydetail = (SummaryDetailModel)Session["SummaryDetailed"];
@@ -760,7 +825,7 @@ namespace InsuranceClaim.Controllers
             }
 
 
-            var model = new SummaryDetailModel();
+           
             var summary = new SummaryDetailService();
             var vehicle = (List<RiskDetailModel>)Session["VehicleDetails"];// summary.GetVehicleInformation(id);
 
@@ -882,7 +947,12 @@ namespace InsuranceClaim.Controllers
             model.AmountPaid = 0.00m;
             model.MaxAmounttoPaid = Math.Round(Convert.ToDecimal(model.TotalPremium), 2);
             var vehiclewithminpremium = vehicle.OrderBy(x => x.Premium).FirstOrDefault();
-            model.MinAmounttoPaid = Math.Round(Convert.ToDecimal(vehiclewithminpremium.Premium + vehiclewithminpremium.StampDuty + vehiclewithminpremium.ZTSCLevy + (Convert.ToBoolean(vehiclewithminpremium.IncludeRadioLicenseCost) ? vehiclewithminpremium.RadioLicenseCost : 0.00m)), 2);
+
+            if (vehiclewithminpremium != null)
+            {
+                model.MinAmounttoPaid = Math.Round(Convert.ToDecimal(vehiclewithminpremium.Premium + vehiclewithminpremium.StampDuty + vehiclewithminpremium.ZTSCLevy + (Convert.ToBoolean(vehiclewithminpremium.IncludeRadioLicenseCost) ? vehiclewithminpremium.RadioLicenseCost : 0.00m)), 2);
+            }
+
             model.AmountPaid = Convert.ToDecimal(model.TotalPremium);
             model.BalancePaidDate = DateTime.Now;
             model.Notes = "";
@@ -891,6 +961,13 @@ namespace InsuranceClaim.Controllers
             {
                 var PolicyData = (PolicyDetail)Session["PolicyData"];
                 model.InvoiceNumber = PolicyData.PolicyNumber;
+            }
+
+            }
+            catch (Exception ex)
+            {
+                WriteLog(ex.Message);
+              return  View(model);
             }
 
             return View(model);
@@ -964,15 +1041,6 @@ namespace InsuranceClaim.Controllers
 
             return count;
         }
-
-
-
-
-
-
-
-
-
 
 
         [HttpPost]
@@ -2031,7 +2099,7 @@ namespace InsuranceClaim.Controllers
                     else
                     {
                         // Handle excepton token expired
-                        if (quoteresponse.Response.Quotes[0].Message == "Partner Token has expired.")
+                        if (quoteresponse.Response.Quotes[0] != null && quoteresponse.Response.Quotes[0].Message == "Partner Token has expired.")
                         {
                             response.message = "A Connection Error Occured, please add manually.";
                             response.result = 0;
@@ -2074,30 +2142,37 @@ namespace InsuranceClaim.Controllers
         {
             var dbVehicalMake = InsuranceContext.VehicleMakes.Single(where: $"MakeDescription = '" + make + "'");
 
-
-            if (dbVehicalMake == null)
+            try
             {
-                VehicleMake veshicalMake = new VehicleMake();
-                veshicalMake.CreatedOn = DateTime.Now;
-                veshicalMake.ModifiedOn = DateTime.Now;
-                veshicalMake.MakeDescription = make.ToUpper();
-                veshicalMake.ShortDescription = make;
-                veshicalMake.MakeCode = make;
-                InsuranceContext.VehicleMakes.Insert(veshicalMake);
+                if (dbVehicalMake == null)
+                {
+                    VehicleMake veshicalMake = new VehicleMake();
+                    veshicalMake.CreatedOn = DateTime.Now;
+                    veshicalMake.ModifiedOn = DateTime.Now;
+                    veshicalMake.MakeDescription = make.ToUpper();
+                    veshicalMake.ShortDescription = make;
+                    veshicalMake.MakeCode = make;
+                    InsuranceContext.VehicleMakes.Insert(veshicalMake);
+                }
+
+
+                var dbVehicalModel = InsuranceContext.VehicleModels.Single(where: $"ModelDescription = '" + model + "'");
+
+                if (dbVehicalModel == null)
+                {
+                    VehicleModel vehicalModel = new VehicleModel();
+                    vehicalModel.MakeCode = make;
+                    vehicalModel.ModelDescription = model.ToUpper();
+                    vehicalModel.ShortDescription = model;
+                    vehicalModel.ModelCode = model;
+                    InsuranceContext.VehicleModels.Insert(vehicalModel);
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
 
-
-            var dbVehicalModel = InsuranceContext.VehicleModels.Single(where: $"ModelDescription = '" + model + "'");
-
-            if (dbVehicalModel == null)
-            {
-                VehicleModel vehicalModel = new VehicleModel();
-                vehicalModel.MakeCode = make;
-                vehicalModel.ModelDescription = model.ToUpper();
-                vehicalModel.ShortDescription = model;
-                vehicalModel.ModelCode = model;
-                InsuranceContext.VehicleModels.Insert(vehicalModel);
-            }
         }
 
 
@@ -2226,14 +2301,20 @@ namespace InsuranceClaim.Controllers
             return jsonResult;
         }
 
-        public JsonResult GetVehicleMake()
+
+
+        [HttpPost]
+        public JsonResult GetVehicleMake1()
         {
             var service = new VehicleService();
-            var model = service.GetMakers().Select(x => new VehicleMake {MakeCode = x.MakeCode, MakeDescription = x.MakeDescription }).ToList();
-            JsonResult jsonResult = new JsonResult();
-            jsonResult.Data = model;
-            jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
-            return jsonResult;
+
+            List<VehiclesMakeModel> list = service.GetMakers().Select(x => new VehiclesMakeModel { MakeCode = x.MakeCode, MakeDescription = x.MakeDescription }).ToList();
+            //JsonResult jsonResult = new JsonResult();
+            //jsonResult.Data = model;
+            //jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            //return jsonResult;
+
+            return Json(list, JsonRequestBehavior.AllowGet);
         }
 
 

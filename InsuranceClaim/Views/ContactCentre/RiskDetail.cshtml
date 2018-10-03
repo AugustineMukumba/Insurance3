@@ -1200,7 +1200,6 @@
 
                     debugger;
 
-                    // $("#MakeId option:contains(" + vMake.toUpperCase() + ")").attr('selected', 'selected');
 
                     $("#MakeId option").filter(function() {return this.text == vMake.toUpperCase(); }).attr('selected', true);
 
@@ -1367,6 +1366,11 @@
             }
         });
     }
+
+
+
+
+
     function setPolicyEndDate(numberOfMonth) {
         //debugger;
         today = $('#datetimepicker1').data('DateTimePicker').date()._d;//new Date();

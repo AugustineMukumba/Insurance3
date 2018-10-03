@@ -66,6 +66,14 @@
                         <div class="form-title">
                             <h4>Client Details</h4>
                         </div>
+
+                        <div>
+
+                          
+
+                        </div>
+
+
                         <div class="form-group-input">
                             @*@using (Ajax.BeginForm("SaveCustomerData", "CustomerRegistration", new AjaxOptions { UpdateTargetId = "CustomerResult", OnSuccess = "GoToProductDetail" }))*@
                             @using (Ajax.BeginForm("SaveCustomerData", "CustomerRegistration", null, new AjaxOptions() { OnSuccess = "GoToProductDetail" }, null))
@@ -293,7 +301,6 @@
         debugger;
 
 
-
         var today = new Date();
         var dd = today.getDate();
         var mm = today.getMonth() + 1; //January is 0!
@@ -312,5 +319,58 @@
         $("#DateOfBirth").val(today);
 
     });
+
+
+
+
+
+
+
+    function GetVehicleMake()
+    {
+
+        debugger;
+
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "@Url.Action("GetVehicleMake1", "CustomerRegistration")",
+            //url: "/CustomerRegistration/GetVehicleMake",
+            data: "{}",
+        dataType: "json",
+        success: function (Result) {
+            Result=Result.d;
+            $.each(Result, function (key, value) {
+                $("#Make2").append($("<option></option>").val
+                (value.MakeCode).html(value.MakeDescription));
+            });
+            // Another way of writing
+            //  for (var i = 0; i < Result.length; i++) {
+            // $("#ddlcountry").append("<option value=" + Result[i].ID + ">" +
+            //     Result[i].Name + "</option>");
+            //  }
+
+            // One more way of writing
+            // for (var i in Result) {
+            //  $("#ddlcountry").append($("<option></option>").val(Result[i].ID).
+            //   text(Result[i].Name));
+            //  }
+
+        },
+        error: function (Result) {
+            alert("Error");
+        }
+    });
+
+
+
+    }
+
+
+
+
+
+
 </script>
 
