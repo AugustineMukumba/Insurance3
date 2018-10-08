@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,5 +17,18 @@ namespace InsuranceClaim.Models
         public decimal? Premium { get; set; }
         public string startDate { get; set; }
         public string endDate { get; set; }
+    }
+    public class ListLapsedPoliciesReport
+    {
+        public List<LapsedPoliciesReportModels> LapsedPoliciesReport { get; set; }
+    }
+    public class LapsedPoliciesSearchReportModels
+    {
+        public List<LapsedPoliciesReportModels> LapsedPoliciesReport { get; set; }
+        [Required(ErrorMessage = "Please Enter Start Date.")]
+        public string FromDate { get; set; }
+        [Required(ErrorMessage = "Please Enter End Date.")]
+        public string EndDate { get; set; }
+
     }
 }

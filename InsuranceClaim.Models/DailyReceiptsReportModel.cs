@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,5 +26,13 @@ namespace InsuranceClaim.Models
     public class ListDailyReceiptsReport
     {
         public List<DailyReceiptsReportModel> DailyReceiptsReport { get; set; }
+    }
+    public class DailyReceiptsSearchReportModel
+    {
+        public List<DailyReceiptsReportModel> DailyReceiptsReport { get; set; }
+        [Required(ErrorMessage = "Please Enter Start Date.")]
+        public string FromDate { get; set; }
+        [Required(ErrorMessage = "Please Enter End Date.")]
+        public string EndDate { get; set; }
     }
 }

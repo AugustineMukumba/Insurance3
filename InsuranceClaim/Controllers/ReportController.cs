@@ -832,6 +832,19 @@ namespace InsuranceClaim.Controllers
             CustomerListingSearchReportModel model = new CustomerListingSearchReportModel();
             var VehicleDetails = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
 
+            DateTime fromDate = DateTime.Now.AddDays(-1);
+            DateTime endDate = DateTime.Now;
+
+            if (!string.IsNullOrEmpty(Model.FromDate) && !string.IsNullOrEmpty(Model.EndDate))
+            {
+                fromDate = Convert.ToDateTime(Model.FromDate);
+                endDate = Convert.ToDateTime(Model.EndDate);
+            }
+
+            VehicleDetails = VehicleDetails.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
+
+
+
             foreach (var item in VehicleDetails)
             {
                 var Policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
@@ -876,14 +889,66 @@ namespace InsuranceClaim.Controllers
         public ActionResult DailyReceiptsReport()
         {
             var ListDailyReceiptsReport = new List<DailyReceiptsReportModel>();
+            ListDailyReceiptsReport _DailyReceiptsReport = new ListDailyReceiptsReport();
+            _DailyReceiptsReport.DailyReceiptsReport = new List<DailyReceiptsReportModel>();
+            DailyReceiptsSearchReportModel model = new DailyReceiptsSearchReportModel();
+
             var VehicleDetails = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
 
             foreach (var item in VehicleDetails)
             {
                 var Policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
                 var Customer = InsuranceContext.Customers.Single(item.CustomerId);
-                //var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All().ToList();
-                //var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId); 
+                var vehicleSummarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
+                if (vehicleSummarydetail != null)
+                {
+                    var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
+                    if (summary != null)
+                    {
+                        ListDailyReceiptsReport.Add(new DailyReceiptsReportModel()
+                        {
+
+                            FirstName = Customer.FirstName,
+                            LastName = Customer.LastName,
+                            Contact = Customer.Countrycode + "-" + Customer.PhoneNumber,
+                            Product = InsuranceContext.Products.Single(item.ProductId).ProductName,
+                            PolicyNumber = Policy.PolicyNumber,
+                            TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy"),
+                            PremiumDue = item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost,
+                            AmountPaid = Convert.ToString(item.SumInsured),
+                            Balance = Convert.ToString(item.BalanceAmount),
+                            PaymentType = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name,
+                            ReceiptNumber = summary.DebitNote,
+                        });
+                    }
+                }
+            }
+            model.DailyReceiptsReport = ListDailyReceiptsReport.OrderBy(x => x.FirstName).ToList();
+            return View(model);
+        }
+        public ActionResult DailyReceiptsSearchReport(DailyReceiptsSearchReportModel Model)
+        {
+            var ListDailyReceiptsReport = new List<DailyReceiptsReportModel>();
+            ListDailyReceiptsReport _DailyReceiptsReport = new ListDailyReceiptsReport();
+            _DailyReceiptsReport.DailyReceiptsReport = new List<DailyReceiptsReportModel>();
+            DailyReceiptsSearchReportModel model = new DailyReceiptsSearchReportModel();
+            var VehicleDetails = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
+            #region
+            DateTime fromDate = DateTime.Now.AddDays(-1);
+            DateTime endDate = DateTime.Now;
+            if (!string.IsNullOrEmpty(Model.FromDate) && !string.IsNullOrEmpty(Model.EndDate))
+            {
+                fromDate = Convert.ToDateTime(Model.FromDate);
+                endDate = Convert.ToDateTime(Model.EndDate);
+            }
+            VehicleDetails = VehicleDetails.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
+
+            #endregion
+            foreach (var item in VehicleDetails)
+            {
+                var Policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
+                var Customer = InsuranceContext.Customers.Single(item.CustomerId);
+
 
                 var vehicleSummarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
 
@@ -891,45 +956,46 @@ namespace InsuranceClaim.Controllers
                 {
                     var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
 
-                    ListDailyReceiptsReport.Add(new DailyReceiptsReportModel()
+                    if (summary != null)
                     {
-
-                        FirstName = Customer.FirstName,
-                        LastName = Customer.LastName,
-                        Contact = Customer.Countrycode + "-" + Customer.PhoneNumber,
-                        Product = InsuranceContext.Products.Single(item.ProductId).ProductName,
-                        PolicyNumber = Policy.PolicyNumber,
-                        TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy"),
-                        PremiumDue = item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost,
-                        AmountPaid = Convert.ToString(item.SumInsured),
-                        Balance = Convert.ToString(item.BalanceAmount),
-                        PaymentType = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name,
-                        ReceiptNumber = summary.DebitNote,
-                    });
+                        ListDailyReceiptsReport.Add(new DailyReceiptsReportModel()
+                        {
+                            FirstName = Customer.FirstName,
+                            LastName = Customer.LastName,
+                            Contact = Customer.Countrycode + "-" + Customer.PhoneNumber,
+                            Product = InsuranceContext.Products.Single(item.ProductId).ProductName,
+                            PolicyNumber = Policy.PolicyNumber,
+                            TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy"),
+                            PremiumDue = item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost,
+                            AmountPaid = Convert.ToString(item.SumInsured),
+                            Balance = Convert.ToString(item.BalanceAmount),
+                            PaymentType = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name,
+                            ReceiptNumber = summary.DebitNote,
+                        });
+                    }
                 }
-
-
             }
-
-            return View(ListDailyReceiptsReport);
+            model.DailyReceiptsReport = ListDailyReceiptsReport.OrderBy(x => x.FirstName).ToList();
+            return View("DailyReceiptsReport", model);
         }
-
         public ActionResult LapsedPoliciesReport()
         {
-            try
+            var ListLapsedPoliciesReport = new List<LapsedPoliciesReportModels>();
+            ListLapsedPoliciesReport _LapsedPoliciesReport = new ListLapsedPoliciesReport();
+            _LapsedPoliciesReport.LapsedPoliciesReport = new List<LapsedPoliciesReportModels>();
+            LapsedPoliciesSearchReportModels _model = new LapsedPoliciesSearchReportModels();
+            var whereClause = "isLapsed = 'True' or " + $"CAST(RenewalDate as date) < '{DateTime.Now.ToString("yyyy-MM-dd")}'";
+            var VehicleDetails = InsuranceContext.VehicleDetails.All(where: whereClause).ToList();
+            foreach (var item in VehicleDetails)
             {
-                var ListLapsedPoliciesReport = new List<LapsedPoliciesReportModels>();
-                var whereClause = "isLapsed = 'True' or " + $"CAST(RenewalDate as date) < '{DateTime.Now.ToString("yyyy-MM-dd")}'";
-                var VehicleDetails = InsuranceContext.VehicleDetails.All(where: whereClause).ToList();
-                foreach (var item in VehicleDetails)
+                var Policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
+                var Customer = InsuranceContext.Customers.Single(item.CustomerId);
+                var Vehicle = InsuranceContext.VehicleDetails.Single(item.Id);
+                var make = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'");
+                var model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
+                var ReinsuranceTransaction = InsuranceContext.ReinsuranceTransactions.All(where: $"VehicleId={Vehicle.Id}").ToList();
+                if (ReinsuranceTransaction.Count > 0 && ReinsuranceTransaction != null)
                 {
-                    var Policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
-                    var Customer = InsuranceContext.Customers.Single(item.CustomerId);
-                    var Vehicle = InsuranceContext.VehicleDetails.Single(item.Id);
-                    var make = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'");
-                    var model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
-                    var ReinsuranceTransaction = InsuranceContext.ReinsuranceTransactions.All(where: $"VehicleId={Vehicle.Id}").ToList();
-
                     ListLapsedPoliciesReport.Add(new LapsedPoliciesReportModels()
                     {
                         customerName = Customer.FirstName + " " + Customer.LastName,
@@ -940,17 +1006,61 @@ namespace InsuranceClaim.Controllers
                         vehicleModel = model.ModelDescription,
                         startDate = Vehicle.CoverStartDate == null ? null : Vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy"),
                         endDate = Vehicle.CoverEndDate == null ? null : Vehicle.CoverEndDate.Value.ToString("dd/MM/yyyy")
-
-
                     });
                 }
-                return View(ListLapsedPoliciesReport);
             }
-            catch (Exception ex)
+            _model.LapsedPoliciesReport = ListLapsedPoliciesReport.OrderBy(x => x.customerName).ToList();
+            return View(_model);
+        }
+        public ActionResult LapsedPoliciesSearchReport(LapsedPoliciesSearchReportModels Model)
+        {
+            var ListLapsedPoliciesReport = new List<LapsedPoliciesReportModels>();
+            ListLapsedPoliciesReport _LapsedPoliciesReport = new ListLapsedPoliciesReport();
+            _LapsedPoliciesReport.LapsedPoliciesReport = new List<LapsedPoliciesReportModels>();
+            LapsedPoliciesSearchReportModels _model = new LapsedPoliciesSearchReportModels();
+            var whereClause = "isLapsed = 'True' or " + $"CAST(RenewalDate as date) < '{DateTime.Now.ToString("yyyy-MM-dd")}'";
+            var VehicleDetails = InsuranceContext.VehicleDetails.All(where: whereClause).ToList();
+
+            #region
+            DateTime fromDate = DateTime.Now.AddDays(-1);
+            DateTime endDate = DateTime.Now;
+            if (!string.IsNullOrEmpty(Model.FromDate) && !string.IsNullOrEmpty(Model.EndDate))
             {
-                //    return View(ListLapsedPoliciesReport);
-                return View();
+                fromDate = Convert.ToDateTime(Model.FromDate);
+                endDate = Convert.ToDateTime(Model.EndDate);
             }
+            VehicleDetails = VehicleDetails.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
+
+            #endregion
+
+
+            foreach (var item in VehicleDetails)
+            {
+                var Policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
+                var Customer = InsuranceContext.Customers.Single(item.CustomerId);
+                var Vehicle = InsuranceContext.VehicleDetails.Single(item.Id);
+                var make = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'");
+                var model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
+                var ReinsuranceTransaction = InsuranceContext.ReinsuranceTransactions.All(where: $"VehicleId={Vehicle.Id}").ToList();
+                if (ReinsuranceTransaction.Count > 0 && ReinsuranceTransaction != null)
+                {
+                    ListLapsedPoliciesReport.Add(new LapsedPoliciesReportModels()
+                    {
+                        customerName = Customer.FirstName + " " + Customer.LastName,
+                        contactDetails = Customer.Countrycode + "-" + Customer.PhoneNumber,
+                        Premium = Vehicle.Premium,
+                        sumInsured = Vehicle.SumInsured,
+                        vehicleMake = make.MakeDescription,
+                        vehicleModel = model.ModelDescription,
+                        startDate = Vehicle.CoverStartDate == null ? null : Vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy"),
+                        endDate = Vehicle.CoverEndDate == null ? null : Vehicle.CoverEndDate.Value.ToString("dd/MM/yyyy")
+                    });
+                }
+            }
+            _model.LapsedPoliciesReport = ListLapsedPoliciesReport.OrderBy(x => x.customerName).ToList();
+
+
+            return View("LapsedPoliciesReport", _model);
         }
 
 
