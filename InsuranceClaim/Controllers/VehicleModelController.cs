@@ -18,6 +18,10 @@ namespace InsuranceClaim.Controllers
             InsuranceClaim.Models.ClsVehicleModel obj = new InsuranceClaim.Models.ClsVehicleModel();
             List<Insurance.Domain.VehicleModel> objList = new List<Insurance.Domain.VehicleModel>();
             objList = InsuranceContext.VehicleModels.All().ToList();
+
+
+          
+
             ViewBag.MakeList = MakeList();
             return View();
         }
@@ -30,17 +34,62 @@ namespace InsuranceClaim.Controllers
         [HttpPost]
         public ActionResult SaveVehicleModel(ClsVehicleModel model)
         {
-            var dbModel = Mapper.Map<ClsVehicleModel, VehicleModel>(model);
-            dbModel.ModelDescription = model.ModelDescription.ToUpper();
-            dbModel.CreatedOn = DateTime.Now;
-            dbModel.ModifiedOn = DateTime.Now;
-            InsuranceContext.VehicleModels.Insert(dbModel);
+
+            ModelState.Remove("Id");
+
+            if (ModelState.IsValid)
+            {
+                var dbVehicalModel = InsuranceContext.VehicleModels.Single(where: $"ModelDescription='{model.ModelDescription}' and MakeCode = '{model.MakeCode}'");
+
+                if (dbVehicalModel == null)
+                {
+                    var dbModel = Mapper.Map<ClsVehicleModel, VehicleModel>(model);
+                    dbModel.ModelDescription = model.ModelDescription.ToUpper();
+                    dbModel.ModelCode = model.ModelCode;
+                    dbModel.MakeCode = model.MakeCode;
+                    dbModel.ShortDescription = model.ShortDescription;
+                    dbModel.CreatedOn = DateTime.Now;
+                    dbModel.ModifiedOn = DateTime.Now;
+                    InsuranceContext.VehicleModels.Insert(dbModel);
+                }
+
+            }
+            else
+            {
+                foreach (ModelState modelState in ViewData.ModelState.Values)
+                {
+                    foreach (ModelError error in modelState.Errors)
+                    {
+                        var rest = "";
+                    }
+                }
+
+
+                View(model);
+            }
+
+
             return RedirectToAction("VehicleModelList");
         }
         public ActionResult VehicleModelList()
         {
-            var modellist = InsuranceContext.VehicleModels.All(where: "IsActive= 'True' or IsActive is Null").OrderByDescending(x=>x.Id).ToList();
-            return View(modellist);
+          //  var modellist = InsuranceContext.VehicleModels.All(where: "IsActive= 'True' or IsActive is Null").OrderByDescending(x => x.Id).ToList();
+
+            var list = (from vehicleModel in InsuranceContext.VehicleModels.All().ToList()
+                        join vehicleMake in InsuranceContext.VehicleMakes.All().ToList()
+                        on vehicleModel.MakeCode equals vehicleMake.MakeCode
+                        select new ClsVehicleModel
+                        {
+                            ModelDescription = vehicleModel.ModelDescription,
+                            MakeDescription = vehicleMake.MakeDescription,
+                            ModelCode = vehicleModel.ModelCode,
+                            ShortDescription = vehicleModel.ShortDescription,
+                            Id = vehicleModel.Id
+                        }).ToList();
+
+
+
+            return View(list);
         }
 
         public ActionResult VehicleModelEdit(int Id)
@@ -55,6 +104,9 @@ namespace InsuranceClaim.Controllers
         [HttpPost]
         public ActionResult VehicleModelEdit(VehicleModel model)
         {
+            
+
+
             if (ModelState.IsValid)
             {
                 var modelid = model.Id;

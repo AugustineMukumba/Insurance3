@@ -70,7 +70,16 @@
                                 </td>
                                 @{
                                     var username = InsuranceContext.Customers.Single(item.CreatedBy);
-                                    <td>@username.FirstName @username.LastName</td>
+                                    if (username != null)
+                                    {
+                                        <td>@username.FirstName @username.LastName</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+
+
                                 }
                                 <td>@item.CreatedDate</td>
                                 <td>

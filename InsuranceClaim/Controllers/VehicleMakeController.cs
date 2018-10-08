@@ -27,11 +27,28 @@ namespace InsuranceClaim.Controllers
       [HttpPost]
         public ActionResult SaveVehicleMake(VehiclesMakeModel Model )
         {
-            var dbModel = Mapper.Map<VehiclesMakeModel, VehicleMake>(Model);
-            dbModel.CreatedOn = DateTime.Now;
-            dbModel.ModifiedOn = DateTime.Now;
-            dbModel.MakeDescription = Model.MakeDescription.ToUpper();
-            InsuranceContext.VehicleMakes.Insert(dbModel);
+            if(ModelState.IsValid)
+            {
+                var dbVehicalMake = InsuranceContext.VehicleMakes.Single(where: $"MakeDescription = '" + Model.MakeDescription + "'");
+
+                if(dbVehicalMake==null)
+                {
+                    var dbModel = Mapper.Map<VehiclesMakeModel, VehicleMake>(Model);
+                    dbModel.CreatedOn = DateTime.Now;
+                    dbModel.ModifiedOn = DateTime.Now;
+                    dbModel.MakeDescription = Model.MakeDescription.ToUpper();
+                    dbModel.MakeCode = Model.MakeCode;
+                    dbModel.ShortDescription = Model.ShortDescription;
+
+                    InsuranceContext.VehicleMakes.Insert(dbModel);
+                }
+                
+            }
+            else
+            {
+                View(Model);
+            }
+           
             return RedirectToAction("VehicleMakeList");
         }
 

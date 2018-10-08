@@ -1162,7 +1162,7 @@
                 //call funcion
 
                 $("#VehicleUsage").val(vUsage);
-                $("#VehicleUsage").addClass("inputDisabled");
+                //$("#VehicleUsage").addClass("inputDisabled"); // 01-04-oct
 
             }
         });
@@ -1196,16 +1196,14 @@
                     var vehicle = {};
                     vehicle = data.Data.Response.Quotes[0].Vehicle;
 
+                    GetVehicleMake();
+
                     var vMake = vehicle.Make;
-
-                    debugger;
-
-
                     $("#MakeId option").filter(function() {return this.text == vMake.toUpperCase(); }).attr('selected', true);
-
-                    $("#MakeId").addClass("inputDisabled");
+            
+                  //  $("#MakeId").addClass("inputDisabled");
                     var vModel = vehicle.Model;
-                    GetVehicleModels(vModel);
+                     GetVehicleModels(vModel);
 
                     var vYearManufacture = vehicle.YearManufacture;
                     $("#VehicleYear").val(vYearManufacture);
@@ -1333,7 +1331,6 @@
             }); //EINDE ajax
         }
 
-
     }
 
     function GetVehicleModels(ModelName)
@@ -1356,10 +1353,10 @@
                     $("#ModelId option").filter(function() {return this.text == ModelName.toUpperCase(); }).attr('selected', true);
 
 
-                  //  $("#ModelId option:contains(" + ModelName.toUpperCase() + ")").attr('selected', 'selected');
+                    //  $("#ModelId option:contains(" + ModelName.toUpperCase() + ")").attr('selected', 'selected');
                     //$("#ModelId").attr("readonly","readonly");
-                    $("#ModelId").addClass("inputDisabled")
-                    $("#ProductId").addClass("inputDisabled")
+                  //  $("#ModelId").addClass("inputDisabled")
+                   // $("#ProductId").addClass("inputDisabled") // on 04-oct
 
                     //$("#ProductId").attr("readonly","readonly");
                 }
@@ -1367,6 +1364,32 @@
         });
     }
 
+
+
+    function GetVehicleMake()
+    {
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "@Url.Action("GetVehicleMake1", "CustomerRegistration")",
+            data: "{}",
+            dataType: "json",
+            async:false,
+            success: function (Result) {
+
+                var $dropdown = $("#MakeId");
+                $dropdown.empty();
+
+                $.each(Result, function (key, value) {
+                    $("#MakeId").append($("<option></option>").val
+                    (value.MakeCode).html(value.MakeDescription));
+                });
+            },
+            error: function (Result) {
+                alert("Error");
+            }
+        });
+    }
 
 
 

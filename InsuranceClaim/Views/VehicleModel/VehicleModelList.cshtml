@@ -1,4 +1,4 @@
-﻿@model List<Insurance.Domain.VehicleModel>
+﻿@model List<InsuranceClaim.Models.ClsVehicleModel>
 @{
     ViewBag.Title = "VehicleModelList";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
@@ -21,8 +21,6 @@
                         <input class="btn btn-primary" type="button" value="Add" onclick="window.location.href='@Url.Action("Index", "VehicleModel")'" />
                     </form>
 
-
-
                 </div>
             </div>
         </div>
@@ -30,21 +28,23 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Model Description</th>
+                        <th>Make </th>
+                        <th>Model</th>
                         <th>Model Code</th>
                         <th>Short Description</th>
-                        <th>Make Code</th>
+                      
                         <th class="action-th">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (Insurance.Domain.VehicleModel item in Model)
+                    @foreach (var item in Model)
                     {
                         <tr>
+                            <td>@item.MakeDescription</td>
                             <td>@item.ModelDescription</td>
                             <td>@item.ModelCode</td>
                             <td>@item.ShortDescription</td>
-                            <td>@item.MakeCode</td>
+                         
                             <td>
                                 <div class="tbl-btn-list">
                                     <ul class="list-inline">

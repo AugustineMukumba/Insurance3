@@ -57,10 +57,18 @@
                             <td>
                                 <div class="tbl-btn-list">
                                     <ul class="list-inline">
-                                        <li>@Html.ActionLink("View Quotation", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>
+                                        <li>@Html.ActionLink("View", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>
+                                      
+                                        <li>  <a class="btn-sm btn-primary" href="/CustomerRegistration/Index?summaryId=@item.SummaryId"> Edit   </a>  </li>
 
 
-                                        @*@foreach (var _item in item.Vehicles)
+
+
+                                      @*<li>  <a class="btn-sm btn-primary" href="/ContactCentre/RiskDetail?id=0&summaryId=@item.SummaryId"> Edit   </a>  </li>*@
+                                       
+                                        
+                                        
+                                         @*@foreach (var _item in item.Vehicles)
                                         {
                                             if (DateTime.Now >= _item.RenewalDate && DateTime.Now >= _item.RenewalDate.AddDays(-21))
                                             {
@@ -69,10 +77,6 @@
                                                 break;
                                             }
                                         }*@
-
-
-
-
 
                                     </ul>
                                 </div>
@@ -86,4 +90,45 @@
     </div>
 
 </div>
+
+
+
+
+<script type="text/javascript">
+
+    function DeActive(summaryId)
+    {
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "CountryDetails.asmx/LoadCountry",
+            data: "{}",
+            dataType: "json",
+            success: function (Result) {
+                Result = Result.d;
+                $.each(Result, function (key, value) {
+                    $("#ddlcountry").append($("<option></option>").val
+                    (value.CountryId).html(value.CountryName));
+                });
+                // Another way of writing
+                //  for (var i = 0; i < Result.length; i++) {
+                // $("#ddlcountry").append("<option value=" + Result[i].ID + ">" + 
+                //     Result[i].Name + "</option>");
+                //  }
+
+                // One more way of writing
+                // for (var i in Result) {
+                //  $("#ddlcountry").append($("<option></option>").val(Result[i].ID).
+                //   text(Result[i].Name));
+                //  }
+
+            },
+            error: function (Result) {
+                alert("Error");
+            }
+        });
+    }
+
+
+</script>
 

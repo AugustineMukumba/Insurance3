@@ -1559,6 +1559,40 @@ div#invoiceNumberDiv .form-group {
 .resize-none textarea { resize: none;  height: 90px;}
 .label-top{vertical-align:top;}
 
+.form-group-btn ul {
+    float: right;
+}
+.form-group-btn ul li button {
+    padding: 0 25px;
+    height: 50px;
+    border-radius: 3px;
+    border: none;
+    font-size: 17px;
+}
+.form-group-section-date .form-group {
+    margin: 0 0 0px;
+}
+.form-group-section-date .form-group-text input { border:1px solid #ddd;
+}
+.form-group-btn ul li {
+    padding: 0;
+    margin: 0 0 0 10px;
+}
+.form-group-section-date {
+    display: inline-block;
+    width: 100%;
+    margin: 30px 0 -1px;
+    background: #f2f2f2;
+    padding: 10px 15px 5px 15px;
+    border: 1px solid #ddd;
+}
+.table-striped-area table {
+    border: 1px solid #ddd;
+}
+.form-group-section-date .form-group-text .form-group span.text-danger {
+    position: static;
+}
+
 /**15 june css end**/
 
 @media(max-width:767px) {

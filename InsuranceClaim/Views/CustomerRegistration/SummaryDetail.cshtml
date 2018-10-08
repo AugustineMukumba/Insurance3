@@ -166,16 +166,13 @@
                                     @Html.HiddenFor(m => m.PaymentTermId)
                                     @Html.HiddenFor(m => m.Id)
                                     @Html.HiddenFor(m => m.InsuranceId)
-
+                                    @Html.HiddenFor(m => m.Id)
 
 
                                     @*@Html.TextBoxFor(m => m.AmountPaid, new { @class = "form-control", @autocomplete = "off", @placeholder = "Amount Paid" })*@
                                     @if (isUserStaff)
                                     {
                                         <div class="row">
-
-
-
 
                                             <div class="col-md-6 form-group-text">
                                                 <div class="form-group">
@@ -422,9 +419,7 @@
                                                                 </div>
 
                                                             </li>
-                                                            <li>
-
-                                                            </li>
+                                                            
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -481,6 +476,23 @@
 </div>
 @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
 <script>
+
+
+
+
+    function gotoExit() {
+        $.ajax({
+            url: "@Url.Action("gotoExit", "CustomerRegistration")",
+            type: "Post",
+        data: { id: @ViewBag.SummaryDetailId },
+        success: function (data) {
+            debugger;
+            window.location.href = '/CustomerRegistration/Index';
+
+        }
+    })
+
+    }
 
     function PaymentMethod(paymentMethod)
     {
@@ -606,10 +618,22 @@
         //var minAmount = $("#MinAmounttoPaid").val();
         //var maxAmount = $("#MaxAmounttoPaid").val();
         var Amount = $("#AmountPaid").val();
+        var paymentMethod = $("#PaymentMethodId").val();
+
         var flag = false;
         if (Amount == "" && Amount == "0.00") {
             toastr.error("Please Enter Amount To Be Paid");
             return false;
+        }
+        else if(paymentMethod=="1")
+        {
+            if(confirm("Are you sure you want to proceed with CASH payment?"))
+            {
+                return true;
+            }
+            else{
+                gotoExit();
+            }
         }
         else{
             return true;
@@ -652,6 +676,8 @@
 
 
         getVehicleList();
+
+        $("#PaymentMethodId").val('');
 
         if (@Model.PaymentMethodId != null && @Model.PaymentMethodId > 0)
         {

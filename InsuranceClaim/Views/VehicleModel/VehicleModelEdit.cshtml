@@ -28,12 +28,31 @@
                                    
                                     <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
-                                            @Html.LabelFor(x => x.MakeCode, new { @class = "gender-label" })
+                                            @*@Html.LabelFor(x => x.MakeCode, new { @class = "gender-label" })*@
+
+                                            <label class="gender-label">Make</label>
+
                                             @Html.DropDownListFor(x => x.MakeCode, new SelectList(ViewBag.MakeList, "MakeCode", "MakeDescription"), "Select Make Description", new { @class = "form-control" })
                                             @Html.ValidationMessageFor(x => x.MakeCode, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
+
+                                    
+
+                                </div>
+
+
+                                <div class="row">
+
+    
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.ModelCode, new { @class = "gender-label" })
+                                            @Html.TextBoxFor(x => x.ModelCode, new { @class = "form-control", @name = "ModelCode", @autocomplete = "off", @id = "ModelCode", @placeholder = "Enter Model Code" })
+                                            @Html.ValidationMessageFor(x => x.ModelCode, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
 
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
@@ -46,6 +65,9 @@
                                 </div>
 
 
+
+
+
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
@@ -54,13 +76,7 @@
                                             @Html.ValidationMessageFor(x => x.ShortDescription, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.LabelFor(x => x.ModelCode, new { @class = "gender-label" })
-                                                @Html.TextBoxFor(x => x.ModelCode, new { @class = "form-control", @name = "ModelCode", @autocomplete = "off", @id = "ModelCode", @placeholder = "Enter Model Code" })
-                                                @Html.ValidationMessageFor(x => x.ModelCode, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
+                                    
                                 </div>
 
 
@@ -69,7 +85,7 @@
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6">
                                             <div class="text-left">
-                                                <button type="button" class="btn" onclick="window.location.href='@Url.Action("VehicleMakeList","VehicleMake")'">Cancel</button>
+                                                <button type="button" class="btn" onclick="window.location.href='@Url.Action("VehicleModelList","VehicleMode")'">Cancel</button>
 
                                             </div>
                                         </div>

@@ -730,43 +730,27 @@
 
     function GetVehicleMake()
     {
-
-        debugger;
-
-
         $.ajax({
             type: "POST",
             contentType: "application/json; charset=utf-8",
             url: "@Url.Action("GetVehicleMake1", "CustomerRegistration")",
-            //url: "/CustomerRegistration/GetVehicleMake",
             data: "{}",
             dataType: "json",
+            async:false,
             success: function (Result) {
-                Result=Result.d;
+
+                var $dropdown = $("#MakeId");
+                $dropdown.empty();
+
                 $.each(Result, function (key, value) {
-                    $("#Make2").append($("<option></option>").val
+                    $("#MakeId").append($("<option></option>").val
                     (value.MakeCode).html(value.MakeDescription));
                 });
-                // Another way of writing
-                //  for (var i = 0; i < Result.length; i++) {
-                // $("#ddlcountry").append("<option value=" + Result[i].ID + ">" +
-                //     Result[i].Name + "</option>");
-                //  }
-
-                // One more way of writing
-                // for (var i in Result) {
-                //  $("#ddlcountry").append($("<option></option>").val(Result[i].ID).
-                //   text(Result[i].Name));
-                //  }
-
             },
             error: function (Result) {
                 alert("Error");
             }
         });
-
-
-
     }
 
 
@@ -1124,7 +1108,7 @@
                 //call funcion
 
                 $("#VehicleUsage").val(vUsage);
-                $("#VehicleUsage").addClass("inputDisabled");
+              //  $("#VehicleUsage").addClass("inputDisabled"); // commented on 04-oct
 
             }
         });
@@ -1160,7 +1144,7 @@
 
                     debugger;
 
-                   // GetVehicleMake();
+                    GetVehicleMake();
 
 
                     var vMake = vehicle.Make;
@@ -1169,7 +1153,7 @@
                     $("#MakeId option").filter(function() {return this.text == vMake.toUpperCase(); }).attr('selected', true);
 
                     
-                    $("#MakeId").addClass("inputDisabled");
+                   // $("#MakeId").addClass("inputDisabled"); // commented on 04-oct
                     var vModel = vehicle.Model;
                     GetVehicleModels(vModel);
 
@@ -1306,8 +1290,8 @@
 
                     
                     //$("#ModelId").attr("readonly","readonly");
-                    $("#ModelId").addClass("inputDisabled")
-                    $("#ProductId").addClass("inputDisabled")
+                   // $("#ModelId").addClass("inputDisabled") // 
+                 //   $("#ProductId").addClass("inputDisabled") // commented 
 
                     //$("#ProductId").attr("readonly","readonly");
                 }

@@ -1,4 +1,4 @@
-﻿@model InsuranceClaim.Models.ListStampDutyReportModels
+﻿@model InsuranceClaim.Models.StampDutySearchReportModels
 @{
     ViewBag.Title = "StampDutyReport";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
@@ -27,8 +27,57 @@
                 </div>
             </div>
         </div>
+
+
+        @using (Html.BeginForm("StampDutySearchReport", "Report", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            <div class="container-main">
+                <div class="form-group-section-date">
+                    <div class="form-group-input">
+                        <div class="row">
+                            <div class="col-sm-3 col-md-3 form-group-text">
+                                <div class="form-group">
+                                    @*@Html.LabelFor(x => x.FromDate, new { @class = "gender-label" })*@
+                                    <div class='input-group' id='datetimenew'>
+                                        @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @placeholder = "Form Date" })
+                                        @Html.ValidationMessageFor(m => m.FromDate, "", new { @class = "text-danger" })
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-md-3 form-group-text">
+                                <div class="form-group">
+                                    @*@Html.LabelFor(x => x.EndDate, new { @class = "gender-label" })*@
+                                    <div class='input-group' id='datetimenew12'>
+                                        @Html.TextBoxFor(m => m.EndDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "End Date" })
+                                        @Html.ValidationMessageFor(m => m.EndDate, "", new { @class = "text-danger" })
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6 form-group-btn">
+                                <div class="form-group">
+                                    <ul class="list-inline">
+                                        <li><button type="submit" class="btn btn-success">Search</button></li>
+                                        <li><button type="button" onclick="removeSearchBox();" class="btn btn-danger">Clear Search</button></li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        }
+
         <div class="product-table-grid">
             <table class="table table-striped tablesorter" id="report2excel">
+               
                 <thead>
                     <tr>
                         <th>Customer Name</th>
@@ -39,6 +88,13 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @if (Model != null)
+                    {
+                        if (Model.ListStampDutyReportdata.Count == 0)
+                        {
+                            <label style="color:red">No Stamp Duty Found</label>
+                        }
+                    }
 
                     @{ 
                         decimal premiumDueTotal = 0;
@@ -76,9 +132,21 @@
     $(document).ready(function () {
 
         $(".tablesorter").tablesorter();
+        $("#datetimenew").datetimepicker({
+            format: 'MM/D/YYYY'
+        });
+        $("#datetimenew12").datetimepicker({
+            format: 'MM/D/YYYY'
 
+        });
 
     });
+
+
+    function removeSearchBox() {
+        window.location.href = "/Report/StampDutyReport";
+    }
+
 
     $("#generateExcel").click(function () {
         debugger;

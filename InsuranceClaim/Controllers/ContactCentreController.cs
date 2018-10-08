@@ -1,4 +1,5 @@
-﻿using Insurance.Domain;
+﻿using AutoMapper;
+using Insurance.Domain;
 using Insurance.Service;
 using InsuranceClaim.Models;
 using System;
@@ -19,6 +20,20 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult RiskDetail(int? id = 0)
         {
+
+            // summaryDetailId: it's represent to Qutation edit
+
+
+            if(Session["SummaryDetailId"]!=null)
+            {
+                SetValueIntoSession(Convert.ToInt32(Session["SummaryDetailId"]));
+                Session["SummaryDetailId"] = null;
+            }
+
+            
+
+
+
 
             if (Session["CustomerDataModal"] == null)
             {
@@ -156,6 +171,44 @@ namespace InsuranceClaim.Controllers
 
             return View(viewModel);
         }
+
+
+
+        public void SetValueIntoSession(int summaryId)
+        {
+            Session["ICEcashToken"] = null;
+            Session["issummaryformvisited"] = true;
+
+            Session["SummaryDetailId"] = summaryId;
+
+            var summaryDetail = InsuranceContext.SummaryDetails.Single(summaryId);
+            var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={summaryId}").ToList();
+            var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+            var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
+            var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+  
+
+            Session["PolicyData"] = policy;
+
+            List<RiskDetailModel> listRiskDetail = new List<RiskDetailModel>();
+            foreach (var item in SummaryVehicleDetails)
+            {
+                var _vehicle = InsuranceContext.VehicleDetails.Single(item.VehicleDetailsId);
+                RiskDetailModel riskDetail = Mapper.Map<VehicleDetail, RiskDetailModel>(_vehicle);
+                listRiskDetail.Add(riskDetail);
+            }
+            Session["VehicleDetails"] = listRiskDetail;
+
+            SummaryDetailModel summarymodel = Mapper.Map<SummaryDetail, SummaryDetailModel>(summaryDetail);
+            summarymodel.Id = summaryDetail.Id;
+            Session["SummaryDetailed"] = summarymodel;
+
+        }
+
+
+        
+
+
         public ActionResult GetRadioLicenseCost(int? id)
         {
             JsonResult jsonResult = new JsonResult();

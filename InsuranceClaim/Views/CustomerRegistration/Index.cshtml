@@ -69,7 +69,7 @@
 
                         <div>
 
-                          
+                          @*<select id="Make2"></select>*@
 
                         </div>
 
@@ -283,6 +283,7 @@
 
     $(document).ready(function () { // will trigger when the document is ready
 
+       
         $("#City").select2();
         $("#CountryCode").select2();
 
@@ -337,10 +338,9 @@
             contentType: "application/json; charset=utf-8",
             url: "@Url.Action("GetVehicleMake1", "CustomerRegistration")",
             //url: "/CustomerRegistration/GetVehicleMake",
-            data: "{}",
         dataType: "json",
         success: function (Result) {
-            Result=Result.d;
+           
             $.each(Result, function (key, value) {
                 $("#Make2").append($("<option></option>").val
                 (value.MakeCode).html(value.MakeDescription));

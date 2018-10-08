@@ -1300,6 +1300,7 @@ namespace InsuranceClaim.Controllers
                 var _customerData = InsuranceContext.Customers.Single(where: $"UserId ='{User.Identity.GetUserId().ToString()}'");
                 model.ModifiedBy = _customerData.Id;
                 model.ModifiedDate = DateTime.Now;
+                model.CreatedBy = _customerData.Id;
 
                 var data = Mapper.Map<SettingModel, Setting>(model);
                 InsuranceContext.Settings.Update(data);
@@ -1425,7 +1426,7 @@ namespace InsuranceClaim.Controllers
             }
             else if (role == "Administrator")
             {
-                SummaryList = InsuranceContext.SummaryDetails.All(where: $"isQuotation = 'False' or isQuotation is null ").OrderByDescending(x => x.Id ).ToList();
+                SummaryList = InsuranceContext.SummaryDetails.All(where: $"isQuotation = 'False' or isQuotation is null ").OrderByDescending(x => x.Id).ToList();
             }
             else
             {
@@ -1451,7 +1452,7 @@ namespace InsuranceClaim.Controllers
                 var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={item.Id}").ToList();
                 var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
 
-              
+
 
                 if (vehicle != null)
                 {
@@ -2484,37 +2485,50 @@ namespace InsuranceClaim.Controllers
                     policylistviewmodel.createdOn = Convert.ToDateTime(item.CreatedOn);
 
                     var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={item.Id}").ToList();
-                    var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
-                    var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
-                    var product = InsuranceContext.Products.Single(Convert.ToInt32(vehicle.ProductId));
 
-                    policylistviewmodel.PolicyNumber = policy.PolicyNumber;
-
-                    foreach (var _item in SummaryVehicleDetails)
+                    if(SummaryVehicleDetails.Count>0)
                     {
-                        VehicleReinsuranceViewModel obj = new VehicleReinsuranceViewModel();
-                        var _vehicle = InsuranceContext.VehicleDetails.Single(_item.VehicleDetailsId);
-                        var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.All(where: $"SummaryDetailId={item.Id} and VehicleId={_item.VehicleDetailsId}").ToList();
+                        var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+                        if (vehicle != null)
+                        {
+                            var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
+                            var product = InsuranceContext.Products.Single(Convert.ToInt32(vehicle.ProductId));
+
+                            policylistviewmodel.PolicyNumber = policy.PolicyNumber;
+
+                            foreach (var _item in SummaryVehicleDetails)
+                            {
+                                VehicleReinsuranceViewModel obj = new VehicleReinsuranceViewModel();
+                                var _vehicle = InsuranceContext.VehicleDetails.Single(_item.VehicleDetailsId);
+                                var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.All(where: $"SummaryDetailId={item.Id} and VehicleId={_item.VehicleDetailsId}").ToList();
 
 
-                        obj.CoverType = Convert.ToInt32(_vehicle.CoverTypeId);
-                        obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
-                        obj.MakeId = _vehicle.MakeId;
-                        obj.ModelId = _vehicle.ModelId;
-                        //obj.Premium = Convert.ToDecimal(_vehicle.Premium);
-                        obj.RegisterationNumber = _vehicle.RegistrationNo;
-                        obj.SumInsured = Convert.ToDecimal(_vehicle.SumInsured);
-                        obj.VehicleId = _vehicle.Id;
-                        obj.startdate = Convert.ToDateTime(_vehicle.CoverStartDate);
-                        obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
-                        obj.RenewalDate = Convert.ToDateTime(_vehicle.RenewalDate);
-                        obj.isLapsed = _vehicle.isLapsed;
-                        obj.BalanceAmount = Convert.ToDecimal(_vehicle.BalanceAmount);
-                        obj.isActive = Convert.ToBoolean(_vehicle.IsActive);
-                        obj.Premium = Convert.ToDecimal(_vehicle.Premium + _vehicle.StampDuty + _vehicle.ZTSCLevy + (Convert.ToBoolean(_vehicle.IncludeRadioLicenseCost) ? Convert.ToDecimal(_vehicle.RadioLicenseCost) : 0.00m));
-                        policylistviewmodel.Vehicles.Add(obj);
-                        policylist.listpolicy.Add(policylistviewmodel);
+                                obj.CoverType = Convert.ToInt32(_vehicle.CoverTypeId);
+                                obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
+                                obj.MakeId = _vehicle.MakeId;
+                                obj.ModelId = _vehicle.ModelId;
+                                //obj.Premium = Convert.ToDecimal(_vehicle.Premium);
+                                obj.RegisterationNumber = _vehicle.RegistrationNo;
+                                obj.SumInsured = Convert.ToDecimal(_vehicle.SumInsured);
+                                obj.VehicleId = _vehicle.Id;
+                                obj.startdate = Convert.ToDateTime(_vehicle.CoverStartDate);
+                                obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
+                                obj.RenewalDate = Convert.ToDateTime(_vehicle.RenewalDate);
+                                obj.isLapsed = _vehicle.isLapsed;
+                                obj.BalanceAmount = Convert.ToDecimal(_vehicle.BalanceAmount);
+                                obj.isActive = Convert.ToBoolean(_vehicle.IsActive);
+                                obj.Premium = Convert.ToDecimal(_vehicle.Premium + _vehicle.StampDuty + _vehicle.ZTSCLevy + (Convert.ToBoolean(_vehicle.IncludeRadioLicenseCost) ? Convert.ToDecimal(_vehicle.RadioLicenseCost) : 0.00m));
+                                policylistviewmodel.Vehicles.Add(obj);
+                                policylist.listpolicy.Add(policylistviewmodel);
+                            }
+
+                        }
                     }
+
+                   
+
+
+
                 }
             }
 

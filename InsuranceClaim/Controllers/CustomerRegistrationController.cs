@@ -42,10 +42,12 @@ namespace InsuranceClaim.Controllers
             }
         }
 
-        public ActionResult Index()
+        public ActionResult Index(int summaryId = 0)
         {
-
             // var res = MaxCustoermId();
+
+            RemoveSession();
+
 
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             string path = Server.MapPath("~/Content/Countries.txt");
@@ -59,7 +61,13 @@ namespace InsuranceClaim.Controllers
             ViewBag.Cities = resultts.cities;
 
 
-            if (userLoggedin)
+            if (summaryId != 0) // if staff try to edit Qutation
+            {
+                SetCustomerValueIntoSession(summaryId);
+            }
+
+
+            if (userLoggedin && summaryId == 0)
             {
                 var customerModel = new CustomerModel();
                 var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
@@ -72,7 +80,6 @@ namespace InsuranceClaim.Controllers
                 var role = UserManager.GetRoles(_User.Id.ToString()).FirstOrDefault();
 
                 ViewBag.CurrentUserRole = role;
-
 
                 if (role != null && role != "Staff")
                 {
@@ -146,6 +153,42 @@ namespace InsuranceClaim.Controllers
             }
 
         }
+
+
+
+
+        public void SetCustomerValueIntoSession(int summaryId)
+        {
+            Session["ICEcashToken"] = null;
+            Session["issummaryformvisited"] = true;
+
+            Session["SummaryDetailId"] = summaryId;
+
+            var summaryDetail = InsuranceContext.SummaryDetails.Single(summaryId);
+
+            var Cusotmer = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
+
+            CustomerModel custModel = AutoMapper.Mapper.Map<Customer, CustomerModel>(Cusotmer);
+
+            if (Cusotmer != null)
+            {
+                var dbUser = UserManager.Users.FirstOrDefault(c => c.Id == Cusotmer.UserID);
+                if (dbUser != null)
+                {
+                    custModel.EmailAddress = dbUser.Email; ;
+                }
+            }
+
+            Session["CustomerDataModal"] = custModel;
+
+
+
+        }
+
+
+
+
+
 
 
         [HttpPost]
@@ -455,8 +498,10 @@ namespace InsuranceClaim.Controllers
                                 listriskdetailmodel = listriskdetails;
                             }
                         }
-
+                        model.Id = listriskdetailmodel[model.vehicleindex - 1].Id;
+                        model.CustomerId = listriskdetailmodel[model.vehicleindex - 1].CustomerId;
                         listriskdetailmodel[model.vehicleindex - 1] = model;
+
                         Session["VehicleDetails"] = listriskdetailmodel;
                     }
                     if (User.IsInRole("Staff"))
@@ -650,7 +695,6 @@ namespace InsuranceClaim.Controllers
             try
             {
 
-
                 List<RiskDetailModel> vehicleList = new List<RiskDetailModel>();
                 if (summaryDetailId != 0)
                 {
@@ -660,9 +704,6 @@ namespace InsuranceClaim.Controllers
                     foreach (var item in summaryVichalList)
                     {
                         var vehicleDetails = InsuranceContext.VehicleDetails.Single(where: $" Id='{item.VehicleDetailsId}'");
-
-
-
                         RiskDetailModel vehicleModel = Mapper.Map<VehicleDetail, RiskDetailModel>(vehicleDetails);
 
 
@@ -689,7 +730,6 @@ namespace InsuranceClaim.Controllers
                         vehicleList.Add(vehicleModel);
                     }
 
-
                     Session["VehicleDetails"] = vehicleList;
 
                 }
@@ -704,12 +744,16 @@ namespace InsuranceClaim.Controllers
 
                     foreach (var item in list)
                     {
+
+
+
                         VehicleListModel obj = new VehicleListModel();
-                        obj.make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{item.MakeId}'").ShortDescription;
-                        obj.model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ShortDescription;
+                        obj.make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{item.MakeId}'").MakeDescription;
+                        obj.model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription;
                         obj.covertype = InsuranceContext.CoverTypes.Single(item.CoverTypeId).Name;
                         obj.premium = item.Premium.ToString();
                         obj.suminsured = item.SumInsured.ToString();
+
 
                         if (item.IncludeRadioLicenseCost == true)
                         {
@@ -731,7 +775,10 @@ namespace InsuranceClaim.Controllers
                             radioLicenseCost = item.RadioLicenseCost;
                         }
 
-                        var calculationAmount = item.Premium + radioLicenseCost + item.Excess + item.VehicleLicenceFee + item.StampDuty + item.ZTSCLevy;
+                        // var calculationAmount = item.Premium + radioLicenseCost + item.Excess + item.VehicleLicenceFee + item.StampDuty + item.ZTSCLevy;
+
+                        var calculationAmount = item.Premium + radioLicenseCost + item.VehicleLicenceFee + item.StampDuty + item.ZTSCLevy;
+
 
                         obj.total = calculationAmount.ToString();
 
@@ -800,174 +847,179 @@ namespace InsuranceClaim.Controllers
             try
             {
 
-            
-           
-
-            Session["issummaryformvisited"] = true;
-            var summarydetail = (SummaryDetailModel)Session["SummaryDetailed"];
-            SummaryDetailService SummaryDetailServiceObj = new SummaryDetailService();
-
-            ViewBag.SummaryDetailId = summaryDetailId;
 
 
-            var role = "";
-            if (System.Web.HttpContext.Current.User.Identity.GetUserId() != null)
-            {
-                role = UserManager.GetRoles(System.Web.HttpContext.Current.User.Identity.GetUserId()).FirstOrDefault();
-            }
+
+                Session["issummaryformvisited"] = true;
+                var summarydetail = (SummaryDetailModel)Session["SummaryDetailed"];
+                SummaryDetailService SummaryDetailServiceObj = new SummaryDetailService();
+
+                ViewBag.SummaryDetailId = summaryDetailId;
 
 
-            ViewBag.CurrentUserRole = role;
-
-            if (summarydetail != null)
-            {
-                return View(summarydetail);
-            }
-
-
-           
-            var summary = new SummaryDetailService();
-            var vehicle = (List<RiskDetailModel>)Session["VehicleDetails"];// summary.GetVehicleInformation(id);
-
-            List<RiskDetailModel> vehicleList = new List<RiskDetailModel>();
-            if (summaryDetailId != 0)
-            {
-                model.CustomSumarryDetilId = summaryDetailId;
-                //vehicle = summary.GetVehicleInformation(id);
-                var summaryVichalList = InsuranceContext.SummaryVehicleDetails.All(where: $" SummaryDetailId='{summaryDetailId}'");
-
-                foreach (var item in summaryVichalList)
+                var role = "";
+                if (System.Web.HttpContext.Current.User.Identity.GetUserId() != null)
                 {
-                    var vehicleDetails = InsuranceContext.VehicleDetails.Single(item.VehicleDetailsId);
+                    role = UserManager.GetRoles(System.Web.HttpContext.Current.User.Identity.GetUserId()).FirstOrDefault();
+                }
 
-                    if (vehicleDetails != null)
+
+                ViewBag.CurrentUserRole = role;
+
+                //if (summarydetail != null) // on 05-oct while editing qutation
+                //{
+                //    return View(summarydetail);
+                //}
+
+
+
+                var summary = new SummaryDetailService();
+                var vehicle = (List<RiskDetailModel>)Session["VehicleDetails"];// summary.GetVehicleInformation(id);
+
+                List<RiskDetailModel> vehicleList = new List<RiskDetailModel>();
+                if (summaryDetailId != 0)
+                {
+                    model.CustomSumarryDetilId = summaryDetailId;
+                    //vehicle = summary.GetVehicleInformation(id);
+                    var summaryVichalList = InsuranceContext.SummaryVehicleDetails.All(where: $" SummaryDetailId='{summaryDetailId}'");
+
+                    foreach (var item in summaryVichalList)
                     {
+                        var vehicleDetails = InsuranceContext.VehicleDetails.Single(item.VehicleDetailsId);
 
-                        RiskDetailModel vehicleModel = Mapper.Map<VehicleDetail, RiskDetailModel>(vehicleDetails);
+                        if (vehicleDetails != null)
+                        {
+
+                            RiskDetailModel vehicleModel = Mapper.Map<VehicleDetail, RiskDetailModel>(vehicleDetails);
 
 
 
-                        //vehicleModel.Premium = vehicleDetails.Premium;
-                        //vehicleModel.ZTSCLevy = vehicleDetails.ZTSCLevy;
-                        //vehicleModel.StampDuty = vehicleDetails.StampDuty;
-                        //vehicleModel.IncludeRadioLicenseCost = vehicleDetails.IncludeRadioLicenseCost.Value;
-                        //vehicleModel.RadioLicenseCost = vehicleDetails.RadioLicenseCost;
-                        //vehicleModel.Discount = vehicleDetails.Discount;
-                        //vehicleModel.SumInsured = vehicleDetails.SumInsured;
-                        //vehicleModel.ExcessBuyBackAmount = vehicleDetails.ExcessBuyBackAmount;
+                            //vehicleModel.Premium = vehicleDetails.Premium;
+                            //vehicleModel.ZTSCLevy = vehicleDetails.ZTSCLevy;
+                            //vehicleModel.StampDuty = vehicleDetails.StampDuty;
+                            //vehicleModel.IncludeRadioLicenseCost = vehicleDetails.IncludeRadioLicenseCost.Value;
+                            //vehicleModel.RadioLicenseCost = vehicleDetails.RadioLicenseCost;
+                            //vehicleModel.Discount = vehicleDetails.Discount;
+                            //vehicleModel.SumInsured = vehicleDetails.SumInsured;
+                            //vehicleModel.ExcessBuyBackAmount = vehicleDetails.ExcessBuyBackAmount;
 
-                        //vehicleModel.MedicalExpensesAmount = vehicleDetails.MedicalExpensesAmount;
-                        //vehicleModel.PassengerAccidentCoverAmount = vehicleDetails.PassengerAccidentCoverAmount;
-                        //vehicleModel.RoadsideAssistanceAmount = vehicleDetails.RoadsideAssistanceAmount;
+                            //vehicleModel.MedicalExpensesAmount = vehicleDetails.MedicalExpensesAmount;
+                            //vehicleModel.PassengerAccidentCoverAmount = vehicleDetails.PassengerAccidentCoverAmount;
+                            //vehicleModel.RoadsideAssistanceAmount = vehicleDetails.RoadsideAssistanceAmount;
 
-                        //vehicleModel.ExcessAmount = vehicleDetails.ExcessAmount;
-                        //vehicleModel.PassengerAccidentCoverAmount = vehicleDetails.PassengerAccidentCoverAmount;
-                        //vehicleModel.RoadsideAssistanceAmount = vehicleDetails.RoadsideAssistanceAmount;
-                        //vehicleModel.ModelId = vehicleDetails.ModelId;
+                            //vehicleModel.ExcessAmount = vehicleDetails.ExcessAmount;
+                            //vehicleModel.PassengerAccidentCoverAmount = vehicleDetails.PassengerAccidentCoverAmount;
+                            //vehicleModel.RoadsideAssistanceAmount = vehicleDetails.RoadsideAssistanceAmount;
+                            //vehicleModel.ModelId = vehicleDetails.ModelId;
 
-                        vehicleList.Add(vehicleModel);
+                            vehicleList.Add(vehicleModel);
+                        }
+
+
+
                     }
+                    vehicle = vehicleList;
 
-
+                    Session["VehicleDetails"] = vehicle;
 
                 }
-                vehicle = vehicleList;
-
-                Session["VehicleDetails"] = vehicle;
-
-            }
 
 
 
 
-            var DiscountSettings = InsuranceContext.Settings.Single(where: $"keyname='Discount On Renewal'");
-            model.CarInsuredCount = vehicle.Count;
-            model.DebitNote = "INV" + Convert.ToString(SummaryDetailServiceObj.getNewDebitNote());
+                var DiscountSettings = InsuranceContext.Settings.Single(where: $"keyname='Discount On Renewal'");
+                model.CarInsuredCount = vehicle.Count;
+                model.DebitNote = "INV" + Convert.ToString(SummaryDetailServiceObj.getNewDebitNote());
 
-            //default selection 
-            if (User.IsInRole("Staff"))
-            {
-                model.PaymentMethodId = 1;
-            }
-            else
-            {
-                model.PaymentMethodId = 2;
-            }
-
-
-            model.PaymentTermId = 1;
-            model.ReceiptNumber = "";
-            model.SMSConfirmation = false;
-            //model.TotalPremium = vehicle.Sum(item => item.Premium + item.ZTSCLevy + item.StampDuty + item.RadioLicenseCost);
-            model.TotalPremium = 0.00m;
-            model.TotalRadioLicenseCost = 0.00m;
-            model.Discount = 0.00m;
-            foreach (var item in vehicle)
-            {
-                model.TotalPremium += item.Premium + item.ZTSCLevy + item.StampDuty + item.VehicleLicenceFee;
-                if (item.IncludeRadioLicenseCost)
+                //default selection 
+                if (User.IsInRole("Staff"))
                 {
-                    model.TotalPremium += item.RadioLicenseCost;
-                    model.TotalRadioLicenseCost += item.RadioLicenseCost;
+                    model.PaymentMethodId = 1;
                 }
-                model.Discount += item.Discount;
-                //if (DiscountSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
-                //{
-                //    var amountToCalculateDiscount = 0.00m;
-                //    switch (item.PaymentTermId)
-                //    {
-                //        case 1:
-                //            amountToCalculateDiscount = Convert.ToDecimal(item.AnnualRiskPremium);
-                //            break;
-                //        case 3:
-                //            amountToCalculateDiscount = Convert.ToDecimal(item.QuaterlyRiskPremium);
-                //            break;
-                //        case 4:
-                //            amountToCalculateDiscount = Convert.ToDecimal(item.TermlyRiskPremium);
-                //            break;
-                //    }
-                //    model.Discount += ((Convert.ToDecimal(DiscountSettings.value) * amountToCalculateDiscount) / 100);
-                //}
-                //if (DiscountSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
-                //{
-                //    model.Discount += Convert.ToDecimal(DiscountSettings.value);
-                //}
-            }
-            model.TotalRadioLicenseCost = Math.Round(Convert.ToDecimal(model.TotalRadioLicenseCost), 2);
-            model.Discount = Math.Round(Convert.ToDecimal(model.Discount), 2);
-            model.TotalPremium = Math.Round(Convert.ToDecimal(model.TotalPremium), 2);
-            model.TotalStampDuty = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.StampDuty)), 2);
-            model.TotalSumInsured = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.SumInsured)), 2);
-            model.TotalZTSCLevies = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.ZTSCLevy)), 2);
-            model.ExcessBuyBackAmount = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.ExcessBuyBackAmount)), 2);
-            model.MedicalExpensesAmount = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.MedicalExpensesAmount)), 2);
-            model.PassengerAccidentCoverAmount = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.PassengerAccidentCoverAmount)), 2);
-            model.RoadsideAssistanceAmount = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.RoadsideAssistanceAmount)), 2);
-            model.ExcessAmount = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.ExcessAmount)), 2);
-            model.AmountPaid = 0.00m;
-            model.MaxAmounttoPaid = Math.Round(Convert.ToDecimal(model.TotalPremium), 2);
-            var vehiclewithminpremium = vehicle.OrderBy(x => x.Premium).FirstOrDefault();
+                else
+                {
+                    model.PaymentMethodId = 2;
+                }
 
-            if (vehiclewithminpremium != null)
-            {
-                model.MinAmounttoPaid = Math.Round(Convert.ToDecimal(vehiclewithminpremium.Premium + vehiclewithminpremium.StampDuty + vehiclewithminpremium.ZTSCLevy + (Convert.ToBoolean(vehiclewithminpremium.IncludeRadioLicenseCost) ? vehiclewithminpremium.RadioLicenseCost : 0.00m)), 2);
-            }
 
-            model.AmountPaid = Convert.ToDecimal(model.TotalPremium);
-            model.BalancePaidDate = DateTime.Now;
-            model.Notes = "";
+                model.PaymentTermId = 1;
+                model.ReceiptNumber = "";
+                model.SMSConfirmation = false;
+                //model.TotalPremium = vehicle.Sum(item => item.Premium + item.ZTSCLevy + item.StampDuty + item.RadioLicenseCost);
+                model.TotalPremium = 0.00m;
+                model.TotalRadioLicenseCost = 0.00m;
+                model.Discount = 0.00m;
+                foreach (var item in vehicle)
+                {
+                    model.TotalPremium += item.Premium + item.ZTSCLevy + item.StampDuty + item.VehicleLicenceFee;
+                    if (item.IncludeRadioLicenseCost)
+                    {
+                        model.TotalPremium += item.RadioLicenseCost;
+                        model.TotalRadioLicenseCost += item.RadioLicenseCost;
+                    }
+                    model.Discount += item.Discount;
+                    //if (DiscountSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                    //{
+                    //    var amountToCalculateDiscount = 0.00m;
+                    //    switch (item.PaymentTermId)
+                    //    {
+                    //        case 1:
+                    //            amountToCalculateDiscount = Convert.ToDecimal(item.AnnualRiskPremium);
+                    //            break;
+                    //        case 3:
+                    //            amountToCalculateDiscount = Convert.ToDecimal(item.QuaterlyRiskPremium);
+                    //            break;
+                    //        case 4:
+                    //            amountToCalculateDiscount = Convert.ToDecimal(item.TermlyRiskPremium);
+                    //            break;
+                    //    }
+                    //    model.Discount += ((Convert.ToDecimal(DiscountSettings.value) * amountToCalculateDiscount) / 100);
+                    //}
+                    //if (DiscountSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                    //{
+                    //    model.Discount += Convert.ToDecimal(DiscountSettings.value);
+                    //}
+                }
+                model.TotalRadioLicenseCost = Math.Round(Convert.ToDecimal(model.TotalRadioLicenseCost), 2);
+                model.Discount = Math.Round(Convert.ToDecimal(model.Discount), 2);
+                model.TotalPremium = Math.Round(Convert.ToDecimal(model.TotalPremium), 2);
+                model.TotalStampDuty = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.StampDuty)), 2);
+                model.TotalSumInsured = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.SumInsured)), 2);
+                model.TotalZTSCLevies = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.ZTSCLevy)), 2);
+                model.ExcessBuyBackAmount = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.ExcessBuyBackAmount)), 2);
+                model.MedicalExpensesAmount = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.MedicalExpensesAmount)), 2);
+                model.PassengerAccidentCoverAmount = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.PassengerAccidentCoverAmount)), 2);
+                model.RoadsideAssistanceAmount = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.RoadsideAssistanceAmount)), 2);
+                model.ExcessAmount = Math.Round(Convert.ToDecimal(vehicle.Sum(item => item.ExcessAmount)), 2);
+                model.AmountPaid = 0.00m;
+                model.MaxAmounttoPaid = Math.Round(Convert.ToDecimal(model.TotalPremium), 2);
+                var vehiclewithminpremium = vehicle.OrderBy(x => x.Premium).FirstOrDefault();
 
-            if (Session["PolicyData"] != null)
-            {
-                var PolicyData = (PolicyDetail)Session["PolicyData"];
-                model.InvoiceNumber = PolicyData.PolicyNumber;
-            }
+                if (vehiclewithminpremium != null)
+                {
+                    model.MinAmounttoPaid = Math.Round(Convert.ToDecimal(vehiclewithminpremium.Premium + vehiclewithminpremium.StampDuty + vehiclewithminpremium.ZTSCLevy + (Convert.ToBoolean(vehiclewithminpremium.IncludeRadioLicenseCost) ? vehiclewithminpremium.RadioLicenseCost : 0.00m)), 2);
+                }
+
+                model.AmountPaid = Convert.ToDecimal(model.TotalPremium);
+                model.BalancePaidDate = DateTime.Now;
+                model.Notes = "";
+
+                if (Session["PolicyData"] != null)
+                {
+                    var PolicyData = (PolicyDetail)Session["PolicyData"];
+                    model.InvoiceNumber = PolicyData.PolicyNumber;
+                }
+
+                if (summarydetail != null)
+                {
+                    model.Id = summarydetail.Id;
+                }
 
             }
             catch (Exception ex)
             {
                 WriteLog(ex.Message);
-              return  View(model);
+                return View(model);
             }
 
             return View(model);
@@ -1297,23 +1349,27 @@ namespace InsuranceClaim.Controllers
 
 
                         // Genrate new policy number
-                        string policyNumber = string.Empty;
 
-                        var objList = InsuranceContext.PolicyDetails.All(orderBy: "Id desc").FirstOrDefault();
-                        if (objList != null)
+                        if (policy != null && policy.Id==0)
                         {
-                            string number = objList.PolicyNumber.Split('-')[0].Substring(4, objList.PolicyNumber.Length - 6);
-                            long pNumber = Convert.ToInt64(number.Substring(2, number.Length - 2)) + 1;
+                            string policyNumber = string.Empty;
 
-                            int length = 7;
-                            length = length - pNumber.ToString().Length;
-                            for (int i = 0; i < length; i++)
+                            var objList = InsuranceContext.PolicyDetails.All(orderBy: "Id desc").FirstOrDefault();
+                            if (objList != null)
                             {
-                                policyNumber += "0";
-                            }
-                            policyNumber += pNumber;
-                            policy.PolicyNumber = "GMCC" + DateTime.Now.Year.ToString().Substring(2, 2) + policyNumber + "-1";
+                                string number = objList.PolicyNumber.Split('-')[0].Substring(4, objList.PolicyNumber.Length - 6);
+                                long pNumber = Convert.ToInt64(number.Substring(2, number.Length - 2)) + 1;
 
+                                int length = 7;
+                                length = length - pNumber.ToString().Length;
+                                for (int i = 0; i < length; i++)
+                                {
+                                    policyNumber += "0";
+                                }
+                                policyNumber += pNumber;
+                                policy.PolicyNumber = "GMCC" + DateTime.Now.Year.ToString().Substring(2, 2) + policyNumber + "-1";
+
+                            }
                         }
                         // end genrate policy number
 
@@ -1668,12 +1724,7 @@ namespace InsuranceClaim.Controllers
                                     {
                                         DbEntry.CreatedBy = _customerData.Id;
                                     }
-
                                 }
-
-
-
-
 
 
                                 DbEntry.CreatedOn = DateTime.Now;
@@ -1697,10 +1748,35 @@ namespace InsuranceClaim.Controllers
                             }
                             else
                             {
-                                SummaryDetail summarydata = InsuranceContext.SummaryDetails.All(summary.Id.ToString()).FirstOrDefault();
+                                // SummaryDetail summarydata = InsuranceContext.SummaryDetails.All(summary.Id.ToString()).FirstOrDefault(); // on 05-oct for updatig qutation
+
+                                var summarydata = Mapper.Map<SummaryDetailModel, SummaryDetail>(model);
+                                summarydata.Id = summary.Id;
+                                summarydata.CreatedOn = DateTime.Now;
+
+                                if (!string.IsNullOrEmpty(btnSendQuatation))
+                                {
+                                    summarydata.isQuotation = true;
+                                }
+
 
                                 //summarydata.PaymentTermId = Convert.ToInt32(Session["policytermid"]);
                                 //summarydata.VehicleDetailId = vehicle[0].Id;
+
+
+                                bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+                                if (_userLoggedin)
+                                {
+                                    var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
+                                    var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{_User.Id}'").FirstOrDefault();
+
+                                    if (_customerData != null)
+                                    {
+                                        summarydata.CreatedBy = _customerData.Id;
+                                    }
+                                }
+
+
                                 summarydata.ModifiedBy = customer.Id;
                                 summarydata.ModifiedOn = DateTime.Now;
                                 if (summarydata.BalancePaidDate.Value.Year == 0001)
@@ -1914,7 +1990,7 @@ namespace InsuranceClaim.Controllers
 
                             string rootPath = urlPath + "/CustomerRegistration/SummaryDetail?summaryDetailId=" + summaryDetail.Id;
 
-
+                            // need to do work
 
                             string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(QuotationEmailPath));
                             var Bodyy = MotorBody.Replace("##PolicyNo##", policyQuotation.PolicyNumber).Replace("##path##", filepath).Replace("##Cellnumber##", user.PhoneNumber).
@@ -2144,6 +2220,8 @@ namespace InsuranceClaim.Controllers
 
             try
             {
+                int makeId = 0;
+
                 if (dbVehicalMake == null)
                 {
                     VehicleMake veshicalMake = new VehicleMake();
@@ -2153,20 +2231,27 @@ namespace InsuranceClaim.Controllers
                     veshicalMake.ShortDescription = make;
                     veshicalMake.MakeCode = make;
                     InsuranceContext.VehicleMakes.Insert(veshicalMake);
+                    makeId = veshicalMake.Id;
                 }
 
 
-                var dbVehicalModel = InsuranceContext.VehicleModels.Single(where: $"ModelDescription = '" + model + "'");
+                var dbVehicalModel = InsuranceContext.VehicleModels.Single(where: $"ModelDescription='{model}' and MakeCode = '{make}'");
 
-                if (dbVehicalModel == null)
+                // where: $"ModelDescription={model} and MakeCode = {make}'"
+
+                if (dbVehicalModel == null && makeId != 0)
                 {
                     VehicleModel vehicalModel = new VehicleModel();
                     vehicalModel.MakeCode = make;
                     vehicalModel.ModelDescription = model.ToUpper();
                     vehicalModel.ShortDescription = model;
                     vehicalModel.ModelCode = model;
+                    vehicalModel.CreatedOn = DateTime.Now;
                     InsuranceContext.VehicleModels.Insert(vehicalModel);
                 }
+
+
+
             }
             catch (Exception ex)
             {
@@ -2175,6 +2260,34 @@ namespace InsuranceClaim.Controllers
 
         }
 
+        public JsonResult gotoExit(int? id)
+        {
+            JsonResult jsonResult = new JsonResult();
+            Session.Remove("CustomerDataModal");
+            Session.Remove("PolicyData");
+            Session.Remove("VehicleDetails");
+            Session.Remove("SummaryDetailed");
+            Session.Remove("CardDetail");
+            Session.Remove("issummaryformvisited");
+            Session.Remove("PaymentId");
+
+            jsonResult.Data = 1;
+
+            return jsonResult;
+        }
+
+        private void RemoveSession()
+        {
+            Session.Remove("CustomerDataModal");
+            Session.Remove("PolicyData");
+            Session.Remove("VehicleDetails");
+            Session.Remove("SummaryDetailed");
+            Session.Remove("CardDetail");
+            Session.Remove("issummaryformvisited");
+            Session.Remove("PaymentId");
+        }
+
+     
 
         public JsonResult getRadiolicensecost(int? Id)
         {
@@ -2243,8 +2356,6 @@ namespace InsuranceClaim.Controllers
                     ICEcashService.getToken();
                     tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
                 }
-
-
 
 
 
