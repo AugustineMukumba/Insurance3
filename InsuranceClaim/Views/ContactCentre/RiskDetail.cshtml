@@ -2,6 +2,8 @@
 @{
     ViewBag.Title = "RiskDetail";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+
+    var customerDetail = (InsuranceClaim.Models.CustomerModel)Session["CustomerDataModal"];
 }
 
 
@@ -59,6 +61,10 @@
 
     <div class="form-section-top">
         <div class="container">
+
+           
+           
+
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-section-col">
 
@@ -90,8 +96,13 @@
                         </div>
                         <div class="form-group-section">
                             <div class="form-title">
-                                <h4>Risk Details</h4>
+                                <h4>Risk Details </h4>
+                                <br />
+                                <span> Name: <b>@customerDetail.FirstName  @customerDetail.LastName </b>,  Email: <b>@customerDetail.EmailAddress </b>  </span>
                             </div>
+
+                            
+
 
                             <div id="divVehicleList" style="display:block;">
                                 <table class="table table-striped" id="tblVehicleList">
@@ -112,6 +123,9 @@
                                 </table>
                                 <hr class="higlighter" />
                             </div>
+
+
+                           
 
 
                             <div class="form-group-input">
@@ -290,7 +304,7 @@
                                         </div>
 
 
-                                        <div class="row">
+                                        <div class="row" style="display:none">
                                             <div class="col-sm-6 col-md-6 form-group-select">
                                                 <div class="form-group">
                                                     @Html.Label("Excess Type", new { @class = "gender-label" })
@@ -356,6 +370,8 @@
                                             </div>
 
                                         </div>
+
+
                                         <div class="row" style="display:none">
                                             <div class="col-sm-6 col-md-6 form-group-text">
                                                 <div class="form-group">
@@ -522,7 +538,6 @@
                                                 @if (Session["issummaryformvisited"] != null && (bool)Session["issummaryformvisited"] && Session["VehicleDetails"] != null && ((List<InsuranceClaim.Models.RiskDetailModel>)Session["VehicleDetails"]).Count > 0)
                                                 {
 
-
                                                     <div class="col-sm-4 col-md-4">
                                                         <div class="text-right">
                                                             <button type="button" id="btnSkip" onclick="redirectToSummary();" class="btn" style="padding:20px 10px;width: 170px;">Skip</button>
@@ -599,6 +614,7 @@
                                                             <option value="Chipinge">Chipinge</option>
                                                             <option value="Gokwe">Gokwe</option>
                                                             <option value="Shurugwi">Shurugwi</option>
+                                                            <option value="Gwanda">Gwanda</option>
                                                         </select>
 
                                                     </div>
@@ -640,7 +656,7 @@
 
 <script>
     function gotoPeriviouse() {
-        location.href = '@Url.Action("Index", "CustomerRegistration", new { id=0 })';
+        location.href = '@Url.Action("Index", "CustomerRegistration", new { id=-1 })';
     }
 
     function cancelUpdate() {
@@ -1305,10 +1321,6 @@
                         var calulatePremium = CoverAmount-data.Data.LoyaltyDiscount;
 
                         $("#Premium").val(parseFloat(calulatePremium).toFixed(2));
-
-
-
-
 
                         $("#InsuranceId").val(data.Data.Response.Quotes[0].InsuranceID);
 

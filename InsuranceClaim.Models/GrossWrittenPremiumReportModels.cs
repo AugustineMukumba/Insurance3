@@ -26,6 +26,10 @@ namespace InsuranceClaim.Models
         public decimal Comission_Amount { get; set; }
         public decimal Sum_Insured { get; set; }
         public decimal? RadioLicenseCost { get; set; }
+
+        public string CoverType { get; set; }
+
+        public decimal? Zinara_License_Fee { get; set; }
     }
     public class ListGrossWrittenPremiumReportModels
     {

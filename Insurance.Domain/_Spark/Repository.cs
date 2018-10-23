@@ -64,7 +64,9 @@ namespace Insurance.Domain
         public static PolicyRenewReminderSettings PolicyRenewReminderSettings { get { return new PolicyRenewReminderSettings(); } }
         public static ReminderFaileds ReminderFaileds { get { return new ReminderFaileds(); } }
         public static LicenceDiskDeliveryAddresses LicenceDiskDeliveryAddresses { get { return new LicenceDiskDeliveryAddresses(); } }
+       public static UniqueCustomers UniqueCustomers { get { return new UniqueCustomers(); } }
 
+        public static Cities Cities  { get { return new Cities(); } }
 
         // general purpose operations
 

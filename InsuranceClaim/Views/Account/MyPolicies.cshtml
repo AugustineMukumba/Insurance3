@@ -40,13 +40,13 @@
                         <div class="col-sm-3 col-md-3">
 
                         </div>
-                        <div class="col-sm-5 col-md-5">
+                        @*<div class="col-sm-5 col-md-5">
                             <div class="text-left search-btn">
                                 <button type="submit" class="btn btn-success">Search</button>
                                 <button type="button" onclick="removeSearchBoxText();" class="btn btn-danger">Clear Search</button>
                             </div>
 
-                        </div>
+                        </div>*@
                     </div>
                 </div>
             </div>
@@ -73,11 +73,12 @@
 
                         <th>Policy Number</th>
                         <th>Customer Name</th>
+                        <th>Customer Email</th>
                         <th>Payment Method</th>
                         <th>Total Sum Insured</th>
                         <th>Total Premium</th>
                         <th>Created On</th>
-                        <th>Action(s)</th>
+                        <th class="action-th">Action(s)</th>
 
                     </tr>
 
@@ -87,6 +88,7 @@
 
                             <td>@item.PolicyNumber</td>
                             <td>@MiscellaneousService.GetCustomerNamebyID(item.CustomerId)</td>
+                            <td>@item.CustomerEmail
                             <td>@MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId)</td>
                             <td>$@item.TotalSumInsured</td>
                             <td>$@item.TotalPremium</td>
@@ -460,5 +462,18 @@
         var newurl = url.replace("1021", CoverListId);
         window.location.href = newurl;
     }
+
+
+$(document).ready(function(){
+    $("#searchText").on("keyup", function () {
+    var value = $(this).val().toLowerCase();
+    $(".table>tbody tr").filter(function () {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+
+
+
 
 </script>

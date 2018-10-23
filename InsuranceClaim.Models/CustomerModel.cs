@@ -71,5 +71,8 @@ namespace InsuranceClaim.Models
         //[RegularExpression(@"^\+\d{1,3}$", ErrorMessage = "Not a valid Country Code .")]
         public string CountryCode { get; set; }
         public string role { get; set; }
+
+        public bool IsCustomEmail { get; set; }
+
     }
 }

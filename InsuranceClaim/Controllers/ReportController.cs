@@ -307,6 +307,28 @@ namespace InsuranceClaim.Controllers
                         obj.Stamp_duty = Convert.ToDecimal(item.StampDuty);
                         obj.ZTSC_Levy = Convert.ToDecimal(item.ZTSCLevy);
                         obj.Sum_Insured = Convert.ToDecimal(item.SumInsured);
+                        obj.Zinara_License_Fee = Vehicle.VehicleLicenceFee;
+
+                        obj.Comission_percentage = 30;
+
+                        if(Vehicle!=null)
+                        {
+                            obj.Comission_Amount = Convert.ToDecimal(Vehicle.Premium * 30 / 100);
+                        }
+                        
+
+                        string converType = "";
+
+                        if (item.CoverTypeId == (int)eCoverType.ThirdParty)
+                            converType = eCoverType.ThirdParty.ToString();
+
+                        if (item.CoverTypeId == (int)eCoverType.FullThirdParty)
+                            converType = eCoverType.FullThirdParty.ToString();
+
+                        if (item.CoverTypeId == (int)eCoverType.Comprehensive)
+                            converType = eCoverType.Comprehensive.ToString();
+
+                        obj.CoverType = converType;
 
                         obj.Net_Premium = item.Premium;
                         obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("dd/MM/yyy");
@@ -342,6 +364,9 @@ namespace InsuranceClaim.Controllers
             return View(Model);
         }
 
+      
+
+
         public ActionResult SearchGrossReports(GrossWrittenPremiumReportSearchModels _model)
         {
 
@@ -364,9 +389,7 @@ namespace InsuranceClaim.Controllers
             }
 
 
-
-
-            vehicledetail = vehicledetail.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
+            vehicledetail = vehicledetail.Where(c => Convert.ToDateTime(c.TransactionDate.Value.ToShortDateString()) >= fromDate && Convert.ToDateTime(c.TransactionDate.Value.ToShortDateString()) <= endDate).ToList();
 
 
             foreach (var item in vehicledetail)
@@ -393,6 +416,31 @@ namespace InsuranceClaim.Controllers
                         obj.Stamp_duty = Convert.ToDecimal(item.StampDuty);
                         obj.ZTSC_Levy = Convert.ToDecimal(item.ZTSCLevy);
                         obj.Sum_Insured = Convert.ToDecimal(item.SumInsured);
+
+                        obj.Zinara_License_Fee = Vehicle.VehicleLicenceFee;
+
+
+                        string converType = "";
+
+                        if (item.CoverTypeId == (int)eCoverType.ThirdParty)
+                            converType = eCoverType.ThirdParty.ToString();
+
+                        if (item.CoverTypeId == (int)eCoverType.FullThirdParty)
+                            converType = eCoverType.FullThirdParty.ToString();
+
+                        if (item.CoverTypeId == (int)eCoverType.Comprehensive)
+                            converType = eCoverType.Comprehensive.ToString();
+
+                        obj.CoverType = converType;
+
+
+                        obj.Comission_percentage = 30;
+
+                        if (Vehicle != null)
+                        {
+                            obj.Comission_Amount = Convert.ToDecimal(Vehicle.Premium * 30 / 100);
+                        }
+
 
                         obj.Net_Premium = item.Premium;
                         obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("dd/MM/yyy");

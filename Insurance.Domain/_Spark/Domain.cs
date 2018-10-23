@@ -110,6 +110,8 @@ namespace Insurance.Domain
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
 
+        public bool IsCustomEmail { get; set; }
+
     }
 
     public partial class LicenseDelivery : Entity<LicenseDelivery>
@@ -702,4 +704,32 @@ namespace Insurance.Domain
         public DateTime ModifiedOn { get; set; }
 
     }
+
+
+    public partial class UniqueCustomer : Entity<UniqueCustomer>
+    {
+        public UniqueCustomer() { }
+        public UniqueCustomer(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public int UniqueCustomerId { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+
+
+    }
+
+
+    public partial class City : Entity<City>
+    {
+        public City() { }
+        public City(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public string CityName { get; set; }
+        public DateTime? CreatedOn { get; set; }
+
+    }
+
+
 }

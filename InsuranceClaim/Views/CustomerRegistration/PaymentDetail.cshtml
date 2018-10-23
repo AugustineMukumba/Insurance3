@@ -65,6 +65,17 @@
                             <h4>Payment Details</h4>
                         </div>
 
+                        
+                        @if (TempData["ErrorMsg"] != null)
+                        {
+                            <div class="alert alert-danger">
+                                @TempData["ErrorMsg"]
+                            </div>
+                        }
+                      
+
+
+
                         <div class="form-group-input">
                             @using (Html.BeginForm("PaymentWithCreditCard", "Paypal"))
                             {<div>
@@ -108,7 +119,7 @@
                                         <div class="form-group">
                                             @Html.Label("Expiry Date", new { @class = "gender-label" })
                                             <div class='input-group date' id='datetimepicker1'>
-                                                @Html.TextBoxFor(m => m.ExpiryDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Expiry Date" })
+                                                @Html.TextBoxFor(m => m.ExpiryDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "MM/YYYY" })
                                                 
                                                 <span class="input-group-addon">
                                                     <span class="glyphicon glyphicon-calendar"></span>
@@ -145,14 +156,14 @@
                                     <div class="col-md-12 next-btn">
                                         <div class="row">
                                             <div class="col-sm-6 col-md-6">
-                                                @*<div class="text-left">
+                                                <div class="text-left">
                                                     <div class="back-left"><button type="button" onclick="gotoPeriviouse()" class="btn">Back</button></div>
                                                     <a style="display:none" id="previouselink" href="/CustomerRegistration/SummaryDetail" class="back"></a>
-                                                </div>*@
+                                                </div>
                                             </div>
                                             <div class="col-sm-6 col-md-6">
                                                 <div class="text-right">
-                                                    <button type="submit" onclick="cardFormValidate" class="btn">Next</button>
+                                                    <button type="submit"  class="btn">Next</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -192,8 +203,8 @@
     }
     $(function () { // will trigger when the document is ready
         $('#datetimepicker1').datetimepicker({
-            format: 'MM/YYYY',
-            minDate: new Date()
+            format: 'MM/YYYY'
+           // minDate: new Date()
         });
         $('#CardNumber').validateCreditCard(function (result) {
 

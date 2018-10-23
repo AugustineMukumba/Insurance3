@@ -18,5 +18,7 @@ public class VehicleListModel
         public string vehicle_license_fee { get; set; }
         public string stampDuty { get; set; }
         public string total { get; set; }
+
+        public string ZTSCLevy { get; set; }
     }
 }

@@ -16,6 +16,7 @@ ol, ul {
     list-style: none;
 }
 
+
 .btnDisabled {
     pointer-events: none;
     background: #acacac !important;
@@ -35,6 +36,15 @@ tfoot {
 .container-2-checkbox .gender-label
 {
     width:25%;
+}
+
+th.action-th {
+    width: 150px;
+}
+
+.fontSize18px
+{
+    font-size:19px !important;
 }
 
 .inputDisabled {
@@ -100,6 +110,10 @@ tfoot {
     /*margin-left: 14%;*/
     /*margin-right: 3%;*/
     width: 1314px;
+}
+
+.HideSummary{
+    display:none;
 }
 
 .sub-table tr {
@@ -512,6 +526,8 @@ tfoot {
     box-shadow: inherit;
     border: none;
     box-shadow: inherit !important;
+}
+.form-group-text input[type="checkbox"] {height:auto;  
 }
 
 .form-group-textarea textarea {
@@ -1574,6 +1590,14 @@ div#invoiceNumberDiv .form-group {
 }
 .form-group-section-date .form-group-text input { border:1px solid #ddd;
 }
+
+.font13px
+{
+    font-size:13px;
+}
+.size192{
+    width:127px;
+}
 .form-group-btn ul li {
     padding: 0;
     margin: 0 0 0 10px;
@@ -1592,8 +1616,54 @@ div#invoiceNumberDiv .form-group {
 .form-group-section-date .form-group-text .form-group span.text-danger {
     position: static;
 }
+.checkbox-label {  display: inline-block;  width: 100%;  margin: 0 0 15px;}
+.checkbox-label label {  width: auto;  margin: 0;}
+
+
+
+.about-top-banner img{width:100%;}
+.insure-section { display: inline-block;  width: 100%;  padding: 60px 0;}
+.about-heading-top h1 { text-transform: uppercase;  font-size: 50px;  font-weight: 300; color:#51C4D2;}
+.about-heading-top {  margin: 0 0 20px;}
+.insure-heading{margin:0 0 15px}
+.insure-heading h3 { font-size: 20px;  font-weight: 700;  color: #555;}
+
+.p-contents p { font-size: 14px;  line-height: 25px;  color: #444;  margin: 0 0 20px;}
+.p-contents p:last-child {  margin:0;}
+
+.specialty-title-block { display: inline-block; width: 100%; margin: 60px 0 0;}
+.specialty-title h4 { font-size: 18px;  font-weight: 600; margin: 0 0 20px;  color: #444;}
+.insurance-area { display: inline-block;  width: 100%;  margin: 0 0 50px;}
+.insurance-area:last-child {  margin:0}
+
+.insurance-list h4 { color: #444;  font-size: 16px;  margin: 0 0 15px;  font-weight: 600;}
+.insurance-list p {  line-height: 26px;}
+.about-img img{width:100%;}
+
+.row-checkbox label.gender-label {
+    width: auto;
+    margin: 0 0 0 2px;
+}
+.row-checkbox input[type="checkbox"] {
+    margin: 4px 3px 0 0;
+    float: left;
+}
 
 /**15 june css end**/
+
+.city-section-top {
+    display: inline-block;
+    width: 100%;
+    padding: 50px 0 20px;
+}
+.city-add-btn {
+    margin: 0 0 15px;
+    /*text-align: right;*/
+}
+.city-section-top table {
+    border: 1px solid #ddd;
+}
+
 
 @media(max-width:767px) {
     .policy-option li {

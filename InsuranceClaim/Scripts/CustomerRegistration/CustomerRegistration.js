@@ -3,13 +3,19 @@
 
 function GoToProductDetail(json) {
     debugger
+
     if (json.IsError == true) {
-        window.location.href = '/CustomerRegistration/ProductDetail';
+       window.location.href = '/CustomerRegistration/ProductDetail';
     }
     else {
         var errorMessage = json.error;
         if (errorMessage != null && errorMessage != '') {
             toastr.error(errorMessage)
+            if (errorMessage == "Sucessfully update")
+            {
+                window.location.href = '/Account/QuotationList';
+            }
+            
         }
     }
 }

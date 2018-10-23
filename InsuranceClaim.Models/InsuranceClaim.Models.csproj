@@ -92,6 +92,7 @@
     <Compile Include="BasicCommissionReportModel.cs" />
     <Compile Include="CardDetailModel.cs" />
     <Compile Include="CardType.cs" />
+    <Compile Include="CltyModel.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="CovertypeModel.cs" />
     <Compile Include="CustomerListingReportModel.cs" />

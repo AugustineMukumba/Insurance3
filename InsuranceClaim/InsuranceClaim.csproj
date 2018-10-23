@@ -208,6 +208,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CityController.cs" />
     <Compile Include="Controllers\CommissionController.cs" />
     <Compile Include="Controllers\ContactCentreController.cs" />
     <Compile Include="Controllers\CovertypeController.cs" />
@@ -439,6 +440,9 @@
     <Content Include="Views\VehicleModel\VehicleModelList.cshtml" />
     <Content Include="Views\VehicleModel\VehicleModelEdit.cshtml" />
     <Content Include="Views\Account\ChangePassword.cshtml" />
+    <Content Include="Views\City\Index.cshtml" />
+    <Content Include="Views\City\Edit.cshtml" />
+    <Content Include="Views\City\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

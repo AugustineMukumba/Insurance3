@@ -89,19 +89,17 @@
                             <th style="width: 170px;">Customer Name</th>
                             <th style="width: 180px;">Policy Number</th>
                             <th style="width:170px;">Policy Dates</th>
-                            @*<th>Policy End Date</th>
-                                <th>Transaction Date</th>*@
-                            <th>Make and Model</th>
                             <th style="width:170px;">Payment Detail</th>
-                            @*<th>Payment Mode</th>*@
-                            <th>Sum Insured</th>
+                            <th>Term Period</th>
+                            <th>Cover Type</th>
+
                             <th style="width:170px;">Premium</th>
-                            <th>Stamp Duty</th>
+                          
+                            <th width="170px;">Stamp Duty</th>
                             <th>ZTSC Levy</th>
-                            @*<th>Net Premium</th>*@
-                            <th style="width:200px;">Commission Detail</th>
-                            @*<th>Commission Amount</th>*@
-                            <th style="text-align: left;">Radio Licence Cost</th>
+                            <th>Commission Detail</th>
+                            <th>Radio Licence Cost</th>
+                            <th>Zinara License Fee</th>
 
                         </tr>
                     </thead>
@@ -116,12 +114,8 @@
                             decimal ztscLevyTotal = 0;
                             decimal commissionAmountTotal = 0;
                             decimal radioLicenseCostTotal = 0;
+                            decimal ZinaraLicenseFee = 0;
                         }
-
-
-
-
-
 
                         @foreach (var item in Model.ListGrossWrittenPremiumReportdata.ToList())
                         {
@@ -133,77 +127,30 @@
                             ztscLevyTotal += item.ZTSC_Levy;
                             commissionAmountTotal += item.Comission_Amount;
                             radioLicenseCostTotal += Convert.ToDecimal(item.RadioLicenseCost);
-
-
-
+                            ZinaraLicenseFee += Convert.ToDecimal(item.Zinara_License_Fee);
                             <tr>
                                 <td>@item.Customer_Name</td>
                                 <td>@item.Policy_Number</td>
-                                <td>
-                                    <table class="sub-table">
-                                        <tr>
-                                            <td><b>Policy Start Date :</b><br />@item.Policy_startdate<br /></td>
-
-                                        </tr>
-                                        <tr>
-                                            <td><b>Policy End Date : </b><br />@item.Policy_endate<br /></td>
-
-                                        </tr>
-                                        <tr>
-                                            <td><b>Transaction Date :</b><br />@item.Transaction_date<br /></td>
-                                        </tr>
-                                    </table>
+                                <td>                                
+                                    @item.Transaction_date                                           
                                 </td>
-                                @*<td>@item.Policy_endate</td>
-                                    <td>@item.Transaction_date</td>*@
-                                <td>@item.Vehicle_makeandmodel</td>
                                 <td>
-                                    <table class="sub-table">
-                                        <tr>
-                                            <td><b>Payment Term :</b><br />@item.Payment_Term<br /></td>
-
-                                        </tr>
-                                        <tr>
-                                            <td><b>Payment Mode : </b><br />@item.Payment_Mode<br /></td>
-
-                                        </tr>
-                                    </table>
+                                    @item.Payment_Mode
                                 </td>
-                                @*<td>@item.Payment_Mode</td>*@
-                                <td>$ @item.Sum_Insured</td>
+                                <td> @item.Payment_Term</td>
+                                <td>@item.CoverType</td>  
+                                                         
                                 <td>
-                                    <table class="sub-table">
-                                        <tr>
-                                            <td><b>Annual Premium :</b><br />$@item.Annual_Premium<br /></td>
-
-                                        </tr>
-                                        <tr>
-                                            <td><b>Premium Due : </b><br />$@item.Premium_due<br /></td>
-
-                                        </tr>
-                                        <tr>
-                                            <td><b>Net Premium : </b><br />$@item.Net_Premium<br /></td>
-
-                                        </tr>
-                                    </table>
+                                    $@item.Premium_due                                
                                 </td>
+                                  
                                 <td>$ @item.Stamp_duty</td>
                                 <td>$ @item.ZTSC_Levy</td>
-                                @*<td>@item.Net_Premium</td>*@
                                 <td>
-                                    <table class="sub-table">
-                                        <tr>
-                                            <td><b>Commission Percentage :</b><br />@item.Comission_percentage %<br /></td>
-
-                                        </tr>
-                                        <tr>
-                                            <td><b>Commission Amount : </b><br />$ @item.Comission_Amount<br /></td>
-
-                                        </tr>
-                                    </table>
+                                    $@item.Comission_Amount
                                 </td>
-                                @*<td>@item.Comission_Amount</td>*@
                                 <td>$@item.RadioLicenseCost</td>
+                                <td> @item.Zinara_License_Fee </td>   
                             </tr>
                         }
                     </tbody>
@@ -212,36 +159,19 @@
                             <td><strong>Total:</strong></td>
                             <td></td>
                             <td></td>
+                            <td></td>                     
                             <td></td>
                             <td></td>
-                            <td><strong>$@sumInsuredTotal</strong></td>
                             <td>
-                                <table class="sub-table">
-                                    <tr>
-                                        <td><b>Total Annual Premium :</b><br /><b>$@annualPremiumTotal</b><br /></td>
-
-                                    </tr>
-                                    <tr>
-                                        <td><b>Total Premium Due : </b><br /><b>$@premiumDueTotal</b><br /></td>
-
-                                    </tr>
-                                    <tr>
-                                        <td><b>Total Net Premium : </b><br /><b>$@netPremiumTotal</b><br /></td>
-
-                                    </tr>
-                                </table>
+                                <b> $@premiumDueTotal </b>
                             </td>
                             <td><strong>$@stampdutyTotal</strong></td>
                             <td><strong>$@ztscLevyTotal</strong></td>
                             <td>
-                                <table class="sub-table">
-                                    <tr>
-                                        <td><b>Commission Amount : </b><br /><strong>$@commissionAmountTotal</strong><br /></td>
-
-                                    </tr>
-                                </table>
+                                <strong>$@commissionAmountTotal</strong>
                             </td>
                             <td><strong>$@radioLicenseCostTotal</strong></td>
+                            <td><strong> $@ZinaraLicenseFee </strong> </td>
                         </tr>
                     </tfoot>
                 </table>
@@ -320,8 +250,10 @@
             'elementHandlers': specialElementHandlers
         });
         doc.save('GrossWrittenPremiumReport.pdf');
-
+        
     });
+
+    
 
 
 </script>

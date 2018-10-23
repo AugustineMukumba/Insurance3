@@ -4,6 +4,8 @@
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
     var vehicleList = (List<InsuranceClaim.Models.RiskDetailModel>)Session["VehicleDetails"];
 
+    var customerDetail = (InsuranceClaim.Models.CustomerModel)Session["CustomerDataModal"];
+
     var isUserStaff = false;
     if ((User.Identity.IsAuthenticated && User.IsInRole("Staff")))
     {
@@ -11,6 +13,9 @@
     }
     var sucessalert = TempData["SucessMsg"];
     var errMsg = TempData["ErroMsg"];
+
+    var checkIsCustomer = false;
+    var ClassForHide = "";
 }
 
 
@@ -73,7 +78,11 @@
                     <div class="form-group-section">
                         <div class="form-title">
                             <h4>SUMMARY DETAILS</h4>
+
+                            <br />
+                            <span> Name: <b>@customerDetail.FirstName  @customerDetail.LastName </b>,  Email: <b>@customerDetail.EmailAddress </b>  </span>
                         </div>
+
                         <div class="choose-plan">
                             <div class="row">
                                 <div class="col-sm-12 col-md-12 choose-plan-heading">
@@ -143,7 +152,7 @@
                                         <th>SUM INSURED</th>
                                         <th>Basic Premium</th>
                                         <th>RADIO LICENCE FEE</th>
-                                        <th>EXCESS</th>
+                                        <th>ZTSC Levy</th>
                                         <th>VEHICLE LICENCE FEE</th>
                                         <th> STAMP DUTY</th>
                                         <th> TOTAL</th>
@@ -151,9 +160,7 @@
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
-                                @*<tfoot style="background: white;font-weight:bold;">
-                                        <tr><td colspan="4">Total Premium</td><td colspan="2" id="tdTotalPremium">0.00</td></tr>
-                                    </tfoot>*@
+
                             </table>
                             <hr class="higlighter" />
                         </div>
@@ -162,23 +169,104 @@
                         <div class="form-group-input">
                             @using (Html.BeginForm("SubmitPlan", "CustomerRegistration"))
                             {
-                                <div id="contact-form" class="contact-form">
-                                    @Html.HiddenFor(m => m.PaymentTermId)
-                                    @Html.HiddenFor(m => m.Id)
-                                    @Html.HiddenFor(m => m.InsuranceId)
-                                    @Html.HiddenFor(m => m.Id)
+
+                                if (ViewBag.CurrentUserRole == "" || User.IsInRole("Web Customer"))
+                                {
+                                    checkIsCustomer = true;
+                                    ClassForHide = "HideSummary";
+                                }
 
 
-                                    @*@Html.TextBoxFor(m => m.AmountPaid, new { @class = "form-control", @autocomplete = "off", @placeholder = "Amount Paid" })*@
-                                    @if (isUserStaff)
-                                    {
-                                        <div class="row">
+                                <div id="contact-form" class="contact-form ">
 
+                                    <div class="@ClassForHide">
+
+
+                                        @Html.HiddenFor(m => m.PaymentTermId)
+                                        @Html.HiddenFor(m => m.Id)
+                                        @Html.HiddenFor(m => m.InsuranceId)
+                                        @Html.HiddenFor(m => m.Id)
+
+
+
+                                        @if (isUserStaff)
+                                        {
+                                            <div class="row">
+
+                                                <div class="col-md-6 form-group-text">
+                                                    <div class="form-group">
+                                                        @Html.Label("Amount Due", new { @class = "gender-label" })
+                                                        @Html.TextBoxFor(m => m.AmountPaid, new { @class = "form-control", @autocomplete = "off", @placeholder = "Amount Paid" })
+                                                        @Html.ValidationMessageFor(m => m.AmountPaid, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-sm-6 col-md-6 form-group-text">
+                                                    <div class="form-group">
+                                                        @Html.Label("Due Amount Payment Date", new { @class = "gender-label" })
+                                                        <div class="input-group" id="datetimepicker1">
+                                                            @Html.TextBoxFor(x => x.BalancePaidDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Due Amount Payment Date" })
+                                                            <span class="input-group-addon">
+                                                                <span class="glyphicon glyphicon-calendar"></span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 form-group-text">
+                                                    <div class="form-group">
+                                                        @Html.Label("Additional Notes", new { @class = "gender-label" })
+                                                        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control", @autocomplete = "off", @placeholder = "Additional Notes" })
+                                                        @Html.ValidationMessageFor(m => m.Notes, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="row">
+
+                                                <div class="col-md-6 form-group-text">
+                                                    <div class="form-group">
+                                                        @Html.Label("Amount Due", new { @class = "gender-label" })
+                                                        @Html.TextBoxFor(m => m.AmountPaid, new { @class = "form-control inputDisabled", @autocomplete = "off", @placeholder = "Amount Paid" })
+                                                        @Html.ValidationMessageFor(m => m.AmountPaid, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+
+                                        <div class="row" style="display:none;">
                                             <div class="col-md-6 form-group-text">
                                                 <div class="form-group">
-                                                    @Html.Label("Amount Due", new { @class = "gender-label" })
-                                                    @Html.TextBoxFor(m => m.AmountPaid, new { @class = "form-control", @autocomplete = "off", @placeholder = "Amount Paid" })
-                                                    @Html.ValidationMessageFor(m => m.AmountPaid, "", new { @class = "text-danger" })
+                                                    @Html.Label("Min Amount To be Paid", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.MinAmounttoPaid, new { @class = "form-control", @autocomplete = "off", @placeholder = "Min Amount To be Paid", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Max Amount To be Paid", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.MaxAmounttoPaid, new { @class = "form-control", @autocomplete = "off", @placeholder = "Max Amount To be Paid", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <hr />
+
+                                        <div class="row">
+                                            <div class="col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Total Sum Insured", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.TotalSumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Sum Insured", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Total Premium", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.TotalPremium, null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Premium / Total vehicle Licence Cost", @readonly = "readonly" })
                                                 </div>
                                             </div>
                                         </div>
@@ -186,168 +274,85 @@
                                         <div class="row">
                                             <div class="col-sm-6 col-md-6 form-group-text">
                                                 <div class="form-group">
-                                                    @Html.Label("Due Amount Payment Date", new { @class = "gender-label" })
-                                                    <div class="input-group" id="datetimepicker1">
-                                                        @Html.TextBoxFor(x => x.BalancePaidDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Due Amount Payment Date" })
-                                                        <span class="input-group-addon">
-                                                            <span class="glyphicon glyphicon-calendar"></span>
-                                                        </span>
-                                                    </div>
+                                                    @Html.Label("Total Stamp Duty", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.TotalStampDuty, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Stamp Duty", @readonly = "readonly" })
                                                 </div>
                                             </div>
-                                            <div class="col-md-6 form-group-text">
+                                            <div class="col-sm-6 col-md-6 form-group-text">
                                                 <div class="form-group">
-                                                    @Html.Label("Additional Notes", new { @class = "gender-label" })
-                                                    @Html.TextAreaFor(m => m.Notes, new { @class = "form-control", @autocomplete = "off", @placeholder = "Additional Notes" })
-                                                    @Html.ValidationMessageFor(m => m.Notes, "", new { @class = "text-danger" })
+                                                    @Html.Label("Total ZTSC Levies", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.TotalZTSCLevies, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total ZTSC Levies", @readonly = "readonly" })
                                                 </div>
                                             </div>
                                         </div>
-                                    }
-                                    else
-                                    {
+
                                         <div class="row">
-
-                                            @*<div class="col-sm-6 col-md-6 form-group-select">
-
-                                                    <div class="form-group">
-                                                        @Html.Label("Payment Type", new { @class = "gender-label" })
-                                                        <select id="PaymentMethodId" name="PaymentMethodId" class="form-control">
-                                                            <option value="1">Cash</option>
-                                                            <option value="2">Credit Card</option>
-                                                            <option value="3">PayNow</option>
-                                                        </select>
-                                                    </div>
-                                                </div>*@
-                                            <div class="col-md-6 form-group-text">
+                                            <div class="col-sm-6 col-md-6 form-group-text">
                                                 <div class="form-group">
-                                                    @Html.Label("Amount Due", new { @class = "gender-label" })
-                                                    @Html.TextBoxFor(m => m.AmountPaid, new { @class = "form-control inputDisabled", @autocomplete = "off", @placeholder = "Amount Paid" })
-                                                    @Html.ValidationMessageFor(m => m.AmountPaid, "", new { @class = "text-danger" })
+                                                    @Html.Label("Total Radio License Cost", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.TotalRadioLicenseCost, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Radio Licence Cost", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Debit Note", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.DebitNote, new { @class = "form-control", @autocomplete = "off", @placeholder = "Debit Note/Invoice Number", @readonly = "readonly" })
                                                 </div>
                                             </div>
                                         </div>
-                                    }
-
-
-                                    <div class="row" style="display:none;">
-                                        <div class="col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Min Amount To be Paid", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.MinAmounttoPaid, new { @class = "form-control", @autocomplete = "off", @placeholder = "Min Amount To be Paid", @readonly = "readonly" })
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(x => x.ExcessBuyBackAmount, new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.ExcessBuyBackAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Excess Buy Back Amount", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(x => x.MedicalExpensesAmount, new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.MedicalExpensesAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Medical Expenses Amount", @readonly = "readonly" })
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Max Amount To be Paid", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.MaxAmounttoPaid, new { @class = "form-control", @autocomplete = "off", @placeholder = "Max Amount To be Paid", @readonly = "readonly" })
+
+
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(x => x.PassengerAccidentCoverAmount, new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.PassengerAccidentCoverAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Passenger Accident Cover Amount", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(x => x.RoadsideAssistanceAmount, new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.RoadsideAssistanceAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Roadside Assistance Amount", @readonly = "readonly" })
+                                                </div>
                                             </div>
                                         </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Excess Amount", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.ExcessAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Excess Amount", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Discount", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(m => m.Discount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Roadside Assistance Amount", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
-
-
-                                    <hr />
-
-                                    <div class="row">
-                                        <div class="col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Total Sum Insured", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.TotalSumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Sum Insured", @readonly = "readonly" })
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Total Premium", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.TotalPremium, null, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Premium / Total vehicle Licence Cost", @readonly = "readonly" })
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Total Stamp Duty", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.TotalStampDuty, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Stamp Duty", @readonly = "readonly" })
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Total ZTSC Levies", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.TotalZTSCLevies, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total ZTSC Levies", @readonly = "readonly" })
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Total Radio License Cost", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.TotalRadioLicenseCost, new { @class = "form-control", @autocomplete = "off", @placeholder = "Total Radio Licence Cost", @readonly = "readonly" })
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Debit Note", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.DebitNote, new { @class = "form-control", @autocomplete = "off", @placeholder = "Debit Note/Invoice Number", @readonly = "readonly" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.LabelFor(x => x.ExcessBuyBackAmount, new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.ExcessBuyBackAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Excess Buy Back Amount", @readonly = "readonly" })
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.LabelFor(x => x.MedicalExpensesAmount, new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.MedicalExpensesAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Medical Expenses Amount", @readonly = "readonly" })
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.LabelFor(x => x.PassengerAccidentCoverAmount, new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.PassengerAccidentCoverAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Passenger Accident Cover Amount", @readonly = "readonly" })
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.LabelFor(x => x.RoadsideAssistanceAmount, new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.RoadsideAssistanceAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Roadside Assistance Amount", @readonly = "readonly" })
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Excess Amount", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.ExcessAmount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Excess Amount", @readonly = "readonly" })
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.Label("Discount", new { @class = "gender-label" })
-                                                @Html.TextBoxFor(m => m.Discount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Roadside Assistance Amount", @readonly = "readonly" })
-                                            </div>
-                                        </div>
-                                    </div>
-
 
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-select">
                                             <div class="form-group">
                                                 @Html.Label("Payment Type", new { @class = "gender-label" })
-                                                @*<select id="PaymentMethodId" name="PaymentMethodId" class="form-control">
-                                                        <option value="1">Cash</option>
-                                                        <option value="2">Credit Card</option>
-                                                        <option value="3">PayNow</option>
-                                                    </select>*@
+
 
                                                 @Html.HiddenFor(m => m.PaymentMethodId)
                                                 @Html.HiddenFor(m => m.Id)
@@ -362,7 +367,7 @@
                                                         {
                                                             <li id="payment_1" class="payment_type active" onclick="PaymentMethod(1)">  Cash   </li>
                                                         }
-                                                      
+
                                                         <li id="payment_2" class="payment_type" onclick="PaymentMethod(2)"><img src="~/Images/master-card.png" /></li>
 
                                                         <li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"><img src="~/Images/Paynow-logo.png" /></li>
@@ -382,16 +387,6 @@
 
                                     </div>
 
-                                    @*<div class="row" id="">
-
-
-                                            <div class="col-sm-6 col-md-6 form-group-select">
-
-                                            </div>
-                                        </div>*@
-
-
-
 
 
 
@@ -407,7 +402,7 @@
                                                                 <a style="display:none" id="previouselink" href="/CustomerRegistration/RiskDetail" class="back"></a>
                                                             </li>
                                                             <li class="pull-right">
-                                                                @if (ViewBag.CurrentUserRole == "Staff" && ViewBag.SummaryDetailId == 0)
+                                                                @if ((ViewBag.CurrentUserRole == "Staff" || ViewBag.CurrentUserRole == "Web Customer" || ViewBag.CurrentUserRole == "") && ViewBag.SummaryDetailId == 0)
                                                                 {
                                                                     <div class="text-right">
                                                                         <button type="submit" id="btnNext1" name="btnSendQuatation" value="sendQuatation" class="btn">Send Quotation</button>
@@ -419,16 +414,13 @@
                                                                 </div>
 
                                                             </li>
-                                                            
+
                                                         </ul>
                                                     </div>
                                                 </div>
 
 
-                                                @*//else
-                                                    //{*@
 
-                                                @*}*@
 
                                             </div>
 
@@ -440,23 +432,7 @@
 
                                                 </div>
                                             </div>
-                                            @*@if (ViewBag.SummaryDetailId == 0)
-                                                {
-                                                    <div class="row">
 
-                                                        <div class="col-sm-6 col-md-6">
-                                                        </div>
-
-                                                        <div class="col-sm-6 col-md-6">
-                                                            <br />
-                                                            <div class="text-right">
-                                                                <button type="submit" id="btnNext1" name="btnSendQuatation" value="sendQuatation" class="btn">Send Quotation</button>
-
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                }*@
 
                                             <input type="hidden" id="sucessmsg" name="sucessmsg" value="@sucessalert" />
                                             <input type="hidden" id="errMsg" value="@errMsg" />
@@ -484,13 +460,13 @@
         $.ajax({
             url: "@Url.Action("gotoExit", "CustomerRegistration")",
             type: "Post",
-        data: { id: @ViewBag.SummaryDetailId },
-        success: function (data) {
-            debugger;
-            window.location.href = '/CustomerRegistration/Index';
+            data: { id: @ViewBag.SummaryDetailId },
+            success: function (data) {
+                debugger;
+                window.location.href = '/CustomerRegistration/Index';
 
-        }
-    })
+            }
+        })
 
     }
 
@@ -565,8 +541,11 @@
                 var count = 0;
                 var totalpremium = 0.00;
                 $.each(list, function (index, value) {
+
+                 
+
                     count++;
-                    bodyHTML += "<tr><td>" + value.make + " "+ value.model+ "</td><td>" + value.suminsured + "</td><td>" + value.premium + "</td><td>$" + value.radio_license_fee + "</td><td>$" + value.excess + "</td><td>$" + value.vehicle_license_fee+ "</td> <td>$" + value.stampDuty+ "</td><td>$" + value.total+ "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >Edit</button></li><li><button type='button' onclick='DeleteVehicleDetails(" + count + ")' class='btn-sm btn-danger' >Delete</button></li></ul></div></td></tr>"
+                    bodyHTML += "<tr><td>" + value.make + " "+ value.model+ "</td><td>" + value.suminsured + "</td><td>" + value.premium + "</td><td>$" + value.radio_license_fee + "</td><td>$" + value.ZTSCLevy + "</td><td>$" + value.vehicle_license_fee+ "</td> <td>$" + value.stampDuty+ "</td><td>$" + value.total+ "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >Edit</button></li><li><button type='button' onclick='DeleteVehicleDetails(" + count + ")' class='btn-sm btn-danger' >Delete</button></li></ul></div></td></tr>"
                     totalpremium += parseFloat(value.premium);
                 });
 
@@ -593,11 +572,11 @@
 
         if(isUserStaff=='True')
         {
-            window.location.href  = '@Url.Action("RiskDetail", "ContactCentre", new { id= 0 })';
+            window.location.href  = '@Url.Action("RiskDetail", "ContactCentre", new { id= 1 })';
         }
         else
         {
-            window.location.href = '@Url.Action("RiskDetail", "CustomerRegistration", new { id= 0 })';
+            window.location.href = '@Url.Action("RiskDetail", "CustomerRegistration", new { id= 1 })';
         }
 
 
@@ -661,7 +640,14 @@
         }
 
         if ($("#sucessmsg").val()!="") {
-            alert("Quotation has been sent email sucessfully.");
+            alert($("#sucessmsg").val());
+
+            if(ViewBag.CurrentUserRole=="")
+            {
+                location.href = '@Url.Action("Index", "InsuranceHome")';
+            }
+
+            location.href = '@Url.Action("QuotationList", "Account")';
         }
 
         if ($("#errMsg").val()=="Please enter invoice number.") {

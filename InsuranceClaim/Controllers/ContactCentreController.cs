@@ -18,11 +18,10 @@ namespace InsuranceClaim.Controllers
             return View();
         }
 
-        public ActionResult RiskDetail(int? id = 0)
+        public ActionResult RiskDetail(int? id = 1)
         {
 
             // summaryDetailId: it's represent to Qutation edit
-
 
             if(Session["SummaryDetailId"]!=null)
             {
@@ -30,11 +29,7 @@ namespace InsuranceClaim.Controllers
                 Session["SummaryDetailId"] = null;
             }
 
-            
-
-
-
-
+           
             if (Session["CustomerDataModal"] == null)
             {
                 // return RedirectToAction("Index", "CustomerRegistration");
@@ -157,8 +152,9 @@ namespace InsuranceClaim.Controllers
                         viewModel.QuaterlyRiskPremium = data.QuaterlyRiskPremium;
                         viewModel.Discount = data.Discount;
                         viewModel.VehicleLicenceFee = Convert.ToDecimal(data.VehicleLicenceFee);
-
+                        viewModel.InsuranceId = data.InsuranceId;
                         viewModel.isUpdate = true;
+                 
                         viewModel.vehicleindex = Convert.ToInt32(id);
 
                         var ser = new VehicleService();

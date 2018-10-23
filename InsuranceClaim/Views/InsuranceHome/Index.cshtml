@@ -2,6 +2,8 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+    bool userLoggedin = ((System.Web.HttpContext.Current.User != null) && (System.Web.HttpContext.Current.User.Identity.IsAuthenticated));
+
 }
 
 <div class="coll-back">
@@ -96,17 +98,21 @@
 
         <div class="policy-option">
             <ul>
-                <li><a href="/CustomerRegistration/Index"><img src="~/Images/24hrs-icon.png"><p>Call Center</p></a></li>
-                <li><a href="/Account/MyPolicies"><img src="~/Images/loyalty-icon.png"><p>Loyalty Card programme</p></a></li>
+
+
+                @if (userLoggedin && User.IsInRole("Staff"))
+                {
+                    <li><a href="/CustomerRegistration/Index"><img src="~/Images/24hrs-icon.png"><p>Call Center</p></a></li>
+                }
+
+               
+            
+                   <li><a href="/Account/MyPolicies"><img src="~/Images/loyalty-icon.png"><p>Loyalty Card programme</p></a></li>
                 <li><a href=""><img src="~/Images/delivery-icon.png"><p>Free Delivery</p></a></li>
                 <li><a href=""><img src="~/Images/road-assist-icon.png"><p>Road Assist</p></a></li>
                 <li><a href=""><img src="~/Images/customer-icon.png"><p>Customer Relationship System</p></a></li>
             </ul>
         </div>
-
-
-
-
     </div>
 </div>
 

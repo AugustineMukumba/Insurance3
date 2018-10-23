@@ -1006,6 +1006,7 @@ namespace InsuranceClaim.Controllers
         public JsonResult checkVRNwithICEcash(string regNo, string PaymentTerm)
         {
             CustomerRegistrationController.checkVRNwithICEcashResponse response = new CustomerRegistrationController.checkVRNwithICEcashResponse();
+
             JsonResult json = new JsonResult();
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             //json.Data = "";

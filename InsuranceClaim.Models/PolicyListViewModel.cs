@@ -19,6 +19,8 @@ namespace InsuranceClaim.Models
         public DateTime createdOn { get; set; }
         public bool  IsActive { get; set; }
 
+        public string CustomerEmail { get; set; }
+
     }
 
     public class ListPolicy
@@ -49,6 +51,8 @@ namespace InsuranceClaim.Models
         public decimal BalanceAmount { get; set; }
         public decimal Premium { get; set; }
         public bool isActive { get; set; }
+
+
 
     }
 }

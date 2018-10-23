@@ -16,6 +16,21 @@
                         <div class="form-title">
                             <h2>Vehicle Model Edit</h2>
                         </div>
+
+                        <div>
+                           
+                            @if (TempData["errorMsg"] != null)
+                            {
+                                <div class="alert alert-danger">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                    <strong>@TempData["errorMsg"]</strong> .
+                                </div>
+                            }
+
+
+                        </div>
+
+
                         <div class="form-group-input">
                             @*@using (Ajax.BeginForm("SaveCustomerData", "CustomerRegistration", new AjaxOptions { UpdateTargetId = "CustomerResult", OnSuccess = "GoToProductDetail" }))*@
                             @using (Html.BeginForm("VehicleModelEdit", "VehicleModel", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
@@ -45,14 +60,6 @@
 
                                 <div class="row">
 
-    
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.LabelFor(x => x.ModelCode, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.ModelCode, new { @class = "form-control", @name = "ModelCode", @autocomplete = "off", @id = "ModelCode", @placeholder = "Enter Model Code" })
-                                            @Html.ValidationMessageFor(x => x.ModelCode, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
 
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
@@ -61,6 +68,17 @@
                                             @Html.ValidationMessageFor(x => x.ModelDescription, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
+
+
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.ModelCode, new { @class = "gender-label" })
+                                            @Html.TextBoxFor(x => x.ModelCode, new { @class = "form-control", @name = "ModelCode", @autocomplete = "off", @id = "ModelCode", @placeholder = "Enter Model Code" })
+                                            @Html.ValidationMessageFor(x => x.ModelCode, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+
 
                                 </div>
 
@@ -85,7 +103,7 @@
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6">
                                             <div class="text-left">
-                                                <button type="button" class="btn" onclick="window.location.href='@Url.Action("VehicleModelList","VehicleMode")'">Cancel</button>
+                                                <button type="button" class="btn" onclick="window.location.href='@Url.Action("VehicleModelList","VehicleModel")'">Cancel</button>
 
                                             </div>
                                         </div>

@@ -42,12 +42,17 @@ namespace InsuranceClaim.Controllers
             }
         }
 
-        public ActionResult Index(int summaryId = 0)
+
+       // [Authorize(Roles = "Staff,Administrator")]
+
+        public ActionResult Index(int id = 0)
         {
             // var res = MaxCustoermId();
 
-            RemoveSession();
-
+            if (id != -1) // -1 use for getting session value when click on back button
+            {
+                RemoveSession();
+            }
 
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             string path = Server.MapPath("~/Content/Countries.txt");
@@ -55,19 +60,22 @@ namespace InsuranceClaim.Controllers
             var resultt = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObject>(countries);
             ViewBag.Countries = resultt.countries.OrderBy(x => x.code.Replace("+", ""));
 
-            string paths = Server.MapPath("~/Content/Cities.txt");
-            var cities = System.IO.File.ReadAllText(paths);
-            var resultts = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObjects>(cities);
-            ViewBag.Cities = resultts.cities;
+            //string paths = Server.MapPath("~/Content/Cities.txt");
+            //var cities = System.IO.File.ReadAllText(paths);
+            //var resultts = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObjects>(cities);
+            //ViewBag.Cities = resultts.cities;
+
+            ViewBag.Cities= InsuranceContext.Cities.All();
 
 
-            if (summaryId != 0) // if staff try to edit Qutation
+
+            if (id > 0) // if staff try to edit Qutation
             {
-                SetCustomerValueIntoSession(summaryId);
+                SetCustomerValueIntoSession(id);
             }
 
 
-            if (userLoggedin && summaryId == 0)
+            if (userLoggedin && id == 0)
             {
                 var customerModel = new CustomerModel();
                 var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
@@ -100,6 +108,7 @@ namespace InsuranceClaim.Controllers
                         customerModel.FirstName = customerData.FirstName;
                         customerModel.LastName = customerData.LastName;
                         customerModel.CountryCode = customerData.CountryCode;
+                        customerModel.IsCustomEmail = customerData.IsCustomEmail;
                     }
                     else
                     {
@@ -120,10 +129,17 @@ namespace InsuranceClaim.Controllers
                         customerModel.CustomerId = _customerData.CustomerId;
                         customerModel.IsActive = _customerData.IsActive;
                         customerModel.UserID = _customerData.UserID;
+                        customerModel.IsCustomEmail = _customerData.IsCustomEmail;
                     }
                     customerModel.Zipcode = "00263";
+
+                    Session["CustomerDataModal"] = customerModel; // for admin
                 }
                 customerModel.Zipcode = "00263";
+                RemoveSession();
+
+
+
                 return View(customerModel);
             }
             else
@@ -148,13 +164,12 @@ namespace InsuranceClaim.Controllers
                     customerModel.FirstName = customerData.FirstName;
                     customerModel.LastName = customerData.LastName;
                     customerModel.CountryCode = customerData.CountryCode;
+                    customerModel.IsCustomEmail = customerData.IsCustomEmail;
                 }
                 return View(customerModel);
             }
 
         }
-
-
 
 
         public void SetCustomerValueIntoSession(int summaryId)
@@ -180,19 +195,10 @@ namespace InsuranceClaim.Controllers
             }
 
             Session["CustomerDataModal"] = custModel;
-
-
-
         }
 
-
-
-
-
-
-
         [HttpPost]
-        public async Task<JsonResult> SaveCustomerData(CustomerModel model)
+        public async Task<JsonResult> SaveCustomerData(CustomerModel model, string buttonUpdate)
         {
             if (ModelState.IsValid)
             {
@@ -200,12 +206,37 @@ namespace InsuranceClaim.Controllers
 
                 if (userLoggedin)
                 {
+
+                    var AllUsers = UserManager.Users.ToList();
+                    var isExist = AllUsers.Any(p => p.Email.ToLower() == model.EmailAddress.ToLower() || p.UserName.ToLower() == model.EmailAddress);
+                    if (isExist)
+                    {
+                        return Json(new { IsError = false, error = "Email " + model.EmailAddress + " already exists." }, JsonRequestBehavior.AllowGet);
+                    }
+
+
+                    if (User.IsInRole("Staff"))
+                    {
+                        if(buttonUpdate!=null)
+                        {
+                            UpdateCustomerInformation(model);
+
+                            return Json(new { IsError = false, error = "Sucessfully update" }, JsonRequestBehavior.AllowGet);
+                        }
+
+                        var email = LoggedUserEmail();
+
+                        if (email == model.EmailAddress)
+                        {
+                            return Json(new { IsError = false, error = "Staff and customer email can not be same" }, JsonRequestBehavior.AllowGet);
+                        }
+                    }
+
                     Session["CustomerDataModal"] = model;
                     return Json(new { IsError = true, error = "" }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-
                     var AllUsers = UserManager.Users.ToList();//.FirstOrDefault(p=>p.Email== model.EmailAddress);
                     var isExist = AllUsers.Any(p => p.Email.ToLower() == model.EmailAddress.ToLower() || p.UserName.ToLower() == model.EmailAddress);
                     if (isExist)
@@ -221,6 +252,45 @@ namespace InsuranceClaim.Controllers
 
             }
             return Json(new { IsError = false, error = TempData["ErrorMessage"].ToString() }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public void UpdateCustomerInformation(CustomerModel model)
+        {
+            var summaryDetails = InsuranceContext.SummaryDetails.Single(model.Id);
+
+            if(summaryDetails!=null)
+            {
+                if(summaryDetails.CustomerId!=null)
+                {
+
+
+                    var customerDetails = InsuranceContext.Customers.Single(summaryDetails.CustomerId);
+          
+                    var customerdata = Mapper.Map<CustomerModel, Customer>(model);
+                    customerdata.Id = summaryDetails.CustomerId.Value;
+                    customerdata.UserID = customerDetails.UserID;
+                    InsuranceContext.Customers.Update(customerdata);
+
+
+                    // get user object from the storage
+                    // var user = await userManager.FindByIdAsync(userId);
+
+                    var user = UserManager.FindById(customerDetails.UserID);
+
+                    // change username and email
+                    user.UserName = model.EmailAddress;
+                    user.Email = model.EmailAddress;
+
+                    // Persiste the changes
+                    UserManager.Update(user);
+
+
+
+                }
+               
+            }
+            
         }
         public ActionResult ProductDetail()
         {
@@ -295,14 +365,25 @@ namespace InsuranceClaim.Controllers
             }
 
         }
-        public ActionResult RiskDetail(int? id = 0)
+        public ActionResult RiskDetail(int? id = 1)
         {
+            // id=1 for selecting VRN num details
 
             if (Session["CustomerDataModal"] == null)
             {
                 // return RedirectToAction("Index", "CustomerRegistration");
                 return Redirect("/CustomerRegistration/Index");
             }
+
+
+            // summaryDetailId: it's represent to Qutation edit
+
+            if (Session["SummaryDetailId"] != null)
+            {
+                SetValueIntoSession(Convert.ToInt32(Session["SummaryDetailId"]));
+                Session["SummaryDetailId"] = null;
+            }
+
 
 
             ViewBag.Products = InsuranceContext.Products.All(where: "Active = 'True' or Active is null").ToList();
@@ -333,7 +414,7 @@ namespace InsuranceClaim.Controllers
             var makers = service.GetMakers();
 
 
-            ViewBag.CoverType = service.GetCoverType().Where(x => x.Name.Contains("Third Party")).ToList();
+            ViewBag.CoverType = service.GetCoverType().ToList();
             ViewBag.AgentCommission = service.GetAgentCommission();
             ViewBag.Makers = makers;
             viewModel.isUpdate = false;
@@ -361,6 +442,23 @@ namespace InsuranceClaim.Controllers
             viewModel.RoadsideAssistance = false;
             viewModel.RoadsideAssistanceAmount = 0.00m;
             viewModel.RoadsideAssistancePercentage = 0.00m;
+
+
+
+            var eExcessTypeData = from eExcessType e in Enum.GetValues(typeof(eExcessType))
+                                  select new
+                                  {
+                                      ID = (int)e,
+                                      Name = e.ToString()
+                                  };
+
+            ViewBag.eExcessTypeData = new SelectList(eExcessTypeData, "ID", "Name");
+
+
+
+
+
+
 
             //TempData["Policy"] = service.GetPolicy(id);
             if (makers.Count > 0)
@@ -453,14 +551,42 @@ namespace InsuranceClaim.Controllers
             return View(viewModel);
         }
 
+
+        public void SetValueIntoSession(int summaryId)
+        {
+            Session["ICEcashToken"] = null;
+            Session["issummaryformvisited"] = true;
+
+            Session["SummaryDetailId"] = summaryId;
+
+            var summaryDetail = InsuranceContext.SummaryDetails.Single(summaryId);
+            var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={summaryId}").ToList();
+            var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+            var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
+            var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+
+
+            Session["PolicyData"] = policy;
+
+            List<RiskDetailModel> listRiskDetail = new List<RiskDetailModel>();
+            foreach (var item in SummaryVehicleDetails)
+            {
+                var _vehicle = InsuranceContext.VehicleDetails.Single(item.VehicleDetailsId);
+                RiskDetailModel riskDetail = Mapper.Map<VehicleDetail, RiskDetailModel>(_vehicle);
+                listRiskDetail.Add(riskDetail);
+            }
+            Session["VehicleDetails"] = listRiskDetail;
+
+            SummaryDetailModel summarymodel = Mapper.Map<SummaryDetail, SummaryDetailModel>(summaryDetail);
+            summarymodel.Id = summaryDetail.Id;
+            Session["SummaryDetailed"] = summarymodel;
+
+        }
+
+
         [HttpPost]
         public ActionResult GenerateQuote(RiskDetailModel model)
         {
-
-
-
-
-
 
             if (model.NumberofPersons == null)
             {
@@ -500,19 +626,24 @@ namespace InsuranceClaim.Controllers
                         }
                         model.Id = listriskdetailmodel[model.vehicleindex - 1].Id;
                         model.CustomerId = listriskdetailmodel[model.vehicleindex - 1].CustomerId;
+                        model.InsuranceId = listriskdetailmodel[model.vehicleindex - 1].InsuranceId;
                         listriskdetailmodel[model.vehicleindex - 1] = model;
 
                         Session["VehicleDetails"] = listriskdetailmodel;
                     }
-                    if (User.IsInRole("Staff"))
-                    {
-                        return RedirectToAction("RiskDetail", "ContactCentre");
-                    }
-                    else
-                    {
-                        return RedirectToAction("RiskDetail");
 
-                    }
+                    return RedirectToAction("SummaryDetail");
+                    //if (User.IsInRole("Staff"))
+                    //{
+
+
+                    //  return RedirectToAction("RiskDetail", "ContactCentre");
+                    //}
+                    //else
+                    //{
+                    //    return RedirectToAction("RiskDetail");
+
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -578,11 +709,11 @@ namespace InsuranceClaim.Controllers
                         }
                         if (User.IsInRole("Staff"))
                         {
-                            return RedirectToAction("RiskDetail", "ContactCentre");
+                            return RedirectToAction("RiskDetail", "ContactCentre", new { id = 0 });
                         }
                         else
                         {
-                            return RedirectToAction("RiskDetail");
+                            return RedirectToAction("RiskDetail", new { id = 0 });
 
                         }
 
@@ -706,7 +837,7 @@ namespace InsuranceClaim.Controllers
                         var vehicleDetails = InsuranceContext.VehicleDetails.Single(where: $" Id='{item.VehicleDetailsId}'");
                         RiskDetailModel vehicleModel = Mapper.Map<VehicleDetail, RiskDetailModel>(vehicleDetails);
 
-
+                        vehicleModel.ZTSCLevy = vehicleDetails.ZTSCLevy;
 
                         //vehicleModel.Premium = vehicleDetails.Premium;
                         //vehicleModel.ZTSCLevy = vehicleDetails.ZTSCLevy;
@@ -781,7 +912,7 @@ namespace InsuranceClaim.Controllers
 
 
                         obj.total = calculationAmount.ToString();
-
+                        obj.ZTSCLevy = item.ZTSCLevy==null? "0" : Convert.ToString(item.ZTSCLevy);
 
 
                         vehiclelist.Add(obj);
@@ -1106,6 +1237,15 @@ namespace InsuranceClaim.Controllers
 
                     int CustomerUniquId = 0;
 
+
+                    if(User.IsInRole("Administrator"))
+                    {
+                        TempData["SucessMsg"] = "Admin can not create policy.";
+                        return RedirectToAction("SummaryDetail");
+                    }
+
+
+
                     TempData["ErroMsg"] = null;
                     if (User.IsInRole("Staff") && model.PaymentMethodId == 1 && btnSendQuatation == "")
                     {
@@ -1134,13 +1274,16 @@ namespace InsuranceClaim.Controllers
                         var InsuranceID = "";
                         var vichelDetails = new VehicleDetail();
 
+                        
+                        if(model.Id!=0)
+                        {
+                            model.CustomSumarryDetilId = model.Id;
+                        }
+
                         var summaryDetial = InsuranceContext.SummaryVehicleDetails.Single(where: $"SummaryDetailId = '" + model.CustomSumarryDetilId + "'");
 
                         if (summaryDetial != null && btnSendQuatation == "") // while user come from qutation email
                         {
-
-
-
 
                             if (model.CustomSumarryDetilId != 0 && btnSendQuatation == "") // cehck if request is comming from agent email
                             {
@@ -1170,6 +1313,7 @@ namespace InsuranceClaim.Controllers
                         var customer = (CustomerModel)Session["CustomerDataModal"];
 
 
+
                         var role = "";
 
                         if (System.Web.HttpContext.Current.User.Identity.GetUserId() != null)
@@ -1179,15 +1323,19 @@ namespace InsuranceClaim.Controllers
                         }
 
                         var userDetials = UserManager.FindByEmail(customer.EmailAddress);
+
+                        if(userDetials==null)
+                        {
+                            customer.Id = 0;
+                        }
+                        
                         //if user staff
 
-                        if (role == "Staff")
+                        if (role == "Staff" || role == "Administrator")
                         {
                             // check if email id exist in user table
 
-
                             var user = UserManager.FindByEmail(customer.EmailAddress);
-
 
                             // if exist - get customer id from xcustomer table and set customer.Id in Customer object
                             if (user != null && user.Id != null)
@@ -1200,12 +1348,27 @@ namespace InsuranceClaim.Controllers
                                     customer.Id = customerDetials.Id;
 
                                     CustomerUniquId = customerDetials.Id;
+
+
+                                    // need to do work
+                                    //if (btnSendQuatation != "" && model.Id != 0)
+                                    //{
+                                    //    var SummaryDetails = InsuranceContext.SummaryDetails.Single(where: $"CustomerId={customer.Id} and isQuotation = 'True'");
+                                    //    if (SummaryDetails != null)
+                                    //    {
+                                    //        TempData["SucessMsg"] = customer.FirstName + " " + customer.LastName + " Quotation alredy exist, please edit existing.";
+                                    //        return RedirectToAction("SummaryDetail");
+                                    //    }
+                                    //}
+
+
                                 }
 
                             }
                         }
 
-                        if (!userLoggedin)
+
+                        if (!userLoggedin)  // create new user without logged in
                         {
                             if (customer != null)
                             {
@@ -1218,7 +1381,7 @@ namespace InsuranceClaim.Controllers
                                     {
                                         try
                                         {
-                                            var roleresult = UserManager.AddToRole(user.Id, "Customer");
+                                            var roleresult = UserManager.AddToRole(user.Id, "Web Customer"); // for web user
                                         }
                                         catch (Exception ex)
                                         {
@@ -1350,7 +1513,7 @@ namespace InsuranceClaim.Controllers
 
                         // Genrate new policy number
 
-                        if (policy != null && policy.Id==0)
+                        if (policy != null && policy.Id == 0)
                         {
                             string policyNumber = string.Empty;
 
@@ -1396,7 +1559,8 @@ namespace InsuranceClaim.Controllers
                                 PolicyDetail policydata = InsuranceContext.PolicyDetails.All(policy.Id.ToString()).FirstOrDefault();
                                 policydata.BusinessSourceId = policy.BusinessSourceId;
                                 policydata.CurrencyId = policy.CurrencyId;
-                                policydata.CustomerId = policy.CustomerId;
+                                // policydata.CustomerId = policy.CustomerId;
+                                policydata.CustomerId = customer.Id;
                                 policydata.EndDate = null;
                                 policydata.InsurerId = policy.InsurerId;
                                 policydata.IsActive = policy.IsActive;
@@ -1415,17 +1579,37 @@ namespace InsuranceClaim.Controllers
                         var Id = 0;
                         var listReinsuranceTransaction = new List<ReinsuranceTransaction>();
                         var vehicle = (List<RiskDetailModel>)Session["VehicleDetails"];
+
+
                         if (vehicle != null && vehicle.Count > 0)
                         {
                             foreach (var item in vehicle.ToList())
                             {
                                 var _item = item;
 
+                                //List<RiskDetailModel> objVehicles = new List<RiskDetailModel>();
+                                ////objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo });
+                                //objVehicles.Add(new RiskDetailModel { RegistrationNo = _item.RegistrationNo, PaymentTermId = Convert.ToInt32(_item.PaymentTermId) });
+                                //var  tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                                //ResultRootObject quoteresponse = ICEcashService.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
+
+                                //if (quoteresponse.Response.Result == 0)
+                                //{
+                                //    response.message = quoteresponse.Response.Quotes[0].Message;
+                                //}
+                                //else
+                                //{
+                                //    response.Data = quoteresponse;
+                                //}
+
+
+
                                 if (item.Id == null || item.Id == 0)
                                 {
                                     var service = new RiskDetailService();
                                     _item.CustomerId = customer.Id;
                                     _item.PolicyId = policy.Id;
+                                 //   _item.InsuranceId = model.InsuranceId;
                                     //if (model.AmountPaid < model.TotalPremium)
                                     //{
                                     //    _item.BalanceAmount = (_item.Premium + _item.ZTSCLevy + _item.StampDuty + (_item.IncludeRadioLicenseCost ? _item.RadioLicenseCost : 0.00m) - _item.Discount) - (model.AmountPaid / vehicle.Count);
@@ -1648,6 +1832,10 @@ namespace InsuranceClaim.Controllers
                                     Vehicledata.AnnualRiskPremium = item.AnnualRiskPremium;
                                     Vehicledata.TermlyRiskPremium = item.TermlyRiskPremium;
                                     Vehicledata.QuaterlyRiskPremium = item.QuaterlyRiskPremium;
+                                    Vehicledata.TransactionDate = DateTime.Now;
+
+                                    Vehicledata.CustomerId = customer.Id;
+                                    // Vehicledata.InsuranceId = model.InsuranceId;
 
                                     InsuranceContext.VehicleDetails.Update(Vehicledata);
                                     var _summary = (SummaryDetailModel)Session["SummaryDetailed"];
@@ -1691,7 +1879,6 @@ namespace InsuranceClaim.Controllers
                                         }
                                     }
 
-
                                 }
                             }
                         }
@@ -1712,7 +1899,8 @@ namespace InsuranceClaim.Controllers
 
 
 
-                                DbEntry.CustomerId = vehicle[0].CustomerId;
+                                // DbEntry.CustomerId = vehicle[0].CustomerId;
+                                DbEntry.CustomerId = customer.Id;
 
                                 bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
                                 if (_userLoggedin)
@@ -1787,7 +1975,9 @@ namespace InsuranceClaim.Controllers
                                 {
                                     summarydata.Notes = "";
                                 }
-                                summarydata.CustomerId = vehicle[0].CustomerId;
+                                //summarydata.CustomerId = vehicle[0].CustomerId;
+
+                                summarydata.CustomerId = customer.Id;
 
                                 InsuranceContext.SummaryDetails.Update(summarydata);
                             }
@@ -2018,7 +2208,18 @@ namespace InsuranceClaim.Controllers
                             List<string> _attachementss = new List<string>();
                             _attachementss.Add(attacehmetn_File);
                             //_attachementss.Add(_yAtter);
-                            objEmailService.SendEmail(user.Email, "", "", "Quotation", Bodyy, _attachementss);
+
+
+                            if (customer.IsCustomEmail)
+                            {
+                                objEmailService.SendEmail(LoggedUserEmail(), "", "", "Quotation", Bodyy, _attachementss);
+                            }
+                            else
+                            {
+                                objEmailService.SendEmail(user.Email, "", "", "Quotation", Bodyy, _attachementss);
+                            }
+
+
                             #endregion
 
                             #region Send Quotation SMS
@@ -2037,19 +2238,14 @@ namespace InsuranceClaim.Controllers
                             };
 
                             InsuranceContext.SmsLogs.Insert(objRecieptsmslog);
-
-
                             #endregion
-
-                            TempData["SucessMsg"] = "Qutation has been sent email sucessfully.";
+                            TempData["SucessMsg"] = "Quotation has been sent email sucessfully.";
                             return RedirectToAction("SummaryDetail");
                         }
 
                         #endregion
 
-
-
-                        //return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
+                       // return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
 
                         if (model.PaymentMethodId == 1)
                             return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id, invoiceNumer = model.InvoiceNumber });
@@ -2073,6 +2269,20 @@ namespace InsuranceClaim.Controllers
             {
                 return RedirectToAction("SummaryDetail");
             }
+        }
+
+
+        public string LoggedUserEmail()
+        {
+            string email = "";
+            bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            if (_userLoggedin)
+            {
+                var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
+                email = _User.Email;
+            }
+            return email;
+
         }
 
         [HttpPost]
@@ -2177,6 +2387,11 @@ namespace InsuranceClaim.Controllers
                         // Handle excepton token expired
                         if (quoteresponse.Response.Quotes[0] != null && quoteresponse.Response.Quotes[0].Message == "Partner Token has expired.")
                         {
+
+                            ICEcashService.getToken();
+                            tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                            quoteresponse = ICEcashService.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
+
                             response.message = "A Connection Error Occured, please add manually.";
                             response.result = 0;
                             json.Data = response;
@@ -2285,9 +2500,12 @@ namespace InsuranceClaim.Controllers
             Session.Remove("CardDetail");
             Session.Remove("issummaryformvisited");
             Session.Remove("PaymentId");
+            Session.Remove("InsuranceId");
+            
+
         }
 
-     
+
 
         public JsonResult getRadiolicensecost(int? Id)
         {
@@ -2323,7 +2541,7 @@ namespace InsuranceClaim.Controllers
                 var tokenObject = new ICEcashTokenResponse();
 
                 #region get ICE cash token
-
+                Session["InsuranceId"] = null;
 
                 var icevalue = (ICEcashTokenResponse)Session["ICEcashToken"];
                 string format = "yyyyMMddHHmmss";
@@ -2342,20 +2560,23 @@ namespace InsuranceClaim.Controllers
                 //}
 
 
-                if (Session["ICEcashToken"] != null)
-                {
-                    if (IceDateNowtime > IceExpery)
-                    {
-                        ICEcashService.getToken();
-                    }
+                ICEcashService.getToken();
+                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
 
-                    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
-                }
-                else
-                {
-                    ICEcashService.getToken();
-                    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
-                }
+                //if (Session["ICEcashToken"] != null)
+                //{
+                //    if (IceDateNowtime > IceExpery)
+                //    {
+                //        ICEcashService.getToken();
+                //    }
+
+                //    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                //}
+                //else
+                //{
+                //    ICEcashService.getToken();
+                //    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                //}
 
 
 
@@ -2376,8 +2597,18 @@ namespace InsuranceClaim.Controllers
                     else
                     {
                         response.Data = quoteresponse;
+
+                        if(quoteresponse.Response.Quotes[0]!=null)
+                        {
+                            Session["InsuranceId"] = quoteresponse.Response.Quotes[0].InsuranceID;
+                        }
+                       
                     }
                 }
+
+                
+
+
 
                 json.Data = response;
 
@@ -2428,9 +2659,44 @@ namespace InsuranceClaim.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult GetCustomerId()
+        {
+            var dbCustomer = InsuranceContext.UniqueCustomers.All(orderBy: "CreatedOn desc").FirstOrDefault();
 
 
-        public ActionResult PaymentDetail(int id)
+            int uniqueId = 0;
+            string customerUserId = "";
+
+            if (dbCustomer != null)
+            {
+                uniqueId = Convert.ToInt32(dbCustomer.UniqueCustomerId);
+
+                uniqueId = uniqueId + 1;
+
+                customerUserId = "Guest-" + uniqueId + "@gmail.com";
+
+                var uniquCustomer = new UniqueCustomer {  UniqueCustomerId = uniqueId, CreatedOn = DateTime.Now };
+
+                InsuranceContext.UniqueCustomers.Insert(uniquCustomer);
+            }
+            else
+            {
+                uniqueId = 1000;
+                customerUserId = "Guest-" + uniqueId + "@gmail.com";
+                var uniquCustomer = new UniqueCustomer { UniqueCustomerId = uniqueId, CreatedOn = DateTime.Now };
+
+                InsuranceContext.UniqueCustomers.Insert(uniquCustomer);
+            }
+
+            return Json(customerUserId, JsonRequestBehavior.AllowGet);
+
+
+        }
+
+
+
+        public ActionResult PaymentDetail(int id, string erroMsg=null)
         {
             var cardDetails = (CardDetailModel)Session["CardDetail"];
             if (cardDetails == null)
@@ -2438,6 +2704,9 @@ namespace InsuranceClaim.Controllers
                 cardDetails = new CardDetailModel();
             }
             cardDetails.SummaryDetailId = id;
+
+            TempData["ErrorMsg"] = erroMsg;
+
             return View(cardDetails);
         }
 

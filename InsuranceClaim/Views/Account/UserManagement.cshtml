@@ -123,7 +123,7 @@
                                         <div class="col-sm-6 col-md-6 form-group-select">
                                             <div class="form-group">
                                                 @Html.LabelFor(x => x.City, new { @class = "gender-label" })
-                                                @Html.DropDownListFor(x => x.City, new SelectList(ViewBag.Cities, "name", "name"), "----Select City----", new { @class = "form-control " })
+                                                @Html.DropDownListFor(x => x.City, new SelectList(ViewBag.Cities, "CityName", "CityName"), "----Select City----", new { @class = "form-control " })
                                                 @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
                                             </div>
                                         </div>

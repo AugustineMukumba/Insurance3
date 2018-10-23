@@ -15,9 +15,16 @@
             </div>
         </div>
  
+       
 
+        <div class="row">
+            <div class="col-sm-4 col-md-4">
+                <div class="text-left">
+                    @Html.TextBox("searchText", null, new { @class = "form-control", @placeholder = "Policy Number / Customer Name / Email" })
+                </div>
+            </div>
+        </div>
 
-        <br />
         <br />
         <div class="policy-table-grid-main">
             <table class="table table-striped">
@@ -36,11 +43,12 @@
 
                         <th>Policy Number</th>
                         <th>Customer Name</th>
+                        <th>Customer Email</th>
                         <th>Payment Method</th>
                         <th>Total Sum Insured</th>
                         <th>Total Premium</th>
                         <th>Created On</th>
-                        <th>Action(s)</th>
+                        <th class="action-th">Action(s)</th>
 
                     </tr>
 
@@ -50,6 +58,7 @@
 
                             <td>@item.PolicyNumber</td>
                             <td>@MiscellaneousService.GetCustomerNamebyID(item.CustomerId)</td>
+                            <td>@item.CustomerEmail</td>
                             <td>@MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId)</td>
                             <td>$@item.TotalSumInsured</td>
                             <td>$@item.TotalPremium</td>
@@ -59,7 +68,7 @@
                                     <ul class="list-inline">
                                         <li>@Html.ActionLink("View", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>
                                       
-                                        <li>  <a class="btn-sm btn-primary" href="/CustomerRegistration/Index?summaryId=@item.SummaryId"> Edit   </a>  </li>
+                                        <li>  <a class="btn-sm btn-primary" href="/CustomerRegistration/Index?id=@item.SummaryId"> Edit   </a>  </li>
 
 
 
@@ -128,6 +137,16 @@
             }
         });
     }
+
+
+    $(document).ready(function () {
+        $("#searchText").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $(".table>tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
 
 
 </script>
