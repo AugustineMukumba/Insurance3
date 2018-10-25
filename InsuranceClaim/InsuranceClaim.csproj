@@ -209,6 +209,8 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CityController.cs" />
+    <Compile Include="Controllers\ClaimAdjustmentController.cs" />
+    <Compile Include="Controllers\ClaimantController.cs" />
     <Compile Include="Controllers\CommissionController.cs" />
     <Compile Include="Controllers\ContactCentreController.cs" />
     <Compile Include="Controllers\CovertypeController.cs" />
@@ -222,6 +224,7 @@
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\RenewController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Controllers\ServiceProviderController.cs" />
     <Compile Include="Controllers\VehicleMakeController.cs" />
     <Compile Include="Controllers\VehicleModelController.cs" />
     <Compile Include="Controllers\VehicleUsageController.cs" />
@@ -443,9 +446,24 @@
     <Content Include="Views\City\Index.cshtml" />
     <Content Include="Views\City\Edit.cshtml" />
     <Content Include="Views\City\Create.cshtml" />
+    <Content Include="Views\ClaimAdjustment\Index.cshtml" />
+    <Content Include="Views\ClaimAdjustment\ListClaimAdjustment.cshtml" />
+    <Content Include="Views\Claimant\ClaimantList.cshtml" />
+    <Content Include="Views\Claimant\ClaimDetailServiceProvider.cshtml" />
+    <Content Include="Views\Claimant\ClaimDetailsList.cshtml" />
+    <Content Include="Views\Claimant\ClaimRegistrationList.cshtml" />
+    <Content Include="Views\Claimant\EditClaimant.cshtml" />
+    <Content Include="Views\Claimant\EditClaimDetailsProvider.cshtml" />
+    <Content Include="Views\Claimant\RegisterClaim.cshtml" />
+    <Content Include="Views\Claimant\SaveClaimant.cshtml" />
+    <Content Include="Views\ServiceProvider\EditProviders.cshtml" />
+    <Content Include="Views\ServiceProvider\ProvidersList.cshtml" />
+    <Content Include="Views\ServiceProvider\SaveServiceProviders.cshtml" />
+    <Content Include="Views\ClaimAdjustment\EditClaimAdjustment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="ClaimDocument\GMCC180000003-1\1003\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

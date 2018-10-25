@@ -118,6 +118,13 @@
     <Compile Include="Domain\AgentCommission.cs" />
     <Compile Include="Domain\BasicExcess.cs" />
     <Compile Include="Domain\BusinessSource.cs" />
+    <Compile Include="Domain\Checklist.cs" />
+    <Compile Include="Domain\ClaimAdjustment.cs" />
+    <Compile Include="Domain\ClaimDetailsProvider.cs" />
+    <Compile Include="Domain\ClaimDocument.cs" />
+    <Compile Include="Domain\ClaimNotification.cs" />
+    <Compile Include="Domain\ClaimRegistration.cs" />
+    <Compile Include="Domain\ClaimStatus.cs" />
     <Compile Include="Domain\CoverType.cs" />
     <Compile Include="Domain\Currency.cs" />
     <Compile Include="Domain\Customer.cs" />
@@ -141,6 +148,8 @@
     <Compile Include="Domain\ReinsuranceTransaction.cs" />
     <Compile Include="Domain\ReinsurerDetail.cs" />
     <Compile Include="Domain\ReminderFailed.cs" />
+    <Compile Include="Domain\ServiceProvider.cs" />
+    <Compile Include="Domain\ServiceProviderType.cs" />
     <Compile Include="Domain\Setting.cs" />
     <Compile Include="Domain\SmsLog.cs" />
     <Compile Include="Domain\SpecificExcess.cs" />
@@ -157,7 +166,14 @@
     <Compile Include="Repository\AgentCommissions.cs" />
     <Compile Include="Repository\BasicExcesses.cs" />
     <Compile Include="Repository\BusinessSources.cs" />
+    <Compile Include="Repository\Checklists.cs" />
     <Compile Include="Repository\Cities.cs" />
+    <Compile Include="Repository\ClaimAdjustments.cs" />
+    <Compile Include="Repository\ClaimDetailsProviders.cs" />
+    <Compile Include="Repository\ClaimDocuments.cs" />
+    <Compile Include="Repository\ClaimNotifications.cs" />
+    <Compile Include="Repository\ClaimRegistrations.cs" />
+    <Compile Include="Repository\ClaimStatuss.cs" />
     <Compile Include="Repository\CoverTypes.cs" />
     <Compile Include="Repository\Currencies.cs" />
     <Compile Include="Repository\Customers.cs" />
@@ -181,6 +197,8 @@
     <Compile Include="Repository\ReinsurerDetails.cs" />
     <Compile Include="Repository\ReminderFaileds.cs" />
     <Compile Include="Repository\Repository.partial.cs" />
+    <Compile Include="Repository\ServiceProviders.cs" />
+    <Compile Include="Repository\ServiceProviderTypes.cs" />
     <Compile Include="Repository\Settings.cs" />
     <Compile Include="Repository\SmsLogs.cs" />
     <Compile Include="Repository\SpecificExcesses.cs" />

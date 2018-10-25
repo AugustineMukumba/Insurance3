@@ -92,6 +92,13 @@
     <Compile Include="BasicCommissionReportModel.cs" />
     <Compile Include="CardDetailModel.cs" />
     <Compile Include="CardType.cs" />
+    <Compile Include="ChecklistModel.cs" />
+    <Compile Include="ClaimAdjustmentModel.cs" />
+    <Compile Include="ClaimDetailsProviderModel.cs" />
+    <Compile Include="ClaimDocumentModel.cs" />
+    <Compile Include="ClaimNotificationModel.cs" />
+    <Compile Include="ClaimRegistrationModel.cs" />
+    <Compile Include="ClaimStatusModel.cs" />
     <Compile Include="CltyModel.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="CovertypeModel.cs" />
@@ -117,6 +124,7 @@
     <Compile Include="ProductModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RadioLicenceReportModel.cs" />
+    <Compile Include="RegisterClaimViewModel.cs" />
     <Compile Include="ReinsuranceBrokerModel.cs" />
     <Compile Include="ReinsuranceCommissionReportModel.cs" />
     <Compile Include="ReinsuranceReport.cs" />
@@ -124,6 +132,8 @@
     <Compile Include="RiskDetailModel.cs" />
     <Compile Include="PaymentInformationsModel.cs" />
     <Compile Include="RoleManagementListViewModel.cs" />
+    <Compile Include="ServiceProviderModel.cs" />
+    <Compile Include="ServiceProviderTypeModel.cs" />
     <Compile Include="SettingModel.cs" />
     <Compile Include="SmsLogModel.cs" />
     <Compile Include="StampDutyReportModels.cs" />

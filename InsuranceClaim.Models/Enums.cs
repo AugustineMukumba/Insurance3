@@ -50,4 +50,10 @@ namespace InsuranceClaim.Models
         Email = 1,
         SMS = 2
     }
+    public enum ePayeeBankDetails
+    {
+        Bank = 1,
+        MobileMoney = 2,
+        Cash = 3
+    }
 }

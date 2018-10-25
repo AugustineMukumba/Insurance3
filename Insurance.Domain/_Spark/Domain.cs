@@ -731,5 +731,164 @@ namespace Insurance.Domain
 
     }
 
+    //// Second Phase Work
+
+
+    public partial class ClaimNotification : Entity<ClaimNotification>
+    {
+        public ClaimNotification() { }
+        public ClaimNotification(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public string PolicyNumber { get; set; }
+        public DateTime DateOfLoss { get; set; }
+        public string PlaceOfLoss { get; set; }
+        public string DescriptionOfLoss { get; set; }
+        public decimal EstimatedValueOfLoss { get; set; }
+        public string ThirdPartyInvolvement { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public bool? IsDeleted { get; set; }
+        public bool? IsRegistered { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
+    }
+
+
+    public partial class ServiceProvider : Entity<ServiceProvider>
+    {
+        public ServiceProvider() { }
+        public ServiceProvider(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public int ServiceProviderType { get; set; }
+        public string ServiceProviderName { get; set; }
+        public string ServiceProviderContactDetails { get; set; }
+        public decimal ServiceProviderFees { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public bool? IsDeleted { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
+    }
+
+
+    public partial class ServiceProviderType : Entity<ServiceProviderType>
+    {
+        public ServiceProviderType() { }
+        public ServiceProviderType(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public string ProviderType { get; set; }
+
+    }
+    public partial class ClaimRegistration : Entity<ClaimRegistration>
+    {
+        public ClaimRegistration() { }
+        public ClaimRegistration(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public string PolicyNumber { get; set; }
+        //public string NameOfInsured { get; set; }
+
+        public string PaymentDetails { get; set; }
+        //public DateTime? CoverStartDate { get; set; }
+        //public DateTime? CoverEndDate { get; set; }
+        //public string RiskDetails { get; set; }
+        public long ClaimNumber { get; set; }
+        public string Checklist { get; set; }
+        public DateTime? DateOfLoss { get; set; }
+        public DateTime? DateOfNotifications { get; set; }
+        public string PlaceOfLoss { get; set; }
+        public string DescriptionOfLoss { get; set; }
+        public decimal? EstimatedValueOfLoss { get; set; }
+        public string ThirdPartyDamageValue { get; set; }
+        public bool Claimsatisfaction { get; set; }
+        public int ClaimStatus { get; set; }
+        public DateTime? CreatedOn { get; set; }
+
+        public string RejectionStatus { get; set; }
+
+
+        //public DateTime? ModifyOn { get; set; }   
+    }
+
+
+    public partial class ClaimStatus : Entity<ClaimStatus>
+    {
+        public ClaimStatus() { }
+        public ClaimStatus(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public string Status { get; set; }
+    }
+
+    public partial class Checklist : Entity<Checklist>
+    {
+        public Checklist() { }
+        public Checklist(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public string ChecklistDetail { get; set; }
+    }
+    public partial class ClaimDetailsProvider : Entity<ClaimDetailsProvider>
+    {
+        public ClaimDetailsProvider() { }
+        public ClaimDetailsProvider(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public int AssessorsProviderType { get; set; }
+        public int ValuersProviderType { get; set; }
+        public string PolicyNumber { get; set; }
+        public int LawyersProviderType { get; set; }
+        public int RepairersProviderType { get; set; }
+        public int ClaimNumber { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
+
+
+    }
+    public partial class ClaimAdjustment : Entity<ClaimAdjustment>
+    {
+        public ClaimAdjustment() { }
+        public ClaimAdjustment(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public int AmountToPay { get; set; }
+        public int EstimatedLoss { get; set; }
+        public string ExcessesAmount { get; set; }
+        public string PayeeBankDetails { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string PayeeName { get; set; }
+        public string PolicyholderName { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public bool IsActive { get; set; }
+        public bool DriverIsUnder21 { get; set; }
+        public bool Islicensedless60months { get; set; }
+        public bool IsStolen { get; set; }
+        public bool IsLossInZimbabwe { get; set; }
+        public bool IsPartialLoss { get; set; }
+    }
+    public partial class ClaimDocument : Entity<ClaimDocument>
+    {
+        public ClaimDocument() { }
+        public ClaimDocument(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string FilePath { get; set; }
+        public string PolicyNumber { get; set; }
+        public int ClaimNumber { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public int CreatedBy { get; set; }
+        public int ServiceProvider { get; set; }
+        public int ServiceProviderName { get; set; }
+        //public DateTime ModifiedOn { get; set; }
+        //public int ModifiedBy { get; set; }
+        public bool IsActive { get; set; }
+
+    }
+
 
 }

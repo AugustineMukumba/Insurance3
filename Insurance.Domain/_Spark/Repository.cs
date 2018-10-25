@@ -65,8 +65,21 @@ namespace Insurance.Domain
         public static ReminderFaileds ReminderFaileds { get { return new ReminderFaileds(); } }
         public static LicenceDiskDeliveryAddresses LicenceDiskDeliveryAddresses { get { return new LicenceDiskDeliveryAddresses(); } }
        public static UniqueCustomers UniqueCustomers { get { return new UniqueCustomers(); } }
-
         public static Cities Cities  { get { return new Cities(); } }
+
+        //Second Phase Work
+
+        public static ClaimNotifications ClaimNotifications { get { return new ClaimNotifications(); } }
+        public static ServiceProviders ServiceProviders { get { return new ServiceProviders(); } }
+        public static ServiceProviderTypes ServiceProviderTypes { get { return new ServiceProviderTypes(); } }
+        public static ClaimRegistrations ClaimRegistrations { get { return new ClaimRegistrations(); } }
+
+        public static ClaimAdjustments ClaimAdjustments { get { return new ClaimAdjustments(); } }
+        public static ClaimDocuments ClaimDocuments { get { return new ClaimDocuments(); } }
+        public static ClaimStatuss ClaimStatuss { get { return new ClaimStatuss(); } }
+        public static Checklists Checklists { get { return new Checklists(); } }
+        public static ClaimDetailsProviders ClaimDetailsProviders { get { return new ClaimDetailsProviders(); } }
+
 
         // general purpose operations
 
