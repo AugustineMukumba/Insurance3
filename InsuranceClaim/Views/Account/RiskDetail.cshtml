@@ -38,7 +38,7 @@
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-section-col">
 
-                    @using (Html.BeginForm("GenerateQuote", "CustomerRegistration"))
+                    @using (Html.BeginForm("GenerateQuote", "Account"))
                     {
                         <div>
                             @Html.HiddenFor(m => m.PolicyId)
@@ -54,6 +54,7 @@
                             @Html.HiddenFor(m => m.RoadsideAssistancePercentage)
                             @Html.HiddenFor(m => m.MedicalExpensesPercentage)
                             @Html.HiddenFor(m => m.ExcessAmount)
+                            @Html.HiddenFor(m => m.SummaryId)
                         </div>
                         <div class="form-group-section">
                             <div class="form-title">
@@ -679,7 +680,12 @@
                                                 {
                                                     <div class="col-sm-6 col-md-6">
                                                         <div class="text-left">
-                                                            <div class="back-left"><button type="button" onclick="gotoMyPolicyList()" class="btn">Back to List</button></div>
+                                                            @*<div class="back-left"><button type="button" onclick="gotoMyPolicyList()" class="btn">Back to List</button></div>*@
+
+
+                                                            <div class="back-left">
+                                                                <a class="backbtnview" id="previouselink" href="/Account/CustomerDetials/@Model.SummaryId">Back</a>
+                                                            </div>
 
                                                         </div>
                                                     </div>
@@ -688,7 +694,14 @@
                                                 {
                                                     <div class="col-sm-6 col-md-6">
                                                         <div class="text-left">
-                                                            <div class="back-left"><button type="button" onclick="gotoPolicyList()" class="btn">Back to List</button></div>
+                                                            @*<div class="back-left"><button type="button" onclick="gotoPolicyList()" class="btn">Back to List</button></div>*@
+
+  
+                                                          
+                                                            <div class="back-left">
+                                                                <a class="backbtnview" id="previouselink" href="/Account/CustomerDetials/@Model.SummaryId">Back</a>
+                                                            </div>
+
 
                                                         </div>
                                                     </div>
@@ -697,7 +710,11 @@
                                                 {
                                                     <div class="col-sm-6 col-md-6">
                                                         <div class="text-left">
-                                                            <div class="back-left"><button type="button" onclick="gotoQuotationList()" class="btn">Back to List</button></div>
+                                                            @*<div class="back-left"><button type="button" onclick="gotoQuotationList()" class="btn">Back to List</button></div>*@
+
+                                                            <div class="back-left">
+                                                                <a class="backbtnview" id="previouselink" href="/Account/CustomerDetials/@Model.SummaryId">Back</a>
+                                                            </div>
 
                                                         </div>
                                                     </div>
@@ -709,6 +726,7 @@
                                                 <div class="col-sm-6 col-md-6">
                                                     <div class="text-right">
                                                         <button type="button" onclick="redirectToRiskDetails();" class="btn">Summary Details</button>
+                                                    
                                                     </div>
                                                 </div>
 

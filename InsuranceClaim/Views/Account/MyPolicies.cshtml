@@ -96,7 +96,10 @@
                             <td>
                                 <div class="tbl-btn-list">
                                     <ul class="list-inline">
-                                        <li>@Html.ActionLink("View Policy", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>
+                                        @*<li>@Html.ActionLink("View Policy", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>*@
+
+                                        <li>@Html.ActionLink("View Policy", "CustomerDetials", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>
+
 
                                     
                                             @foreach (var _item in item.Vehicles)

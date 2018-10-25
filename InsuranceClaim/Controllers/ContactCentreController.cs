@@ -58,8 +58,8 @@ namespace InsuranceClaim.Controllers
 
             ViewBag.eExcessTypeData = new SelectList(eExcessTypeData, "ID", "Name");
 
-
-            int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
+            int RadioLicenseCosts = 0;
+          //  int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
             var PolicyData = (PolicyDetail)Session["PolicyData"];
             //Id is policyid from Policy detail table
             var viewModel = new RiskDetailModel();
@@ -205,13 +205,27 @@ namespace InsuranceClaim.Controllers
         
 
 
-        public ActionResult GetRadioLicenseCost(int? id)
+        public ActionResult GetRadioLicenseCost(int? id, int productId)
         {
             JsonResult jsonResult = new JsonResult();
 
-            jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
-            int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
 
+            //RadioLicenseCostCommercialvehicles
+
+            jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+
+            int RadioLicenseCosts = 0;
+
+            if (productId == 3)// for  Commercial vehicles
+            {
+                RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCostCommercialvehicles").Select(x => x.value).FirstOrDefault());
+            }
+            else
+            {
+                RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
+            }
+
+           
             if (id == (int)ePaymentTerm.Annual)
             {
                 jsonResult.Data = RadioLicenseCosts;

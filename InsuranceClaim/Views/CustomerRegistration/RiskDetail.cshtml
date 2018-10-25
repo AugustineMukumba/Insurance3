@@ -838,15 +838,22 @@
     function GetRadioLicenseCost(){
         debugger;
         var selectedTerm = $("#PaymentTermId option:selected").val();
-        $.ajax({
-            type: "POST",
-            url: "@Url.Action("GetRadioLicenseCost", "ContactCentre")",
-            data: { id: selectedTerm },
-            success: function (data ) {
-                $("#RadioLicenseCost").val(data)
-            }
+
+        var ProductId = $("#ProductId option:selected").val();
+
+        if(selectedTerm!=""&& ProductId!="")
+        {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetRadioLicenseCost", "ContactCentre")",
+                data: { id: selectedTerm,productId: ProductId},
+                success: function (data ) {
+                    $("#RadioLicenseCost").val(data)
+                }
+            })
+
         }
-        )}
+    }
 
 
     function updateEndDate() {
@@ -1043,6 +1050,8 @@
                     toastr.warning("Please Select Valid Payment Term And Vehicle Type And Vehicle Registeration Number.");
                 }
             }
+
+            GetRadioLicenseCost();
         });
 
         $("#MakeId").change(function () {

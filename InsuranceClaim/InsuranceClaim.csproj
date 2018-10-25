@@ -443,6 +443,7 @@
     <Content Include="Views\City\Index.cshtml" />
     <Content Include="Views\City\Edit.cshtml" />
     <Content Include="Views\City\Create.cshtml" />
+    <Content Include="Views\Account\CustomerDetials.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

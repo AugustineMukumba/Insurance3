@@ -71,7 +71,7 @@ namespace InsuranceClaim.Controllers
 
             if (id > 0) // if staff try to edit Qutation
             {
-                SetCustomerValueIntoSession(id);
+                SetCustomerValueIntoSession(id); // here id represent to summardetialid during edit the Qutation
             }
 
 
@@ -207,12 +207,12 @@ namespace InsuranceClaim.Controllers
                 if (userLoggedin)
                 {
 
-                    var AllUsers = UserManager.Users.ToList();
-                    var isExist = AllUsers.Any(p => p.Email.ToLower() == model.EmailAddress.ToLower() || p.UserName.ToLower() == model.EmailAddress);
-                    if (isExist)
-                    {
-                        return Json(new { IsError = false, error = "Email " + model.EmailAddress + " already exists." }, JsonRequestBehavior.AllowGet);
-                    }
+                    //var AllUsers = UserManager.Users.ToList();
+                    //var isExist = AllUsers.Any(p => p.Email.ToLower() == model.EmailAddress.ToLower() || p.UserName.ToLower() == model.EmailAddress);
+                    //if (isExist)
+                    //{
+                    //    return Json(new { IsError = false, error = "Email " + model.EmailAddress + " already exists." }, JsonRequestBehavior.AllowGet);
+                    //}
 
 
                     if (User.IsInRole("Staff"))
@@ -399,7 +399,9 @@ namespace InsuranceClaim.Controllers
             // ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All().ToList();
             ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All(where: "IsActive = 'True' or IsActive is null").ToList();
 
-            int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
+            int RadioLicenseCosts = 0;
+
+           // int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
             var PolicyData = (PolicyDetail)Session["PolicyData"];
             //Id is policyid from Policy detail table
             var viewModel = new RiskDetailModel();
@@ -2225,7 +2227,8 @@ namespace InsuranceClaim.Controllers
                             #region Send Quotation SMS
                             Insurance.Service.smsService objsmsService = new Insurance.Service.smsService();
 
-                            string Recieptbody = "Hello " + customer.FirstName + "\nWelcome to GeneInsure. Please pay" + "\n$" + Convert.ToString(summaryDetail.AmountPaid) + " to this merchant code 249341 to activate your policy. You can use the shortcode *151*2*2*249341*<amount>#." + "\n" + "\nThank you.";
+                            // done
+                            string Recieptbody = "Hi " + customer.FirstName + "\nPlease pay" + "$" + Convert.ToString(summaryDetail.AmountPaid) + " to merchant code 249341 activate your policy with GeneInsure. Shortcode *151*2*2*249341*<amount>#." + "\n" + "\nThank you.";
                             var Recieptresult = await objsmsService.SendSMS(customer.CountryCode.Replace("+", "") + user.PhoneNumber, Recieptbody);
 
                             SmsLog objRecieptsmslog = new SmsLog()

@@ -92,165 +92,171 @@
                                 @Html.HiddenFor(x => x.Id)
                                 @Html.HiddenFor(x => x.UserID)
 
-                                <div class="row">
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.LabelFor(x => x.FirstName, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", @name = "FirstName", @autocomplete = "off", @id = "FirstName", @placeholder = "First Name" })
-                                            @Html.ValidationMessageFor(x => x.FirstName, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.LabelFor(x => x.LastName, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", @name = "LastName", @autocomplete = "off", @id = "LastName", @placeholder = "Last Name" })
-                                            @Html.ValidationMessageFor(x => x.LastName, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="row">
-                                            @*<div class="row @disableClass">*@
+                                <div style="pointer-events: none;">
 
+
+
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                                <div class="col-md-5">
-                                                    <div class="checkbox-label">
-                                                        @Html.LabelFor(x => x.EmailAddress, new { @class = "gender-label" })
+                                                @Html.LabelFor(x => x.FirstName, new { @class = "gender-label" })
+                                                @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", @name = "FirstName", @autocomplete = "off", @id = "FirstName", @placeholder = "First Name" })
+                                                @Html.ValidationMessageFor(x => x.FirstName, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.LastName, new { @class = "gender-label" })
+                                                @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", @name = "LastName", @autocomplete = "off", @id = "LastName", @placeholder = "Last Name" })
+                                                @Html.ValidationMessageFor(x => x.LastName, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="row">
+                                                @*<div class="row @disableClass">*@
+
+                                                <div class="form-group">
+                                                    <div class="col-md-5">
+                                                        <div class="checkbox-label">
+                                                            @Html.LabelFor(x => x.EmailAddress, new { @class = "gender-label" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-7">
+                                                        <label>@Html.CheckBoxFor(m => m.IsCustomEmail, new { @onclick = "SetCustomerEmail();" }) No email address</label>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        @*@if (email != "")
+                                                            {
+                                                                @Html.TextBoxFor(x => x.EmailAddress, new { @class = "form-control non-editable", @name = "EmailAddress", @autocomplete = "off", @id = "EmailAddress", @placeholder = "Email Address" });
+                                                            }
+                                                            else
+                                                            {
+                                                                @Html.TextBoxFor(x => x.EmailAddress, new { @class = "form-control", @name = "EmailAddress", @autocomplete = "off", @id = "EmailAddress", @placeholder = "Email Address" });
+                                                            }*@
+
+                                                        @Html.TextBoxFor(x => x.EmailAddress, new { @class = "form-control", @name = "EmailAddress", @autocomplete = "off", @id = "EmailAddress", @placeholder = "Email Address" })
+
+
+                                                        @Html.ValidationMessageFor(x => x.EmailAddress, "", new { @class = "text-danger" })
+
+
                                                     </div>
                                                 </div>
-                                                <div class="col-md-7">
-                                                    <label>@Html.CheckBoxFor(m => m.IsCustomEmail, new { @onclick = "SetCustomerEmail();" }) No email address</label>
-                                                </div>
-                                                <div class="col-md-12">
-                                                    @*@if (email != "")
-                                                    {
-                                                        @Html.TextBoxFor(x => x.EmailAddress, new { @class = "form-control non-editable", @name = "EmailAddress", @autocomplete = "off", @id = "EmailAddress", @placeholder = "Email Address" });
-                                                    }
-                                                    else
-                                                    {
-                                                        @Html.TextBoxFor(x => x.EmailAddress, new { @class = "form-control", @name = "EmailAddress", @autocomplete = "off", @id = "EmailAddress", @placeholder = "Email Address" });
-                                                    }*@
-
-                                                    @Html.TextBoxFor(x => x.EmailAddress, new { @class = "form-control", @name = "EmailAddress", @autocomplete = "off", @id = "EmailAddress", @placeholder = "Email Address" })
-
-
-                                                    @Html.ValidationMessageFor(x => x.EmailAddress, "", new { @class = "text-danger" })
-
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.LabelFor(x => x.PhoneNumber, new { @class = "gender-label" })
-                                            @*@Html.TextBoxFor(x => x.CountryCode, new { @class = "form-control countrycode", @name = "CountryCode", @autocomplete = "off", @id = "CountryCode", @placeholder = "Code", @maxlength = "4" })*@
-                                            @Html.DropDownListFor(x => x.CountryCode, new SelectList(ViewBag.Countries, "code", "DisplayName", "+263"), new { @class = "form-control countrycode" })
-                                            @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control phonenumber", @name = "PhoneNumber", @autocomplete = "off", @id = "PhoneNumber", @placeholder = "Phone Number", @maxlength = "10", onkeypress = "return isNumber(event)" })
-                                            @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
-                                            @*@Html.ValidationMessageFor(x => x.CountryCode, "", new { @class = "text-danger" })*@
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.LabelFor(x => x.Gender, new { @class = "gender-label" })
-                                            <div class="form-group-label">
-                                                <label>@Html.RadioButtonFor(model => model.Gender, "Male", true)<span class="outside"><span class="inside"></span></span><strong>Male</strong></label>
-                                                <label>@Html.RadioButtonFor(model => model.Gender, "Female", true)<span class="outside"><span class="inside"></span></span><strong>Female</strong></label>
-                                            </div>
-                                            @Html.ValidationMessageFor(x => x.Gender, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.LabelFor(x => x.DateOfBirth, new { @class = "gender-label" })
-                                            <div class="form-group-label">
-
-                                                <div class='input-group' id='datetimepicker1'>
-                                                    @Html.TextBoxFor(x => x.DateOfBirth, new { @class = "form-control", @autocomplete = "off", @placeholder = "DOB" })
-
-                                                    <span class="input-group-addon">
-                                                        <span class="glyphicon glyphicon-calendar"></span>
-                                                    </span>
-                                                </div>
-                                                @Html.ValidationMessageFor(x => x.DateOfBirth, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.LabelFor(x => x.AddressLine1, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.AddressLine1, new { @class = "form-control", @name = "AddressLine1", @autocomplete = "off", @id = "AddressLine1", @placeholder = "Address Line 1" })
-                                            @Html.ValidationMessageFor(x => x.AddressLine1, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.LabelFor(x => x.AddressLine2, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.AddressLine2, new { @class = "form-control", @name = "AddressLine2", @autocomplete = "off", @id = "AddressLine2", @placeholder = "Address Line 2" })
-                                            @Html.ValidationMessageFor(x => x.AddressLine2, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-                                @*<div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.TextBoxFor(x => x.City, new { @class = "form-control", @name = "State", @autocomplete = "off", @placeholder = "Enter City Name" })
-                                                @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                                @Html.TextBoxFor(x => x.State, new { @class = "form-control", @name = "State", @autocomplete = "off", @placeholder = "Enter State Name" })
-                                                @Html.ValidationMessageFor(x => x.State, "", new { @class = "text-danger" })
+                                                @Html.LabelFor(x => x.PhoneNumber, new { @class = "gender-label" })
+                                                @*@Html.TextBoxFor(x => x.CountryCode, new { @class = "form-control countrycode", @name = "CountryCode", @autocomplete = "off", @id = "CountryCode", @placeholder = "Code", @maxlength = "4" })*@
+                                                @Html.DropDownListFor(x => x.CountryCode, new SelectList(ViewBag.Countries, "code", "DisplayName", "+263"), new { @class = "form-control countrycode" })
+                                                @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control phonenumber", @name = "PhoneNumber", @autocomplete = "off", @id = "PhoneNumber", @placeholder = "Phone Number", @maxlength = "10", onkeypress = "return isNumber(event)" })
+                                                @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
+                                                @*@Html.ValidationMessageFor(x => x.CountryCode, "", new { @class = "text-danger" })*@
                                             </div>
                                         </div>
-                                    </div>*@
 
-                                <div class="row">
-                                    <div class="col-sm-6 col-md-6 form-group-select">
-                                        <div class="form-group">
-                                            @Html.LabelFor(x => x.City, new { @class = "gender-label" })
-                                            @Html.DropDownListFor(x => x.City, new SelectList(ViewBag.Cities, "CityName", "CityName"), "----Select City----", new { @class = "form-control ", @onchange = "removeValidation(this)" })
-                                            @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger valMessage" })
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.Gender, new { @class = "gender-label" })
+                                                <div class="form-group-label">
+                                                    <label>@Html.RadioButtonFor(model => model.Gender, "Male", true)<span class="outside"><span class="inside"></span></span><strong>Male</strong></label>
+                                                    <label>@Html.RadioButtonFor(model => model.Gender, "Female", true)<span class="outside"><span class="inside"></span></span><strong>Female</strong></label>
+                                                </div>
+                                                @Html.ValidationMessageFor(x => x.Gender, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.DateOfBirth, new { @class = "gender-label" })
+                                                <div class="form-group-label">
+
+                                                    <div class='input-group' id='datetimepicker1'>
+                                                        @Html.TextBoxFor(x => x.DateOfBirth, new { @class = "form-control", @autocomplete = "off", @placeholder = "DOB" })
+
+                                                        <span class="input-group-addon">
+                                                            <span class="glyphicon glyphicon-calendar"></span>
+                                                        </span>
+                                                    </div>
+                                                    @Html.ValidationMessageFor(x => x.DateOfBirth, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.LabelFor(x => x.NationalIdentificationNumber, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.NationalIdentificationNumber, new { @class = "form-control", @name = "State", @autocomplete = "off", @id = "State", @placeholder = "National Identification Number" })
-                                            @Html.ValidationMessageFor(x => x.NationalIdentificationNumber, "", new { @class = "text-danger" })
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.AddressLine1, new { @class = "gender-label" })
+                                                @Html.TextBoxFor(x => x.AddressLine1, new { @class = "form-control", @name = "AddressLine1", @autocomplete = "off", @id = "AddressLine1", @placeholder = "Address Line 1" })
+                                                @Html.ValidationMessageFor(x => x.AddressLine1, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.AddressLine2, new { @class = "gender-label" })
+                                                @Html.TextBoxFor(x => x.AddressLine2, new { @class = "form-control", @name = "AddressLine2", @autocomplete = "off", @id = "AddressLine2", @placeholder = "Address Line 2" })
+                                                @Html.ValidationMessageFor(x => x.AddressLine2, "", new { @class = "text-danger" })
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                            <div class="row">
+                                    @*<div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.TextBoxFor(x => x.City, new { @class = "form-control", @name = "State", @autocomplete = "off", @placeholder = "Enter City Name" })
+                                                    @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.TextBoxFor(x => x.State, new { @class = "form-control", @name = "State", @autocomplete = "off", @placeholder = "Enter State Name" })
+                                                    @Html.ValidationMessageFor(x => x.State, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>*@
+
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.City, new { @class = "gender-label" })
+                                                @Html.DropDownListFor(x => x.City, new SelectList(ViewBag.Cities, "CityName", "CityName"), "----Select City----", new { @class = "form-control ", @onchange = "removeValidation(this)" })
+                                                @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger valMessage" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.NationalIdentificationNumber, new { @class = "gender-label" })
+                                                @Html.TextBoxFor(x => x.NationalIdentificationNumber, new { @class = "form-control", @name = "State", @autocomplete = "off", @id = "State", @placeholder = "National Identification Number" })
+                                                @Html.ValidationMessageFor(x => x.NationalIdentificationNumber, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.Zipcode, new { @class = "gender-label" })
+                                                @Html.TextBoxFor(x => x.Zipcode, new { @class = "form-control", @name = "Zipcode", @autocomplete = "off", @id = "Zipcode", @placeholder = "Zip Code", @maxlength = "10" })
+                                                @Html.ValidationMessageFor(x => x.Zipcode, "", new { @class = "text-danger" })
+                                            </div>
+                                            @*<div class="col-sm-6 col-md-6 form-group-text">
+                                                    <div class="form-group">
+                                                        @Html.TextBoxFor(x => x.Country, new { @class = "form-control", @name = "Country", @autocomplete = "off", @id = "Country", @placeholder = "Country" })
+                                                        @Html.ValidationMessageFor(x => x.Country, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
                                                 <div class="col-sm-6 col-md-6 form-group-text">
                                                     <div class="form-group">
-                                                        @Html.LabelFor(x => x.Zipcode, new { @class = "gender-label" })
-                                                        @Html.TextBoxFor(x => x.Zipcode, new { @class = "form-control", @name = "Zipcode", @autocomplete = "off", @id = "Zipcode", @placeholder = "Zip Code", @maxlength = "10" })
+                                                        @Html.TextBoxFor(x => x.Zipcode, new { @class = "form-control", @name = "Zipcode", @autocomplete = "off", @id = "Zipcode", @placeholder = "Zip Code" })
                                                         @Html.ValidationMessageFor(x => x.Zipcode, "", new { @class = "text-danger" })
-                                                    </div>
-                                                    @*<div class="col-sm-6 col-md-6 form-group-text">
-                                                            <div class="form-group">
-                                                                @Html.TextBoxFor(x => x.Country, new { @class = "form-control", @name = "Country", @autocomplete = "off", @id = "Country", @placeholder = "Country" })
-                                                                @Html.ValidationMessageFor(x => x.Country, "", new { @class = "text-danger" })
-                                                            </div>
-                                                        </div>
+                                                    </div>*@
+                                        </div>
+                                    </div>
 
-                                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                                            <div class="form-group">
-                                                                @Html.TextBoxFor(x => x.Zipcode, new { @class = "form-control", @name = "Zipcode", @autocomplete = "off", @id = "Zipcode", @placeholder = "Zip Code" })
-                                                                @Html.ValidationMessageFor(x => x.Zipcode, "", new { @class = "text-danger" })
-                                                            </div>*@
-                                                </div>
-                                            </div>
+                                </div>
                                             <div class="col-md-12 next-btn">
                                                 <div class="row">
                                                     <div class="col-sm-6 col-md-6">
@@ -352,10 +358,6 @@
         $("#DateOfBirth").val(today);
 
     });
-
-
-
-
 
 
 

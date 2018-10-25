@@ -93,5 +93,7 @@ namespace InsuranceClaim.Models
         public bool isWebUser { get; set; }
         public decimal SuggestedValue { get; set; }
         public decimal VehicleLicenceFee { get; set; }
+
+        public int? SummaryId { get; set; }
     }
 }

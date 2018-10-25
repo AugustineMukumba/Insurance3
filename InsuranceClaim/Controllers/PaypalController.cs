@@ -733,7 +733,7 @@ namespace InsuranceClaim.Controllers
                     objEmailService.SendEmail(user.Email, "", "", "Account Creation", Body, _attachements);
                 }
 
-                string body = "Hello " + customer.FirstName + "\nWelcome to the GENE-INSURE family, we would like to simplify your life." + "\nYour policy number is : " + policy.PolicyNumber + "\nUsername is : " + user.Email + "\nYour Password : Geneinsure@123" + "\nPlease reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>" + "\nThank you once again.";
+                string body = "Hello " + customer.FirstName + "\nWelcome to the GENE-INSURE." + " Policy number is : " + policy.PolicyNumber + "\nUsername is : " + user.Email + "\nYour Password : Geneinsure@123" + "\nPlease reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>" + "\nThank you.";
                 var result = await objsmsService.SendSMS(customer.Countrycode.Replace("+", "") + user.PhoneNumber, body);
 
                 SmsLog objsmslog = new SmsLog()
@@ -788,7 +788,8 @@ namespace InsuranceClaim.Controllers
 
             #region Send Payment SMS
 
-            string Recieptbody = "Hello " + customer.FirstName + "\nWelcome to the GENE-INSURE family, we would like to simplify your life." + "\n$" + Convert.ToString(summaryDetail.AmountPaid) + " has been deducted from your account for your policy number is : " + policy.PolicyNumber + "\n" + "\nThank you.";
+            // done
+            string Recieptbody = "Hello " + customer.FirstName + "\nWelcome to GeneInsure. Your payment of" + "$" + Convert.ToString(summaryDetail.AmountPaid) + " has been received. Policy number is : " + policy.PolicyNumber + "\n" + "\nThanks.";
             var Recieptresult = await objsmsService.SendSMS(customer.Countrycode.Replace("+", "") + user.PhoneNumber, Recieptbody);
 
             SmsLog objRecieptsmslog = new SmsLog()

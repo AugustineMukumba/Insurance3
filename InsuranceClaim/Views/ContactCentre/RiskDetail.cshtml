@@ -62,8 +62,8 @@
     <div class="form-section-top">
         <div class="container">
 
-           
-           
+
+
 
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-section-col">
@@ -101,7 +101,7 @@
                                 <span> Name: <b>@customerDetail.FirstName  @customerDetail.LastName </b>,  Email: <b>@customerDetail.EmailAddress </b>  </span>
                             </div>
 
-                            
+
 
 
                             <div id="divVehicleList" style="display:block;">
@@ -125,7 +125,7 @@
                             </div>
 
 
-                           
+
 
 
                             <div class="form-group-input">
@@ -824,15 +824,21 @@
     function GetRadioLicenseCost(){
         debugger;
         var selectedTerm = $("#PaymentTermId option:selected").val();
-        $.ajax({
-            type: "POST",
-            url: "@Url.Action("GetRadioLicenseCost", "ContactCentre")",
-            data: { id: selectedTerm },
-            success: function (data ) {
-                $("#RadioLicenseCost").val(data)
-            }
+
+        var ProductId = $("#ProductId option:selected").val();
+
+        if(selectedTerm!=""&& ProductId!="")
+        {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetRadioLicenseCost", "ContactCentre")",
+                data: { id: selectedTerm,productId: ProductId},
+                success: function (data ) {
+                    $("#RadioLicenseCost").val(data)
+                }
+            })
         }
-        )}
+    }
 
 
     function updateEndDate() {
@@ -1029,6 +1035,8 @@
                     toastr.warning("Please Select Valid Payment Term And Vehicle Type And Vehicle Registeration Number.");
                 }
             }
+
+            GetRadioLicenseCost();
         });
 
         $("#MakeId").change(function () {
@@ -1216,10 +1224,10 @@
 
                     var vMake = vehicle.Make;
                     $("#MakeId option").filter(function() {return this.text == vMake.toUpperCase(); }).attr('selected', true);
-            
-                  //  $("#MakeId").addClass("inputDisabled");
+
+                    //  $("#MakeId").addClass("inputDisabled");
                     var vModel = vehicle.Model;
-                     GetVehicleModels(vModel);
+                    GetVehicleModels(vModel);
 
                     var vYearManufacture = vehicle.YearManufacture;
                     $("#VehicleYear").val(vYearManufacture);
@@ -1367,8 +1375,8 @@
 
                     //  $("#ModelId option:contains(" + ModelName.toUpperCase() + ")").attr('selected', 'selected');
                     //$("#ModelId").attr("readonly","readonly");
-                  //  $("#ModelId").addClass("inputDisabled")
-                   // $("#ProductId").addClass("inputDisabled") // on 04-oct
+                    //  $("#ModelId").addClass("inputDisabled")
+                    // $("#ProductId").addClass("inputDisabled") // on 04-oct
 
                     //$("#ProductId").attr("readonly","readonly");
                 }
