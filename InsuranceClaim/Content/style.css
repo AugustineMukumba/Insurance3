@@ -32,6 +32,21 @@ tfoot {
                 margin-top: 0px;
 }
 
+.disableTxtbox{
+    background-color: #eee !important;
+}
+
+
+.backbtnview {
+    background: #16909d;
+    padding: 20px 30px;
+    width: 200px;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 600;
+}
+
 .container-2-checkbox .gender-label
 {
     width:25%;
