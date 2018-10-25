@@ -460,6 +460,7 @@
     <Content Include="Views\ServiceProvider\ProvidersList.cshtml" />
     <Content Include="Views\ServiceProvider\SaveServiceProviders.cshtml" />
     <Content Include="Views\ClaimAdjustment\EditClaimAdjustment.cshtml" />
+    <Content Include="Views\Account\CustomerDetials.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
