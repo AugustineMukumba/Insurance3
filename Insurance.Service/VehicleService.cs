@@ -51,5 +51,10 @@ namespace Insurance.Service
             var policy = InsuranceContext.PolicyDetails.Single(policyId);
             return policy;
         }
+        public VehicleDetail GetVehicles(int policyId)
+        {
+            var Vehicleinfo = InsuranceContext.VehicleDetails.Single(policyId);
+            return Vehicleinfo;
+        }
     }
 }
