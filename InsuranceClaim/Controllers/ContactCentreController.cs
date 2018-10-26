@@ -225,17 +225,44 @@ namespace InsuranceClaim.Controllers
                 RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
             }
 
-           
-            if (id == (int)ePaymentTerm.Annual)
-            {
-                jsonResult.Data = RadioLicenseCosts;
 
-            }
-            if (id == (int)ePaymentTerm.Termly)
+            //if (id == (int)ePaymentTerm.Annual)
+            //{
+            //    jsonResult.Data = RadioLicenseCosts;
+
+            //}
+            //if (id == (int)ePaymentTerm.Termly)
+            //{
+            //    jsonResult.Data = RadioLicenseCosts / 3;
+            //}
+
+
+            // defuault will be annual
+            switch (id)
             {
-                jsonResult.Data = RadioLicenseCosts / 3;
+
+                case 4:
+                    RadioLicenseCosts = RadioLicenseCosts / 3;
+                    break;
+                case 5:
+                    RadioLicenseCosts = RadioLicenseCosts / 3;
+                    break;
+                case 6:
+                    RadioLicenseCosts = RadioLicenseCosts / 3;
+                    break;
+                case 7:
+                    RadioLicenseCosts = RadioLicenseCosts / 3;
+                    break;
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                    RadioLicenseCosts = (RadioLicenseCosts / 3) * 2;
+                    break;        
             }
 
+
+            jsonResult.Data = RadioLicenseCosts;
 
 
             return jsonResult;

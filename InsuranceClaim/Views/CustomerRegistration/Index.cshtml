@@ -91,11 +91,7 @@
                                 <input type="hidden" id="clinetId" name="clinetId" />
                                 @Html.HiddenFor(x => x.Id)
                                 @Html.HiddenFor(x => x.UserID)
-
-                                <div style="pointer-events: none;">
-
-
-
+                          
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
@@ -256,7 +252,7 @@
                                         </div>
                                     </div>
 
-                                </div>
+                        
                                             <div class="col-md-12 next-btn">
                                                 <div class="row">
                                                     <div class="col-sm-6 col-md-6">
@@ -355,7 +351,12 @@
 
         var today = mm + '/' + dd + '/' + yyyy;
 
-        $("#DateOfBirth").val(today);
+        if (Session["CustomerDataModal"] == null)
+        {
+            $("#DateOfBirth").val(today);
+        }
+
+        
 
     });
 
