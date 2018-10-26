@@ -42,6 +42,7 @@ namespace InsuranceClaim.Models
         
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
+        public bool IsExists { get; set; }
 
     }
 }

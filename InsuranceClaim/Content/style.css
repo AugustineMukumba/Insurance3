@@ -1846,6 +1846,11 @@ padding: 50px 0 20px;
 .city-section-top table {
 	 border: 1px solid #ddd;
 				}
+.pt-50{padding-top:50px;}
+
+.product-table-grid table tr.highlights-bg {
+    background: #ff9b9b;
+}
 
 @media(max-width:767px) {
     .policy-option li {

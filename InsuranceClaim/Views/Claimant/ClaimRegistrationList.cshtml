@@ -35,7 +35,7 @@
             <table class="table table-striped">
                 <tbody>
 
-                    
+
                     @foreach (InsuranceClaim.Models.ClaimRegistrationModel item in Model)
                     {
 
@@ -112,8 +112,13 @@
                                         {
                                             <li>@Html.ActionLink("Assign Service Provider", "ClaimDetailServiceProvider", "Claimant", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
                                             <li><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.ClaimNumber');">View/Upload Document</button></li>
+
+
+                                            if (item.AssessProviderName != null && item.AssessProviderName.Count() > 0)
+                                            {
+                                                <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id,PolicyNumber = item.PolicyNumber,claimnumber = item.ClaimNumber }, new { @class = "btn-sm btn-primary" })</li>
+                                            }
                                         }
-                                        @*<li>@Html.ActionLink("Edit", "EditClaimDetailsProvider", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>*@
 
                                     </ul>
                                 </div>
@@ -124,7 +129,6 @@
                 </tbody>
 
             </table>
-            @*<input type="hidden" id="sucessmsg" name="sucessmsg" value="@sucessalert" />*@
         </div>
     </div>
 </div>
@@ -237,7 +241,7 @@
 
     function uploadFile() {
         debugger;
-      
+
         if ($("#txt").val() == "") {
             toastr.error("No Title selected");
             return false;

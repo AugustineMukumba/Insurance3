@@ -90,9 +90,13 @@
                                         <div class="row">
                                             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 claim-status">
                                                 <label>Claim Status</label>
-                                                @Html.DropDownListFor(x => x.Status, new SelectList(ViewBag.ClaimStatus, "Id", "Status"), new { @class = "form-control", @id = "ddlClaimStatus", @onchange = "removeValidation(this)" })
+                                                @*@Html.DropDownListFor(x => x.Status, new SelectList(ViewBag.ClaimStatus, "Id", "Status"), new { @class = "form-control", @id = "ddlClaimStatus", @onchange = "removeValidation(this)" })
                                                 @Html.TextBoxFor(x => x.RejectionStatus, new { @class = "form-control", @autocomplete = "off", @placeholder = "", @id = "txtClaimStatus", style = "display:none" })
-                                                @Html.ValidationMessageFor(x => x.RejectionStatus, "", new { @class = "text-danger valMessage" })
+                                                @Html.ValidationMessageFor(x => x.RejectionStatus, "", new { @class = "text-danger valMessage" })*@
+
+                                                @Html.DropDownListFor(x => x.Status, new SelectList(ViewBag.ClaimStatus, "Id", "Status"), new { @class = "form-control", @id = "ddlClaimStatus", @onchange = "removeValidation(this)" })
+                                                @Html.TextBoxFor(x => x.RejectionStatus, new { @class = "form-control", @autocomplete = "off", @placeholder = "", @id = "txtClaimStatus", style = "display:none", @onkeyup = "RejectedValueKeyup()" })
+                                                <span id="spanRejectVal" style="display:none;color:red">Please Enter Rejected Reason.</span>
                                             </div>
                                             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 claim-label">
                                                 <label class="claim-txt">Claim satisfaction</label>
@@ -308,6 +312,7 @@
 </div>
 <script>
     $(document).ready(function () {
+        debugger;
         $("#ddlClaimStatus").change(function () {
             var getddlValue = $("#ddlClaimStatus").val();
             if (getddlValue == "3") {
@@ -329,24 +334,67 @@
         });*@
     });
 
-    function removeValidation(e) {
-        debugger
-        if (e.value == "3") {
-            $(".valMessage").text('');
-            $(".valMessage").text('Please Enter Rejected Reason.');
-            return false;
-        } else {
+    //function removeValidation(e) {
+    //    debugger
+    //    if (e.value == "3") {
+    //        $(".valMessage").text('');
+    //        $(".valMessage").text('Please Enter Rejected Reason.');
+    //        return false;
+    //    } else {
            
-            $(".valMessage").text('');
+    //        $(".valMessage").text('');
 
+    //    }
+    //}
+    //function Rejectval() {
+    //    debugger;
+    //    var a = $("#ddlClaimStatus option:selected").text();
+    //    if (a=="Rejected") {
+    //        return false;
+    //    }
+    //}
+
+
+    function removeValidation(e) {
+        debugger;
+        if (e.value == "3") {
+            $("#txtClaimStatus").show();
+        }
+
+        else {
+            $("#txtClaimStatus").show();
+        }
+
+    }
+    function RejectedValueKeyup() {
+        debugger;
+        var getRejectedValue = $("#txtClaimStatus").val();
+        if (getRejectedValue == "") {
+            $("#spanRejectVal").show();
+        }
+
+        else {
+            $("#spanRejectVal").hide();
         }
     }
     function Rejectval() {
         debugger;
-        var a = $("#ddlClaimStatus option:selected").text();
-        if (a=="Rejected") {
-            return false;
+        var getVal = $("#txtClaimStatus").val();
+        var getddlvalue = $("#ddlClaimStatus").val();
+        if (getddlvalue != "3") {
+            return true;
         }
+
+        else {
+            if (getVal == "") {
+                $("#spanRejectVal").show();
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+
     }
 
 </script>

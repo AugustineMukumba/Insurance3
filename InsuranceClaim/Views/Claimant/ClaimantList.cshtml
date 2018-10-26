@@ -1,4 +1,5 @@
-﻿@model List<Insurance.Domain.ClaimNotification>
+﻿@*@model List<Insurance.Domain.ClaimNotification>*@
+@model  List<InsuranceClaim.Models.ClaimNotificationModel>
 @{
     ViewBag.Title = "ClaimantList";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
@@ -7,9 +8,9 @@
 
 <div class="productsave-section">
     <div class="container">
-       @{ 
-           var menutab = Html.Partial("ClaimRegister");
-       }
+        @{
+            var menutab = Html.Partial("ClaimRegister");
+        }
         @menutab
         <div class="row">
             <div class="claims-list-section">
@@ -45,41 +46,81 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (Insurance.Domain.ClaimNotification item in Model)
+                        @foreach (var item in Model)
                         {
-                            <tr>
-                                <td>@item.PolicyNumber</td>
-                                @*<td>@item.DateOfLoss</td>*@
-                                <td>@item.DateOfLoss.ToShortDateString().ToString()</td>
-                                <td>@item.PlaceOfLoss</td>
-                                <td>@item.DescriptionOfLoss</td>
-                                <td>@item.EstimatedValueOfLoss</td>
-                                <td>@item.ThirdPartyInvolvement</td>
-                                <td>
-                                    <div class="tbl-btn-list">
-                                        <ul class="list-inline">
-                                            @*<li>@Html.ActionLink("Register Claim", "RegisterClaim", new { PolicyNumber = item.PolicyNumber }, new { @class = "btn-sm btn-primary" })</li>*@
 
+                            if (item.IsExists == true)
+                            {
+                                <tr>
+                                    <td>@item.PolicyNumber</td>
 
-                                            @*@using (Html.BeginForm("RegisterClaim","Claimant", FormMethod.Post, new { @id="customform"}))
-                                            {
-                                                <li>@Html.ActionLink("Register Claim", "RegisterClaim", new { PolicyNumber = item.PolicyNumber, id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
+                                    <td>@item.DateOfLoss.ToShortDateString().ToString()</td>
+                                    <td>@item.PlaceOfLoss</td>
+                                    <td>@item.DescriptionOfLoss</td>
+                                    <td>@item.EstimatedValueOfLoss</td>
+                                    <td>@item.ThirdPartyInvolvement</td>
+                                    <td>
+                                        <div class="tbl-btn-list">
+                                            <ul class="list-inline">
+                                                <li>@Html.ActionLink("Register Claim", "SaveUpdatedata", new { PolicyNumber = item.PolicyNumber, id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
+                                                <li>@Html.ActionLink("Edit", "EditClaimant", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
+                                                <li><button type="button" class="btn-sm btn-danger" onclick="ShowPopup('@item.Id')">Delete</button></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr class="highlights-bg">
+                                    <td>@item.PolicyNumber</td>
 
+                                    <td>@item.DateOfLoss.ToShortDateString().ToString()</td>
+                                    <td>@item.PlaceOfLoss</td>
+                                    <td>@item.DescriptionOfLoss</td>
+                                    <td>@item.EstimatedValueOfLoss</td>
+                                    <td>@item.ThirdPartyInvolvement</td>
+                                    <td>
+                                        <div class="tbl-btn-list">
+                                            <ul class="list-inline">
+                                                @if (item.IsExists == false)
+                        {
+                                                    <li>@Html.ActionLink("Register Claim", "SaveUpdatedata", new { PolicyNumber = item.PolicyNumber, id = item.Id }, new { @class = "btn-sm btn-primary" ,@style = "display :none"})</li>
+                                                }
 
-                                                @Html.Hidden("PolicyNumber", item.PolicyNumber)
-                                                @Html.Hidden("id", item.Id)
-
-                                                <button type="submit" class="btn-sm btn-danger">Hiii</button>
-                                            }*@
-
-                                            <li>@Html.ActionLink("Register Claim", "SaveUpdatedata", new { PolicyNumber = item.PolicyNumber, id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
-                                            <li>@Html.ActionLink("Edit", "EditClaimant", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
-                                            <li><button type="button" class="btn-sm btn-danger" onclick="ShowPopup('@item.Id')">Delete</button></li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
+                                                <li>@Html.ActionLink("Edit", "EditClaimant", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
+                                                <li><button type="button" class="btn-sm btn-danger" onclick="ShowPopup('@item.Id')">Delete</button></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
                         }
+
+
+
+                        @*@foreach (Insurance.Domain.ClaimNotification item in Model)
+                            {
+                                <tr>
+                                    <td>@item.PolicyNumber</td>
+                                    <td>@item.DateOfLoss.ToShortDateString().ToString()</td>
+                                    <td>@item.PlaceOfLoss</td>
+                                    <td>@item.DescriptionOfLoss</td>
+                                    <td>@item.EstimatedValueOfLoss</td>
+                                    <td>@item.ThirdPartyInvolvement</td>
+                                    <td>
+                                        <div class="tbl-btn-list">
+                                            <ul class="list-inline">
+
+
+                                                <li>@Html.ActionLink("Register Claim", "SaveUpdatedata", new { PolicyNumber = item.PolicyNumber, id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
+                                                <li>@Html.ActionLink("Edit", "EditClaimant", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
+                                                <li><button type="button" class="btn-sm btn-danger" onclick="ShowPopup('@item.Id')">Delete</button></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }*@
                     </tbody>
                 </table>
             </div>
