@@ -28,7 +28,14 @@ namespace InsuranceClaim.Models
         Annual = 1,
         //Monthly = 2,
       //  Quarterly = 3,
-        Termly = 4
+        Termly = 4,
+        Termly_5 =5,
+        Termly_6 = 6,
+        Termly_7 = 7,
+        Termly_8 = 8,
+        Termly_9 = 9,
+        Termly_10 = 10,
+        Termly_11 = 11
     }
 
     public enum eSettingValueType

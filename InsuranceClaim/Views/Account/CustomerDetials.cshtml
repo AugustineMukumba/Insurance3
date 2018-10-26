@@ -338,7 +338,10 @@
 
         var today = mm + '/' + dd + '/' + yyyy;
 
-        $("#DateOfBirth").val(today);
+        if (Session["CustomerDataModal"] == null)
+        {
+            $("#DateOfBirth").val(today);
+        }
 
     });
 

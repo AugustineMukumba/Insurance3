@@ -101,9 +101,6 @@
                                 <span> Name: <b>@customerDetail.FirstName  @customerDetail.LastName </b>,  Email: <b>@customerDetail.EmailAddress </b>  </span>
                             </div>
 
-
-
-
                             <div id="divVehicleList" style="display:block;">
                                 <table class="table table-striped" id="tblVehicleList">
                                     <thead>
@@ -123,10 +120,6 @@
                                 </table>
                                 <hr class="higlighter" />
                             </div>
-
-
-
-
 
                             <div class="form-group-input">
                                 <div id="contact-form" class="contact-form">
@@ -267,7 +260,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
 
 
                                         <div class="row">
@@ -1230,7 +1222,16 @@
                     GetVehicleModels(vModel);
 
                     var vYearManufacture = vehicle.YearManufacture;
-                    $("#VehicleYear").val(vYearManufacture);
+                    if(vYearManufacture==null)
+                    {
+                        $("#VehicleYear").val("1900"); // default value
+                    }
+                    else
+                    {
+                        $("#VehicleYear").val(vYearManufacture);
+                    }
+
+                    
                     $("#VehicleYear").addClass("inputDisabled");
                     var vUsage = vehicle.VehicleType;
                     //ajax vehicle u -> prod id

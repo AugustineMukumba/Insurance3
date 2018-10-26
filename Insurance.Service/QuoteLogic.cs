@@ -81,7 +81,6 @@ namespace Insurance.Service
                 premium = (sumInsured * Convert.ToDecimal(InsuranceRate)) / 100;
             }
 
-
             if (premium < InsuranceMinAmount && coverType == eCoverType.Comprehensive)
             {
                 Status = false;
@@ -91,24 +90,7 @@ namespace Insurance.Service
             }
 
 
-            switch (PaymentTermid)
-            {
-                case 3:
-                    premium = premium / 4;
-                    break;
-                case 4:
-                    premium = premium / 3;
-                    break;
-            }
-
-
             var settingAddThirdparty = Convert.ToDecimal(Setting.Where(x => x.keyname == "Addthirdparty").Select(x => x.value).FirstOrDefault());
-            decimal PassengerAccidentCoverAmountPerPerson = Convert.ToInt32(Setting.Where(x => x.keyname == "PassengerAccidentCover").Select(x => x.value).FirstOrDefault());
-            decimal ExcessBuyBackPercentage = Convert.ToInt32(Setting.Where(x => x.keyname == "ExcessBuyBack").Select(x => x.value).FirstOrDefault());
-            decimal RoadsideAssistancePercentage = Convert.ToDecimal(Setting.Where(x => x.keyname == "RoadsideAssistance").Select(x => x.value).FirstOrDefault());
-            decimal MedicalExpensesPercentage = Convert.ToDecimal(Setting.Where(x => x.keyname == "MedicalExpenses").Select(x => x.value).FirstOrDefault());
-            var StampDutySetting = Setting.Where(x => x.keyname == "Stamp Duty").FirstOrDefault();
-            var ZTSCLevySetting = Setting.Where(x => x.keyname == "ZTSC Levy").FirstOrDefault();
 
             if (Addthirdparty)
             {
@@ -118,8 +100,62 @@ namespace Insurance.Service
                 {
                     var Amount = AddThirdPartyAmountADD - 10000;
                     premium += Convert.ToDecimal((Amount * settingAddThirdparty) / 100);
+
                 }
             }
+
+
+            int day = 0;
+            double calulateTerm = 0;
+            switch (PaymentTermid)
+            {
+                case 3:
+                    premium = premium / 4;
+                    break;
+                case 4:
+                    premium = premium / 3;
+                    break;
+                case 5:
+                     day = 5*30;
+                    premium = Math.Round(Convert.ToDecimal((double)day / 365) * premium, 2);
+                    break;
+                case 6:
+                    day = 6 * 30;
+                    premium = Math.Round( Convert.ToDecimal((double)day / 365) * premium, 2);
+                    break;
+                case 7:
+                    day = 7 * 30;
+                    premium = Math.Round(Convert.ToDecimal((double)day / 365) * premium, 2);
+                    break;
+                case 8:
+                    day = 8 * 30;
+                    premium = Math.Round(Convert.ToDecimal((double)day / 365) * premium, 2);
+                    break;
+                case 9:
+                    day = 9 * 30;
+                    premium = Math.Round(Convert.ToDecimal((double)day / 365) * premium, 2);
+                    break;
+                case 10:
+                    day = 10 * 30;
+                    premium = Math.Round(Convert.ToDecimal((double)day / 365) * premium, 2);
+                    break;
+                case 11:
+                    day = 11 * 30;
+                    premium = Math.Round(Convert.ToDecimal((double)day / 365) * premium, 2);
+                    break;
+            }
+
+
+           
+
+            decimal PassengerAccidentCoverAmountPerPerson = Convert.ToInt32(Setting.Where(x => x.keyname == "PassengerAccidentCover").Select(x => x.value).FirstOrDefault());
+            decimal ExcessBuyBackPercentage = Convert.ToInt32(Setting.Where(x => x.keyname == "ExcessBuyBack").Select(x => x.value).FirstOrDefault());
+            decimal RoadsideAssistancePercentage = Convert.ToDecimal(Setting.Where(x => x.keyname == "RoadsideAssistance").Select(x => x.value).FirstOrDefault());
+            decimal MedicalExpensesPercentage = Convert.ToDecimal(Setting.Where(x => x.keyname == "MedicalExpenses").Select(x => x.value).FirstOrDefault());
+            var StampDutySetting = Setting.Where(x => x.keyname == "Stamp Duty").FirstOrDefault();
+            var ZTSCLevySetting = Setting.Where(x => x.keyname == "ZTSC Levy").FirstOrDefault();
+
+           
 
 
             if (PassengerAccidentCover)
@@ -229,6 +265,34 @@ namespace Insurance.Service
                 case 4:
                     discountField = discountField / 3;
                     break;
+                case 5:
+                    day = 5 * 30;
+                    discountField = Math.Round(Convert.ToDecimal((double)day / 365) * discountField, 2);
+                    break;
+                case 6:
+                    day = 6 * 30;
+                    discountField = Math.Round(Convert.ToDecimal((double)day / 365) * discountField, 2);
+                    break;
+                case 7:
+                    day = 7 * 30;
+                    discountField = Math.Round(Convert.ToDecimal((double)day / 365) * discountField, 2);
+                    break;
+                case 8:
+                    day = 8 * 30;
+                    discountField = Math.Round(Convert.ToDecimal((double)day / 365) * discountField, 2);
+                    break;
+                case 9:
+                    day = 9 * 30;
+                    discountField = Math.Round(Convert.ToDecimal((double)day / 365) * discountField, 2);
+                    break;
+                case 10:
+                    day = 10 * 30;
+                    discountField = Math.Round(Convert.ToDecimal((double)day / 365) * discountField, 2);
+                    break;
+                case 11:
+                    day = 11 * 30;
+                    discountField = Math.Round(Convert.ToDecimal((double)day / 365) * discountField, 2);
+                    break;
             }
 
 
@@ -279,6 +343,28 @@ namespace Insurance.Service
                         this.Discount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
                     }
                     break;
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                    this.AnnualRiskPremium = premium + discountField;
+                    if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive))
+                    {
+                        this.AnnualRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);
+                    }
+                    if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                    {
+                        this.Discount = ((this.AnnualRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
+                    }
+                    if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                    {
+                        this.Discount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
+                    }
+                    break;
+                    
             }
 
             // totalPremium = premium - this.Discount;
