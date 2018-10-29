@@ -850,8 +850,8 @@ namespace Insurance.Domain
         public ClaimAdjustment() { }
         public ClaimAdjustment(bool defaults) : base(defaults) { }
         public int Id { get; set; }
-        public int AmountToPay { get; set; }
-        public int EstimatedLoss { get; set; }
+        public int? AmountToPay { get; set; }
+        public int? EstimatedLoss { get; set; }
         public string ExcessesAmount { get; set; }
         public string PayeeBankDetails { get; set; }
         public string FirstName { get; set; }
@@ -868,6 +868,9 @@ namespace Insurance.Domain
         public bool IsStolen { get; set; }
         public bool IsLossInZimbabwe { get; set; }
         public bool IsPartialLoss { get; set; }
+        public int? PhoneNumber { get; set; }
+        public string PolicyNumber { get; set; }
+        public int ClaimNumber { get; set; }
     }
     public partial class ClaimDocument : Entity<ClaimDocument>
     {

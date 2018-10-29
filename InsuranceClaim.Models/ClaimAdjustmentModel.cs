@@ -12,10 +12,10 @@ namespace InsuranceClaim.Models
         public int Id { get; set; }
         [Display(Name = "Amount To Pay")]
         [Required(ErrorMessage = "Please Enter Amount To Pay.")]
-        public int AmountToPay { get; set; }
+        public int? AmountToPay { get; set; }
         [Display(Name = "Estimated Loss Amount")]
         [Required(ErrorMessage = "Please Enter Estimated Loss Amount.")]
-        public int EstimatedLoss { get; set; }
+        public int? EstimatedLoss { get; set; }
         [Display(Name = "Excesses Amount")]
         [Required(ErrorMessage = "Please Enter Excesses Amount.")]
         public string ExcessesAmount { get; set; }
@@ -54,6 +54,11 @@ namespace InsuranceClaim.Models
         public int CreatedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public int ModifiedBy { get; set; }
+        [Display(Name = "Phone Number")]
+        //[Required(ErrorMessage = "Please Enter Phone Number")]
+        public int? PhoneNumber { get; set; }
+        public string PolicyNumber { get; set; }
+        public int ClaimNumber { get; set; }
         public bool IsActive { get; set; }
     }
 }

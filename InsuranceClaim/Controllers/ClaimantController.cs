@@ -25,21 +25,26 @@ namespace InsuranceClaim.Controllers
         {
             if (ModelState.IsValid)
             {
-                string userid = "";
+              
 
                 bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+                string userid = "";
                 if (userLoggedin)
                 {
-                    userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                }
+                    //var policy = InsuranceContext.PolicyDetails.Single(where: $"Policynumber='{model.PolicyNumber}'");
+                    //if (policy != null && policy.Count() > 0)
+                    //{
 
-                var dbModel = Mapper.Map<ClaimNotificationModel, ClaimNotification>(model);
-                dbModel.CreatedBy = userid;
-                dbModel.CreatedOn = DateTime.Now;
-                dbModel.IsDeleted = true;
-                dbModel.IsRegistered = false;
-                InsuranceContext.ClaimNotifications.Insert(dbModel);
-                return RedirectToAction("ClaimantList");
+                        userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                        var dbModel = Mapper.Map<ClaimNotificationModel, ClaimNotification>(model);
+                        dbModel.CreatedBy = userid;
+                        dbModel.CreatedOn = DateTime.Now;
+                        dbModel.IsDeleted = true;
+                        dbModel.IsRegistered = false;
+                        InsuranceContext.ClaimNotifications.Insert(dbModel);
+                        return RedirectToAction("ClaimantList");
+                    //}
+                }
             }
 
             return View();
@@ -50,9 +55,38 @@ namespace InsuranceClaim.Controllers
         [HttpGet]
         public ActionResult ClaimantList()
         {
-            InsuranceClaim.Models.ClaimNotificationModel obj = new InsuranceClaim.Models.ClaimNotificationModel();
-            List<Insurance.Domain.ClaimNotification> objList = new List<Insurance.Domain.ClaimNotification>();
-            objList = InsuranceContext.ClaimNotifications.All(where: "IsDeleted = 'True' and   IsRegistered='false'").OrderByDescending(x => x.Id).ToList();
+            //InsuranceClaim.Models.ClaimNotificationModel obj = new InsuranceClaim.Models.ClaimNotificationModel();
+            //List<Insurance.Domain.ClaimNotification> objList = new List<Insurance.Domain.ClaimNotification>();
+            //objList = InsuranceContext.ClaimNotifications.All(where: "IsDeleted = 'True' and   IsRegistered='false'").OrderByDescending(x => x.Id).ToList();
+            List<ClaimNotificationModel> objList = new List<ClaimNotificationModel>();
+
+
+
+            objList = (from j in InsuranceContext.ClaimNotifications.All().ToList()
+                       join jt in InsuranceContext.PolicyDetails.All().ToList() on j.PolicyNumber equals jt.PolicyNumber
+                       into rd
+                       from rt in rd.DefaultIfEmpty()
+                       where j.IsDeleted == true && j.IsRegistered == false
+                       select new ClaimNotificationModel
+                       {
+
+                           PolicyNumber = j.PolicyNumber,
+                           DateOfLoss = j.DateOfLoss,
+                           PlaceOfLoss = j.PlaceOfLoss,
+                           DescriptionOfLoss = j.DescriptionOfLoss,
+                           EstimatedValueOfLoss = j.EstimatedValueOfLoss,
+                           ThirdPartyInvolvement = j.ThirdPartyInvolvement,
+                           Id = j.Id,
+                           //IsExists =Convert.ToBoolean(jt.PolicyNumber == null?false:true),    
+                           //IsExists = rt == null? false: true,
+
+
+                           IsExists = rt == null ? false : true,
+                       }
+                     ).ToList();
+
+            return View(objList);
+
 
             return View(objList);
         }
@@ -77,16 +111,16 @@ namespace InsuranceClaim.Controllers
                 if (userLoggedin)
                 {
                     userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                    var data = Mapper.Map<ClaimNotificationModel, ClaimNotification>(model);
+                    data.ModifiedOn = DateTime.Now;
+                    data.IsDeleted = true;
+                    data.IsRegistered = false;
+                    data.ModifiedBy = Convert.ToInt32(userid);
+                    InsuranceContext.ClaimNotifications.Update(data);
+                    return RedirectToAction("ClaimantList");
                 }
-                var data = Mapper.Map<ClaimNotificationModel, ClaimNotification>(model);
-                data.CreatedOn = DateTime.Now;
-                data.IsDeleted = true;
-                data.IsRegistered = false;
-                data.CreatedBy = userid;
-                InsuranceContext.ClaimNotifications.Update(data);
-                return RedirectToAction("ClaimantList");
             }
-            return View();
+            return View("EditClaimant");
         }
         public ActionResult DeleteClaimant(int Id)
         {
@@ -109,7 +143,7 @@ namespace InsuranceClaim.Controllers
             model.DateOfLoss = Convert.ToDateTime(ClaimDetail.DateOfLoss.ToShortDateString());
             model.DateOfNotifications = Convert.ToDateTime(ClaimDetail.CreatedOn.ToShortDateString());
             model.PlaceOfLoss = ClaimDetail == null ? null : ClaimDetail.PlaceOfLoss;
-            model.DescriptionOfLoss = ClaimDetail.CreatedOn.ToShortDateString();
+            model.DescriptionOfLoss = ClaimDetail == null ? null : ClaimDetail.DescriptionOfLoss;
             model.EstimatedValueOfLoss = ClaimDetail.EstimatedValueOfLoss;
             model.ThirdPartyDamageValue = ClaimDetail.ThirdPartyInvolvement;
             model.Claimsatisfaction = true;
@@ -304,6 +338,7 @@ namespace InsuranceClaim.Controllers
                         data.CreatedOn = DateTime.Now;
                         data.IsActive = true;
                         InsuranceContext.ClaimDetailsProviders.Insert(data);
+                        TempData["Sucess"] = "1";
                         //TempData["SucessMsg"] = "Your details have been saved successfully.";
                     }
                     return RedirectToAction("ClaimRegistrationList");
@@ -328,6 +363,7 @@ namespace InsuranceClaim.Controllers
                         claimdata.ModifiedOn = DateTime.Now;
                         claimdata.IsActive = true;
                         InsuranceContext.ClaimDetailsProviders.Update(claimdata);
+                        TempData["Sucess"] = "1";
                         //TempData["SucessMsg"] = "Your details have been saved successfully.";
                     }
                     return RedirectToAction("ClaimRegistrationList");
@@ -419,7 +455,7 @@ namespace InsuranceClaim.Controllers
         {
 
             string query = $"update ClaimDetailsProvider set IsActive = 0 where Id={id}";
-            InsuranceContext.VehicleMakes.Execute(query);
+            InsuranceContext.ClaimDetailsProviders.Execute(query);
 
             return RedirectToAction("ClaimDetailsList");
         }
