@@ -99,10 +99,13 @@
         <div class="policy-option">
             <ul>
 
+
                 @if (userLoggedin && User.IsInRole("Staff"))
                 {
                     <li><a href="/CustomerRegistration/Index"><img src="~/Images/24hrs-icon.png"><p>Call Center</p></a></li>
                 }
+
+
 
                 <li><a href="/Account/MyPolicies"><img src="~/Images/loyalty-icon.png"><p>Loyalty Card programme</p></a></li>
                 <li><a href=""><img src="~/Images/delivery-icon.png"><p>Free Delivery</p></a></li>
