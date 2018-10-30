@@ -20,6 +20,11 @@ namespace InsuranceClaim.Controllers
             objList = InsuranceContext.VehicleModels.All().ToList();
 
 
+            //   var res = InsuranceContext.Query("select ModelDescription, ModelCode, MakeDescription, VehicleModel.Id as ModelId from VehicleModel join VehicleMake on VehicleModel.MakeCode = VehicleMake.MakeCode").Select(x => new ClsVehicleModel() {MakeDescription = x.MakeDescription, ModelDescription= x.MakeDescription, Id=x.ModelId }).ToList();
+
+
+
+
 
 
             ViewBag.MakeList = MakeList();
@@ -83,17 +88,32 @@ namespace InsuranceClaim.Controllers
         {
             //  var modellist = InsuranceContext.VehicleModels.All(where: "IsActive= 'True' or IsActive is Null").OrderByDescending(x => x.Id).ToList();
 
-            var list = (from vehicleModel in InsuranceContext.VehicleModels.All().ToList()
-                        join vehicleMake in InsuranceContext.VehicleMakes.All().ToList()
-                        on vehicleModel.MakeCode equals vehicleMake.MakeCode
-                        select new ClsVehicleModel
-                        {
-                            ModelDescription = vehicleModel.ModelDescription,
-                            MakeDescription = vehicleMake.MakeDescription,
-                            ModelCode = vehicleModel.ModelCode,
-                            ShortDescription = vehicleModel.ShortDescription,
-                            Id = vehicleModel.Id
-                        }).OrderByDescending(c=>c.Id).ToList();
+            //var list = (from vehicleModel in InsuranceContext.VehicleModels.All().ToList()
+            //            join vehicleMake in InsuranceContext.VehicleMakes.All().ToList()
+            //            on vehicleModel.MakeCode equals vehicleMake.MakeCode
+            //            select new ClsVehicleModel
+            //            {
+            //                ModelDescription = vehicleModel.ModelDescription,
+            //                MakeDescription = vehicleMake.MakeDescription,
+            //                ModelCode = vehicleModel.ModelCode,
+            //                ShortDescription = vehicleModel.ShortDescription,
+            //                Id = vehicleModel.Id
+            //            }).OrderByDescending(c => c.Id).ToList();
+
+
+
+            var list = InsuranceContext.Query("select ModelDescription, ModelCode, MakeDescription, VehicleModel.Id as ModelId, VehicleModel.ShortDescription from VehicleModel join VehicleMake on VehicleModel.MakeCode = VehicleMake.MakeCode")
+                .Select(x => new ClsVehicleModel()
+                {
+                    MakeDescription = x.MakeDescription,
+                    ModelDescription = x.ModelDescription,
+                    Id = x.ModelId,
+                    ShortDescription = x.ShortDescription,
+                    ModelCode = x.ModelCode
+                }).ToList();
+
+
+
 
 
 
@@ -116,23 +136,23 @@ namespace InsuranceClaim.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                   
+
                     var modelid = model.Id;
                     //var data = Mapper.Map<VehiclesMakeModel, VehicleMake>(model);
                     var data = InsuranceContext.VehicleModels.Single(where: $"Id = {modelid}");
 
-                    if(data!=null)
+                    if (data != null)
                     {
-                        if(!CheckModelExist(data.ModelDescription, model.ModelDescription, data.MakeCode, model.MakeCode))
+                        if (!CheckModelExist(data.ModelDescription, model.ModelDescription, data.MakeCode, model.MakeCode))
                         {
                             ViewBag.MakeList = MakeList();
                             TempData["errorMsg"] = "Model description already exist for selected Make.";
 
                             return View(model);
-                                 
+
                         }
                     }
-                    
+
 
 
 
@@ -157,19 +177,19 @@ namespace InsuranceClaim.Controllers
 
         private bool CheckModelExist(string oldModelDesc, string newModleDesc, string oldMakeCode, string newMakeCode)
         {
-            if(oldModelDesc== newModleDesc)
+            if (oldModelDesc == newModleDesc)
             {
-                if(oldMakeCode== newMakeCode)
+                if (oldMakeCode == newMakeCode)
                 {
                     return true;
                 }
-                
+
             }
             else
             {
                 var dbVehicalModel = InsuranceContext.VehicleModels.Single(where: $"ModelDescription='{newModleDesc}' and MakeCode = '{newMakeCode}'");
 
-                if(dbVehicalModel!=null)
+                if (dbVehicalModel != null)
                 {
                     return false;
                 }

@@ -47,7 +47,11 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult Index(int id = 0)
         {
-            // var res = MaxCustoermId();
+           // var res = MaxCustoermId();
+
+          // var res = InsuranceContext.Query("select * from Customer").Select(x => new CustomerModel() { AddressLine1 = x.AddressLine1 }).ToList();
+
+
 
             if (id != -1) // -1 use for getting session value when click on back button
             {

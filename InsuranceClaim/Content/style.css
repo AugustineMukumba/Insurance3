@@ -56,6 +56,20 @@ th.action-th {
     width: 150px;
 }
 
+.thwidth150{
+    width:150px;
+    text-align:center;
+}
+
+.thwidth250{
+    width:150px;
+    text-align:center;
+}
+.thwidth100{
+    min-width:100px;
+    text-align:center;
+}
+
 .fontSize18px
 {
     font-size:19px !important;

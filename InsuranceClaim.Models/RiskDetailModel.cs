@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace InsuranceClaim.Models
 {
     public class RiskDetailModel
-    {
+    {  
         public bool IncludeRadioLicenseCost { get; set; }
         public int Id { get; set; }
         public int PolicyId { get; set; }
@@ -95,5 +95,15 @@ namespace InsuranceClaim.Models
         public decimal VehicleLicenceFee { get; set; }
 
         public int? SummaryId { get; set; }
+
+        public CustomerModel CustomerDetails { get; set; }
+        public string VechicalMake { get; set; }
+
+        public string VechicalModel { get; set; }
+
+        public string CoverTypeName { get; set; }
+
+        public string PolicyExpireDate { get; set; }
+
     }
 }

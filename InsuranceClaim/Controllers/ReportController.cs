@@ -59,6 +59,57 @@ namespace InsuranceClaim.Controllers
             return View(model);
         }
 
+
+        public ActionResult InsuredVehical()
+        {
+            var results = new List<RiskDetailModel>();
+
+
+            try
+            {
+                 results = (from vehicalDetials in InsuranceContext.VehicleDetails.All()
+                               join customer in InsuranceContext.Customers.All()
+                               on vehicalDetials.CustomerId equals customer.Id
+                               join make in InsuranceContext.VehicleMakes.All()
+                               on vehicalDetials.MakeId equals make.MakeCode
+                               join vehicalModel in InsuranceContext.VehicleModels.All()
+                               on vehicalDetials.ModelId equals vehicalModel.ModelCode
+                               join coverType in InsuranceContext.CoverTypes.All().ToList()
+                               on vehicalDetials.CoverTypeId equals coverType.Id
+                               join user in UserManager.Users
+                               on customer.UserID equals user.Id
+
+                               select new RiskDetailModel
+                               {
+                                   PolicyExpireDate = vehicalDetials.CoverEndDate.Value.ToShortDateString(),
+                                   CoverTypeName = coverType.Name,
+                                   SumInsured = vehicalDetials.SumInsured,
+                                   // SuggestedValue = vehicalDetials.su
+
+                                   VechicalMake = make.MakeDescription,
+                                   VechicalModel = vehicalModel.ModelDescription,
+                                   VehicleYear = vehicalDetials.VehicleYear,
+                                   CustomerDetails = new CustomerModel { FirstName = customer.FirstName, LastName = customer.LastName, PhoneNumber = customer.PhoneNumber, EmailAddress = user.Email }
+
+
+                               }).ToList();
+
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+
+            return View(results);
+        }
+
+
+
+
+
+
         public ActionResult SearchZtscReports(ZTSCLevyReportSeachModels Model)
         {
 
@@ -311,11 +362,11 @@ namespace InsuranceClaim.Controllers
 
                         obj.Comission_percentage = 30;
 
-                        if(Vehicle!=null)
+                        if (Vehicle != null)
                         {
                             obj.Comission_Amount = Convert.ToDecimal(Vehicle.Premium * 30 / 100);
                         }
-                        
+
 
                         string converType = "";
 
@@ -364,7 +415,7 @@ namespace InsuranceClaim.Controllers
             return View(Model);
         }
 
-      
+
 
 
         public ActionResult SearchGrossReports(GrossWrittenPremiumReportSearchModels _model)
@@ -753,7 +804,7 @@ namespace InsuranceClaim.Controllers
             var VehicleDetails = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
 
 
-          
+
 
             foreach (var item in VehicleDetails)
             {

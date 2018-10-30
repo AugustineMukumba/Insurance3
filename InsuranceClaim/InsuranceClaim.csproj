@@ -461,6 +461,8 @@
     <Content Include="Views\ServiceProvider\SaveServiceProviders.cshtml" />
     <Content Include="Views\ClaimAdjustment\EditClaimAdjustment.cshtml" />
     <Content Include="Views\Account\CustomerDetials.cshtml" />
+    <Content Include="Views\Report\InsuredVehical.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\Schedule.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
