@@ -103,21 +103,31 @@
                                     </tr>
                                 </table>
                             </td>
-                            @*<td>@item.CreatedOn</td>*@
-                            @*<td>@Html.ActionLink("View Policy", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</td>*@
+
                             <td>
                                 <div class="tbl-btn-list">
                                     <ul class="list-inline">
                                         @if (item.ClaimStatus != "Rejected")
                                         {
-                                            <li>@Html.ActionLink("Assign Service Provider", "ClaimDetailServiceProvider", "Claimant", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
+                                            <li>@Html.ActionLink("Assign Service Provider", "ClaimDetailServiceProvider", "Claimant", new { id = item.Id, PolicyNumber = item.PolicyNumber, claimNumber = item.ClaimNumber }, new { @class = "btn-sm btn-primary" })</li>
                                             <li><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.ClaimNumber');">View/Upload Document</button></li>
 
 
-                                            if (item.AssessProviderName != null && item.AssessProviderName.Count() > 0)
+                                            if (item.AssessProviderName != null && item.AssessProviderName.Count() > 0 && item.ClaimValue == "")
                                             {
-                                                <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id,PolicyNumber = item.PolicyNumber,claimnumber = item.ClaimNumber }, new { @class = "btn-sm btn-primary" })</li>
+                                                <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id, PolicyNumber = item.PolicyNumber, claimnumber = item.ClaimNumber }, new { @class = "btn-sm btn-primary" })</li>
                                             }
+                                            else if (item.AssessProviderName != null && item.AssessProviderName.Count() > 0 && item.ClaimValue != "")
+                                            {
+                                                <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id, PolicyNumber = item.PolicyNumber, claimnumber = item.ClaimNumber }, new { @class = "btn-sm btn-primary", @style = "display:none" })</li>
+                                            }
+
+
+
+                                            @*if (item.AssessProviderName != null && item.AssessProviderName.Count() > 0)
+                                                {
+                                                    <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id,PolicyNumber = item.PolicyNumber,claimnumber = item.ClaimNumber }, new { @class = "btn-sm btn-primary" })</li>
+                                                }*@
                                         }
 
                                     </ul>

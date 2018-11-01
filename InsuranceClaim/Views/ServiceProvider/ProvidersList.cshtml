@@ -1,14 +1,15 @@
-﻿@model List<Insurance.Domain.ServiceProvider>
+﻿@*@model List<Insurance.Domain.ServiceProvider>*@
+@model IEnumerable<InsuranceClaim.Models.ServiceProviderModel>
 @{
     ViewBag.Title = "ProvidersList";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
 @using (Html.BeginForm("EditProviders", "ServiceProvider", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
-    <div class="productsave-section">
+    <div class="productsave-section pt-50">
         <div class="container">
             <div class="row">
-                <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
+                <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top1">
                     <div class="head-title">
                         <h2>Providers List</h2>
                     </div>
@@ -34,7 +35,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (Insurance.Domain.ServiceProvider item in Model)
+                        @foreach (var item in Model)
                         {
                             <tr>
                                 <td>@item.ServiceProviderType</td>

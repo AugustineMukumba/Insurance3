@@ -17,7 +17,7 @@
                             @using (Html.BeginForm("EditProviders", "ServiceProvider", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
                             {
                                 <div class="row">
-                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                    <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.ServiceProviderType, new { @class = "gender-label" })
                                             @Html.DropDownListFor(x => x.ServiceProviderType, new SelectList(ViewBag.ProviderTypes, "Id", "ProviderType"), new { @class = "form-control", @id = "ddlProviders" })

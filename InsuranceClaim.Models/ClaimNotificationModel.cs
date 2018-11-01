@@ -44,5 +44,9 @@ namespace InsuranceClaim.Models
         public int? ModifiedBy { get; set; }
         public bool IsExists { get; set; }
 
+        [Required(ErrorMessage = "Please Enter Claimant Name")]
+        [Display(Name = "Claimant Name")]
+        public string ClaimantName { get; set; }
+
     }
 }

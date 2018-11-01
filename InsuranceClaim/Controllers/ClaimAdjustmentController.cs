@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Insurance.Domain;
+using Insurance.Service;
 using InsuranceClaim.Models;
 using Microsoft.AspNet.Identity;
 using System;
@@ -13,7 +14,7 @@ namespace InsuranceClaim.Controllers
     public class ClaimAdjustmentController : Controller
     {
         // GET: ClaimAdjustment
-        public ActionResult Index(int? id,string PolicyNumber,int? claimnumber)
+        public ActionResult Index(int? id, string PolicyNumber, int? claimnumber)
         {
 
             var ePaymentDetail = from ePayeeBankDetails e in Enum.GetValues(typeof(ePayeeBankDetails))
@@ -27,62 +28,39 @@ namespace InsuranceClaim.Controllers
 
             if (id != 0 && id != null)
             {
-                var adjustment = InsuranceContext.ClaimAdjustments.Single(where:$"PolicyNumber= '{PolicyNumber}' and ClaimNumber = '{claimnumber}'");
-               
-
                 var model = new ClaimAdjustmentModel();
-                if (adjustment != null && adjustment.Count() > 0)
+                var data = InsuranceContext.ClaimRegistrations.Single(where: $"PolicyNumber= '{PolicyNumber}' and ClaimNumber ='{claimnumber}'");
+                if (data != null && data.Count() > 0)
                 {
-
-                    model.AmountToPay = adjustment.AmountToPay;
-                    model.EstimatedLoss = adjustment.EstimatedLoss;
-                    model.FirstName = adjustment.FirstName;
-                    model.LastName = adjustment.LastName;
-                    model.ExcessesAmount = adjustment.ExcessesAmount;
-                    model.PayeeName = adjustment.PayeeName;
-                    model.PolicyholderName = adjustment.PolicyholderName;
-                    model.PayeeBankDetails = adjustment.PayeeBankDetails;
-                    model.DriverIsUnder21 = adjustment.DriverIsUnder21;
-                    model.Islicensedless60months = adjustment.Islicensedless60months;
-                    model.IsLossInZimbabwe = adjustment.IsLossInZimbabwe;
-                    model.IsPartialLoss = adjustment.IsPartialLoss;
-                    model.IsStolen = adjustment.IsStolen;
-                    model.PolicyNumber = adjustment.PolicyNumber;
-                    model.PhoneNumber = adjustment.PhoneNumber;
-                    model.ClaimNumber = adjustment.ClaimNumber;
-
-                    return View(model);
-                }
-                else
-                {
-
-                    var data = InsuranceContext.ClaimRegistrations.Single(where:$"PolicyNumber= '{PolicyNumber}' and ClaimNumber ='{claimnumber}'");
+                    
                     var policy = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{data.PolicyNumber}'");
+                    var summery = InsuranceContext.SummaryDetails.Single(where: $"CustomerId = '{policy.CustomerId}'");
+                    
                     var custmo = InsuranceContext.Customers.Single(where: $"Id = '{policy.CustomerId}'");
                     model.EstimatedLoss = Convert.ToInt32(data.EstimatedValueOfLoss);
-                    model.ClaimNumber =Convert.ToInt32(data.ClaimNumber);
-                    model.PolicyNumber =data.PolicyNumber;
+                    model.ClaimNumber = Convert.ToInt32(data.ClaimNumber);
+                    model.PolicyNumber = data.PolicyNumber;
                     model.FirstName = custmo.FirstName;
                     model.LastName = custmo.LastName;
-                    model.DriverIsUnder21 = true;
-                    model.Islicensedless60months = true;
-                    model.IsLossInZimbabwe = true;
-                    model.IsPartialLoss = true;
-                    model.IsStolen = true;
+                    model.TotalSuminsure = Convert.ToDecimal(summery.TotalPremium);
                     return View(model);
+
                 }
             }
-           
-
-
-
-
-
             return View();
         }
         public ActionResult SaveClaimAdjustment(ClaimAdjustmentModel model)
         {
             ModelState.Remove("Id");
+
+            //foreach (ModelState modelState in ViewData.ModelState.Values)
+            //{
+            //    foreach (ModelError error in modelState.Errors)
+            //    {
+            //        var s = error;
+            //    }
+            //}
+
 
             if (ModelState.IsValid)
             {
@@ -91,36 +69,17 @@ namespace InsuranceClaim.Controllers
 
                 if (userLoggedin)
                 {
-                    var claimadjust = InsuranceContext.ClaimAdjustments.Single(where: $"PolicyNumber = '{model.PolicyNumber}'");
-                    if (claimadjust != null && claimadjust.Count() >0)
-                    {
-
-
-                        userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                        var customer = InsuranceContext.Customers.Single(where: $"UserId = '{userid}'");
-
-                        var data = Mapper.Map<ClaimAdjustmentModel, ClaimAdjustment>(model);
-                        data.ModifiedOn = DateTime.Now;
-                        data.ModifiedBy = customer.Id;
-                        data.IsActive = true;
-                        InsuranceContext.ClaimAdjustments.Update(data);
-
-                        return RedirectToAction("ListClaimAdjustment");
-                    }
-                    else
-                    {
-                        userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                        var customer = InsuranceContext.Customers.Single(where: $"UserId = '{userid}'");
-
-                        var data = Mapper.Map<ClaimAdjustmentModel, ClaimAdjustment>(model);
-                        data.CreatedOn = DateTime.Now;
-                        data.CreatedBy = customer.Id;
-                        data.IsActive = true;
-                        InsuranceContext.ClaimAdjustments.Insert(data);
-                        return RedirectToAction("ListClaimAdjustment");
-                    }
+                    var claimadjust = InsuranceContext.ClaimAdjustments.Single(where: $"ClaimNumber = '{model.ClaimNumber}'");
+                    userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                    var customer = InsuranceContext.Customers.Single(where: $"UserId = '{userid}'");
+                    var data = Mapper.Map<ClaimAdjustmentModel, ClaimAdjustment>(model);
+                    data.CreatedOn = DateTime.Now;
+                    data.CreatedBy = customer.Id;
+                    data.IsActive = true;
+                    //insert
+                    InsuranceContext.ClaimAdjustments.Insert(data);
+                    return RedirectToAction("ListClaimAdjustment");
                 }
-
             }
             return View("Index");
         }
@@ -167,6 +126,16 @@ namespace InsuranceClaim.Controllers
             string query = $"update ClaimAdjustment set IsActive = 0 where Id={Id}";
             InsuranceContext.ClaimAdjustments.Execute(query);
             return RedirectToAction("ListClaimAdjustment");
+        }
+        [HttpPost]
+        public JsonResult CalculateClaimPremium(decimal sumInsured,int? IsPartialLoss,int? IsLossInZimbabwe,int? IsStolen,int? Islicensedless60months,int? DriverIsUnder21,Boolean PrivateCar,Boolean CommercialCar)
+        {
+            JsonResult json = new JsonResult();
+            var ClaimQuoteL = new ClaimQuoteLogic();
+            var excess = ClaimQuoteL.CalculateClaimPremium(sumInsured, IsPartialLoss, IsLossInZimbabwe, IsStolen, Islicensedless60months, DriverIsUnder21, PrivateCar, CommercialCar);
+            json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            json.Data = excess;
+            return json;
         }
     }
 }

@@ -18,7 +18,7 @@ namespace InsuranceClaim.Models
         public int? EstimatedLoss { get; set; }
         [Display(Name = "Excesses Amount")]
         [Required(ErrorMessage = "Please Enter Excesses Amount.")]
-        public string ExcessesAmount { get; set; }
+        public decimal ExcessesAmount { get; set; }
         [Display(Name = "Payee Bank Details")]
         [Required(ErrorMessage = "Please Enter Payee Bank Details.")]
         public string PayeeBankDetails { get; set; }
@@ -36,29 +36,38 @@ namespace InsuranceClaim.Models
         public string PolicyholderName { get; set; }
         [Display(Name = "Driver Is Under 21")]
         [Required(ErrorMessage = "This is required field")]
-        public bool DriverIsUnder21 { get; set; }
+        public bool? DriverIsUnder21 { get; set; }
 
         [Display(Name = "Is licensed less 60 months")]
         [Required(ErrorMessage = "This is required field")]
-        public bool Islicensedless60months { get; set; }
+        public bool? Islicensedless60months { get; set; }
         [Display(Name = "Is Stolen")]
         [Required(ErrorMessage = "This is required field")]
-        public bool IsStolen { get; set; }
+        public bool? IsStolen { get; set; }
         [Display(Name = "Is Loss In Zimbabwe")]
         [Required(ErrorMessage = "This is required field")]
-        public bool IsLossInZimbabwe { get; set; }
+        public bool? IsLossInZimbabwe { get; set; }
         [Display(Name = "Is Partial Loss")]
         [Required(ErrorMessage = "This is required field")]
-        public bool IsPartialLoss { get; set; }
+        public bool? IsPartialLoss { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int CreatedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public int ModifiedBy { get; set; }
         [Display(Name = "Phone Number")]
         //[Required(ErrorMessage = "Please Enter Phone Number")]
-        public int? PhoneNumber { get; set; }
+        [RegularExpression(@"^([0-9]{3}-[0-9]{3}-[0-9]{4})$", ErrorMessage = "Not a Valid Phone Number")]
+        public string PhoneNumber { get; set; }
         public string PolicyNumber { get; set; }
         public int ClaimNumber { get; set; }
         public bool IsActive { get; set; }
+        public decimal TotalSuminsure { get; set; }
+        [Display(Name = "Is Private Car")]
+        [Required(ErrorMessage = "This is required field")]
+        public bool PrivateCar { get; set; }
+        [Display(Name = "Is Commerical Car")]
+        [Required(ErrorMessage = "This is required field")]
+        public bool CommericalCar { get; set; }
+
     }
 }

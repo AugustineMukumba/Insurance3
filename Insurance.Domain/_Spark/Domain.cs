@@ -745,6 +745,7 @@ namespace Insurance.Domain
         public string DescriptionOfLoss { get; set; }
         public decimal EstimatedValueOfLoss { get; set; }
         public string ThirdPartyInvolvement { get; set; }
+        public string ClaimantName { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public bool? IsDeleted { get; set; }
@@ -852,7 +853,7 @@ namespace Insurance.Domain
         public int Id { get; set; }
         public int? AmountToPay { get; set; }
         public int? EstimatedLoss { get; set; }
-        public string ExcessesAmount { get; set; }
+        public decimal ExcessesAmount { get; set; }
         public string PayeeBankDetails { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -862,15 +863,17 @@ namespace Insurance.Domain
         public int CreatedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public int ModifiedBy { get; set; }
-        public bool IsActive { get; set; }
-        public bool DriverIsUnder21 { get; set; }
-        public bool Islicensedless60months { get; set; }
-        public bool IsStolen { get; set; }
-        public bool IsLossInZimbabwe { get; set; }
-        public bool IsPartialLoss { get; set; }
-        public int? PhoneNumber { get; set; }
+        public bool? IsActive { get; set; }
+        public bool? DriverIsUnder21 { get; set; }
+        public bool? Islicensedless60months { get; set; }
+        public bool? IsStolen { get; set; }
+        public bool? IsLossInZimbabwe { get; set; }
+        public bool? IsPartialLoss { get; set; }
+        public string PhoneNumber { get; set; }
         public string PolicyNumber { get; set; }
         public int ClaimNumber { get; set; }
+        public bool CommericalCar { get; set; }
+        public bool PrivateCar { get; set; }
     }
     public partial class ClaimDocument : Entity<ClaimDocument>
     {
@@ -890,6 +893,23 @@ namespace Insurance.Domain
         //public DateTime ModifiedOn { get; set; }
         //public int ModifiedBy { get; set; }
         public bool IsActive { get; set; }
+
+    }
+    public partial class ClaimSetting : Entity<ClaimSetting>
+    {
+        public ClaimSetting() { }
+        public ClaimSetting(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public string KeyName { get; set; }
+        public int Value { get; set; }
+        public int Valuetype { get; set; }
+        public int VehicleType { get; set; }
+        public int CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public DateTime ModifiedDate { get; set; }
+        public bool IsActive { get; set; }
+
 
     }
 

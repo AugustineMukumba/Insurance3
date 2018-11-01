@@ -36,9 +36,28 @@ namespace InsuranceClaim.Controllers
         [HttpGet]
         public ActionResult ProvidersList()
         {
-            InsuranceClaim.Models.ServiceProviderModel obj = new InsuranceClaim.Models.ServiceProviderModel();
-            List<Insurance.Domain.ServiceProvider> objList = new List<Insurance.Domain.ServiceProvider>();
-            objList = InsuranceContext.ServiceProviders.All(where: "IsDeleted = 'True' or IsDeleted is null").ToList();
+            //InsuranceClaim.Models.ServiceProviderModel obj = new InsuranceClaim.Models.ServiceProviderModel();
+            //List<Insurance.Domain.ServiceProvider> objList = new List<Insurance.Domain.ServiceProvider>();
+            // objList = InsuranceContext.ServiceProviders.All(where: "IsDeleted = 'True' or IsDeleted is null").ToList();
+
+            //var servicetype = InsuranceContext.ServiceProviderTypes.All().ToList();
+
+           var  objList = (from _service in InsuranceContext.ServiceProviders.All().ToList()
+                        join _servicetype in InsuranceContext.ServiceProviderTypes.All().ToList()
+                        on _service.ServiceProviderType equals _servicetype.Id
+                        where _service.IsDeleted == true 
+                           select new ServiceProviderModel
+                        {
+
+                            ServiceProviderName = _service.ServiceProviderName,
+                            ServiceProviderType = Convert.ToString(_servicetype.ProviderType),
+                            ServiceProviderContactDetails = _service.ServiceProviderContactDetails,
+                            ServiceProviderFees = _service.ServiceProviderFees,
+                            Id = _service.Id
+
+
+                        }
+                         ).ToList().OrderByDescending(c=>c.Id);
             return View(objList);
         }
 

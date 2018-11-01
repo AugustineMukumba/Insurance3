@@ -1866,6 +1866,17 @@ padding: 50px 0 20px;
     background: #ff9b9b;
 }
 
+
+ul#ui-id-1 {
+    width: 345px !important;
+    border: 1px solid #ccc;
+    background: #fff;
+}
+ul#ui-id-1 li {
+    padding:5px 10px; cursor:pointer;
+}
+ul#ui-id-1 li:hover{background:#09f; color:#fff;}
+
 @media(max-width:767px) {
     .policy-option li {
         float: left;

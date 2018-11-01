@@ -25,24 +25,20 @@ namespace InsuranceClaim.Controllers
         {
             if (ModelState.IsValid)
             {
-              
+
 
                 bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
                 string userid = "";
                 if (userLoggedin)
                 {
-                    //var policy = InsuranceContext.PolicyDetails.Single(where: $"Policynumber='{model.PolicyNumber}'");
-                    //if (policy != null && policy.Count() > 0)
-                    //{
-
-                        userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                        var dbModel = Mapper.Map<ClaimNotificationModel, ClaimNotification>(model);
-                        dbModel.CreatedBy = userid;
-                        dbModel.CreatedOn = DateTime.Now;
-                        dbModel.IsDeleted = true;
-                        dbModel.IsRegistered = false;
-                        InsuranceContext.ClaimNotifications.Insert(dbModel);
-                        return RedirectToAction("ClaimantList");
+                    userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                    var dbModel = Mapper.Map<ClaimNotificationModel, ClaimNotification>(model);
+                    dbModel.CreatedBy = userid;
+                    dbModel.CreatedOn = DateTime.Now;
+                    dbModel.IsDeleted = true;
+                    dbModel.IsRegistered = false;
+                    InsuranceContext.ClaimNotifications.Insert(dbModel);
+                    return RedirectToAction("ClaimantList");
                     //}
                 }
             }
@@ -76,17 +72,11 @@ namespace InsuranceClaim.Controllers
                            DescriptionOfLoss = j.DescriptionOfLoss,
                            EstimatedValueOfLoss = j.EstimatedValueOfLoss,
                            ThirdPartyInvolvement = j.ThirdPartyInvolvement,
+                           ClaimantName = j.ClaimantName,
                            Id = j.Id,
-                           //IsExists =Convert.ToBoolean(jt.PolicyNumber == null?false:true),    
-                           //IsExists = rt == null? false: true,
-
-
                            IsExists = rt == null ? false : true,
                        }
                      ).ToList();
-
-            return View(objList);
-
 
             return View(objList);
         }
@@ -104,18 +94,20 @@ namespace InsuranceClaim.Controllers
         {
             if (ModelState.IsValid)
             {
-
-                //data.CreatedBy = 1;
                 string userid = "";
                 bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
                 if (userLoggedin)
                 {
                     userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                    var customer = InsuranceContext.Customers.Single(where: $"UserId ='{userid}'");
                     var data = Mapper.Map<ClaimNotificationModel, ClaimNotification>(model);
+
+                    var record = InsuranceContext.ClaimNotifications.Single(where: $"Id = '{model.Id}'");
                     data.ModifiedOn = DateTime.Now;
                     data.IsDeleted = true;
                     data.IsRegistered = false;
-                    data.ModifiedBy = Convert.ToInt32(userid);
+                    data.ModifiedBy = Convert.ToInt32(customer.Id);
+                    data.CreatedOn = Convert.ToDateTime(record.CreatedOn);
                     InsuranceContext.ClaimNotifications.Update(data);
                     return RedirectToAction("ClaimantList");
                 }
@@ -129,17 +121,16 @@ namespace InsuranceClaim.Controllers
             return RedirectToAction("ClaimantList");
         }
 
-
         public ActionResult SaveUpdatedata(string PolicyNumber, int id)
         {
 
             var ClaimDetail = InsuranceContext.ClaimNotifications.All().SingleOrDefault(p => p.Id == id);
+
             //save in ClaimRegistration
             ClaimRegistrationModel model = new ClaimRegistrationModel();
             var claimNumber = GenerateClaimNumber();
             model.PolicyNumber = PolicyNumber;
             model.ClaimNumber = claimNumber;
-
             model.DateOfLoss = Convert.ToDateTime(ClaimDetail.DateOfLoss.ToShortDateString());
             model.DateOfNotifications = Convert.ToDateTime(ClaimDetail.CreatedOn.ToShortDateString());
             model.PlaceOfLoss = ClaimDetail == null ? null : ClaimDetail.PlaceOfLoss;
@@ -151,7 +142,6 @@ namespace InsuranceClaim.Controllers
             model.CreatedOn = DateTime.Now;
             var dbModel = Mapper.Map<ClaimRegistrationModel, ClaimRegistration>(model);
             InsuranceContext.ClaimRegistrations.Insert(dbModel);
-
 
             // save in claimNotification
 
@@ -172,7 +162,6 @@ namespace InsuranceClaim.Controllers
                 if (PolicyNumber != "")
                 {
                     var PolicyDetail = InsuranceContext.PolicyDetails.All().FirstOrDefault(p => p.PolicyNumber == PolicyNumber);
-                    //var ClaimDetail = InsuranceContext.ClaimNotifications.All().SingleOrDefault(p => p.PolicyNumber == PolicyNumber);
                     var ClaimDetail = InsuranceContext.ClaimNotifications.All().SingleOrDefault(p => p.Id == id);
                     var Policyid = PolicyDetail.Id;
                     var CustomerId = PolicyDetail.CustomerId;
@@ -192,6 +181,7 @@ namespace InsuranceClaim.Controllers
                         IsChecked = false
 
                     }).ToList();
+
                     //get only Vehicle Detail
                     VehicleData = VehicleDetail.Select(p => new RiskViewModel()
                     {
@@ -246,43 +236,12 @@ namespace InsuranceClaim.Controllers
                         LastName = InsuranceContext.Customers.All().Where(q => q.Id == CustomerId).FirstOrDefault().LastName,
 
                     };
-
-
-
-                    //save in ClaimRegistration
-                    //ClaimRegistrationModel model = new ClaimRegistrationModel();
-                    //var claimNumber = GenerateClaimNumber();
-                    //model.PolicyNumber = PolicyNumber;
-                    //model.ClaimNumber = claimNumber;
-                    //model.DateOfLoss = Convert.ToDateTime(VehicleDetailVM.DateOfLoss);
-                    //model.DateOfNotifications = Convert.ToDateTime(VehicleDetailVM.DateOfNotifications);
-                    //model.PlaceOfLoss = VehicleDetailVM.PlaceOfLoss;
-                    //model.DescriptionOfLoss = VehicleDetailVM.DescriptionOfLoss;
-                    //model.EstimatedValueOfLoss = VehicleDetailVM.EstimatedValueOfLoss;
-                    //model.ThirdPartyDamageValue = VehicleDetailVM.ThirdPartyDamageValue;
-                    //model.Claimsatisfaction = true;
-                    //model.ClaimStatus = "1";
-                    //model.CreatedOn = DateTime.Now;
-                    //var dbModel = Mapper.Map<ClaimRegistrationModel, ClaimRegistration>(model);
-                    //InsuranceContext.ClaimRegistrations.Insert(dbModel);
-
                     var claimregistrationdetail = InsuranceContext.ClaimRegistrations.Single(where: $"Id = '{dbmodel}'");
 
                     VehicleDetailVM.ClaimId = dbmodel;
                     VehicleDetailVM.Claimnumber = claimregistrationdetail.ClaimNumber;
                     VehicleDetailVM.Claimsatisfaction = claimregistrationdetail.Claimsatisfaction;
-
-
-
-                    // save in claimNotification
-
-                    //var NotificationId = ClaimDetail.Id;
-                    //var updateNotificationRecord = InsuranceContext.ClaimNotifications.Single(NotificationId);
-                    //updateNotificationRecord.IsRegistered = true;
-                    //InsuranceContext.ClaimNotifications.Update(updateNotificationRecord);
-
                     return View(VehicleDetailVM);
-                    //return View(obj);
                 }
                 return View();
 
@@ -293,27 +252,36 @@ namespace InsuranceClaim.Controllers
             }
         }
 
-        public ActionResult ClaimDetailServiceProvider(int id)
+        public ActionResult ClaimDetailServiceProvider(int id, string PolicyNumber, int claimNumber)
         {
             ClaimDetailsProviderModel model = new ClaimDetailsProviderModel();
             var claimRegisterdata = InsuranceContext.ClaimRegistrations.Single(id);
-            //var claimprovider = InsuranceContext.ClaimDetailsProviders.Single(id);
-            //var claimdataregister = claimRegisterdata.ClaimNumber;
-            //var claimproviderclaimnumber = claimprovider.ClaimNumber;
-
-
-
-
-
-
-            var Providertype = InsuranceContext.ServiceProviders.All(where: $"IsDeleted = 'True' or IsDeleted is null ").ToList();
-            ViewBag.AssessorsType = Providertype.Where(w => w.ServiceProviderType == 1).ToList();
-            ViewBag.ValuersType = Providertype.Where(w => w.ServiceProviderType == 2).ToList();
-            ViewBag.LawyersType = Providertype.Where(w => w.ServiceProviderType == 3).ToList();
-            ViewBag.RepairersType = Providertype.Where(w => w.ServiceProviderType == 4).ToList();
-            model.PolicyNumber = claimRegisterdata.PolicyNumber;
-            model.ClaimNumber = Convert.ToInt32(claimRegisterdata.ClaimNumber);
-
+            var ServiceProvidersList = InsuranceContext.ServiceProviders.All(where: $"IsDeleted = 'True' or IsDeleted is null ").ToList();
+            var claimdetail = InsuranceContext.ClaimDetailsProviders.Single(where: $"ClaimNumber = '{claimNumber}'");
+            if (claimdetail != null && claimdetail.Count() > 0)
+            {
+                ViewBag.AssessorsType = ServiceProvidersList.Where(w => w.ServiceProviderType == 1).ToList();
+                ViewBag.ValuersType = ServiceProvidersList.Where(w => w.ServiceProviderType == 2).ToList();
+                ViewBag.LawyersType = ServiceProvidersList.Where(w => w.ServiceProviderType == 3).ToList();
+                ViewBag.RepairersType = ServiceProvidersList.Where(w => w.ServiceProviderType == 4).ToList();
+                model.AssessorsProviderType = ServiceProvidersList.FirstOrDefault(c => c.Id == claimdetail.AssessorsProviderType).Id;
+                model.ValuersProviderType = ServiceProvidersList.FirstOrDefault(c => c.Id == claimdetail.ValuersProviderType).Id;
+                model.LawyersProviderType = ServiceProvidersList.FirstOrDefault(c => c.Id == claimdetail.LawyersProviderType).Id;
+                model.RepairersProviderType = ServiceProvidersList.FirstOrDefault(c => c.Id == claimdetail.RepairersProviderType).Id;
+                model.PolicyNumber = claimdetail.PolicyNumber;
+                model.ClaimNumber = claimdetail.ClaimNumber;
+                return View(model);
+            }
+            else
+            {
+                var Providertype = InsuranceContext.ServiceProviders.All(where: $"IsDeleted = 'True' or IsDeleted is null ").ToList();
+                ViewBag.AssessorsType = Providertype.Where(w => w.ServiceProviderType == 1).ToList();
+                ViewBag.ValuersType = Providertype.Where(w => w.ServiceProviderType == 2).ToList();
+                ViewBag.LawyersType = Providertype.Where(w => w.ServiceProviderType == 3).ToList();
+                ViewBag.RepairersType = Providertype.Where(w => w.ServiceProviderType == 4).ToList();
+                model.PolicyNumber = claimRegisterdata.PolicyNumber;
+                model.ClaimNumber = Convert.ToInt32(claimRegisterdata.ClaimNumber);
+            }
             return View(model);
         }
         public ActionResult SaveClaimDetails(ClaimDetailsProviderModel model)
@@ -324,7 +292,7 @@ namespace InsuranceClaim.Controllers
             {
                 string customId = "";
                 bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-                var claimdata = InsuranceContext.ClaimDetailsProviders.Single(where: $"PolicyNumber = '{model.PolicyNumber}'");
+                var claimdata = InsuranceContext.ClaimDetailsProviders.Single(where: $"PolicyNumber = '{model.PolicyNumber}' and ClaimNumber = '{model.ClaimNumber}'");
                 if (claimdata == null || claimdata.Count() == 0)
                 {
                     if (userLoggedin)
@@ -338,8 +306,6 @@ namespace InsuranceClaim.Controllers
                         data.CreatedOn = DateTime.Now;
                         data.IsActive = true;
                         InsuranceContext.ClaimDetailsProviders.Insert(data);
-                        TempData["Sucess"] = "1";
-                        //TempData["SucessMsg"] = "Your details have been saved successfully.";
                     }
                     return RedirectToAction("ClaimRegistrationList");
                 }
@@ -363,8 +329,6 @@ namespace InsuranceClaim.Controllers
                         claimdata.ModifiedOn = DateTime.Now;
                         claimdata.IsActive = true;
                         InsuranceContext.ClaimDetailsProviders.Update(claimdata);
-                        TempData["Sucess"] = "1";
-                        //TempData["SucessMsg"] = "Your details have been saved successfully.";
                     }
                     return RedirectToAction("ClaimRegistrationList");
                 }
@@ -411,13 +375,9 @@ namespace InsuranceClaim.Controllers
                 ViewBag.ValuersType = ServiceProvidersList.Where(w => w.ServiceProviderType == 2).ToList();
                 ViewBag.LawyersType = ServiceProvidersList.Where(w => w.ServiceProviderType == 3).ToList();
                 ViewBag.RepairersType = ServiceProvidersList.Where(w => w.ServiceProviderType == 4).ToList();
-
                 model.AssessorsProviderType = ServiceProvidersList.FirstOrDefault(c => c.Id == model.AssessorsProviderType).Id;
-
                 model.ValuersProviderType = ServiceProvidersList.FirstOrDefault(c => c.Id == model.ValuersProviderType).Id;
-
                 model.LawyersProviderType = ServiceProvidersList.FirstOrDefault(c => c.Id == model.LawyersProviderType).Id;
-
                 model.RepairersProviderType = ServiceProvidersList.FirstOrDefault(c => c.Id == model.RepairersProviderType).Id;
 
             }
@@ -443,7 +403,6 @@ namespace InsuranceClaim.Controllers
                     data.IsActive = true;
                     data.CreatedBy = record.CreatedBy;
                     data.CreatedOn = record.CreatedOn;
-                    //data.IsRegistered = false;
                     data.ModifiedBy = Convert.ToInt32(customId);
                     InsuranceContext.ClaimDetailsProviders.Update(data);
                     return RedirectToAction("ClaimDetailsList");
@@ -482,12 +441,6 @@ namespace InsuranceClaim.Controllers
         [HttpPost]
         public ActionResult SaveRegisterClaim(RegisterClaimViewModel model)
         {
-
-            //if (ModelState.IsValid == false)
-            //{
-            //    IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
-            //    var a = 10;
-            //}
 
             if (ModelState.IsValid)
             {
@@ -529,6 +482,10 @@ namespace InsuranceClaim.Controllers
             }
             return RedirectToAction("RegisterClaim");
         }
+
+
+
+
         public ActionResult ClaimRegistrationList()
         {
             ViewBag.servicename = InsuranceContext.ServiceProviderTypes.All();
@@ -536,13 +493,15 @@ namespace InsuranceClaim.Controllers
             var service = InsuranceContext.ServiceProviders.All(where: $"IsDeleted = 'True'").ToList();
             var claimList = InsuranceContext.ClaimDetailsProviders.All(where: $"IsActive = 'True' or IsActive is null").ToList();
 
+            var Adjustments = InsuranceContext.ClaimAdjustments.All(where: $"IsActive = 'True'").ToList();
+
             var list = (from _claimRegistration in InsuranceContext.ClaimRegistrations.All().ToList()
                         join _clamdetail in InsuranceContext.ClaimDetailsProviders.All().ToList()
                         on _claimRegistration.ClaimNumber equals _clamdetail.ClaimNumber into data
                         from date in data.DefaultIfEmpty()
                         join Claimstatusdata in InsuranceContext.ClaimStatuss.All().ToList()
                         on _claimRegistration.ClaimStatus equals Claimstatusdata.Id
-
+                     
 
                         select new ClaimRegistrationModel
                         {
@@ -558,8 +517,10 @@ namespace InsuranceClaim.Controllers
                             ValueProviderName = GetProvider(date == null ? 0 : date.ValuersProviderType, service),
                             RepairProviderName = GetProvider(date == null ? 0 : date.RepairersProviderType, service),
                             ClaimStatus = Convert.ToString(Claimstatusdata.Status),
-                            Id = _claimRegistration.Id
+                            Id = _claimRegistration.Id,
 
+                            ClaimValue = GetClaimValue(_claimRegistration.ClaimNumber, Adjustments),
+                           
 
                         }).ToList();
 
@@ -567,6 +528,63 @@ namespace InsuranceClaim.Controllers
         }
 
 
+
+        public string GetClaimValue(long RClaimNumber, List<ClaimAdjustment> AdjustmentList)
+        {
+            string ClaimNumber = "";
+            if (RClaimNumber != null && RClaimNumber != 0)
+            {
+                var details = AdjustmentList.FirstOrDefault(c => c.ClaimNumber == Convert.ToInt16(RClaimNumber));
+
+                if (details != null)
+                {
+                    ClaimNumber = Convert.ToString(details.ClaimNumber);
+
+                }
+            }
+            return ClaimNumber;
+        }
+
+
+
+
+        ////public ActionResult ClaimRegistrationList()
+        ////{
+        ////    ViewBag.servicename = InsuranceContext.ServiceProviderTypes.All();
+        ////    ViewBag.providername = InsuranceContext.ServiceProviders.All(where: $"IsDeleted = 'True'").ToList();
+        ////    var service = InsuranceContext.ServiceProviders.All(where: $"IsDeleted = 'True'").ToList();
+        ////    var claimList = InsuranceContext.ClaimDetailsProviders.All(where: $"IsActive = 'True' or IsActive is null").ToList();
+
+        ////    var list = (from _claimRegistration in InsuranceContext.ClaimRegistrations.All().ToList()
+        ////                join _clamdetail in InsuranceContext.ClaimDetailsProviders.All().ToList()
+        ////                on _claimRegistration.ClaimNumber equals _clamdetail.ClaimNumber into data
+        ////                from date in data.DefaultIfEmpty()
+        ////                join Claimstatusdata in InsuranceContext.ClaimStatuss.All().ToList()
+        ////                on _claimRegistration.ClaimStatus equals Claimstatusdata.Id
+        ////                //join claimadjust in InsuranceContext.ClaimAdjustments.All().ToList()
+
+
+        ////                select new ClaimRegistrationModel
+        ////                {
+        ////                    PolicyNumber = _claimRegistration.PolicyNumber,
+        ////                    PaymentDetails = _claimRegistration.PaymentDetails,
+        ////                    ClaimNumber = _claimRegistration.ClaimNumber,
+        ////                    PlaceOfLoss = _claimRegistration.PlaceOfLoss,
+        ////                    DescriptionOfLoss = _claimRegistration.DescriptionOfLoss,
+        ////                    EstimatedValueOfLoss = _claimRegistration.EstimatedValueOfLoss,
+        ////                    ThirdPartyDamageValue = _claimRegistration.ThirdPartyDamageValue,
+        ////                    AssessProviderName = GetProvider(date == null ? 0 : date.AssessorsProviderType, service),
+        ////                    LawyeProviderName = GetProvider(date == null ? 0 : date.LawyersProviderType, service),
+        ////                    ValueProviderName = GetProvider(date == null ? 0 : date.ValuersProviderType, service),
+        ////                    RepairProviderName = GetProvider(date == null ? 0 : date.RepairersProviderType, service),
+        ////                    ClaimStatus = Convert.ToString(Claimstatusdata.Status),
+        ////                    Id = _claimRegistration.Id
+
+
+        ////                }).ToList();
+
+        ////    return View(list.OrderByDescending(x => x.Id));
+        //}
         public string GetProvider(int providerId, List<ServiceProvider> serviceList)
         {
             string provideName = "";
@@ -582,23 +600,6 @@ namespace InsuranceClaim.Controllers
             }
             return provideName;
         }
-
-        //public string GetStatus (int statusid,List<ClaimStatus> ClaimStatusList)
-        //{
-        //    string status = "";
-        //    if (statusid !=null && statusid!= 0)
-        //    {
-        //        var statusdata = ClaimStatusList.FirstOrDefault(x => x.Id == statusid);
-
-        //        if (statusdata != null)
-        //        {
-        //            status = statusdata.Status;
-        //        }
-        //    }
-
-        //    return status;
-        //}
-
         public ActionResult UploadFile()
         {
             if (Request.Files.Count > 0)
@@ -622,8 +623,6 @@ namespace InsuranceClaim.Controllers
                     HttpFileCollectionBase files = Request.Files;
                     for (int i = 0; i < files.Count; i++)
                     {
-                        //string path = AppDomain.CurrentDomain.BaseDirectory + "Uploads/";  
-                        //string filename = Path.GetFileName(Request.Files[i].FileName);  
 
                         HttpPostedFileBase file = files[i];
                         string fname;
@@ -766,6 +765,81 @@ namespace InsuranceClaim.Controllers
                 jsonResult.Data = Providertype.Where(w => w.ServiceProviderType == 4).Select(y => new { y.Id, y.ServiceProviderName }).ToList();
             }
             return jsonResult;
+        }
+        public ActionResult ClaimSetting()
+        {
+
+            var eSettingValueTypedata = from eSettingValueType e in Enum.GetValues(typeof(eSettingValueType))
+                                        select new
+                                        {
+                                            ID = (int)e,
+                                            Name = e.ToString()
+                                        };
+
+            ViewBag.eSettingValueTypes = new SelectList(eSettingValueTypedata, "ID", "Name");
+
+            var eSettingValuedata = from eVehicleType e in Enum.GetValues(typeof(eVehicleType))
+                                    select new
+                                    {
+                                        ID = (int)e,
+                                        Name = e.ToString()
+                                    };
+
+            ViewBag.eSettingValueType = new SelectList(eSettingValuedata, "ID", "Name");
+
+
+            return View();
+        }
+        public ActionResult SaveSetting(ClaimSettingModel model)
+        {
+
+            ModelState.Remove("Id");
+            if (ModelState.IsValid)
+            {
+
+                bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+                string userid = "";
+                if (userLoggedin)
+                {
+                    userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                    var customer = InsuranceContext.Customers.Single(where:$"UserId = '{userid}'");
+                    var dbModel = Mapper.Map<ClaimSettingModel, ClaimSetting>(model);
+                    dbModel.CreatedBy = customer.Id;
+                    dbModel.CreatedOn = DateTime.Now;
+                    dbModel.IsActive = true;
+                    InsuranceContext.ClaimSettings.Insert(dbModel);
+                    return RedirectToAction("ClaimSettingList");
+                }
+            }
+            return View("ClaimSetting");
+        }
+        public ActionResult ClaimSettingList()
+        {
+            var ClaimList = InsuranceContext.ClaimSettings.All(where: $"IsActive = 'True' or IsActive is null").OrderByDescending(x=>x.Id).ToList();
+
+
+            return View(ClaimList);
+        }
+
+
+        [HttpPost]
+        public JsonResult GetAutoSuggestions()
+        {
+
+            List<ClaimNotificationModel> objList = new List<ClaimNotificationModel>();
+            var Policylist = InsuranceContext.PolicyDetails.All().ToList();   ////  get data from database 
+            var NotificationList = new List<ClaimNotificationModel>(); /// create list 
+            NotificationList = Policylist.Select(p => new ClaimNotificationModel()  //// get data from table using loop and added in model.
+            {
+                PolicyNumber = p.PolicyNumber
+
+            }).ToList();
+            var result = (from j in NotificationList
+                          select new
+                          {
+                              j.PolicyNumber
+                          }).ToList().Take(10);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
     }
 }
