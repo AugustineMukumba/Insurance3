@@ -12,7 +12,7 @@ namespace InsuranceClaim.Models
         public int Id { get; set; }
         [Required(ErrorMessage = "Please select Provider Type")]
         [Display(Name = "Service Provider Type")]
-        public int ServiceProviderType { get; set; }
+        public string ServiceProviderType { get; set; }
 
         [Required(ErrorMessage = "Please Enter Provider Name")]
         [Display(Name = "Service Provider Name")]

@@ -63,4 +63,9 @@ namespace InsuranceClaim.Models
         MobileMoney = 2,
         Cash = 3
     }
+    public enum eVehicleType
+    {
+        Private = 1,
+        Commercial = 2
+    }
 }

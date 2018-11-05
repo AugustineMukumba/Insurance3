@@ -28,7 +28,7 @@
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.PolicyNumber, new { @class = "gender-label" })
                                             @*@Html.TextBoxFor(x => x.PolicyNumber, new { @class = "form-control", @name = "CommissionName", @autocomplete = "off", @id = "CommissionName", @placeholder = "Enter Commission Name" })*@
-                                            @Html.TextBoxFor(x => x.PolicyNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Policy Number" })
+                                            @Html.TextBoxFor(x => x.PolicyNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Policy Number",@Id= "txtPolicyNumber" })
                                             @Html.ValidationMessageFor(x => x.PolicyNumber, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -80,16 +80,27 @@
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.EstimatedValueOfLoss, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.EstimatedValueOfLoss, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Estimated value" })
+                                            @Html.TextBoxFor(x => x.EstimatedValueOfLoss, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Estimated Value" })
                                             @Html.ValidationMessageFor(x => x.EstimatedValueOfLoss, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.ThirdPartyInvolvement, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.ThirdPartyInvolvement, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Thirdparty involvement" })
+                                            @Html.TextBoxFor(x => x.ThirdPartyInvolvement, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Third Party involvement" })
                                             @Html.ValidationMessageFor(x => x.ThirdPartyInvolvement, "", new { @class = "text-danger" })
                                         </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.ClaimantName, new { @class = "gender-label" })
+                                            @Html.TextBoxFor(x => x.ClaimantName, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Claimant Name" })
+                                            @Html.ValidationMessageFor(x => x.ClaimantName, "", new { @class = "text-danger" })
+                                        </div>
+
                                     </div>
                                 </div>
                                 <br />
@@ -115,12 +126,38 @@
         </div>
     </div>
 </div>
-
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
     $(document).ready(function () {
         $("#datetime3").datetimepicker({
             format: 'MM/D/YYYY',
             maxDate:new Date()
         });
+
+        var policyNumbersArray = [];
+
+        //Getting Policy Numbers from database
+        getPolicyNumbers();
+
+        function getPolicyNumbers(){
+            $.ajax({
+                url: "/Claimant/GetAutoSuggestions",
+                type: "POST",
+                async: false,
+                dataType: "json",
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++)
+                    {
+                        policyNumbersArray.push(data[i].PolicyNumber);
+                    }
+                }
+            })
+        };
+        $( "#txtPolicyNumber" ).autocomplete({
+            source: policyNumbersArray
+        });
     });
+
+
+
 </script>

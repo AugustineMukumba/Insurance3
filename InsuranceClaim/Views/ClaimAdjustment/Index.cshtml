@@ -23,25 +23,22 @@
                             @using (Html.BeginForm("SaveClaimAdjustment", "ClaimAdjustment", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
                             {
                                 @Html.HiddenFor(x => x.Id)
-                                @Html.HiddenFor(x=>x.PolicyNumber)
-                                @Html.HiddenFor(x=>x.ClaimNumber)
+                                @Html.HiddenFor(x => x.PolicyNumber)
+                                @Html.HiddenFor(x => x.ClaimNumber)
+                                @Html.HiddenFor(x=>x.TotalSuminsure)
 
                                 <div class="row">
 
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                            @*@Html.LabelFor(x => x.PolicyNumber, new { @class = "gender-label" })*@
                                             <label>Policy Number</label>:
                                             <label>@Model.PolicyNumber</label>
-                                           @*@Html.LabelFor(x => x.PolicyNumber, Model.PolicyNumber)*@
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                            @*@Html.LabelFor(x => x.PolicyNumber, new { @class = "gender-label" })*@
                                             <label>Claim Number</label>:
                                             <label>@Model.ClaimNumber</label>
-                                            @*@Html.LabelFor(x => x.ClaimNumber, Model.ClaimNumber)*@
                                         </div>
                                     </div>
 
@@ -49,51 +46,63 @@
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
-                                            <label class="radio-label">Driver is under 21 or not ?</label>
-                                            <div class="form-group-radio">
-                                                <label>@Html.RadioButtonFor(x => x.DriverIsUnder21, true)Yes</label>
-                                                <label>@Html.RadioButtonFor(x => x.DriverIsUnder21, false)No</label>
-                                                @Html.ValidationMessageFor(x => x.DriverIsUnder21, "", new { @class = "text-danger" })
-                                            </div>
+                                            @Html.Label("Is Private Car", new { @class = "gender-label" })
+                                            @Html.CheckBoxFor(x => x.PrivateCar)
                                         </div>
                                     </div>
                                     <div class="col-sm-6 form-group-text">
                                         <div class="form-group">
-                                            <label class="radio-label">Driver licensed  for less then 60 months ?</label>
-                                            <div class="form-group-radio">
-                                                <label>@Html.RadioButtonFor(x => x.Islicensedless60months, true)Yes</label>
-                                                <label>@Html.RadioButtonFor(x => x.Islicensedless60months, false)No</label>
-                                                @Html.ValidationMessageFor(x => x.Islicensedless60months, "", new { @class = "text-danger" })
+                                            <div class="form-group">
+                                                @Html.Label("Is Commerical Car", new { @class = "gender-label"})
+                                                @Html.CheckBoxFor(x => x.CommericalCar)
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="row">
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            <label class="radio-label">Is stolen or not ?</label>
-                                            <label>@Html.RadioButtonFor(x => x.IsStolen, true)Yes</label>
-                                            <label>@Html.RadioButtonFor(x => x.IsStolen, false)No</label>
-                                            @Html.ValidationMessageFor(x => x.IsStolen, "", new { @class = "text-danger" })
-
+                                <fieldset disabled>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                <label class="radio-label">Driver is under 21 or not ?</label>
+                                                <div class="form-group-radio">
+                                                    <label>@Html.RadioButtonFor(x => x.DriverIsUnder21, true)Yes</label>
+                                                    <label>@Html.RadioButtonFor(x => x.DriverIsUnder21, false)No</label>
+                                                    @Html.ValidationMessageFor(x => x.DriverIsUnder21, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
                                         </div>
-
+                                        <div class="col-sm-6 form-group-text">
+                                            <div class="form-group">
+                                                <label class="radio-label">Driver licensed  for less then 60 months ?</label>
+                                                <div class="form-group-radio">
+                                                    <label>@Html.RadioButtonFor(x => x.Islicensedless60months,true)Yes</label>
+                                                    <label>@Html.RadioButtonFor(x => x.Islicensedless60months,false)No</label>
+                                                    @Html.ValidationMessageFor(x => x.Islicensedless60months, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-6 form-group-text">
-                                        <div class="form-group">
-                                            <label class="radio-label">Loss is in Zimbabwe or not ?</label>
-                                            <div class="form-group-radio">
-                                                <label>@Html.RadioButtonFor(x => x.IsLossInZimbabwe, true)Yes</label>
-                                                <label>@Html.RadioButtonFor(x => x.IsLossInZimbabwe, false)No</label>
-                                                @Html.ValidationMessageFor(x => x.IsLossInZimbabwe, "", new { @class = "text-danger" })
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                <label class="radio-label">Is stolen or not ?</label>
+                                                <label>@Html.RadioButtonFor(x => x.IsStolen, true)Yes</label>
+                                                <label>@Html.RadioButtonFor(x => x.IsStolen, false)No</label>
+                                                @Html.ValidationMessageFor(x => x.IsStolen, "", new { @class = "text-danger" })
 
                                             </div>
-
+                                        </div>
+                                        <div class="col-sm-6 form-group-text">
+                                            <div class="form-group">
+                                                <label class="radio-label">Loss is in Zimbabwe or not ?</label>
+                                                <div class="form-group-radio">
+                                                    <label>@Html.RadioButtonFor(x => x.IsLossInZimbabwe, true)Yes</label>
+                                                    <label>@Html.RadioButtonFor(x => x.IsLossInZimbabwe, false)No</label>
+                                                    @Html.ValidationMessageFor(x => x.IsLossInZimbabwe, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
@@ -105,7 +114,16 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+
+                                                <label>Sum Insured</label>
+                                                <label id="suminsure">@Model.TotalSuminsure </label>
+                                            </div>
+                                        </div>
                                     </div>
+                                </fieldset>
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
@@ -145,7 +163,7 @@
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.ExcessesAmount, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.ExcessesAmount, new { @class = "form-control", @name = "ExcessesAmount", @autocomplete = "off", @id = "ExcessesAmount", @placeholder = "Enter Excesses Amount" })
+                                            @Html.TextBoxFor(x => x.ExcessesAmount, new { @class = "form-control", @name = "ExcessesAmount", @autocomplete = "off", @id = "ExcessesAmount", @placeholder = "Enter Excesses Amount",@readonly = "readonly" })
                                             @Html.ValidationMessageFor(x => x.ExcessesAmount, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -160,38 +178,40 @@
                                 </div>
 
 
-                                <div class="row">
-                                    <div class="col-sm-6 col-md-6 form-group-text">
-                                        <div class="form-group">
-                                            @Html.LabelFor(x => x.PolicyholderName, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.PolicyholderName, new { @class = "form-control", @name = "PolicyholderName", @autocomplete = "off", @id = "PolicyholderName", @placeholder = "Enter Policy Holder Name" })
-                                            @Html.ValidationMessageFor(x => x.PolicyholderName, "", new { @class = "text-danger" })
-                                        </div>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.PolicyholderName, new { @class = "gender-label" })
+                                                @Html.TextBoxFor(x => x.PolicyholderName, new { @class = "form-control", @name = "PolicyholderName", @autocomplete = "off", @id = "PolicyholderName", @placeholder = "Enter Policy Holder Name" })
+                                                @Html.ValidationMessageFor(x => x.PolicyholderName, "", new { @class = "text-danger" })
+                                            </div>
 
-                                    </div>
-                                    <div class="col-sm-6 col-md-6 form-group-select">
-                                        <div class="form-group">
-
-                                            @Html.LabelFor(x => x.PayeeBankDetails, new { @class = "gender-label" })
-                                            @*@Html.TextBoxFor(x => x.PayeeBankDetails, new { @class = "form-control", @name = "PayeeBankDetails", @autocomplete = "off", @id = "PayeeBankDetails", @placeholder = "Please Payee Bank Details" })*@
-                                            @Html.DropDownListFor(x => x.PayeeBankDetails, ViewBag.ePaymentDetailData as SelectList, "Select Payment Type", new { @class = "form-control", @onchange = "data(this)" })
-                                            @Html.ValidationMessageFor(x => x.PayeeBankDetails, "", new { @class = "text-danger" })
-                                            @*@Html.DropDownListFor(x => x.PayeeBankDetails, new SelectList(ViewBag.ePayeeBankData, "ID", "Name"), "Select Payee Bank Detail", new { @class = "form-control" })*@
-                                            @*@Html.DropDownListFor(x => x.PayeeBankDetails, ViewBag.ePayeeBankData as SelectList, "Select Payment Term", new { @class = "form-control" })*@
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6 col-md-6 form-group-text "id="test"style="display:none">
-                                        <div class="form-group">
-                                            @Html.LabelFor(x => x.PhoneNumber, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control", @name = "PhoneNumber", @autocomplete = "off", @id = "PhoneNumber", @placeholder = "Enter Phone Number" })
-                                            @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
+                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                            <div class="form-group">
+
+                                                @Html.LabelFor(x => x.PayeeBankDetails, new { @class = "gender-label" })
+                                                @*@Html.TextBoxFor(x => x.PayeeBankDetails, new { @class = "form-control", @name = "PayeeBankDetails", @autocomplete = "off", @id = "PayeeBankDetails", @placeholder = "Please Payee Bank Details" })*@
+                                                @Html.DropDownListFor(x => x.PayeeBankDetails, ViewBag.ePaymentDetailData as SelectList, "Select Payment Type", new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(x => x.PayeeBankDetails, "", new { @class = "text-danger" })
+                                                @*@Html.DropDownListFor(x => x.PayeeBankDetails, new SelectList(ViewBag.ePayeeBankData, "ID", "Name"), "Select Payee Bank Detail", new { @class = "form-control" })*@
+                                                @*@Html.DropDownListFor(x => x.PayeeBankDetails, ViewBag.ePayeeBankData as SelectList, "Select Payment Term", new { @class = "form-control" })*@
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text " id="test" style="display:none">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.PhoneNumber, new { @class = "gender-label" })
+                                                <label> In The Format:###-###-####</label>
+                                                @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control", @name = "PhoneNumber", @autocomplete = "off", @id = "PhoneNumber", @placeholder = "Enter Phone Number" })
+                                                @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                <br />
+                                    
+                                    <br />
                                     <div class="col-md-12 next-btn">
                                         <div class="row">
                                             <div class="col-sm-6 col-md-6">
@@ -217,25 +237,228 @@
 
 <script>
 
-    $(document).ready(function () {
-        debugger;
-        data();
 
+    var SetAccess = {
+        isdriver: "",
+        IsStolen: "",
+        Ispartial: "",
+        IslossInZim: "",
+        IsLicence: "",
+        isprivate: "",
+        isprivatecar : "",
+        commericalCar:""
+    }
+
+
+    $(document).ready(function () {
+
+        $("#PayeeBankDetails").change(function () {
+            debugger;
+            var getddlvalue = $('#PayeeBankDetails option:selected').val();
+            if (getddlvalue == "2") {
+                $("#test").show();
+            }
+            else {
+                $("#test").hide();
+            }
+        })
     });
 
 
-    function data() {
-
-        $("#PayeeBankDetails").change(function () {
-            var getddlValue = $('#PayeeBankDetails option:selected').val();
-            if (getddlValue == "2") {
-                $("#test").show();
+    $("#PrivateCar").change(
+        function () {
+            debugger;
+            if ($(this).is(':checked')) {
+                $("fieldset").removeAttr("disabled");
+                $("#CommericalCar").attr('checked', false);
+                SetAccess.isprivatecar = true;
+                SetAccess.commericalCar = false;
+                Save();
             }
-            else
-            {
-                $("#test").hide();
+            
+        });
+    $("#CommericalCar").change(
+        function () {
+            debugger;
+            if ($(this).is(':checked')) {
+                $("fieldset").removeAttr("disabled");
+                $("#PrivateCar").attr('checked', false);
+                SetAccess.commericalCar = true;
+                SetAccess.isprivatecar = false;
+                Save();
+            }
+        }
+        )
+
+    $('input:radio[name="DriverIsUnder21"]').change(
+     function () {
+         debugger;
+
+         if ($(this).is(':checked') && $(this).val() == "True") {
+             debugger;
+
+             SetAccess.isdriver = 1;
+             debugger;
+             Save();
+         }
+
+         else {
+             SetAccess.isdriver = 0;
+             debugger;
+             Save();
+
+         }
+     });
+
+    $('input:radio[name="Islicensedless60months"]').change(
+    function () {
+        debugger;
+
+        if ($(this).is(':checked') && $(this).val() == "True") {
+            debugger;
+            SetAccess.IsLicence = 1;
+            debugger;
+            Save();
+        }
+
+        else {
+            SetAccess.IsLicence = 0;
+            debugger;
+            Save();
+
+        }
+    });
+
+
+    $('input:radio[name="IsStolen"]').change(
+   function () {
+       debugger;
+
+       if ($(this).is(':checked') && $(this).val() == "True") {
+           debugger;
+           SetAccess.IsStolen = 1;
+           debugger;
+           Save();
+       }
+
+       else {
+           SetAccess.IsStolen = 0;
+           debugger;
+           Save();
+
+       }
+   });
+
+    $('input:radio[name="IsLossInZimbabwe"]').change(
+     function () {
+         debugger;
+
+         if ($(this).is(':checked') && $(this).val() == "True") {
+             debugger;
+             SetAccess.IslossInZim = 1;
+             Save();
+         }
+
+         else {
+             SetAccess.IslossInZim = 0;
+             debugger;
+             Save();
+
+         }
+     });
+
+    $('input:radio[name="IsPartialLoss"]').change(
+    function () {
+        debugger;
+
+        if ($(this).is(':checked') && $(this).val() == "True") {
+            debugger;
+            SetAccess.Ispartial = 1;
+            Save();
+        }
+
+        else {
+            SetAccess.Ispartial = 0;
+            debugger;
+            Save();
+
+        }
+    });
+
+    function Save() {
+        debugger;
+
+        var DriverIsUnder21 = "";
+        var IsPartialLoss = "";
+        var privatecar = "";
+        IsLossInZimbabwe = "";
+        IsStolen = "";
+        Islicensedless60months = "";
+        privatecar = SetAccess.isprivatecar;
+        CCommericalCar = SetAccess.commericalCar;
+        sumInsured = parseFloat($("#suminsure").text());
+
+        var insurevalue = {
+            DriverIsUnder21: SetAccess.isdriver,
+            IsPartialLoss: SetAccess.Ispartial,
+            IsLossInZimbabwe: SetAccess.IslossInZim,
+            Islicensedless60months: SetAccess.IsLicence,
+            IsStolen: SetAccess.IsStolen,
+            sumInsured: sumInsured,
+            PrivateCar: privatecar,
+            CommercialCar: CCommericalCar
+
+        }
+
+
+        debugger;
+        $.ajax({
+            url: "@Url.Action("CalculateClaimPremium", "ClaimAdjustment")",
+            type: "post",
+            dataType: "json",
+            data: insurevalue,
+            success: function (data) {
+                debugger;
+                //$("#Premium").val(parseFloat(data.Premium).toFixed(2));
+                $("#ExcessesAmount").val(parseFloat(data.ExcessesAmount).toFixed())
             }
         });
 
     }
+
+
+
+
+
+    @*$('input:radio[name="DriverIsUnder21"]').change(
+        function () {
+            debugger;
+            if ($(this).is(':checked') && $(this).val() ==  "True") {
+                debugger;
+
+            }
+
+            else {
+                alert("No");
+            }
+
+            var sumInsureed = $("#suminsure").text();
+            var data={
+                sumInsured:sumInsureed
+            }
+
+            $.ajax({
+                url: "@Url.Action("CalculateClaimPremium", "ClaimAdjustment")",
+                type: "Post",
+                dataType: "json",
+                data :data,
+            success: function (result) {
+                debugger;
+                alert(result);
+            }
+        });
+
+    });*@
+
+
 </script>

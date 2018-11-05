@@ -30,6 +30,7 @@ namespace InsuranceClaim.Models
         public string LawyeProviderName { get; set; }
         public string RepairProviderName { get; set; }
 
+        public string ClaimValue { get; set; }
         //public DateTime? ModifyOn { get; set; }
     }
 

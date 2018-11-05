@@ -40,8 +40,8 @@
                             <th>Place Of Loss</th>
                             <th>Description Of Loss</th>
                             <th>Esti Val Of Loss</th>
-                            @*<th>ThirdParty Involvement</th>*@
                             <th>Third Party Involv</th>
+                            <th>Claimant Name</th>
                             <th class="action-th">Action</th>
                         </tr>
                     </thead>
@@ -59,6 +59,7 @@
                                     <td>@item.DescriptionOfLoss</td>
                                     <td>@item.EstimatedValueOfLoss</td>
                                     <td>@item.ThirdPartyInvolvement</td>
+                                    <td>@item.ClaimantName</td>
                                     <td>
                                         <div class="tbl-btn-list">
                                             <ul class="list-inline">
@@ -80,12 +81,13 @@
                                     <td>@item.DescriptionOfLoss</td>
                                     <td>@item.EstimatedValueOfLoss</td>
                                     <td>@item.ThirdPartyInvolvement</td>
+                                    <td>@item.ClaimantName</td>
                                     <td>
                                         <div class="tbl-btn-list">
                                             <ul class="list-inline">
                                                 @if (item.IsExists == false)
-                        {
-                                                    <li>@Html.ActionLink("Register Claim", "SaveUpdatedata", new { PolicyNumber = item.PolicyNumber, id = item.Id }, new { @class = "btn-sm btn-primary" ,@style = "display :none"})</li>
+                                                {
+                                                    <li>@Html.ActionLink("Register Claim", "SaveUpdatedata", new { PolicyNumber = item.PolicyNumber, id = item.Id }, new { @class = "btn-sm btn-primary", @style = "display :none" })</li>
                                                 }
 
                                                 <li>@Html.ActionLink("Edit", "EditClaimant", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
