@@ -746,7 +746,7 @@ namespace Insurance.Domain
         public decimal EstimatedValueOfLoss { get; set; }
         public string ThirdPartyInvolvement { get; set; }
         public string ClaimantName { get; set; }
-        public string CreatedBy { get; set; }
+        public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public bool? IsDeleted { get; set; }
         public bool? IsRegistered { get; set; }
@@ -852,7 +852,7 @@ namespace Insurance.Domain
         public ClaimAdjustment(bool defaults) : base(defaults) { }
         public int Id { get; set; }
         public int? AmountToPay { get; set; }
-        public int? EstimatedLoss { get; set; }
+        public decimal? EstimatedLoss { get; set; }
         public decimal ExcessesAmount { get; set; }
         public string PayeeBankDetails { get; set; }
         public string FirstName { get; set; }
@@ -869,6 +869,8 @@ namespace Insurance.Domain
         public bool? IsStolen { get; set; }
         public bool? IsLossInZimbabwe { get; set; }
         public bool? IsPartialLoss { get; set; }
+        public bool? IsDriverUnder25 { get; set; }
+        public bool? SoundSystem { get; set; }
         public string PhoneNumber { get; set; }
         public string PolicyNumber { get; set; }
         public int ClaimNumber { get; set; }

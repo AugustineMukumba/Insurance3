@@ -898,6 +898,7 @@ namespace InsuranceClaim.Controllers
                         obj.covertype = InsuranceContext.CoverTypes.Single(item.CoverTypeId).Name;
                         obj.premium = item.Premium.ToString();
                         obj.suminsured = item.SumInsured.ToString();
+                        obj.RegistrationNo = item.RegistrationNo;
 
 
                         if (item.IncludeRadioLicenseCost == true)

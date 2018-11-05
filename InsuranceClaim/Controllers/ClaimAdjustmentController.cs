@@ -37,7 +37,7 @@ namespace InsuranceClaim.Controllers
                     var summery = InsuranceContext.SummaryDetails.Single(where: $"CustomerId = '{policy.CustomerId}'");
                     
                     var custmo = InsuranceContext.Customers.Single(where: $"Id = '{policy.CustomerId}'");
-                    model.EstimatedLoss = Convert.ToInt32(data.EstimatedValueOfLoss);
+                    model.EstimatedLoss =data.EstimatedValueOfLoss;
                     model.ClaimNumber = Convert.ToInt32(data.ClaimNumber);
                     model.PolicyNumber = data.PolicyNumber;
                     model.FirstName = custmo.FirstName;
@@ -52,14 +52,22 @@ namespace InsuranceClaim.Controllers
         public ActionResult SaveClaimAdjustment(ClaimAdjustmentModel model)
         {
             ModelState.Remove("Id");
+            if (model.IsDriverUnder25==null)
+            {
+                ModelState.Remove("IsDriverUnder25");
+            }
+            if (model.DriverIsUnder21 == null)
+            {
+                ModelState.Remove("DriverIsUnder21");
+            }
 
-            //foreach (ModelState modelState in ViewData.ModelState.Values)
-            //{
-            //    foreach (ModelError error in modelState.Errors)
-            //    {
-            //        var s = error;
-            //    }
-            //}
+            foreach (ModelState modelState in ViewData.ModelState.Values)
+            {
+                foreach (ModelError error in modelState.Errors)
+                {
+                    var s = error;
+                }
+            }
 
 
             if (ModelState.IsValid)
@@ -128,11 +136,11 @@ namespace InsuranceClaim.Controllers
             return RedirectToAction("ListClaimAdjustment");
         }
         [HttpPost]
-        public JsonResult CalculateClaimPremium(decimal sumInsured,int? IsPartialLoss,int? IsLossInZimbabwe,int? IsStolen,int? Islicensedless60months,int? DriverIsUnder21,Boolean PrivateCar,Boolean CommercialCar)
+        public JsonResult CalculateClaimPremium(decimal sumInsured,int? IsPartialLoss,int? IsLossInZimbabwe,int? IsStolen,int? Islicensedless60months,int? DriverIsUnder21,Boolean PrivateCar,Boolean CommercialCar,int? IsDriver25,int? IsSoundSystem)
         {
             JsonResult json = new JsonResult();
             var ClaimQuoteL = new ClaimQuoteLogic();
-            var excess = ClaimQuoteL.CalculateClaimPremium(sumInsured, IsPartialLoss, IsLossInZimbabwe, IsStolen, Islicensedless60months, DriverIsUnder21, PrivateCar, CommercialCar);
+            var excess = ClaimQuoteL.CalculateClaimPremium(sumInsured, IsPartialLoss, IsLossInZimbabwe, IsStolen, Islicensedless60months, DriverIsUnder21, PrivateCar, CommercialCar, IsDriver25, IsSoundSystem);
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             json.Data = excess;
             return json;

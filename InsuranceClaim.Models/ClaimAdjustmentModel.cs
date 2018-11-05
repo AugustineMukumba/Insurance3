@@ -15,7 +15,7 @@ namespace InsuranceClaim.Models
         public int? AmountToPay { get; set; }
         [Display(Name = "Estimated Loss Amount")]
         [Required(ErrorMessage = "Please Enter Estimated Loss Amount.")]
-        public int? EstimatedLoss { get; set; }
+        public decimal? EstimatedLoss { get; set; }
         [Display(Name = "Excesses Amount")]
         [Required(ErrorMessage = "Please Enter Excesses Amount.")]
         public decimal ExcessesAmount { get; set; }
@@ -61,6 +61,8 @@ namespace InsuranceClaim.Models
         public string PolicyNumber { get; set; }
         public int ClaimNumber { get; set; }
         public bool IsActive { get; set; }
+        [Display(Name = "Total Sum Insure")]
+        [Required(ErrorMessage = "This is required field")]
         public decimal TotalSuminsure { get; set; }
         [Display(Name = "Is Private Car")]
         [Required(ErrorMessage = "This is required field")]
@@ -68,6 +70,12 @@ namespace InsuranceClaim.Models
         [Display(Name = "Is Commerical Car")]
         [Required(ErrorMessage = "This is required field")]
         public bool CommericalCar { get; set; }
+        [Display(Name = "Is Driver Under25")]
+        [Required(ErrorMessage = "This is required field")]
+        public bool? IsDriverUnder25 { get; set; }
+        [Display(Name = "Sound System")]
+        [Required(ErrorMessage = "This is required field")]
+        public bool? SoundSystem { get; set; }
 
     }
 }

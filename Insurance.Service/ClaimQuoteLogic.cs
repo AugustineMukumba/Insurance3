@@ -17,7 +17,7 @@ namespace Insurance.Service
         public decimal Islicensedless { get; set; }
 
 
-        public ClaimQuoteLogic CalculateClaimPremium(decimal sumInsured, int? IsPartialLoss, int? IsLossInZimbabwe, int? IsStolen, int? Islicensedless60months, int? DriverIsUnder21, Boolean PrivateCar, Boolean CommercialCar)
+        public ClaimQuoteLogic CalculateClaimPremium(decimal sumInsured, int? IsPartialLoss, int? IsLossInZimbabwe, int? IsStolen, int? Islicensedless60months, int? DriverIsUnder21, Boolean PrivateCar, Boolean CommercialCar, int? IsDriver25, int? IsSoundSystem)
         {
 
             var ClaimSettingdetail = InsuranceContext.ClaimSettings.All(where: $"IsActive = 'True' or IsActive is Null ");
@@ -28,12 +28,15 @@ namespace Insurance.Service
             decimal totalloss = 0.0m;
             decimal Isstolen = 0.0m;
             decimal IslossInzimbabwe = 0.0m;
+            decimal IsDriverunder25 = 0.0m;
+            decimal IsSoundsystem = 0.0m;
             decimal PDriverunder21amount = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "PrivateDriverUnder21").Select(x => x.Value).FirstOrDefault());
             decimal PLicensedless60monthsamount = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "PrivateLicenceLess60Month").Select(x => x.Value).FirstOrDefault());
             decimal PPartialLossamount = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "PrivatePartialLoss").Select(x => x.Value).FirstOrDefault());
             decimal PStolenamount = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "PrivateStolen/Accessories").Select(x => x.Value).FirstOrDefault());
             decimal POutSideOfZimba = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "PrivateOutSideOfZimba").Select(x => x.Value).FirstOrDefault());
             decimal PCarTotalLoss = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "PrivateCarTotalLoss").Select(x => x.Value).FirstOrDefault());
+            decimal PSoundSystem = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "PrivateSoundSystem").Select(x => x.Value).FirstOrDefault());
             //Commercial Car 
             decimal CTotalLoss = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "CommercialTotalLoss").Select(x => x.Value).FirstOrDefault());
             decimal CPartialLoss = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "CommercialPartialLoss").Select(x => x.Value).FirstOrDefault());
@@ -41,6 +44,7 @@ namespace Insurance.Service
             decimal CDriver25 = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "CommercialDriver25").Select(x => x.Value).FirstOrDefault());
             decimal CLicenceLess60Month = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "CommercialLicenceLess60Month").Select(x => x.Value).FirstOrDefault());
             decimal CStolenAccessories = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "CommercialStolen/Accessories").Select(x => x.Value).FirstOrDefault());
+            decimal CSpundSystem = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "CommercialSoundSystem").Select(x => x.Value).FirstOrDefault());
 
 
 
@@ -71,14 +75,18 @@ namespace Insurance.Service
                 {
                     IslossInzimbabwe = (sumInsured * POutSideOfZimba) / 100;
                 }
+                if (IsSoundSystem ==1)
+                {
+                    IsSoundsystem = (sumInsured * PSoundSystem) / 100;
+                }
 
 
             }
             else if (CommercialCar)
             {
-                if (DriverIsUnder21 == 1)
+                if (IsDriver25 == 1)
                 {
-                    DriverIsUnder = (sumInsured * CDriver25) / 100;
+                    IsDriverunder25 = (sumInsured * CDriver25) / 100;
                 }
 
                 if (Islicensedless60months == 1)
@@ -101,11 +109,15 @@ namespace Insurance.Service
                 {
                     IslossInzimbabwe = (sumInsured * COutSideZimba) / 100;
                 }
+                if (IsSoundSystem == 1)
+                {
+                    IsSoundsystem = (sumInsured * CSpundSystem) / 100;
+                }
 
                 // this.ExcessesAmount = sumInsured + DriverIsUnder + licensedless + PartialLoss + totalloss + Isstolen;
             }
 
-            this.ExcessesAmount = sumInsured + DriverIsUnder + licensedless + PartialLoss + totalloss + Isstolen + IslossInzimbabwe;
+            this.ExcessesAmount = sumInsured + DriverIsUnder + licensedless + PartialLoss + totalloss + Isstolen + IslossInzimbabwe + IsSoundsystem + IsDriverunder25;
             return this;
         }
 
