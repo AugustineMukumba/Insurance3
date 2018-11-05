@@ -112,7 +112,7 @@
                                         }
                                         }
 
-                                        @if (User.IsInRole("Staff"))
+                                        @if (User.IsInRole("Staff") || User.IsInRole("Administrator"))
                                         {
                                         <li><a href="javascript:void(0)" class="btn-sm btn-primary" onclick="RsendPolicy(@item.SummaryId)">Resend Policy </a> </li>
 

@@ -67,32 +67,55 @@ namespace InsuranceClaim.Controllers
 
             try
             {
-                 results = (from vehicalDetials in InsuranceContext.VehicleDetails.All()
-                               join customer in InsuranceContext.Customers.All()
-                               on vehicalDetials.CustomerId equals customer.Id
-                               join make in InsuranceContext.VehicleMakes.All()
-                               on vehicalDetials.MakeId equals make.MakeCode
-                               join vehicalModel in InsuranceContext.VehicleModels.All()
-                               on vehicalDetials.ModelId equals vehicalModel.ModelCode
-                               join coverType in InsuranceContext.CoverTypes.All().ToList()
-                               on vehicalDetials.CoverTypeId equals coverType.Id
-                               join user in UserManager.Users
-                               on customer.UserID equals user.Id
+                //results = (from vehicalDetials in InsuranceContext.VehicleDetails.All()
+                //           join customer in InsuranceContext.Customers.All()
+                //           on vehicalDetials.CustomerId equals customer.Id
+                //           join make in InsuranceContext.VehicleMakes.All()
+                //           on vehicalDetials.MakeId equals make.MakeCode
+                //           join vehicalModel in InsuranceContext.VehicleModels.All()
+                //           on vehicalDetials.ModelId equals vehicalModel.ModelCode
+                //           join coverType in InsuranceContext.CoverTypes.All().ToList()
+                //           on vehicalDetials.CoverTypeId equals coverType.Id
+                //           join user in UserManager.Users
+                //           on customer.UserID equals user.Id
 
-                               select new RiskDetailModel
-                               {
-                                   PolicyExpireDate = vehicalDetials.CoverEndDate.Value.ToShortDateString(),
-                                   CoverTypeName = coverType.Name,
-                                   SumInsured = vehicalDetials.SumInsured,
-                                   // SuggestedValue = vehicalDetials.su
-
-                                   VechicalMake = make.MakeDescription,
-                                   VechicalModel = vehicalModel.ModelDescription,
-                                   VehicleYear = vehicalDetials.VehicleYear,
-                                   CustomerDetails = new CustomerModel { FirstName = customer.FirstName, LastName = customer.LastName, PhoneNumber = customer.PhoneNumber, EmailAddress = user.Email }
+                //           select new RiskDetailModel
+                //           {
+                //               PolicyExpireDate = vehicalDetials.CoverEndDate.Value.ToShortDateString(),
+                //               CoverTypeName = coverType.Name,
+                //               SumInsured = vehicalDetials.SumInsured,
+                //               VechicalMake = make.MakeDescription,
+                //               VechicalModel = vehicalModel.ModelDescription,
+                //               VehicleYear = vehicalDetials.VehicleYear,
+                //               CustomerDetails = new CustomerModel { FirstName = customer.FirstName, LastName = customer.LastName, PhoneNumber = customer.PhoneNumber, EmailAddress = user.Email }
 
 
-                               }).ToList();
+                //           }).ToList();
+
+
+
+                var strQuery = "select Email, customer.PhoneNumber, LastName,  FirstName, VehicleYear, ModelDescription, MakeDescription, CoverEndDate, coverType.Name, SumInsured from VehicleDetail join Customer on VehicleDetail.CustomerId=Customer.Id" +
+" join VehicleMake on VehicleDetail.MakeId = VehicleMake.MakeCode " +
+" join vehicleModel on VehicleDetail.ModelId = vehicleModel.ModelCode" +
+" join CoverType on VehicleDetail.CoverTypeId = CoverType.Id " +
+" join AspNetUsers on Customer.UserID = AspNetUsers.Id";
+
+                results = InsuranceContext.Query(strQuery)
+.Select(x => new RiskDetailModel()
+{
+   PolicyExpireDate = x.CoverEndDate.ToShortDateString(),
+   CoverTypeName = x.Name,
+   SumInsured = x.SumInsured,
+   VechicalMake = x.MakeDescription,
+   VechicalModel = x.ModelDescription,
+   VehicleYear = x.VehicleYear,
+   CustomerDetails = new CustomerModel { FirstName = x.FirstName, LastName = x.LastName, PhoneNumber = x.PhoneNumber, EmailAddress = x.Email }
+
+
+}).ToList();
+
+
+
 
 
             }

@@ -43,14 +43,13 @@ namespace InsuranceClaim.Controllers
         }
 
 
-       // [Authorize(Roles = "Staff,Administrator")]
+        // [Authorize(Roles = "Staff,Administrator")]
 
         public ActionResult Index(int id = 0)
         {
-           // var res = MaxCustoermId();
+            // var res = MaxCustoermId();
 
-          // var res = InsuranceContext.Query("select * from Customer").Select(x => new CustomerModel() { AddressLine1 = x.AddressLine1 }).ToList();
-
+            // var res = InsuranceContext.Query("select * from Customer").Select(x => new CustomerModel() { AddressLine1 = x.AddressLine1 }).ToList();
 
 
             if (id != -1) // -1 use for getting session value when click on back button
@@ -69,7 +68,7 @@ namespace InsuranceClaim.Controllers
             //var resultts = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObjects>(cities);
             //ViewBag.Cities = resultts.cities;
 
-            ViewBag.Cities= InsuranceContext.Cities.All();
+            ViewBag.Cities = InsuranceContext.Cities.All();
 
 
 
@@ -221,7 +220,7 @@ namespace InsuranceClaim.Controllers
 
                     if (User.IsInRole("Staff"))
                     {
-                        if(buttonUpdate!=null)
+                        if (buttonUpdate != null)
                         {
                             UpdateCustomerInformation(model);
 
@@ -263,14 +262,14 @@ namespace InsuranceClaim.Controllers
         {
             var summaryDetails = InsuranceContext.SummaryDetails.Single(model.Id);
 
-            if(summaryDetails!=null)
+            if (summaryDetails != null)
             {
-                if(summaryDetails.CustomerId!=null)
+                if (summaryDetails.CustomerId != null)
                 {
 
 
                     var customerDetails = InsuranceContext.Customers.Single(summaryDetails.CustomerId);
-          
+
                     var customerdata = Mapper.Map<CustomerModel, Customer>(model);
                     customerdata.Id = summaryDetails.CustomerId.Value;
                     customerdata.UserID = customerDetails.UserID;
@@ -292,9 +291,9 @@ namespace InsuranceClaim.Controllers
 
 
                 }
-               
+
             }
-            
+
         }
         public ActionResult ProductDetail()
         {
@@ -405,7 +404,7 @@ namespace InsuranceClaim.Controllers
 
             int RadioLicenseCosts = 0;
 
-           // int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
+            // int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
             var PolicyData = (PolicyDetail)Session["PolicyData"];
             //Id is policyid from Policy detail table
             var viewModel = new RiskDetailModel();
@@ -543,7 +542,8 @@ namespace InsuranceClaim.Controllers
                         viewModel.Discount = Math.Round(Convert.ToDecimal(data.Discount), 2);
                         viewModel.VehicleLicenceFee = Convert.ToDecimal(data.VehicleLicenceFee);
 
-                        viewModel.isUpdate = true;
+                        //  viewModel.isUpdate = true; // commented on 31 oct
+                        viewModel.isUpdate = false;                         // viewModel.isUpdate = false; 
                         viewModel.vehicleindex = Convert.ToInt32(id);
 
                         var ser = new VehicleService();
@@ -591,7 +591,7 @@ namespace InsuranceClaim.Controllers
 
 
         [HttpPost]
-        public ActionResult GenerateQuote(RiskDetailModel model)
+        public ActionResult GenerateQuote(RiskDetailModel model, string btnAddVehicle = "")
         {
 
             if (model.NumberofPersons == null)
@@ -604,7 +604,7 @@ namespace InsuranceClaim.Controllers
                 model.AddThirdPartyAmount = 0.00m;
             }
 
-
+            // Submit & Add More Vehicle
 
             if (model.isUpdate)
             {
@@ -638,18 +638,26 @@ namespace InsuranceClaim.Controllers
                         Session["VehicleDetails"] = listriskdetailmodel;
                     }
 
-                    return RedirectToAction("SummaryDetail");
-                    //if (User.IsInRole("Staff"))
-                    //{
+                    if (btnAddVehicle == "")
+                    {
+                        return RedirectToAction("SummaryDetail");
+                    }
+                    else
+                    {
+                        // while click on updat button or submit buttton without add more.
+                        if (User.IsInRole("Staff"))
+                        {
+                            return RedirectToAction("RiskDetail", "ContactCentre");
+                        }
+                        else
+                        {
+                            return RedirectToAction("RiskDetail");
+
+                        }
+
+                    }
 
 
-                    //  return RedirectToAction("RiskDetail", "ContactCentre");
-                    //}
-                    //else
-                    //{
-                    //    return RedirectToAction("RiskDetail");
-
-                    //}
                 }
                 catch (Exception ex)
                 {
@@ -918,7 +926,7 @@ namespace InsuranceClaim.Controllers
 
 
                         obj.total = calculationAmount.ToString();
-                        obj.ZTSCLevy = item.ZTSCLevy==null? "0" : Convert.ToString(item.ZTSCLevy);
+                        obj.ZTSCLevy = item.ZTSCLevy == null ? "0" : Convert.ToString(item.ZTSCLevy);
 
 
                         vehiclelist.Add(obj);
@@ -1244,7 +1252,7 @@ namespace InsuranceClaim.Controllers
                     int CustomerUniquId = 0;
 
 
-                    if(User.IsInRole("Administrator"))
+                    if (User.IsInRole("Administrator"))
                     {
                         TempData["SucessMsg"] = "Admin can not create policy.";
                         return RedirectToAction("SummaryDetail");
@@ -1280,8 +1288,8 @@ namespace InsuranceClaim.Controllers
                         var InsuranceID = "";
                         var vichelDetails = new VehicleDetail();
 
-                        
-                        if(model.Id!=0)
+
+                        if (model.Id != 0)
                         {
                             model.CustomSumarryDetilId = model.Id;
                         }
@@ -1330,11 +1338,11 @@ namespace InsuranceClaim.Controllers
 
                         var userDetials = UserManager.FindByEmail(customer.EmailAddress);
 
-                        if(userDetials==null)
+                        if (userDetials == null)
                         {
                             customer.Id = 0;
                         }
-                        
+
                         //if user staff
 
                         if (role == "Staff" || role == "Administrator")
@@ -1587,6 +1595,7 @@ namespace InsuranceClaim.Controllers
                         var vehicle = (List<RiskDetailModel>)Session["VehicleDetails"];
 
 
+
                         if (vehicle != null && vehicle.Count > 0)
                         {
                             foreach (var item in vehicle.ToList())
@@ -1615,7 +1624,7 @@ namespace InsuranceClaim.Controllers
                                     var service = new RiskDetailService();
                                     _item.CustomerId = customer.Id;
                                     _item.PolicyId = policy.Id;
-                                 //   _item.InsuranceId = model.InsuranceId;
+                                    //   _item.InsuranceId = model.InsuranceId;
                                     //if (model.AmountPaid < model.TotalPremium)
                                     //{
                                     //    _item.BalanceAmount = (_item.Premium + _item.ZTSCLevy + _item.StampDuty + (_item.IncludeRadioLicenseCost ? _item.RadioLicenseCost : 0.00m) - _item.Discount) - (model.AmountPaid / vehicle.Count);
@@ -1894,8 +1903,34 @@ namespace InsuranceClaim.Controllers
 
 
 
+
+
+
                         if (summary != null)
                         {
+
+                            if (summary.Id == 0)
+                            {
+                                if (Session["VehicleDetails"] != null) // forcelly check because in some case summary details id is comming 0
+                                {
+                                    var vehicalDetailsForSummary = (List<RiskDetailModel>)Session["VehicleDetails"];
+                                    if (vehicalDetailsForSummary[0].Id != 0)
+                                    {
+                                        var SummaryVehicalDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"VehicleDetailsId={vehicalDetailsForSummary[0].Id}").ToList();
+
+                                        if (SummaryVehicalDetails.Count() > 0)
+                                        {
+                                            summary.Id = SummaryVehicalDetails[0].SummaryDetailId;
+                                        }
+                                    }
+
+                                }
+                            }
+
+
+
+
+
 
                             if (summary.Id == null || summary.Id == 0)
                             {
@@ -2125,6 +2160,9 @@ namespace InsuranceClaim.Controllers
                             var PassengerAccidentCoverAmount = 0.00m;
                             var ExcessAmount = 0.00m;
 
+                            var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
+
+
                             foreach (var item in ListOfVehicles)
                             {
                                 Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
@@ -2156,8 +2194,26 @@ namespace InsuranceClaim.Controllers
                                     converType = eCoverType.Comprehensive.ToString();
                                 }
 
+                                string paymentTermsNmae = "";
+                                var paymentTermVehicel = ePaymentTermData.FirstOrDefault(p => p.ID == item.PaymentTermId);
 
-                                Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>$0.00</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Excess) + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
+
+                                if (item.PaymentTermId == 1)
+                                    paymentTermsNmae = "Annual";
+                                else if (item.PaymentTermId == 4)
+                                    paymentTermsNmae = "Termly";
+                                else
+                                    paymentTermsNmae = paymentTermVehicel.Name + " Months";
+
+
+                                string policyPeriod = item.CoverStartDate.Value.ToString("dd/MM/yyyy") + " - " + item.CoverEndDate.Value.ToString("dd/MM/yyyy");
+
+
+
+                                Summeryofcover += "<tr> <td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td> <td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td> <td style='padding: 7px 10px; font - size:15px;'>" + policyPeriod + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + paymentTermsNmae + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
+
+
+
                             }
 
 
@@ -2174,8 +2230,9 @@ namespace InsuranceClaim.Controllers
                             //var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={model.Id}").ToList();
                             var vehicleQuotation = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
                             var policyQuotation = InsuranceContext.PolicyDetails.Single(vehicleQuotation.PolicyId);
-                            var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
+                            //  var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
                             var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == vehicleQuotation.PaymentTermId);
+
 
                             Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
 
@@ -2188,21 +2245,24 @@ namespace InsuranceClaim.Controllers
 
                             // need to do work
 
+                            // Product name
+
                             string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(QuotationEmailPath));
                             var Bodyy = MotorBody.Replace("##PolicyNo##", policyQuotation.PolicyNumber).Replace("##path##", filepath).Replace("##Cellnumber##", user.PhoneNumber).
                                 Replace("##FirstName##", customerQuotation.FirstName).Replace("##LastName##", customerQuotation.LastName).Replace("##Email##", user.Email).
                                 Replace("##BirthDate##", customerQuotation.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customerQuotation.AddressLine1).
                                 Replace("##Address2##", customerQuotation.AddressLine2).Replace("##Renewal##", vehicleQuotation.RenewalDate.Value.ToString("dd/MM/yyyy")).
-                                Replace("##InceptionDate##", vehicleQuotation.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).
-                                Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (vehicleQuotation.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + vehicleQuotation.PaymentTermId.ToString() + "Months)")).
+                                Replace("##InceptionDate##", vehicleQuotation.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name + " Months").
+                                Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (vehicleQuotation.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + " Months")).
                                 Replace("##TotalPremiumDue##", Convert.ToString(summaryDetail.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty)).
                                 Replace("##MotorLevy##", Convert.ToString(summaryDetail.TotalZTSCLevies)).
                                 Replace("##PremiumDue##", Convert.ToString(summaryDetail.TotalPremium - summaryDetail.TotalStampDuty - summaryDetail.TotalZTSCLevies - summaryDetail.TotalRadioLicenseCost + ListOfVehicles.Sum(x => x.Discount) - ListOfVehicles.Sum(x => x.VehicleLicenceFee))).
                                 Replace("##PostalAddress##", customerQuotation.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(ExcessBuyBackAmount)).
                                 Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount)).
                                 Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount)).Replace("##RadioLicence##", Convert.ToString(summaryDetail.TotalRadioLicenseCost)).
-                                Replace("##Discount##", Convert.ToString(ListOfVehicles.Sum(x => x.Discount))).Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).
-                                Replace("##SummaryDetailsPath##", Convert.ToString(rootPath)).
+                                Replace("##Discount##", Convert.ToString(ListOfVehicles.Sum(x => x.Discount)))
+                                .Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).
+                                Replace("##SummaryDetailsPath##", Convert.ToString(rootPath)).Replace("##insurance_period##", vehicleQuotation.CoverStartDate.Value.ToString("dd/MM/yyyy") + " - " + vehicleQuotation.CoverEndDate.Value.ToString("dd/MM/yyyy")).
                                 Replace("##NINumber##", customerQuotation.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(ListOfVehicles.Sum(x => x.VehicleLicenceFee)));
 
                             #region Invoice PDF
@@ -2247,12 +2307,25 @@ namespace InsuranceClaim.Controllers
                             InsuranceContext.SmsLogs.Insert(objRecieptsmslog);
                             #endregion
                             TempData["SucessMsg"] = "Quotation has been sent email sucessfully.";
+
+                            Session.Remove("CustomerDataModal");
+                            Session.Remove("PolicyData");
+                            Session.Remove("VehicleDetails");
+                            Session.Remove("SummaryDetailed");
+                            Session.Remove("CardDetail");
+                            Session.Remove("issummaryformvisited");
+                            Session.Remove("PaymentId");
+                            Session.Remove("InvoiceId");
+
+
+
+
                             return RedirectToAction("SummaryDetail");
                         }
 
                         #endregion
 
-                       // return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
+                        // return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
 
                         if (model.PaymentMethodId == 1)
                             return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id, invoiceNumer = model.InvoiceNumber });
@@ -2288,6 +2361,8 @@ namespace InsuranceClaim.Controllers
                 var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
                 email = _User.Email;
             }
+
+
             return email;
 
         }
@@ -2508,7 +2583,7 @@ namespace InsuranceClaim.Controllers
             Session.Remove("issummaryformvisited");
             Session.Remove("PaymentId");
             Session.Remove("InsuranceId");
-            
+
 
         }
 
@@ -2595,7 +2670,7 @@ namespace InsuranceClaim.Controllers
 
                 if (tokenObject.Response.PartnerToken != "")
                 {
-                    if(String.IsNullOrEmpty(VehicleYear))
+                    if (String.IsNullOrEmpty(VehicleYear))
                     {
                         VehicleYear = "1900";
                     }
@@ -2611,15 +2686,15 @@ namespace InsuranceClaim.Controllers
                     {
                         response.Data = quoteresponse;
 
-                        if(quoteresponse.Response.Quotes[0]!=null)
+                        if (quoteresponse.Response.Quotes[0] != null)
                         {
                             Session["InsuranceId"] = quoteresponse.Response.Quotes[0].InsuranceID;
                         }
-                       
+
                     }
                 }
 
-                
+
 
 
 
@@ -2689,7 +2764,7 @@ namespace InsuranceClaim.Controllers
 
                 customerUserId = "Guest-" + uniqueId + "@gmail.com";
 
-                var uniquCustomer = new UniqueCustomer {  UniqueCustomerId = uniqueId, CreatedOn = DateTime.Now };
+                var uniquCustomer = new UniqueCustomer { UniqueCustomerId = uniqueId, CreatedOn = DateTime.Now };
 
                 InsuranceContext.UniqueCustomers.Insert(uniquCustomer);
             }
@@ -2709,7 +2784,7 @@ namespace InsuranceClaim.Controllers
 
 
 
-        public ActionResult PaymentDetail(int id, string erroMsg=null)
+        public ActionResult PaymentDetail(int id, string erroMsg = null)
         {
             var cardDetails = (CardDetailModel)Session["CardDetail"];
             if (cardDetails == null)

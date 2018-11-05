@@ -6,6 +6,12 @@
 
     var customerDetail = (InsuranceClaim.Models.CustomerModel)Session["CustomerDataModal"];
 
+   
+
+    bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+
+
+
     var isUserStaff = false;
     if ((User.Identity.IsAuthenticated && User.IsInRole("Staff")))
     {
@@ -137,6 +143,26 @@
 
                                                 </div>
                                             </div>
+
+
+                                            @if (item.PaymentTermId > 4)
+                                            {
+                                                <div class="col-sm-3 col-md-3 choose-plan-blocl" style="">
+                                                    <div class="choose-plan-box" planpurchase="4" style="cursor:pointer" onclick="SelectPlan(this);">
+                                                        <h4>Termly</h4>
+                                                        <div class="plan-white-box">
+                                                            <h3>$@Math.Round(Convert.ToDouble(item.Premium + item.StampDuty + item.ZTSCLevy + item.VehicleLicenceFee + (Convert.ToBoolean(item.IncludeRadioLicenseCost) ? item.RadioLicenseCost : 0.00m)), 2)</h3>
+                                                            <p>Vehicle Model : @Insurance.Domain.InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription</p>
+                                                            <a href="javascript:void(0);" style="pointer-events:none;">PAY FOR @item.PaymentTermId MONTHS</a>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            }
+
+
+
+
                                         </div>
                                     }
                                 }
@@ -542,7 +568,7 @@
                 var totalpremium = 0.00;
                 $.each(list, function (index, value) {
 
-                 
+
 
                     count++;
                     bodyHTML += "<tr><td>" + value.make + " "+ value.model+ "</td><td>" + value.suminsured + "</td><td>" + value.premium + "</td><td>$" + value.radio_license_fee + "</td><td>$" + value.ZTSCLevy + "</td><td>$" + value.vehicle_license_fee+ "</td> <td>$" + value.stampDuty+ "</td><td>$" + value.total+ "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >Edit</button></li><li><button type='button' onclick='DeleteVehicleDetails(" + count + ")' class='btn-sm btn-danger' >Delete</button></li></ul></div></td></tr>"
@@ -641,8 +667,9 @@
 
         if ($("#sucessmsg").val()!="") {
             alert($("#sucessmsg").val());
+            debugger;
 
-            if(ViewBag.CurrentUserRole=="")
+            if('@userLoggedin'=='False')
             {
                 location.href = '@Url.Action("Index", "InsuranceHome")';
             }

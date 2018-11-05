@@ -153,7 +153,9 @@ namespace InsuranceClaim.Controllers
                         viewModel.Discount = data.Discount;
                         viewModel.VehicleLicenceFee = Convert.ToDecimal(data.VehicleLicenceFee);
                         viewModel.InsuranceId = data.InsuranceId;
-                        viewModel.isUpdate = true;
+
+                       // viewModel.isUpdate = true; //commented on "31 oct"
+                        viewModel.isUpdate = false;
                  
                         viewModel.vehicleindex = Convert.ToInt32(id);
 

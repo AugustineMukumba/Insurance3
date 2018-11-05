@@ -65,6 +65,8 @@ namespace InsuranceClaim.Controllers
         public ActionResult VehicleMakeList()
         {
 
+          
+
             var makelist = InsuranceContext.VehicleMakes.All(where: "IsActive = 'True' or IsActive is Null").OrderByDescending(x => x.Id).ToList();
             return View(makelist);
         }
@@ -138,13 +140,29 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult DeleteMake(int id)
         {
-            string query = $"update VehicleMake set IsActive =0 where Id={id}";
-            InsuranceContext.VehicleMakes.Execute(query);
+            var makeDetials = InsuranceContext.VehicleMakes.Single(id);
+
+            if(makeDetials!=null)
+            {
+                var vehicelDetials = InsuranceContext.VehicleDetails.Single(where: $"MakeId='{makeDetials.MakeCode}'");
+
+                if(vehicelDetials==null)
+                {
+                    string query = $"update VehicleMake set IsActive =0 where Id={id}";
+                    InsuranceContext.VehicleMakes.Execute(query);
+                }
+                else
+                {
+                    TempData["errorMsg"] = "Vehicle exist for this Make.";
+                }
+
+            }
+
+            
 
             return RedirectToAction("VehicleMakeList");
-
-
         }
+
 
 
 

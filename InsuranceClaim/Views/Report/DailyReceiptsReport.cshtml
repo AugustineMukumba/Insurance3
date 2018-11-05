@@ -13,7 +13,7 @@
                     <h2>Daily Receipts Report</h2>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 add-btn">
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 add-btn products-top">
                 <div class="text-right">
                     @*<button type="button" class="btn btn-primary">Add</button>*@
                     @*<input class="btn btn-primary" type="button" value="Generate PDF" id="generatePdf" />*@
@@ -82,7 +82,7 @@
 
                     <thead>
                         <tr>
-                            <th>Customer Details</th>
+                            <th>Customer Name</th>
                             @*<th>Contact Number</th>*@
                             <th>Product</th>
                             <th>Policy Number</th>
@@ -135,18 +135,10 @@
                             }
 
 
-
-
                             <tr>
+                               
                                 <td>
-                                    <table class="sub-table">
-                                        <tr>
-                                            <td><b>Customer Name :</b><br />@item.FirstName @item.LastName<br /></td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Contact Number : </b><br />@item.Contact<br /></td>
-                                        </tr>
-                                    </table>
+                                    @item.FirstName @item.LastName
                                 </td>
                                 @*<td>@item.Contact</td>*@
                                 <td>@item.Product</td>

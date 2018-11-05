@@ -499,12 +499,17 @@
                                             <div class="col-sm-6 col-md-6">
                                                 <div class="form-group">
                                                     @Html.Label("Add More Vehicles ?", new { @class = "gender-label" })
-                                                    @Html.CheckBoxFor(m => m.chkAddVehicles, new { @class = (Model.isUpdate ? "btnDisabled" : ""), @style = "width: 40px;height: 36px;" })
-                                                </div>
+                                                    @*@Html.CheckBoxFor(m => m.chkAddVehicles, new { @class = (Model.isUpdate ? "btnDisabled" : ""), @style = "width: 40px;height: 36px;" })*@
+                                               
+
+
+                                                    @Html.CheckBoxFor(m => m.chkAddVehicles, new { @class = "", @style = "width: 40px;height: 36px;" })
+                                                
+                                                 </div>
                                             </div>
                                             <div class="col-sm-6 col-md-6">
                                                 <div class="form-group text-right">
-                                                    <button type="submit" id="btnAddVehicle" class="btn btnDisabled @(Model.isUpdate ? "btnDisabled" : "")" style="width: 270px;    margin-top: 8px;">Submit & Add More Vehicle</button>
+                                                    <button type="submit" id="btnAddVehicle" name="btnAddVehicle" value="addvehical" class="btn btnDisabled @(Model.isUpdate ? "btnDisabled" : "")" style="width: 270px;    margin-top: 8px;">Submit & Add More Vehicle</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -849,6 +854,28 @@
             case 4:
                 setPolicyEndDate(4);
                 break;
+            case 5:
+                setPolicyEndDate(5)
+                break;
+            case 6:
+                setPolicyEndDate(6);
+                break;
+            case 7:
+                setPolicyEndDate(7);
+                break;
+            case 8:
+                setPolicyEndDate(8)
+                break;
+            case 9:
+                setPolicyEndDate(9);
+                break;
+            case 10:
+                setPolicyEndDate(10);
+                break;
+            case 11:
+                setPolicyEndDate(11)
+                break;
+          
         }
     }
 
@@ -925,6 +952,28 @@
                     break;
                 case 4:
                     setPolicyEndDate(4);
+                    break;
+                case 5:
+                    setPolicyEndDate(5)
+                    break;
+                case 6:
+                    setPolicyEndDate(6);
+                    break;
+                case 7:
+                    setPolicyEndDate(7);
+                    break;
+                case 8:
+                    setPolicyEndDate(8)
+                    break;
+                case 9:
+                    setPolicyEndDate(9);
+                    break;
+                case 10:
+                    setPolicyEndDate(10);
+                    break;
+
+                case 11:
+                    setPolicyEndDate(11);
                     break;
             }
 
@@ -1231,7 +1280,7 @@
                         $("#VehicleYear").val(vYearManufacture);
                     }
 
-                    
+
                     $("#VehicleYear").addClass("inputDisabled");
                     var vUsage = vehicle.VehicleType;
                     //ajax vehicle u -> prod id
@@ -1460,6 +1509,8 @@
             mm = '0' + mm;
         }
         var today = mm + '/' + dd + '/' + yyyy;
+
+       
         $("#RenewalDate").val(today);
     }
     //function setPolicyEndDate(numberOfMonth) {

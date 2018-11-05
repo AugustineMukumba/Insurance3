@@ -39,7 +39,19 @@
             </div>
 
 
-            
+        <div class="row">
+            <br />
+            @if (TempData["errorMsg"] != null)
+            {
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-section-col alert alert-danger">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>@TempData["errorMsg"]</strong> .
+                </div>
+            }
+
+        </div>
+
+
         
         <div class="product-table-grid">
             <table class="table table-striped">

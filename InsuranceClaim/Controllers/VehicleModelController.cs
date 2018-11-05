@@ -101,7 +101,6 @@ namespace InsuranceClaim.Controllers
             //            }).OrderByDescending(c => c.Id).ToList();
 
 
-
             var list = InsuranceContext.Query("select ModelDescription, ModelCode, MakeDescription, VehicleModel.Id as ModelId, VehicleModel.ShortDescription from VehicleModel join VehicleMake on VehicleModel.MakeCode = VehicleMake.MakeCode")
                 .Select(x => new ClsVehicleModel()
                 {
@@ -111,10 +110,6 @@ namespace InsuranceClaim.Controllers
                     ShortDescription = x.ShortDescription,
                     ModelCode = x.ModelCode
                 }).ToList();
-
-
-
-
 
 
             return View(list);
@@ -200,8 +195,24 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult DeleteModel(int id)
         {
-            string query = $"update VehicleModel set IsActive = 0 where Id={id}";
-            InsuranceContext.VehicleModels.Execute(query);
+          
+           var modelDetials = InsuranceContext.VehicleModels.Single(id);
+
+            if (modelDetials != null)
+            {
+                var vehicelDetials = InsuranceContext.VehicleDetails.Single(where: $"ModelId='{modelDetials.ModelCode}'");
+
+                if (vehicelDetials == null)
+                {
+                    string query = $"update VehicleModel set IsActive = 0 where Id={id}";
+                    InsuranceContext.VehicleModels.Execute(query);
+                }
+                else
+                {
+                    TempData["errorMsg"] = "Vehicle exist for this Model.";
+                }
+
+            }
 
             return RedirectToAction("VehicleModelList");
         }

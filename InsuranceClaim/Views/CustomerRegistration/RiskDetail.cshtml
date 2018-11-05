@@ -83,7 +83,7 @@
                             @Html.HiddenFor(m => m.ExcessAmount)
 
                             @Html.HiddenFor(m => m.Excess)
-                     
+
 
 
                             @Html.HiddenFor(m => m.AnnualRiskPremium)
@@ -284,7 +284,7 @@
                                             </div>
                                         </div>
                                         <hr class="higlighter" />
-                                       
+
                                         <div class="row">
 
                                             <div class="col-sm-6 col-md-6 form-group-text">
@@ -293,7 +293,7 @@
                                                 </div>
                                                 <div class="form-group-list">
                                                     <ul class="list-inline">
-                                                      
+
                                                         <li>
                                                             @Html.CheckBoxFor(x => x.ExcessBuyBack)
                                                             @Html.Label("Excess BuyBack", new { @class = "gender-label" })
@@ -385,10 +385,10 @@
                                                     @Html.DropDownListFor(x => x.ExcessType, ViewBag.eExcessTypeData as SelectList, new { @class = "form-control" })
 
                                                     @*@Html.Label("Excess Type", new { @class = "gender-label" })
-                    <select name="ExcessType" class="form-control" id="ExcessType">
-                        <option value="1">Percentage</option>
-                        <option value="2">Fixed Amount</option>
-                    </select>*@
+                                                        <select name="ExcessType" class="form-control" id="ExcessType">
+                                                            <option value="1">Percentage</option>
+                                                            <option value="2">Fixed Amount</option>
+                                                        </select>*@
                                                 </div>
                                             </div>
 
@@ -471,9 +471,9 @@
 
                                             <div class="col-sm-6 col-md-6 form-group-text">
                                                 <div class="form-group">
-                                                   <br />
                                                     <br />
-                                                    <b>  Our call center agent will contact you for the correct Zinara License Fee.  </b>                                           
+                                                    <br />
+                                                    <b>  Our call center agent will contact you for the correct Zinara License Fee.  </b>
                                                 </div>
                                             </div>
 
@@ -522,8 +522,15 @@
                                             <div class="col-sm-6 col-md-6">
                                                 <div class="form-group">
                                                     @Html.Label("Add More Vehicles ?", new { @class = "gender-label" })
-                                                    @Html.CheckBoxFor(m => m.chkAddVehicles, new { @class = (Model.isUpdate ? "btnDisabled" : ""), @style = "width: 40px;height: 36px;" })
-                                                </div>
+                                                    @*@Html.CheckBoxFor(m => m.chkAddVehicles, new { @class = (Model.isUpdate ? "btnDisabled" : ""), @style = "width: 40px;height: 36px;" })*@
+                                               
+
+                                                    @Html.CheckBoxFor(m => m.chkAddVehicles, new { @class = "", @style = "width: 40px;height: 36px;" })
+
+
+
+                                                
+                                                 </div>
                                             </div>
                                             <div class="col-sm-6 col-md-6">
                                                 <div class="form-group text-right">
@@ -872,6 +879,27 @@
             case 4:
                 setPolicyEndDate(4);
                 break;
+            case 5:
+                setPolicyEndDate(5);
+                break;
+            case 6:
+                setPolicyEndDate(6)
+                break;
+            case 7:
+                setPolicyEndDate(7);
+                break;
+            case 8:
+                setPolicyEndDate(8);
+                break;
+            case 9:
+                setPolicyEndDate(8);
+                break;
+            case 10:
+                setPolicyEndDate(8);
+                break;
+            case 11:
+                setPolicyEndDate(11);
+                break;
         }
     }
 
@@ -948,6 +976,28 @@
                     break;
                 case 4:
                     setPolicyEndDate(4);
+                    break;
+                case 5:
+                    setPolicyEndDate(5)
+                    break;
+                case 6:
+                    setPolicyEndDate(6);
+                    break;
+                case 7:
+                    setPolicyEndDate(7);
+                    break;
+                case 8:
+                    setPolicyEndDate(8)
+                    break;
+                case 9:
+                    setPolicyEndDate(9);
+                    break;
+                case 10:
+                    setPolicyEndDate(10);
+                    break;
+
+                case 11:
+                    setPolicyEndDate(11);
                     break;
             }
 

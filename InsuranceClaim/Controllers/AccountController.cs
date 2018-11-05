@@ -517,6 +517,8 @@ namespace InsuranceClaim.Controllers
             var PassengerAccidentCoverAmount = 0.00m;
             var ExcessAmount = 0.00m;
 
+         
+
             foreach (var item in ListOfVehicles)
             {
                 Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
@@ -549,7 +551,20 @@ namespace InsuranceClaim.Controllers
                 }
 
 
-                Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>$0.00</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Excess) + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
+                var paymentTermVehicel = ePaymentTermData.FirstOrDefault(p => p.ID == item.PaymentTermId);
+                string paymentTermsName = "";
+                if (item.PaymentTermId == 1)
+                    paymentTermsName = "Annual";
+                else if (item.PaymentTermId == 4)
+                    paymentTermsName = "Termly";
+                else
+                    paymentTermsName = paymentTermVehicel.Name + " Months";
+
+
+                string policyPeriod = item.CoverStartDate.Value.ToString("dd/MM/yyyy") + " - " + item.CoverEndDate.Value.ToString("dd/MM/yyyy");
+
+
+                Summeryofcover += "<tr> <td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td>  <td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>" + policyPeriod + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + paymentTermsName + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
             }
 
             Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
@@ -1567,7 +1582,6 @@ namespace InsuranceClaim.Controllers
             {
                 PolicyListViewModel policylistviewmodel = new PolicyListViewModel();
 
-
                 var paymentDetails = InsuranceContext.PaymentInformations.Single(where: $"SummaryDetailId =" + item.Id);
 
                 if (paymentDetails == null)
@@ -1588,7 +1602,6 @@ namespace InsuranceClaim.Controllers
                 var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
 
 
-
                 if (vehicle != null)
                 {
                     var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
@@ -1596,13 +1609,21 @@ namespace InsuranceClaim.Controllers
 
                     policylistviewmodel.PolicyNumber = policy.PolicyNumber;
 
-                    foreach (var _item in SummaryVehicleDetails)
+                    int i = 0;
+
+                    //foreach (var _item in SummaryVehicleDetails)
+                    //{
+
+                    //}
+
+
+                    VehicleReinsuranceViewModel obj = new VehicleReinsuranceViewModel();
+                    var _vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+
+                    if (_vehicle != null)
                     {
-                        VehicleReinsuranceViewModel obj = new VehicleReinsuranceViewModel();
-                        var _vehicle = InsuranceContext.VehicleDetails.Single(_item.VehicleDetailsId);
-                        var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.All(where: $"SummaryDetailId={item.Id} and VehicleId={_item.VehicleDetailsId}").ToList();
 
-
+                        var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.All(where: $"SummaryDetailId={item.Id} and VehicleId={SummaryVehicleDetails[0].VehicleDetailsId}").ToList();
                         obj.CoverType = Convert.ToInt32(_vehicle.CoverTypeId);
                         obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
                         obj.MakeId = _vehicle.MakeId;
@@ -1637,7 +1658,10 @@ namespace InsuranceClaim.Controllers
                         }
 
                         policylist.listpolicy.Add(policylistviewmodel);
+
                     }
+
+
                 }
             }
 

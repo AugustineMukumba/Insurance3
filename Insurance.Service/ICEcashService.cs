@@ -16,8 +16,8 @@ namespace Insurance.Service
 {
     public class ICEcashService
     {
-      // public static string PSK = "127782435202916376850511";
-      //  public static string SandboxIceCashApi = "http://api-test.icecash.com/request/20523588";
+        // public static string PSK = "127782435202916376850511";
+        //  public static string SandboxIceCashApi = "http://api-test.icecash.com/request/20523588";
 
         public static string PSK = "565205790573235453203546";
         public static string LiveIceCashApi = "https://api.icecash.co.zw/request/20350763";
@@ -196,6 +196,10 @@ namespace Insurance.Service
             //string PSK = "127782435202916376850511";
             string _json = "";
 
+
+            make = RemoveSpecialChars(make);
+            model = RemoveSpecialChars(model);
+
             var CustomerInfo = (CustomerModel)HttpContext.Current.Session["CustomerDataModal"];
 
             List<VehicleObject> obj = new List<VehicleObject>();
@@ -203,8 +207,8 @@ namespace Insurance.Service
             //foreach (var item in listofvehicles)
             //{
 
-            obj.Add(new VehicleObject { VRN = RegistrationNo, DurationMonths = (PaymentTermId == 1 ? 12 : PaymentTermId), VehicleValue = Convert.ToInt32(suminsured), YearManufacture = Convert.ToInt32(VehicleYear), InsuranceType =  Convert.ToInt32(CoverTypeId), VehicleType = Convert.ToInt32(VehicleUsage), TaxClass = 1, Make = make, Model = model, EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber });
-        
+            obj.Add(new VehicleObject { VRN = RegistrationNo, DurationMonths = (PaymentTermId == 1 ? 12 : PaymentTermId), VehicleValue = Convert.ToInt32(suminsured), YearManufacture = Convert.ToInt32(VehicleYear), InsuranceType = Convert.ToInt32(CoverTypeId), VehicleType = Convert.ToInt32(VehicleUsage), TaxClass = 1, Make = make, Model = model, EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber });
+
             //}
 
             QuoteArguments objArg = new QuoteArguments();
@@ -246,7 +250,7 @@ namespace Insurance.Service
 
             JObject jsonobject = JObject.Parse(data);
 
-           // var client = new RestClient("http://api-test.icecash.com/request/20523588");
+            // var client = new RestClient("http://api-test.icecash.com/request/20523588");
             var client = new RestClient(LiveIceCashApi);
             var request = new RestRequest(Method.POST);
             request.AddHeader("cache-control", "no-cache");
@@ -310,6 +314,23 @@ namespace Insurance.Service
         }
 
 
+        public string RemoveSpecialChars(string str)
+        {
+            // Create  a string array and add the special characters you want to remove
+            // You can include / exclude more special characters based on your needs
+            string[] chars = new string[] { ",", ".", "/", "!", "@", "#", "$", "%", "^", "&", "*", "'", "\"", ";", "_", "(", ")", ":", "|", "[", "]" };
+            //Iterate the number of times based on the String array length.
+            for (int i = 0; i < chars.Length; i++)
+            {
+                if (str.Contains(chars[i]))
+                {
+                    str = str.Replace(chars[i], "");
+                }
+            }
+            return str;
+        }
+
+
         public static ResultRootObject TPIQuoteUpdate(Customer customer, VehicleDetail vehicleDetail, string PartnerToken, int? paymentMethod)
         {
             //string PSK = "127782435202916376850511";
@@ -323,9 +344,9 @@ namespace Insurance.Service
 
             var item = vehicleDetail;
 
-            if(paymentMethod==2 || paymentMethod == 3) // it's represent to visa
+            if (paymentMethod == 2 || paymentMethod == 3) // it's represent to visa
             {
-                paymentMethod =1;
+                paymentMethod = 1;
             }
 
             // obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 0, YearManufacture = 0, InsuranceType = 0, VehicleType = 0, TaxClass = 0, Make = "", Model = "", EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = "01" + CustomerInfo.PhoneNumber });
@@ -405,12 +426,12 @@ namespace Insurance.Service
 
             var item = vehicleDetail;
 
-           
+
             // obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 0, YearManufacture = 0, InsuranceType = 0, VehicleType = 0, TaxClass = 0, Make = "", Model = "", EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = "01" + CustomerInfo.PhoneNumber });
 
             //List<QuoteDetial> qut = new List<QuoteDetial>();
 
-            TPIPolicyDetial qut = new TPIPolicyDetial  { InsuranceID = item.InsuranceId, Function= "TPIPolicy" };
+            TPIPolicyDetial qut = new TPIPolicyDetial { InsuranceID = item.InsuranceId, Function = "TPIPolicy" };
 
             // var quotesDetial = new RequestTPIQuoteUpdate { Function = "TPIQuoteUpdate", PaymentMethod = Convert.ToString(paymentMethod), Identifier = "1", MSISDN = "01" + CustomerInfo.PhoneNumber, Quotes = qut };
 
