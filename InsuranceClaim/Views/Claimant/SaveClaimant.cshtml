@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "SaveClaimant";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
-    
+    var errmsgs = TempData["errorMsg"];
 }
 <div class="body-content-section">
     <div class="form-section-top">
@@ -118,6 +118,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <input type="hidden" id="errmsgs" value="@errmsgs" />
                             }
                         </div>
                     </div>
@@ -156,6 +157,11 @@
         $( "#txtPolicyNumber" ).autocomplete({
             source: policyNumbersArray
         });
+
+        if ($("#errmsgs").val() == "Date of Loss Not Exist in Policy Period") {
+            alert("Date of Loss Not Exist in Policy Period");
+        }
+
     });
 
 

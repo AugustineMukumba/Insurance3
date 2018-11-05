@@ -542,7 +542,7 @@
                 var totalpremium = 0.00;
                 $.each(list, function (index, value) {
 
-                 
+
 
                     count++;
                     bodyHTML += "<tr><td>" + value.make + " "+ value.model+ "</td><td>" + value.suminsured + "</td><td>" + value.premium + "</td><td>$" + value.radio_license_fee + "</td><td>$" + value.ZTSCLevy + "</td><td>$" + value.vehicle_license_fee+ "</td> <td>$" + value.stampDuty+ "</td><td>$" + value.total+ "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >Edit</button></li><li><button type='button' onclick='DeleteVehicleDetails(" + count + ")' class='btn-sm btn-danger' >Delete</button></li></ul></div></td></tr>"

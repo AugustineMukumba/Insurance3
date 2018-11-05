@@ -35,7 +35,7 @@ namespace InsuranceClaim.Models
         public string ThirdPartyInvolvement { get; set; }
         //public int CreatedBy { get; set; }
 
-        public string CreatedBy { get; set; }
+        public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public bool? IsDeleted { get; set; }
         public bool? IsRegistered { get; set; }

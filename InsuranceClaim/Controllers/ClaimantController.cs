@@ -32,14 +32,22 @@ namespace InsuranceClaim.Controllers
                 if (userLoggedin)
                 {
                     userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                    var customer = InsuranceContext.Customers.Single(where: $"UserId ='{userid}'");
                     var dbModel = Mapper.Map<ClaimNotificationModel, ClaimNotification>(model);
-                    dbModel.CreatedBy = userid;
-                    dbModel.CreatedOn = DateTime.Now;
-                    dbModel.IsDeleted = true;
-                    dbModel.IsRegistered = false;
-                    InsuranceContext.ClaimNotifications.Insert(dbModel);
-                    return RedirectToAction("ClaimantList");
+                    var policy = model.PolicyNumber;
+                    var Detailofpolicy = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{policy}'");
+                    var startdate = Detailofpolicy.StartDate;
+                    var enddate = Detailofpolicy.EndDate;
+                    //if (model.DateOfLoss >= startdate && model.DateOfLoss <= enddate)
+                    //{
+                        dbModel.CreatedBy = customer.Id;
+                        dbModel.CreatedOn = DateTime.Now;
+                        dbModel.IsDeleted = true;
+                        dbModel.IsRegistered = false;
+                        InsuranceContext.ClaimNotifications.Insert(dbModel);
+                        return RedirectToAction("ClaimantList");
                     //}
+                    //TempData["errorMsg"] = "Date of Loss Not Exist in Policy Period";
                 }
             }
 
@@ -51,12 +59,8 @@ namespace InsuranceClaim.Controllers
         [HttpGet]
         public ActionResult ClaimantList()
         {
-            //InsuranceClaim.Models.ClaimNotificationModel obj = new InsuranceClaim.Models.ClaimNotificationModel();
-            //List<Insurance.Domain.ClaimNotification> objList = new List<Insurance.Domain.ClaimNotification>();
-            //objList = InsuranceContext.ClaimNotifications.All(where: "IsDeleted = 'True' and   IsRegistered='false'").OrderByDescending(x => x.Id).ToList();
+
             List<ClaimNotificationModel> objList = new List<ClaimNotificationModel>();
-
-
 
             objList = (from j in InsuranceContext.ClaimNotifications.All().ToList()
                        join jt in InsuranceContext.PolicyDetails.All().ToList() on j.PolicyNumber equals jt.PolicyNumber
@@ -501,7 +505,7 @@ namespace InsuranceClaim.Controllers
                         from date in data.DefaultIfEmpty()
                         join Claimstatusdata in InsuranceContext.ClaimStatuss.All().ToList()
                         on _claimRegistration.ClaimStatus equals Claimstatusdata.Id
-                     
+
 
                         select new ClaimRegistrationModel
                         {
@@ -520,7 +524,7 @@ namespace InsuranceClaim.Controllers
                             Id = _claimRegistration.Id,
 
                             ClaimValue = GetClaimValue(_claimRegistration.ClaimNumber, Adjustments),
-                           
+
 
                         }).ToList();
 
@@ -802,7 +806,7 @@ namespace InsuranceClaim.Controllers
                 if (userLoggedin)
                 {
                     userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                    var customer = InsuranceContext.Customers.Single(where:$"UserId = '{userid}'");
+                    var customer = InsuranceContext.Customers.Single(where: $"UserId = '{userid}'");
                     var dbModel = Mapper.Map<ClaimSettingModel, ClaimSetting>(model);
                     dbModel.CreatedBy = customer.Id;
                     dbModel.CreatedOn = DateTime.Now;
@@ -815,7 +819,7 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult ClaimSettingList()
         {
-            var ClaimList = InsuranceContext.ClaimSettings.All(where: $"IsActive = 'True' or IsActive is null").OrderByDescending(x=>x.Id).ToList();
+            var ClaimList = InsuranceContext.ClaimSettings.All(where: $"IsActive = 'True' or IsActive is null").OrderByDescending(x => x.Id).ToList();
 
 
             return View(ClaimList);
