@@ -208,6 +208,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BusinessSourceController.cs" />
     <Compile Include="Controllers\CityController.cs" />
     <Compile Include="Controllers\ClaimAdjustmentController.cs" />
     <Compile Include="Controllers\ClaimantController.cs" />
@@ -463,6 +464,10 @@
     <Content Include="Views\Account\CustomerDetials.cshtml" />
     <Content Include="Views\Report\InsuredVehical.cshtml" />
     <Content Include="Views\Shared\EmaiTemplates\Schedule.cshtml" />
+    <Content Include="Views\Account\EndorsementDetials.cshtml" />
+    <Content Include="Views\BusinessSource\Index.cshtml" />
+    <Content Include="Views\BusinessSource\Create.cshtml" />
+    <Content Include="Views\BusinessSource\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,19 +1,16 @@
-﻿@model  List<Insurance.Domain.VehicleMake>
+﻿@model  List<InsuranceClaim.Models.BusinessSourceModel>
 @{
-    ViewBag.Title = "VehicleMakeList";
+    ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
 
 
-
-@using (Html.BeginForm("VehicleMakeList", "VehicleMake", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
     <div class="productsave-section">
         <div class="container">
             <div class="row">
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 products-top">
                     <div class="head-title">
-                        <h2>Vehicle Make List</h2>
+                        <h2>Business Source List</h2>
                     </div>
                 </div>
 
@@ -29,14 +26,13 @@
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 add-btn">
                     <div class="">
                         <form>
-                            <input class="btn btn-primary" type="button" value="Add" onclick="window.location.href='@Url.Action("Index", "VehicleMake")'" />
+                            <input class="btn btn-primary" type="button" value="Add" onclick="window.location.href='@Url.Action("Create", "BusinessSource")'" />
                         </form>
                     </div>
                 </div>
-
-               
-
             </div>
+
+
 
             <div class="row">
                 <br />
@@ -57,23 +53,21 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Make Description</th>
-                            <th>Make Code</th>
-                            <th>Short Description</th>
+                            <th>Source</th>
+                            <th>CreatedOn</th>
                             <th class="action-th">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (Insurance.Domain.VehicleMake item in Model)
+                        @foreach (InsuranceClaim.Models.BusinessSourceModel item in Model)
                         {
                             <tr>
-                                <td>@item.MakeDescription</td>
-                                <td>@item.MakeCode</td>
-                                <td>@item.ShortDescription</td>
+                                <td>@item.Source</td>
+                                <td>@item.CreatedOn</td>
                                 <td>
                                     <div class="tbl-btn-list">
                                         <ul class="list-inline">
-                                            <li>@Html.ActionLink("Edit", "VehicleMakeEdit", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
+                                            <li>@Html.ActionLink("Edit", "Edit", "BusinessSource", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
                                             <li><button type="button" class="btn-sm btn-danger" onclick="ShowPopupp('@item.Id')">Delete</button></li>
                                         </ul>
                                     </div>
@@ -105,7 +99,6 @@
             </div>
         </div>
     </div>
-}
 
 
 
@@ -139,3 +132,7 @@
 
 
 </script>
+
+
+
+

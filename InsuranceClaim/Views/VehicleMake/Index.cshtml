@@ -16,10 +16,6 @@
                             <h4>Add Vehicle Make</h4>
                         </div>
 
-
-                       
-
-
                         <div class="form-group-input">
                             @*@using (Ajax.BeginForm("SaveCustomerData", "CustomerRegistration", new AjaxOptions { UpdateTargetId = "CustomerResult", OnSuccess = "GoToProductDetail" }))*@
                             @using (Html.BeginForm("SaveVehicleMake", "VehicleMake", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))

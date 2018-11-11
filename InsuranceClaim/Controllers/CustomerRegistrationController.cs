@@ -49,7 +49,7 @@ namespace InsuranceClaim.Controllers
         {
             // var res = MaxCustoermId();
 
-            // var res = InsuranceContext.Query("select * from Customer").Select(x => new CustomerModel() { AddressLine1 = x.AddressLine1 }).ToList();
+              // var res = InsuranceContext.Query("select * from Customer").Select(x => new CustomerModel() { AddressLine1 = x.AddressLine1 }).ToList();
 
 
             if (id != -1) // -1 use for getting session value when click on back button
@@ -222,7 +222,7 @@ namespace InsuranceClaim.Controllers
                     {
                         if (buttonUpdate != null)
                         {
-                            UpdateCustomerInformation(model);
+                            AddOrUpdateCustomerInformation(model);
 
                             return Json(new { IsError = false, error = "Sucessfully update" }, JsonRequestBehavior.AllowGet);
                         }
@@ -258,7 +258,7 @@ namespace InsuranceClaim.Controllers
         }
 
 
-        public void UpdateCustomerInformation(CustomerModel model)
+        public void AddOrUpdateCustomerInformation(CustomerModel model)
         {
             var summaryDetails = InsuranceContext.SummaryDetails.Single(model.Id);
 
@@ -266,7 +266,6 @@ namespace InsuranceClaim.Controllers
             {
                 if (summaryDetails.CustomerId != null)
                 {
-
 
                     var customerDetails = InsuranceContext.Customers.Single(summaryDetails.CustomerId);
 
@@ -295,6 +294,9 @@ namespace InsuranceClaim.Controllers
             }
 
         }
+
+
+
         public ActionResult ProductDetail()
         {
             var model = new PolicyDetailModel();
@@ -1251,14 +1253,11 @@ namespace InsuranceClaim.Controllers
                     //if (ModelState.IsValid && (model.AmountPaid >= model.MinAmounttoPaid && model.AmountPaid <= model.MaxAmounttoPaid))
 
                     int CustomerUniquId = 0;
-
-
                     if (User.IsInRole("Administrator"))
                     {
                         TempData["SucessMsg"] = "Admin can not create policy.";
                         return RedirectToAction("SummaryDetail");
                     }
-
 
 
                     TempData["ErroMsg"] = null;
@@ -1299,7 +1298,6 @@ namespace InsuranceClaim.Controllers
 
                         if (summaryDetial != null && btnSendQuatation == "") // while user come from qutation email
                         {
-
                             if (model.CustomSumarryDetilId != 0 && btnSendQuatation == "") // cehck if request is comming from agent email
                             {
                                 if (model.PaymentMethodId == 1)
@@ -1567,6 +1565,7 @@ namespace InsuranceClaim.Controllers
                                 policy.CreatedBy = customer.Id;
                                 policy.CreatedOn = DateTime.Now;
                                 InsuranceContext.PolicyDetails.Insert(policy);
+                                
                                 Session["PolicyData"] = policy;
                             }
                             else
@@ -1618,6 +1617,13 @@ namespace InsuranceClaim.Controllers
                                 //    response.Data = quoteresponse;
                                 //}
 
+
+                                var vehicelDetails = InsuranceContext.VehicleDetails.Single(where: $"policyid= '{policy.Id}' and RegistrationNo= '{_item.RegistrationNo}'");
+
+                                if(vehicelDetails!=null)
+                                {
+                                    item.Id = vehicelDetails.Id;
+                                }
 
 
                                 if (item.Id == null || item.Id == 0)
@@ -2211,7 +2217,7 @@ namespace InsuranceClaim.Controllers
 
 
 
-                                Summeryofcover += "<tr> <td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td> <td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td> <td style='padding: 7px 10px; font - size:15px;'>" + policyPeriod + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + paymentTermsNmae + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
+                                Summeryofcover += "<tr> <td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td> <td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td> <td style='padding: 7px 10px; font - size:15px;'>" + policyPeriod + "</td><td style='padding: 7px 10px; font - size:15px;'>" + paymentTermsNmae + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
 
 
 

@@ -4,15 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Net.Http;
 using System.Threading.Tasks;
-
+using System.Web.Configuration;
 
 namespace Insurance.Service
 {
     public class smsService
-    {      
+    {
 
-        public async Task<string> SendSMS(string numberTO,string body)
+        public async Task<string> SendSMS(string numberTO, string body)
         {
+
+            // return "";
+
+            string resendSms = WebConfigurationManager.AppSettings["resendSms"];
+            if (resendSms == "false")
+            {
+                return "";
+            }
 
             using (var client = new HttpClient())
             {

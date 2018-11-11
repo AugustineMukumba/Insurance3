@@ -707,7 +707,20 @@ namespace InsuranceClaim.Controllers
             string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
             var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-            InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
+
+
+            var dbPaymentInformation = InsuranceContext.PaymentInformations.Single(where: $"SummaryDetailId='{id}'");
+            if(dbPaymentInformation==null)
+            {
+                InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
+            }
+            else
+            {
+                objSaveDetailListModel.Id = dbPaymentInformation.Id;
+                InsuranceContext.PaymentInformations.Update(objSaveDetailListModel);
+            }
+
+           
 
             ApproveVRNToIceCash(id);
 
