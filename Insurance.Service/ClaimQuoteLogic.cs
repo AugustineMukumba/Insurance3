@@ -30,6 +30,7 @@ namespace Insurance.Service
             decimal IslossInzimbabwe = 0.0m;
             decimal IsDriverunder25 = 0.0m;
             decimal IsSoundsystem = 0.0m;
+            this.ExcessesAmount = 0.0m;
             decimal PDriverunder21amount = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "PrivateDriverUnder21").Select(x => x.Value).FirstOrDefault());
             decimal PLicensedless60monthsamount = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "PrivateLicenceLess60Month").Select(x => x.Value).FirstOrDefault());
             decimal PPartialLossamount = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "PrivatePartialLoss").Select(x => x.Value).FirstOrDefault());
@@ -45,7 +46,7 @@ namespace Insurance.Service
             decimal CLicenceLess60Month = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "CommercialLicenceLess60Month").Select(x => x.Value).FirstOrDefault());
             decimal CStolenAccessories = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "CommercialStolen/Accessories").Select(x => x.Value).FirstOrDefault());
             decimal CSpundSystem = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "CommercialSoundSystem").Select(x => x.Value).FirstOrDefault());
-
+            this.ExcessesAmount = sumInsured;
 
 
             if (PrivateCar)
@@ -71,6 +72,10 @@ namespace Insurance.Service
                 {
                     Isstolen = (sumInsured * PStolenamount) / 100;
                 }
+                else if (IsStolen == 0)
+                {
+                    Isstolen = (sumInsured * 1) / 100;
+                }
                 if (IsLossInZimbabwe == 1)
                 {
                     IslossInzimbabwe = (sumInsured * POutSideOfZimba) / 100;
@@ -78,6 +83,10 @@ namespace Insurance.Service
                 if (IsSoundSystem ==1)
                 {
                     IsSoundsystem = (sumInsured * PSoundSystem) / 100;
+                }
+                else if (IsSoundSystem == 0)
+                {
+                    IsSoundsystem = (sumInsured * 1) / 100;
                 }
 
 
@@ -105,6 +114,10 @@ namespace Insurance.Service
                 {
                     Isstolen = (sumInsured * CStolenAccessories) / 100;
                 }
+                else if (IsStolen == 0)
+                {
+                    Isstolen = (sumInsured * 1) / 100;
+                }
                 if (IsLossInZimbabwe == 1)
                 {
                     IslossInzimbabwe = (sumInsured * COutSideZimba) / 100;
@@ -112,6 +125,10 @@ namespace Insurance.Service
                 if (IsSoundSystem == 1)
                 {
                     IsSoundsystem = (sumInsured * CSpundSystem) / 100;
+                }
+                else if (IsSoundSystem == 0)
+                {
+                    IsSoundsystem = (sumInsured * 1) / 100;
                 }
 
                 // this.ExcessesAmount = sumInsured + DriverIsUnder + licensedless + PartialLoss + totalloss + Isstolen;

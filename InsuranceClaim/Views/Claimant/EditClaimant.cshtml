@@ -29,7 +29,8 @@
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.PolicyNumber, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.PolicyNumber, new { @class = "form-control", @name = "Name", @autocomplete = "off", @id = "PolicyNumber", @placeholder = "Enter Policy Number" })
+                                            @*@Html.TextBoxFor(x => x.PolicyNumber, new { @class = "form-control", @name = "Name", @autocomplete = "off", @id = "PolicyNumber", @placeholder = "Enter Policy Number" })*@
+                                            @Html.TextBoxFor(x => x.PolicyNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Policy Number", @Id = "txtPolicyNumber" })
                                             @Html.ValidationMessageFor(x => x.PolicyNumber, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -80,10 +81,18 @@
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
+                                            <label class="radio-label">Third Party Involvement(Y/N)</label>
+                                            <div class="form-group-radio">
+                                                <label>@Html.RadioButtonFor(x => x.ThirdPartyInvolvement, true)Yes</label>
+                                                <label>@Html.RadioButtonFor(x => x.ThirdPartyInvolvement, false)No</label>
+                                                @Html.ValidationMessageFor(x => x.ThirdPartyInvolvement, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        @*<div class="form-group">
                                             @Html.LabelFor(x => x.ThirdPartyInvolvement, new { @class = "gender-label" })
                                             @Html.TextBoxFor(x => x.ThirdPartyInvolvement, new { @class = "form-control", @name = "ThirdPartyInvolvement", @autocomplete = "off", @id = "ThirdPartyInvolvement", @placeholder = "Enter Third Party Involvement" })
                                             @Html.ValidationMessageFor(x => x.ThirdPartyInvolvement, "", new { @class = "text-danger" })
-                                        </div>
+                                        </div>*@
                                     </div>
                                 </div>
                                 <div class="row">
@@ -126,5 +135,48 @@
             format: 'MM/D/YYYY',
             maxDate: new Date()
         });
+        var policyNumbersArray = [];
+        //Getting Policy Numbers from database
+        getPolicyNumbers();
+
+        function getPolicyNumbers() {
+            $.ajax({
+                url: "/Claimant/GetAutoSuggestions",
+                type: "POST",
+                async: false,
+                dataType: "json",
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        policyNumbersArray.push(data[i].PolicyNumber);
+                    }
+                }
+            })
+        };
+
+        $("#txtPolicyNumber").autocomplete({
+            source: policyNumbersArray
+        });
     });
+    //getting Claimantname
+
+    $("#txtPolicyNumber").change(function () {
+
+        $("#txtPolicyNumber").val();
+        $.ajax({
+            url: "/Claimant/GetCustomername",
+            type: "POST",
+            async: false,
+            data: { Policynumber: $("#txtPolicyNumber").val() },
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $("#ClaimantName").val(data)
+            }
+
+        })
+
+
+    });
+
+
 </script>

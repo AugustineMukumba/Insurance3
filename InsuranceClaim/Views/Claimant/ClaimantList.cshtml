@@ -80,7 +80,18 @@
                                     <td>@item.PlaceOfLoss</td>
                                     <td>@item.DescriptionOfLoss</td>
                                     <td>@item.EstimatedValueOfLoss</td>
-                                    <td>@item.ThirdPartyInvolvement</td>
+                                    <td>
+
+                                        @if (item.ThirdPartyInvolvement == true)
+                                        {
+                                            <b>Yes</b>
+                                        }
+                                        else if (item.ThirdPartyInvolvement == false)
+                                        {
+                                            <b>No</b>
+                                        }
+
+                                    </td>
                                     <td>@item.ClaimantName</td>
                                     <td>
                                         <div class="tbl-btn-list">

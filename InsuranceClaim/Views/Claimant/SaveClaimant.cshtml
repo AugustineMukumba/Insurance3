@@ -86,10 +86,18 @@
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
+                                            <label class="radio-label">Third Party Involvement(Y/N)</label>
+                                            <div class="form-group-radio">
+                                                <label>@Html.RadioButtonFor(x => x.ThirdPartyInvolvement, true)Yes</label>
+                                                <label>@Html.RadioButtonFor(x => x.ThirdPartyInvolvement, false)No</label>
+                                                @Html.ValidationMessageFor(x => x.ThirdPartyInvolvement, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        @*<div class="form-group">
                                             @Html.LabelFor(x => x.ThirdPartyInvolvement, new { @class = "gender-label" })
                                             @Html.TextBoxFor(x => x.ThirdPartyInvolvement, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Third Party involvement" })
                                             @Html.ValidationMessageFor(x => x.ThirdPartyInvolvement, "", new { @class = "text-danger" })
-                                        </div>
+                                        </div>*@
                                     </div>
                                 </div>
 
@@ -128,6 +136,9 @@
     </div>
 </div>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+
 <script>
     $(document).ready(function () {
         $("#datetime3").datetimepicker({
@@ -154,6 +165,7 @@
                 }
             })
         };
+
         $( "#txtPolicyNumber" ).autocomplete({
             source: policyNumbersArray
         });
@@ -164,6 +176,90 @@
 
     });
 
+    $("#txtPolicyNumber").change(function(){
+        debugger;
+
+        $("#txtPolicyNumber").val();
+        $.ajax({
+            url: "/Claimant/GetCustomername",
+            async: false,
+            data:{Policynumber: $("#txtPolicyNumber").val()},
+            success:function(customerName){
+                debugger;
+                //alert(customerName);
+
+                $("#ClaimantName").val(customerName)
+            },
+            error: function (error) {
+                debugger;
+                alert("error");
+            }
+        })
+
+
+    });
 
 
 </script>
+
+@*<script>
+    $(document).ready(function () {
+        $("#datetime3").datetimepicker({
+            format: 'MM/D/YYYY',
+            maxDate:new Date()
+        });
+
+        var policyNumbersArray = [];
+
+        //Getting Policy Numbers from database
+        getPolicyNumbers();
+
+        function getPolicyNumbers(){
+            debugger
+            $.ajax({
+                url: "/Claimant/GetAutoSuggestions",
+                type: "POST",
+                async: false,
+                dataType: "json",
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++)
+                    {
+                        policyNumbersArray.push(data[i].PolicyNumber);
+                    }
+                }
+            })
+        };
+        $( "#txtPolicyNumber" ).autocomplete({
+            
+            source: policyNumbersArray
+        });
+
+        if ($("#errmsgs").val() == "Date of Loss Not Exist in Policy Period") {
+            alert("Date of Loss Not Exist in Policy Period");
+        }
+
+    });
+
+    $("#txtPolicyNumber").change(function(){
+        debugger;
+        $("#txtPolicyNumber").val();
+        $.ajax({
+            url: "/Claimant/GetCustomername",
+            async: false,
+            data:{Policynumber: $("#txtPolicyNumber").val()},
+            success:function(customerName){
+                debugger;
+                //alert(customerName);
+
+                $("#ClaimantName").val(customerName)
+            },
+            error: function (error) {
+                debugger;
+                alert("error");
+            }
+        })
+
+
+    });
+
+</script>*@

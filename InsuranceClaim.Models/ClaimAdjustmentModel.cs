@@ -64,11 +64,11 @@ namespace InsuranceClaim.Models
         [Display(Name = "Total Sum Insure")]
         [Required(ErrorMessage = "This is required field")]
         public decimal TotalSuminsure { get; set; }
-        [Display(Name = "Is Private Car")]
-        [Required(ErrorMessage = "This is required field")]
+        //[Display(Name = "Is Private Car")]
+        //[Required(ErrorMessage = "This is required field")]
         public bool PrivateCar { get; set; }
-        [Display(Name = "Is Commerical Car")]
-        [Required(ErrorMessage = "This is required field")]
+        //[Display(Name = "Is Commerical Car")]
+        //[Required(ErrorMessage = "This is required field")]
         public bool CommericalCar { get; set; }
         [Display(Name = "Is Driver Under25")]
         [Required(ErrorMessage = "This is required field")]

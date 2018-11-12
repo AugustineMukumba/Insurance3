@@ -747,7 +747,7 @@ namespace Insurance.Domain
         public string PlaceOfLoss { get; set; }
         public string DescriptionOfLoss { get; set; }
         public decimal EstimatedValueOfLoss { get; set; }
-        public string ThirdPartyInvolvement { get; set; }
+        public bool? ThirdPartyInvolvement { get; set; }
         public string ClaimantName { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
