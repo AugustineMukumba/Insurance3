@@ -1,0 +1,18 @@
+﻿@using System.Web.Configuration;
+@{
+    ViewBag.Title = "makepayment";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+}
+
+<br />
+@*<form  action="http://localhost:49873/CustomerRegistration/returnurl" class="paymentWidgets" data-brands="VISA MASTER AMEX"></form>*@
+@*<form action="@Url.Action("returnurl", "CustomerRegistration")" class="paymentWidgets" data-brands="VISA MASTER AMEX"></form>*@
+
+
+<form action="@WebConfigurationManager.AppSettings["urlPath"]/CustomerRegistration/returnurl" class="paymentWidgets" data-brands="VISA MASTER AMEX"></form>
+
+
+
+
+<script src="https://test.oppwa.com/v1/paymentWidgets.js?checkoutId=@ViewBag.checkoutId"></script>
+

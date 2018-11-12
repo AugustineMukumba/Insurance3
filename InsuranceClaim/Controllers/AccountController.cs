@@ -74,7 +74,6 @@ namespace InsuranceClaim.Controllers
             Session.Abandon();
             Session.Clear();
 
-
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -1660,27 +1659,24 @@ namespace InsuranceClaim.Controllers
                         policylist.listpolicy.Add(policylistviewmodel);
 
                     }
-
-
                 }
             }
-
 
             return View(policylist);
         }
 
 
-        public ActionResult EndorsementDetials(int summaryId)
-        {
-            var summaryDetials = InsuranceContext.SummaryDetails.Single(where: $"id='{summaryId}'");
+        //public ActionResult EndorsementDetials(int summaryId)
+        //{
+        //    var summaryDetials = InsuranceContext.SummaryDetails.Single(where: $"id='{summaryId}'");
 
-            if(summaryDetials!=null)
-            {
+        //    if(summaryDetials!=null)
+        //    {
 
-            }
+        //    }
 
-            return View();
-        }
+        //    return View();
+        //}
 
         public string GetCustomerEmailbyCustomerID(int? customerId)
         {
@@ -2628,7 +2624,6 @@ namespace InsuranceClaim.Controllers
         public void SetValueIntoSession(int summaryId)
         {
             //Session["ICEcashToken"] = null;
-
 
             Session["SummaryDetailIdView"] = summaryId;
 

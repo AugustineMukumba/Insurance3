@@ -116,6 +116,7 @@
     <Compile Include="LicenceTicketViewModel.cs" />
     <Compile Include="ListUserViewModel.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="LoyaltyPointsModel.cs" />
     <Compile Include="ManageViewModels.cs" />
     <Compile Include="PaynowResponse.cs" />
     <Compile Include="PolicyDetailModel.cs" />

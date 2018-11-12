@@ -281,7 +281,6 @@
 
 
                                         <hr />
-
                                         <div class="row">
                                             <div class="col-md-6 form-group-text">
                                                 <div class="form-group">
@@ -378,8 +377,6 @@
                                         <div class="col-sm-6 col-md-6 form-group-select">
                                             <div class="form-group">
                                                 @Html.Label("Payment Type", new { @class = "gender-label" })
-
-
                                                 @Html.HiddenFor(m => m.PaymentMethodId)
                                                 @Html.HiddenFor(m => m.Id)
                                                 @Html.HiddenFor(m => m.CustomSumarryDetilId)
@@ -396,7 +393,10 @@
 
                                                         <li id="payment_2" class="payment_type" onclick="PaymentMethod(2)"><img src="~/Images/master-card.png" /></li>
 
-                                                        <li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"><img src="~/Images/Paynow-logo.png" /></li>
+                                                        <li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"><img  style="width:65px;" src="~/Images/eft_pay.png" /></li>
+                                                   
+                                                      
+
                                                     </ul>
                                                 </div>
 
