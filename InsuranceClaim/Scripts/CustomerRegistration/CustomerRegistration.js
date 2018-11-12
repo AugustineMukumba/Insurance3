@@ -20,6 +20,23 @@ function GoToProductDetail(json) {
     }
 }
 
+function GoToNextDetail(json) {
+    debugger;
+    var errorMessage = json.error;
+    if (json.IsError == true) {
+        if (errorMessage != null && errorMessage != '') {
+            toastr.error(errorMessage)
+        }
+    }
+
+    if (errorMessage == "Sucessfully update") {            
+        toastr.error(errorMessage)      
+        window.location.href = '/Account/RiskDetail';
+    }
+}
+
+
+
 function GoToRiskDetail(json) {   
     debugger;
     if (json.Status == true) {

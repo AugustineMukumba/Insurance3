@@ -2652,18 +2652,6 @@ namespace InsuranceClaim.Controllers
 
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
         [HttpGet]
         public ActionResult RenewPolicies(int policyId = 0)
         {
@@ -2883,8 +2871,6 @@ namespace InsuranceClaim.Controllers
 
         }
 
-
-
         public ActionResult PolicyRenewReminderSetting(int? id = 0)
         {
             InsuranceClaim.Models.PolicyRenewReminderSettingViewModel data = new InsuranceClaim.Models.PolicyRenewReminderSettingViewModel();
@@ -3085,8 +3071,6 @@ namespace InsuranceClaim.Controllers
             InsuranceContext.ReminderFaileds.Insert(obj);
         }
 
-
-
         public ActionResult QuotationList()
         {
 
@@ -3202,5 +3186,37 @@ namespace InsuranceClaim.Controllers
 
             return View(policylist);
         }
+
+        public ActionResult EndorsementDetials(int id = 0)
+        {
+            CustomerModel custModel = new CustomerModel();
+            if (id != 0)
+            {
+                var summaryDetail = InsuranceContext.SummaryDetails.Single(id);
+                string path = Server.MapPath("~/Content/Countries.txt");
+                var countries = System.IO.File.ReadAllText(path);
+                var resultt = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObject>(countries);
+                ViewBag.Countries = resultt.countries.OrderBy(x => x.code.Replace("+", ""));
+
+                ViewBag.Cities = InsuranceContext.Cities.All();
+
+                var Cusotmer = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
+
+                custModel = AutoMapper.Mapper.Map<Customer, CustomerModel>(Cusotmer);
+
+                if (Cusotmer != null)
+                {
+                    var dbUser = UserManager.Users.FirstOrDefault(c => c.Id == Cusotmer.UserID);
+                    if (dbUser != null)
+                    {
+                        custModel.EmailAddress = dbUser.Email; ;
+                    }
+                }
+                Session["SummaryDetailIdView"] = id;
+
+            }
+            return View(custModel);
+        }        
+
     }
 }

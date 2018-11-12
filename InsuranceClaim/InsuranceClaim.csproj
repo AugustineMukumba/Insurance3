@@ -468,6 +468,7 @@
     <Content Include="Views\BusinessSource\Index.cshtml" />
     <Content Include="Views\BusinessSource\Create.cshtml" />
     <Content Include="Views\BusinessSource\Edit.cshtml" />
+    <Content Include="Views\Account\EndorsementRiskDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
