@@ -231,6 +231,17 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-select">
+                                                <div class="form-group">
+                                                    @Html.Label("Source", new { @class = "gender-label" })
+                                                    @Html.DropDownListFor(x => x.BusinessSourceId, new SelectList(ViewBag.Sources, "Id", "Source"), new { @class = "form-control" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <hr class="higlighter" />
                                         <div class="row">
                                             <div class="col-sm-6 col-md-6 form-group-select">
@@ -410,6 +421,9 @@
                                                     @Html.TextBoxFor(m => m.Premium, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Basic Premium", @readonly = "readonly" })
                                                 </div>
                                             </div>
+
+                                            
+
                                             <div class="col-sm-6 col-md-6 form-group-select" style="display:none;">
                                                 <div class="form-group">
                                                     @Html.Label("Agent Commission", new { @class = "gender-label" })

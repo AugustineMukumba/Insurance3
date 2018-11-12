@@ -561,10 +561,10 @@ namespace InsuranceClaim.Controllers
                     paymentTermsName = paymentTermVehicel.Name + " Months";
 
 
+
+
                 string policyPeriod = item.CoverStartDate.Value.ToString("dd/MM/yyyy") + " - " + item.CoverEndDate.Value.ToString("dd/MM/yyyy");
-
-
-                Summeryofcover += "<tr> <td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td>  <td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>" + policyPeriod + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + paymentTermsName + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
+                Summeryofcover += "<tr> <td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td>  <td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>" + policyPeriod + "</td><td style='padding: 7px 10px; font - size:15px;'>" + paymentTermsName + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
             }
 
             Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
@@ -1669,6 +1669,18 @@ namespace InsuranceClaim.Controllers
             return View(policylist);
         }
 
+
+        public ActionResult EndorsementDetials(int summaryId)
+        {
+            var summaryDetials = InsuranceContext.SummaryDetails.Single(where: $"id='{summaryId}'");
+
+            if(summaryDetials!=null)
+            {
+
+            }
+
+            return View();
+        }
 
         public string GetCustomerEmailbyCustomerID(int? customerId)
         {
@@ -3058,7 +3070,6 @@ namespace InsuranceClaim.Controllers
 
         public void ReminderFailed(string body, string SendTo, string subject, int NotificationType)
         {
-
             ReminderFailed obj = new Insurance.Domain.ReminderFailed();
             obj.EmailBody = body;
             obj.SendTo = SendTo;
@@ -3145,15 +3156,12 @@ namespace InsuranceClaim.Controllers
                                     premiumAmount = premiumAmount + Convert.ToDecimal(_vehicle.Premium + _vehicle.StampDuty + _vehicle.ZTSCLevy + (Convert.ToBoolean(_vehicle.IncludeRadioLicenseCost) ? Convert.ToDecimal(_vehicle.RadioLicenseCost) : 0.00m));
                                     sumInsured = sumInsured + Convert.ToDecimal(_vehicle.SumInsured);
                                 }
-
                             }
 
 
 
                             if (_vehicle != null)
                             {
-
-
                                 VehicleReinsuranceViewModel obj = new VehicleReinsuranceViewModel();
                                 //  var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.All(where: $"SummaryDetailId={item.Id} and VehicleId={_item.VehicleDetailsId}").ToList();
 
@@ -3180,6 +3188,10 @@ namespace InsuranceClaim.Controllers
 
                         }
                     }
+
+                    
+
+
                 }
             }
 

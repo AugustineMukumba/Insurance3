@@ -14,8 +14,7 @@ namespace Insurance.Service
         public async Task<string> SendSMS(string numberTO, string body)
         {
 
-            // return "";
-
+         
             string resendSms = WebConfigurationManager.AppSettings["resendSms"];
             if (resendSms == "false")
             {

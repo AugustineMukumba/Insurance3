@@ -468,7 +468,9 @@
     <Content Include="Views\BusinessSource\Index.cshtml" />
     <Content Include="Views\BusinessSource\Create.cshtml" />
     <Content Include="Views\BusinessSource\Edit.cshtml" />
-    <Content Include="Views\Account\EndorsementRiskDetail.cshtml" />
+    <Content Include="Views\BusinessSource\Commission.cshtml" />
+    <Content Include="Views\BusinessSource\AddCommission.cshtml" />
+    <Content Include="Views\BusinessSource\EditCommission.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

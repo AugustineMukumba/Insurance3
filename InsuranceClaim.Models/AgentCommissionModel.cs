@@ -10,10 +10,10 @@ namespace InsuranceClaim.Models
     public class AgentCommissionModel
     {
         public int Id { get; set; }
-        [Display(Name = "Commission Name")]
+        [Display(Name = "Commission Through")]
         [Required(ErrorMessage = "Please Enter Commission Name.")]
         public string CommissionName { get; set; }
-        [Display(Name = "Commission Amount")]
+        [Display(Name = "Commission Amount (%)")]
         [Required(ErrorMessage = "Please Enter Commission Amount.")]
         public double? CommissionAmount { get; set; }
         [Display(Name = "Management Commission")]
@@ -24,5 +24,7 @@ namespace InsuranceClaim.Models
         public int? CreatedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
+        public string Source { get; set; }
+        public int BusinessSourceId { get; set; }
     }
 }

@@ -479,9 +479,6 @@
 @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
 <script>
 
-
-
-
     function gotoExit() {
         $.ajax({
             url: "@Url.Action("gotoExit", "CustomerRegistration")",
@@ -490,10 +487,8 @@
             success: function (data) {
                 debugger;
                 window.location.href = '/CustomerRegistration/Index';
-
             }
         })
-
     }
 
     function PaymentMethod(paymentMethod)
@@ -592,9 +587,6 @@
         // $("#previouselink")[0].click();
         debugger;
         var isUserStaff = '@User.IsInRole("Staff")';
-
-
-
 
         if(isUserStaff=='True')
         {

@@ -423,6 +423,9 @@ namespace InsuranceClaim.Controllers
 
             ViewBag.CoverType = service.GetCoverType().ToList();
             ViewBag.AgentCommission = service.GetAgentCommission();
+
+            ViewBag.Sources = InsuranceContext.BusinessSources.All();
+
             ViewBag.Makers = makers;
             viewModel.isUpdate = false;
             viewModel.isWebUser = true;
@@ -547,6 +550,7 @@ namespace InsuranceClaim.Controllers
                         //  viewModel.isUpdate = true; // commented on 31 oct
                         viewModel.isUpdate = false;                         // viewModel.isUpdate = false; 
                         viewModel.vehicleindex = Convert.ToInt32(id);
+                        viewModel.BusinessSourceId = data.BusinessSourceId;
 
                         var ser = new VehicleService();
                         var model = ser.GetModel(data.MakeId);
@@ -1951,6 +1955,8 @@ namespace InsuranceClaim.Controllers
                                 DbEntry.CustomerId = customer.Id;
 
                                 bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+
+
                                 if (_userLoggedin)
                                 {
                                     var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
@@ -2313,7 +2319,9 @@ namespace InsuranceClaim.Controllers
 
                             InsuranceContext.SmsLogs.Insert(objRecieptsmslog);
                             #endregion
-                            TempData["SucessMsg"] = "Quotation has been sent email sucessfully.";
+                          
+
+                         
 
                             Session.Remove("CustomerDataModal");
                             Session.Remove("PolicyData");
@@ -2325,9 +2333,23 @@ namespace InsuranceClaim.Controllers
                             Session.Remove("InvoiceId");
 
 
+                              TempData["SucessMsg"] = "Quotation has been sent email sucessfully.";
 
 
-                            return RedirectToAction("SummaryDetail");
+                            bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+
+                            if(_userLoggedin)
+                            {
+                                return RedirectToAction("QuotationList", "Account");
+                            }
+                            else
+                            {
+                                return RedirectToAction("Index");
+                            }
+                           
+
+
+                           // return RedirectToAction("SummaryDetail");
                         }
 
                         #endregion
