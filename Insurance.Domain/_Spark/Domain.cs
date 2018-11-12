@@ -41,6 +41,7 @@ namespace Insurance.Domain
         public AgentCommission(bool defaults) : base(defaults) { }
 
         public int Id { get; set; }
+        public int BusinessSourceId { get; set; }
         public string CommissionName { get; set; }
         public double? CommissionAmount { get; set; }
         public double? ManagementCommission { get; set; }
@@ -312,6 +313,8 @@ namespace Insurance.Domain
         public bool isLapsed { get; set; }
         public decimal? BalanceAmount { get; set; }
         public decimal? VehicleLicenceFee { get; set; }
+
+       public int BusinessSourceId { get; set; }
     }
 
     public partial class VehicleMake : Entity<VehicleMake>

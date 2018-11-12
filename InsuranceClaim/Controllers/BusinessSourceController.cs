@@ -43,8 +43,17 @@ namespace InsuranceClaim.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    BusinessSource buesiness = new BusinessSource { Source = model.Source, CreatedOn = DateTime.Now };
-                    InsuranceContext.BusinessSources.Insert(buesiness);
+                    var dbBusinessResource = InsuranceContext.BusinessSources.Single(where: $"Source ='" + model.Source + "'");
+
+                    if (dbBusinessResource == null)
+                    {
+                        BusinessSource buesiness = new BusinessSource { Source = model.Source, CreatedOn = DateTime.Now };
+                        InsuranceContext.BusinessSources.Insert(buesiness);
+                    }
+                    else
+                    {
+                        TempData["errorMsg"] = "Source alredy exist.";
+                    }
                 }
 
 
@@ -84,10 +93,22 @@ namespace InsuranceClaim.Controllers
                 {
                     var businessResource = InsuranceContext.BusinessSources.Single(model.Id);
 
+                  
                     if (businessResource != null)
                     {
-                        businessResource.Source = businessResource.Source;
-                        InsuranceContext.BusinessSources.Update(businessResource);
+
+                        if (CheckSourceExist(businessResource.Source, model.Source))
+                        {
+                            businessResource.Source = businessResource.Source;
+                            InsuranceContext.BusinessSources.Update(businessResource);
+                        }
+                        else
+                        {
+                            TempData["errorMsg"] = "Source alredy exist.";
+                        }
+
+
+                        
                     }
                 }
 
@@ -120,5 +141,124 @@ namespace InsuranceClaim.Controllers
                 return View();
             }
         }
+
+        public ActionResult Commission()
+        {
+            List<AgentCommissionModel> list = (InsuranceContext.Query("select AgentCommission.Id, Source, CommissionName, CommissionAmount from AgentCommission join BusinessSource on AgentCommission.BusinessSourceId = BusinessSource.Id").Select(c => new AgentCommissionModel() { Source = c.Source, Id = c.Id, CommissionName = c.CommissionName, CommissionAmount = c.CommissionAmount })).ToList();
+            return View(list);
+        }
+
+        public ActionResult AddCommission()
+        {
+            AgentCommissionModel model = new AgentCommissionModel();
+            ViewBag.Sources = InsuranceContext.BusinessSources.All();
+            return View(model);
+        }
+
+        public ActionResult AddCommision(AgentCommissionModel model)
+        {
+            ModelState.Remove("Id");
+            ModelState.Remove("ManagementCommission");
+
+            if (ModelState.IsValid)
+            {
+                var agentCommission = InsuranceContext.AgentCommissions.Single(where: $"BusinessSourceId =" + model.BusinessSourceId);
+
+                if (agentCommission == null)
+                {
+                    AgentCommission agentCommision = new AgentCommission { BusinessSourceId = model.BusinessSourceId, CommissionName = model.CommissionName, CommissionAmount = model.CommissionAmount, CreatedOn = DateTime.Now };
+                    InsuranceContext.AgentCommissions.Insert(agentCommision);
+                }
+                else
+                {
+                    TempData["errorMsg"] = "Agent commmission alredy exist for selected source.";
+                }
+            }
+
+            return RedirectToAction("Commission");
+        }
+
+        public ActionResult EditCommission(int Id)
+        {
+            var detials = InsuranceContext.AgentCommissions.Single(Id);
+            var agentCommissionModel = AutoMapper.Mapper.Map<AgentCommission, AgentCommissionModel>(detials);
+            ViewBag.Sources = InsuranceContext.BusinessSources.All();
+            return View(agentCommissionModel);
+        }
+
+
+        [HttpPost]
+        public ActionResult EditCommission(AgentCommissionModel model)
+        {
+            ModelState.Remove("ManagementCommission");
+            if (ModelState.IsValid)
+            {
+                var detials = InsuranceContext.AgentCommissions.Single(model.Id);
+
+                if (CheckAgentExist(detials.BusinessSourceId, model.BusinessSourceId))
+                {
+                    detials.CommissionName = model.CommissionName;
+                    detials.CommissionAmount = model.CommissionAmount;
+                    detials.BusinessSourceId = model.BusinessSourceId;
+
+                    InsuranceContext.AgentCommissions.Update(detials);
+                }
+                else
+                {
+                    TempData["errorMsg"] = "Agent commmission alredy exist for selected source.";
+                }
+
+
+
+
+                ViewBag.Sources = InsuranceContext.BusinessSources.All();
+
+            }
+
+            return RedirectToAction("Commission");
+
+        }
+
+
+        private bool CheckAgentExist(int oldSourceId, int newSourceId)
+        {
+            if (oldSourceId == newSourceId)
+            {
+                return true;
+            }
+            else
+            {
+                var dbAgentCommission = InsuranceContext.AgentCommissions.Single(where: $"BusinessSourceId='{newSourceId}'");
+
+                if (dbAgentCommission != null)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        private bool CheckSourceExist(string oldSourceName, string newSourceName)
+        {
+            if (oldSourceName == newSourceName)
+            {
+                return true;
+            }
+            else
+            {
+                var dbSource = InsuranceContext.BusinessSources.Single(where: $"Source='{newSourceName}'");
+
+                if (dbSource != null)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+
+
     }
 }

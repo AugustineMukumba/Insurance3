@@ -25,6 +25,18 @@
             </div>
         </div>
 
+
+        @if (TempData["SucessMsg"]!=null)
+        {
+            <br />
+            <div class="alert alert-success fade in alert-dismissible" style="margin-top:18px;">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+                @TempData["SucessMsg"]
+            </div>
+        }
+       
+
+
         <br />
         <div class="policy-table-grid-main">
             <table class="table table-striped">

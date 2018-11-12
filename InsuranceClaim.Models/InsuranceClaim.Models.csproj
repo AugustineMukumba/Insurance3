@@ -123,6 +123,7 @@
     <Compile Include="PolicyInsurerModel.cs" />
     <Compile Include="PolicyListViewModel.cs" />
     <Compile Include="PolicyRenewReminderSettingViewModel.cs" />
+    <Compile Include="ProductiviyReportModel.cs" />
     <Compile Include="ProductModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RadioLicenceReportModel.cs" />

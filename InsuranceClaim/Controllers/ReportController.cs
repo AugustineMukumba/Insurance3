@@ -1185,6 +1185,44 @@ namespace InsuranceClaim.Controllers
             return View("LapsedPoliciesReport", _model);
         }
 
+        public ActionResult ProductivityReport()
+        {
+
+            //var ListProductiviyReport = new List<ProductiviyReportModel>();
+            List<ProductiviyReportModel> listProductiviyReport = new List<ProductiviyReportModel>();
+            ListProductiviyReportModel _listListProductiviyReport = new ListProductiviyReportModel();
+            _listListProductiviyReport.ListProductiviyReport = new List<ProductiviyReportModel>();
+            ProductiviySearchReportModel model = new ProductiviySearchReportModel();
+            var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive = 'True'or IsActive is null").ToList();
+
+            foreach (var item in vehicledetail)
+            {
+                var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
+                var customer = InsuranceContext.Customers.Single(item.CustomerId);
+                var User = UserManager.FindById(customer.UserID.ToString());
+                var vehicleSummarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
+                if (vehicleSummarydetail != null)
+                {
+                    var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
+                    if (summary != null)
+                    {
+                        ProductiviyReportModel obj = new ProductiviyReportModel();
+                        obj.CustomerName = customer.FirstName + " " + customer.LastName;
+                        obj.PolicyNumber = policy.PolicyNumber;
+                        obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy");
+                        obj.PremiumDue = Convert.ToDecimal(item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost);
+                        obj.SumInsured = Convert.ToDecimal(item.SumInsured);
+                        obj.UserName = User.Email;
+                        obj.Product = InsuranceContext.Products.Single(item.ProductId).ProductName;
+                        listProductiviyReport.Add(obj);
+                    }
+                }
+            }
+            model.ListProductiviyReport = listProductiviyReport.OrderByDescending(x => x.TransactionDate).ToList();
+
+            return View(model);
+        }
+
 
 
 

@@ -105,5 +105,7 @@ namespace InsuranceClaim.Models
 
         public string PolicyExpireDate { get; set; }
 
+        public int BusinessSourceId { get; set; }
+
     }
 }
