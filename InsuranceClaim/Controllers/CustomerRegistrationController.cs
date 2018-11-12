@@ -2898,8 +2898,48 @@ namespace InsuranceClaim.Controllers
         {
             public int result { get; set; }
             public string message { get; set; }
-            public ResultRootObject Data { get; set; }
+            public ResultRootObject Data { get; set; }      
         }
+
+        public async Task<JsonResult> UpdateCustomerData(CustomerModel model, string buttonUpdate)
+        {
+            if (ModelState.IsValid)
+            {
+                bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+
+                if (userLoggedin)
+                {
+                    var summaryDetails = InsuranceContext.SummaryDetails.Single(model.Id);
+
+                    if (summaryDetails != null)
+                    {
+                        if (summaryDetails.CustomerId != null)
+                        {
+                            var customerDetails = InsuranceContext.Customers.Single(summaryDetails.CustomerId);
+                            var customerdata = Mapper.Map<CustomerModel, Customer>(model);
+                            customerdata.Id = summaryDetails.CustomerId.Value;
+                            customerdata.UserID = customerDetails.UserID;
+
+                            InsuranceContext.Customers.Update(customerdata);
+
+                            var user = UserManager.FindById(customerDetails.UserID);
+
+                            // change username and email
+                            user.UserName = model.EmailAddress;
+                            user.Email = model.EmailAddress;
+
+                            // Persiste the changes
+                            UserManager.Update(user);
+                        }
+                    }
+
+                    return Json(new { IsError = false, error = "Sucessfully update" }, JsonRequestBehavior.AllowGet);
+                       
+                }
+            }
+            return Json(new { IsError = false, error = TempData["ErrorMessage"].ToString() }, JsonRequestBehavior.AllowGet);
+        }
+
 
     }
 }
