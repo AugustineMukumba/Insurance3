@@ -1218,9 +1218,56 @@ namespace InsuranceClaim.Controllers
                     }
                 }
             }
-            model.ListProductiviyReport = listProductiviyReport.OrderByDescending(x => x.TransactionDate).ToList();
+            model.ListProductiviyReport = listProductiviyReport.OrderByDescending(x => x.UserName).ToList();
 
             return View(model);
+        }
+        public ActionResult ProductivitySearchReport(ProductiviySearchReportModel Model)
+        {
+
+            List<ProductiviyReportModel> listProductiviyReport = new List<ProductiviyReportModel>();
+            ListProductiviyReportModel _listListProductiviyReport = new ListProductiviyReportModel();
+            _listListProductiviyReport.ListProductiviyReport = new List<ProductiviyReportModel>();
+            ProductiviySearchReportModel model = new ProductiviySearchReportModel();
+
+            var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive = 'True'or IsActive is null").ToList();
+
+            #region
+            DateTime fromDate = DateTime.Now.AddDays(-1);
+            DateTime endDate = DateTime.Now;
+            if (!string.IsNullOrEmpty(Model.FromDate) && !string.IsNullOrEmpty(Model.EndDate))
+            {
+                fromDate = Convert.ToDateTime(Model.FromDate);
+                endDate = Convert.ToDateTime(Model.EndDate);
+            }
+            var Vehicledetail = vehicledetail.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
+
+            #endregion
+            foreach (var item in Vehicledetail)
+            {
+                var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
+                var customer = InsuranceContext.Customers.Single(item.CustomerId);
+                var User = UserManager.FindById(customer.UserID.ToString());
+                var vehicleSummarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
+                if (vehicleSummarydetail != null)
+                {
+                    var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
+                    if (summary != null)
+                    {
+                        ProductiviyReportModel obj = new ProductiviyReportModel();
+                        obj.CustomerName = customer.FirstName + " " + customer.LastName;
+                        obj.PolicyNumber = policy.PolicyNumber;
+                        obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy");
+                        obj.PremiumDue = Convert.ToDecimal(item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost);
+                        obj.SumInsured = Convert.ToDecimal(item.SumInsured);
+                        obj.UserName = User.Email;
+                        obj.Product = InsuranceContext.Products.Single(item.ProductId).ProductName;
+                        listProductiviyReport.Add(obj);
+                    }
+                }
+            }
+            model.ListProductiviyReport = listProductiviyReport.OrderByDescending(x => x.UserName).ToList();
+            return View("ProductivityReport", model);
         }
 
 
