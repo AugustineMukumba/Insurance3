@@ -68,6 +68,7 @@ namespace Insurance.Domain
        public static BirthdayMessages BirthdayMessages { get { return new BirthdayMessages(); } }
 
         public static Cities Cities  { get { return new Cities(); } }
+        public static EndorsementVehicleDetails EndorsementVehicleDetails { get { return new EndorsementVehicleDetails(); } }
 
         //Second Phase Work
 
