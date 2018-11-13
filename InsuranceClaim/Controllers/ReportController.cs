@@ -1218,7 +1218,7 @@ namespace InsuranceClaim.Controllers
                     }
                 }
             }
-            model.ListProductiviyReport = listProductiviyReport.OrderByDescending(x => x.UserName).ToList();
+            model.ListProductiviyReport = listProductiviyReport.OrderBy(x => x.UserName).ToList();
 
             return View(model);
         }
@@ -1288,76 +1288,112 @@ namespace InsuranceClaim.Controllers
                     var User = UserManager.FindById(Customer.UserID.ToString());
                     //var loyalityDetail = InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={item.CustomerId}").Sum(x => x.PointsEarned);
 
-                    var loyalityDetail = InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={item.CustomerId}").Sum(x => x.PointsEarned);
 
-                    if (loyalityDetail != null)
+                    var vehicleSummarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
+                    if (vehicleSummarydetail != null)
                     {
-                        ListDailyReceiptsReport.Add(new LoyaltyPointsModel()
+                        var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
+                        if (summary != null)
                         {
-                            CustomerName = Customer.FirstName + " " + Customer.LastName,
-                            CellPhoneNumber = Customer.Countrycode + "-" + Customer.PhoneNumber,
-                            Address = Customer.AddressLine1 + " " + Customer.AddressLine2,
-                            SumInsured = Convert.ToDecimal(item.SumInsured),
-                            PremiumPaid = Convert.ToDecimal(item.Premium),
-                            EmailAddress = User.Email,
-                            LoyaltyPoints = Convert.ToString(loyalityDetail),
 
-                        });
-                    }
-                    else
-                    {
+                            if (summary.isQuotation != true)
+                            {
 
+                                var loyalityDetail = InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={item.CustomerId}").Sum(x => x.PointsEarned);
+
+                                if (loyalityDetail != null)
+                                {
+                                    ListDailyReceiptsReport.Add(new LoyaltyPointsModel()
+                                    {
+                                        CustomerName = Customer.FirstName + " " + Customer.LastName,
+                                        CellPhoneNumber = Customer.Countrycode + "-" + Customer.PhoneNumber,
+                                        Address = Customer.AddressLine1 + " " + Customer.AddressLine2,
+                                        SumInsured = Convert.ToDecimal(item.SumInsured),
+                                        PremiumPaid = Convert.ToDecimal(item.Premium),
+                                        EmailAddress = User.Email,
+                                        LoyaltyPoints = Convert.ToString(loyalityDetail),
+
+                                    });
+                                }
+                                else
+                                {
+
+                                }
+
+                            }
+                        }
                     }
+
+
+
                 }
             }
             model.LoyaltyPoints = ListDailyReceiptsReport.OrderBy(x => x.CustomerName).ToList();
             return View(model);
         }
 
-        //public ActionResult LoyaltyPointsSearchReport(LoyaltyPointsReportSeachModels Model)
-        //{
-        //    var ListDailyReceiptsReport = new List<LoyaltyPointsModel>();
-        //    LoyaltyPointsReport _LoyaltyPointsReport = new LoyaltyPointsReport();
-        //    _LoyaltyPointsReport.LoyaltyPoints = new List<LoyaltyPointsModel>();
-        //    LoyaltyPointsReportSeachModels _model = new LoyaltyPointsReportSeachModels();
-        //    var VehicleDetails = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
-        //    #region
-        //    DateTime fromDate = DateTime.Now.AddDays(-1);
-        //    DateTime endDate = DateTime.Now;
-        //    if (!string.IsNullOrEmpty(Model.FromDate) && !string.IsNullOrEmpty(Model.EndDate))
-        //    {
-        //        fromDate = Convert.ToDateTime(Model.FromDate);
-        //        endDate = Convert.ToDateTime(Model.EndDate);
-        //    }
-        //    VehicleDetails = VehicleDetails.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
-        //    #endregion
-        //    if (VehicleDetails != null)
-        //    {
-        //        foreach (var item in VehicleDetails)
-        //        {
-        //            var Customer = InsuranceContext.Customers.Single(item.CustomerId);
-        //            var User = UserManager.FindById(Customer.UserID.ToString());
-        //            var loyalityDetail = InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={item.CustomerId}").Sum(x => x.PointsEarned);
-        //            if (loyalityDetail != null)
-        //            {
-        //                ListDailyReceiptsReport.Add(new LoyaltyPointsModel()
-        //                {
-        //                    CustomerName = Customer.FirstName + " " + Customer.LastName,
-        //                    CellPhoneNumber = Customer.Countrycode + "-" + Customer.PhoneNumber,
-        //                    Address = Customer.AddressLine1 + " " + Customer.AddressLine2,
-        //                    SumInsured = Convert.ToDecimal(item.SumInsured),
-        //                    PremiumPaid = Convert.ToDecimal(item.Premium),
-        //                    EmailAddress = User.Email,
-        //                    LoyaltyPoints = Convert.ToString(loyalityDetail),
-        //                });
-        //            }
-        //            else
-        //            {
-        //            }
-        //        }
-        //    }
+        public ActionResult LoyaltyPointsSearchReport(LoyaltyPointsReportSeachModels Model)
+        {
+            var ListDailyReceiptsReport = new List<LoyaltyPointsModel>();
+            LoyaltyPointsReport _LoyaltyPointsReport = new LoyaltyPointsReport();
+            _LoyaltyPointsReport.LoyaltyPoints = new List<LoyaltyPointsModel>();
+            LoyaltyPointsReportSeachModels _model = new LoyaltyPointsReportSeachModels();
+            var VehicleDetails = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
+            #region
+            DateTime fromDate = DateTime.Now.AddDays(-1);
+            DateTime endDate = DateTime.Now;
+            if (!string.IsNullOrEmpty(Model.FromDate) && !string.IsNullOrEmpty(Model.EndDate))
+            {
+                fromDate = Convert.ToDateTime(Model.FromDate);
+                endDate = Convert.ToDateTime(Model.EndDate);
+            }
+            VehicleDetails = VehicleDetails.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
+            #endregion
+            if (VehicleDetails != null)
+            {
+                foreach (var item in VehicleDetails)
+                {
 
-        //    return View("LoyaltyPointsReport", _model);
-        //}
+                    var vehicleSummarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
+                    if (vehicleSummarydetail != null)
+                    {
+                        var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
+                        if (summary != null)
+                        {
+
+                            if (summary.isQuotation != true)
+                            {
+
+                                var Customer = InsuranceContext.Customers.Single(item.CustomerId);
+                                var User = UserManager.FindById(Customer.UserID.ToString());
+                                var loyalityDetail = InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={item.CustomerId}").Sum(x => x.PointsEarned);
+                                if (loyalityDetail != null)
+                                {
+                                    ListDailyReceiptsReport.Add(new LoyaltyPointsModel()
+                                    {
+                                        CustomerName = Customer.FirstName + " " + Customer.LastName,
+                                        CellPhoneNumber = Customer.Countrycode + "-" + Customer.PhoneNumber,
+                                        Address = Customer.AddressLine1 + " " + Customer.AddressLine2,
+                                        SumInsured = Convert.ToDecimal(item.SumInsured),
+                                        PremiumPaid = Convert.ToDecimal(item.Premium),
+                                        EmailAddress = User.Email,
+                                        LoyaltyPoints = Convert.ToString(loyalityDetail),
+                                    });
+                                }
+                                else
+                                {
+                                }
+
+                            }
+                        }
+                    }
+
+
+                                
+                }
+            }
+            _model.LoyaltyPoints = ListDailyReceiptsReport.OrderBy(x => x.CustomerName).ToList();
+            return View("LoyaltyPointsReport", _model);
+        }
     }
 }

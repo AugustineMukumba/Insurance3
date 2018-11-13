@@ -117,6 +117,7 @@
     <Compile Include="Domain\AgeExcess.cs" />
     <Compile Include="Domain\AgentCommission.cs" />
     <Compile Include="Domain\BasicExcess.cs" />
+    <Compile Include="Domain\BirthdayMessage.cs" />
     <Compile Include="Domain\BusinessSource.cs" />
     <Compile Include="Domain\Checklist.cs" />
     <Compile Include="Domain\ClaimAdjustment.cs" />
@@ -166,6 +167,7 @@
     <Compile Include="Repository\AgeExcesses.cs" />
     <Compile Include="Repository\AgentCommissions.cs" />
     <Compile Include="Repository\BasicExcesses.cs" />
+    <Compile Include="Repository\BirthdayMessages.cs" />
     <Compile Include="Repository\BusinessSources.cs" />
     <Compile Include="Repository\Checklists.cs" />
     <Compile Include="Repository\Cities.cs" />

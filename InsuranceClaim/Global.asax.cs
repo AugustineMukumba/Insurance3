@@ -53,7 +53,7 @@ namespace InsuranceClaim
                 cfg.CreateMap<ClaimAdjustment, ClaimAdjustmentModel>().ReverseMap();
                 cfg.CreateMap<ClaimDetailsProvider, ClaimDetailsProviderModel>().ReverseMap();
                 cfg.CreateMap<ClaimSetting, ClaimSettingModel>().ReverseMap();
-
+                cfg.CreateMap<BirthdayMessage, BirthdayMessageModel>().ReverseMap();
 
             });
         }

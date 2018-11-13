@@ -208,6 +208,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BirthdayMessageController.cs" />
     <Compile Include="Controllers\BusinessSourceController.cs" />
     <Compile Include="Controllers\CityController.cs" />
     <Compile Include="Controllers\ClaimAdjustmentController.cs" />
@@ -327,6 +328,7 @@
     <Content Include="Scripts\toastr.js" />
     <Content Include="testChat.html" />
     <Content Include="Views\Account\EndorsementDetials.cshtml" />
+    <Content Include="Views\Report\ProductivityReport.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -475,6 +477,7 @@
     <Content Include="Views\CustomerRegistration\makepayment.cshtml" />
     <Content Include="Views\CustomerRegistration\PaymentFailure.cshtml" />
     <Content Include="Views\Report\LoyaltyPointsReport.cshtml" />
+    <Content Include="Views\BirthdayMessage\SendBirthdayMessage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

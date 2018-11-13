@@ -65,6 +65,8 @@ namespace Insurance.Domain
         public static ReminderFaileds ReminderFaileds { get { return new ReminderFaileds(); } }
         public static LicenceDiskDeliveryAddresses LicenceDiskDeliveryAddresses { get { return new LicenceDiskDeliveryAddresses(); } }
        public static UniqueCustomers UniqueCustomers { get { return new UniqueCustomers(); } }
+       public static BirthdayMessages BirthdayMessages { get { return new BirthdayMessages(); } }
+
         public static Cities Cities  { get { return new Cities(); } }
 
         //Second Phase Work
