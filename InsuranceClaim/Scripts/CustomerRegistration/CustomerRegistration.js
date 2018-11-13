@@ -31,7 +31,7 @@ function GoToNextDetail(json) {
 
     if (errorMessage == "Sucessfully update") {            
         toastr.error(errorMessage)      
-        window.location.href = '/Account/RiskDetail';
+        window.location.href = '/Account/EndorsementRiskDetails';
     }
 }
 

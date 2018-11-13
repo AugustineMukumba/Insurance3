@@ -918,5 +918,77 @@ namespace Insurance.Domain
 
     }
 
+    public partial class EndorsementVehicleDetail : Entity<EndorsementVehicleDetail>
+    {
+        public EndorsementVehicleDetail() { }
+        public EndorsementVehicleDetail(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public int VehicleId { get; set; }
+        public int PolicyId { get; set; }
+        public int? NoOfCarsCovered { get; set; }
+        public string RegistrationNo { get; set; }
+        public int? CustomerId { get; set; }
+        public string MakeId { get; set; }
+        public string ModelId { get; set; }
+        public decimal? CubicCapacity { get; set; }
+        public int? VehicleYear { get; set; }
+        public string EngineNumber { get; set; }
+        public string ChasisNumber { get; set; }
+        public string VehicleColor { get; set; }
+        public int? VehicleUsage { get; set; }
+        public int? CoverTypeId { get; set; }
+        public DateTime? CoverStartDate { get; set; }
+        public DateTime? CoverEndDate { get; set; }
+        public decimal? SumInsured { get; set; }
+        public decimal? Premium { get; set; }
+        public int? AgentCommissionId { get; set; }
+        public decimal? Rate { get; set; }
+        public decimal? StampDuty { get; set; }
+        public decimal? ZTSCLevy { get; set; }
+        public decimal? RadioLicenseCost { get; set; }
+        public string OptionalCovers { get; set; }
+        public int ExcessType { get; set; }
+        public decimal Excess { get; set; }
+        public string CoverNoteNo { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
+        public bool? IsActive { get; set; }
+        public Boolean Addthirdparty { get; set; }
+        public decimal? AddThirdPartyAmount { get; set; }
+        public Boolean PassengerAccidentCover { get; set; }
+        public Boolean ExcessBuyBack { get; set; }
+        public Boolean RoadsideAssistance { get; set; }
+        public Boolean MedicalExpenses { get; set; }
+        public int? NumberofPersons { get; set; }
+        public bool? IsLicenseDiskNeeded { get; set; }
+        public decimal? PassengerAccidentCoverAmount { get; set; }
+        public decimal? ExcessBuyBackAmount { get; set; }
+        public decimal? RoadsideAssistanceAmount { get; set; }
+        public decimal? MedicalExpensesAmount { get; set; }
+        public decimal? PassengerAccidentCoverAmountPerPerson { get; set; }
+        public decimal? ExcessBuyBackPercentage { get; set; }
+        public decimal? RoadsideAssistancePercentage { get; set; }
+        public decimal? MedicalExpensesPercentage { get; set; }
+        public decimal? ExcessAmount { get; set; }
+        public DateTime? RenewalDate { get; set; }
+        public DateTime? TransactionDate { get; set; }
+        public int PaymentTermId { get; set; }
+        public int ProductId { get; set; }
+        public bool? IncludeRadioLicenseCost { get; set; }
+        public string InsuranceId { get; set; }
+        public decimal? AnnualRiskPremium { get; set; }
+        public decimal? TermlyRiskPremium { get; set; }
+        public decimal? QuaterlyRiskPremium { get; set; }
+        public decimal? Discount { get; set; }
+        public bool isLapsed { get; set; }
+        public decimal? BalanceAmount { get; set; }
+        public decimal? VehicleLicenceFee { get; set; }
+
+        public int BusinessSourceId { get; set; }
+    }
+
 
 }

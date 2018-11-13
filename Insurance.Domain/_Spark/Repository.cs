@@ -66,6 +66,7 @@ namespace Insurance.Domain
         public static LicenceDiskDeliveryAddresses LicenceDiskDeliveryAddresses { get { return new LicenceDiskDeliveryAddresses(); } }
        public static UniqueCustomers UniqueCustomers { get { return new UniqueCustomers(); } }
         public static Cities Cities  { get { return new Cities(); } }
+        public static EndorsementVehicleDetails EndorsementVehicleDetails { get { return new EndorsementVehicleDetails(); } }
 
         //Second Phase Work
 
