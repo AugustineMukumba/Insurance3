@@ -140,7 +140,7 @@ namespace InsuranceClaim.Controllers
             model.PlaceOfLoss = ClaimDetail == null ? null : ClaimDetail.PlaceOfLoss;
             model.DescriptionOfLoss = ClaimDetail == null ? null : ClaimDetail.DescriptionOfLoss;
             model.EstimatedValueOfLoss = ClaimDetail.EstimatedValueOfLoss;
-            model.ThirdPartyDamageValue = ClaimDetail.ThirdPartyInvolvement;
+            //model.ThirdPartyDamageValue = ClaimDetail.ThirdPartyInvolvement;
             model.Claimsatisfaction = true;
             model.ClaimStatus = "1";
             model.CreatedOn = DateTime.Now;
@@ -232,7 +232,7 @@ namespace InsuranceClaim.Controllers
                         PlaceOfLoss = ClaimDetail == null ? null : ClaimDetail.PlaceOfLoss,
                         DescriptionOfLoss = ClaimDetail == null ? null : ClaimDetail.DescriptionOfLoss,
                         EstimatedValueOfLoss = ClaimDetail.EstimatedValueOfLoss,
-                        ThirdPartyDamageValue = ClaimDetail.ThirdPartyInvolvement,
+                        //ThirdPartyDamageValue = ClaimDetail.ThirdPartyInvolvement,
                         DateOfNotifications = ClaimDetail.CreatedOn.ToShortDateString(),
                         RiskViewModel = VehicleData,
                         chklist = ChecklistModel,
@@ -845,5 +845,23 @@ namespace InsuranceClaim.Controllers
                           }).ToList().Take(10);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult GetCustomername(string Policynumber)
+        {
+
+            var customerName = "";
+            var detail = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{Policynumber}'");
+            if (detail != null)
+            {
+                var customerdetail = InsuranceContext.Customers.Single(where: $"Id='{detail.CustomerId}'");
+                customerName = customerdetail.FirstName + " " + customerdetail.LastName;
+
+
+
+                return Json(customerName, JsonRequestBehavior.AllowGet);
+            }
+            return Json("", JsonRequestBehavior.AllowGet);
+
+        }
+
     }
 }

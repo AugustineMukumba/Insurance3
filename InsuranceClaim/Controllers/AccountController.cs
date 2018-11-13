@@ -74,7 +74,6 @@ namespace InsuranceClaim.Controllers
             Session.Abandon();
             Session.Clear();
 
-
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -1660,11 +1659,8 @@ namespace InsuranceClaim.Controllers
                         policylist.listpolicy.Add(policylistviewmodel);
 
                     }
-
-
                 }
             }
-
 
             return View(policylist);
         }
@@ -2616,7 +2612,6 @@ namespace InsuranceClaim.Controllers
         public void SetValueIntoSession(int summaryId)
         {
             //Session["ICEcashToken"] = null;
-
 
             Session["SummaryDetailIdView"] = summaryId;
 

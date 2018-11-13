@@ -208,6 +208,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BirthdayMessageController.cs" />
     <Compile Include="Controllers\BusinessSourceController.cs" />
     <Compile Include="Controllers\CityController.cs" />
     <Compile Include="Controllers\ClaimAdjustmentController.cs" />
@@ -269,6 +270,7 @@
     <Content Include="Images\desc.gif" />
     <Content Include="Images\diners.png" />
     <Content Include="Images\discover.png" />
+    <Content Include="Images\eft_pay.png" />
     <Content Include="Images\geneinsure-logo.jpeg" />
     <Content Include="Images\geneinsure-logo1.png" />
     <Content Include="Images\Geneinsuresign.png" />
@@ -325,6 +327,8 @@
     <Content Include="Scripts\select2.js" />
     <Content Include="Scripts\toastr.js" />
     <Content Include="testChat.html" />
+    <Content Include="Views\Account\EndorsementDetials.cshtml" />
+    <Content Include="Views\Report\ProductivityReport.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -464,14 +468,17 @@
     <Content Include="Views\Account\CustomerDetials.cshtml" />
     <Content Include="Views\Report\InsuredVehical.cshtml" />
     <Content Include="Views\Shared\EmaiTemplates\Schedule.cshtml" />
-    <Content Include="Views\Account\EndorsementDetials.cshtml" />
     <Content Include="Views\BusinessSource\Index.cshtml" />
     <Content Include="Views\BusinessSource\Create.cshtml" />
     <Content Include="Views\BusinessSource\Edit.cshtml" />
     <Content Include="Views\BusinessSource\Commission.cshtml" />
     <Content Include="Views\BusinessSource\AddCommission.cshtml" />
     <Content Include="Views\BusinessSource\EditCommission.cshtml" />
-    <Content Include="Views\Account\EndorsementRiskDetails.cshtml" />
+    <Content Include="Views\CustomerRegistration\makepayment.cshtml" />
+    <Content Include="Views\CustomerRegistration\PaymentFailure.cshtml" />
+    <Content Include="Views\Report\LoyaltyPointsReport.cshtml" />
+    <Content Include="Views\BirthdayMessage\SendBirthdayMessage.cshtml" />
+	   <Content Include="Views\Account\EndorsementRiskDetails.cshtml" />
     <Content Include="Views\Account\EndorsementSummaryDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>

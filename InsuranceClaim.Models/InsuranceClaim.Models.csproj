@@ -90,6 +90,7 @@
     <Compile Include="AccountViewModels.cs" />
     <Compile Include="AgentCommissionModel.cs" />
     <Compile Include="BasicCommissionReportModel.cs" />
+    <Compile Include="BirthdayMessageModel.cs" />
     <Compile Include="BusinessSourceModel.cs" />
     <Compile Include="CardDetailModel.cs" />
     <Compile Include="CardType.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="LicenceTicketViewModel.cs" />
     <Compile Include="ListUserViewModel.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="LoyaltyPointsModel.cs" />
     <Compile Include="ManageViewModels.cs" />
     <Compile Include="PaynowResponse.cs" />
     <Compile Include="PolicyDetailModel.cs" />

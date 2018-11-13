@@ -747,7 +747,7 @@ namespace Insurance.Domain
         public string PlaceOfLoss { get; set; }
         public string DescriptionOfLoss { get; set; }
         public decimal EstimatedValueOfLoss { get; set; }
-        public string ThirdPartyInvolvement { get; set; }
+        public bool? ThirdPartyInvolvement { get; set; }
         public string ClaimantName { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
@@ -991,4 +991,16 @@ namespace Insurance.Domain
     }
 
 
+    public partial class BirthdayMessage : Entity<BirthdayMessage>
+    {
+        public BirthdayMessage() { }
+        public BirthdayMessage(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public string Message { get; set; }
+        public int CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int ModifiedBy { get; set; }
+
+    }
 }

@@ -30,9 +30,9 @@ namespace InsuranceClaim.Models
         [Display(Name = "Estimated Value Of Loss")]
         public decimal EstimatedValueOfLoss { get; set; }
 
-        [Required(ErrorMessage = "Please Enter Third Party Involvement")]
+        [Required(ErrorMessage = "This is required field")]
         [Display(Name = "Third Party Involvement")]
-        public string ThirdPartyInvolvement { get; set; }
+        public bool? ThirdPartyInvolvement { get; set; }
         //public int CreatedBy { get; set; }
 
         public int CreatedBy { get; set; }

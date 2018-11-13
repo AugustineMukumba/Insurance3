@@ -661,16 +661,35 @@ namespace InsuranceClaim.Controllers
             return this.payment.Create(apiContext);
 
         }
-        public async Task<ActionResult> SaveDetailList(Int32 id, string invoiceNumber = "")
+        //public async Task<ActionResult> SaveDetailList(Int32 id, string invoiceNumber = "")
+        public async Task<ActionResult> SaveDetailList(Int32 id, string invoiceNumber = "", string Paymentid = "")
         {
-            var PaymentId = Session["PaymentId"];
-            var InvoiceId = Session["InvoiceId"];
+            //var PaymentId = Session["PaymentId"];
+            //var InvoiceId = Session["InvoiceId"];
+
+            string PaymentMethod = "";
+            if (Paymentid == "1")
+            {
+                PaymentMethod = "CASH";
+            }
+            else if (Paymentid == "2")
+            {
+                PaymentMethod = "MasterCard";
+            }
+            else if (Paymentid == "3")
+            {
+                PaymentMethod = "paynow";
+            }
+            else if (Paymentid == "")
+            {
+                PaymentMethod = "CASH";
+            }
+
             var summaryDetail = InsuranceContext.SummaryDetails.Single(id);
 
             if (summaryDetail != null && summaryDetail.isQuotation)
             {
                 summaryDetail.isQuotation = false;
-                InsuranceContext.SummaryDetails.Update(summaryDetail);
             }
 
             var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={id}").ToList();
@@ -690,12 +709,15 @@ namespace InsuranceClaim.Controllers
             objSaveDetailListModel.SummaryDetailId = id;
             objSaveDetailListModel.DebitNote = summaryDetail.DebitNote;
             objSaveDetailListModel.ProductId = product.Id;
-            objSaveDetailListModel.PaymentId = PaymentId == null ? "CASH" : PaymentId.ToString();
-            objSaveDetailListModel.InvoiceId = InvoiceId == null ? "" : InvoiceId.ToString();
+            //objSaveDetailListModel.PaymentId = PaymentId == null ? "CASH" : PaymentId.ToString();
+            //objSaveDetailListModel.InvoiceId = InvoiceId == null ? "" : InvoiceId.ToString();
+            objSaveDetailListModel.PaymentId = PaymentMethod;
+            objSaveDetailListModel.InvoiceId = invoiceNumber;
+
             objSaveDetailListModel.CreatedBy = customer.Id;
             objSaveDetailListModel.CreatedOn = DateTime.Now;
-            objSaveDetailListModel.InvoiceNumber = invoiceNumber;
-
+            //objSaveDetailListModel.InvoiceNumber = invoiceNumber;
+            objSaveDetailListModel.InvoiceNumber = policy.PolicyNumber;
             List<VehicleDetail> ListOfVehicles = new List<VehicleDetail>();
 
             //if (paymentInformations == null)

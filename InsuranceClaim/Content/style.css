@@ -1737,8 +1737,13 @@ div#invoiceNumberDiv .form-group {
     text-align: center
 
 }
-
-
+/**12/11*/
+.pdf-btn input {
+    margin-top: 26px;
+}
+div#content {
+    width: 1252px;
+}
 /**15 june css end**/
 
 /**18 oct **/
