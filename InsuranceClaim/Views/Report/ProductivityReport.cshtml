@@ -8,13 +8,13 @@
 
     <div class="container" id="content">
         <div class="row">
-            <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 products-top">
                 <div class="head-title">
                     <h2>Productivity Report</h2>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 products-top">
-                <div class="text-right pdf-btn">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 products-top">
+                <div class="text-right">
                     <input class="btn btn-primary" type="button" value="Generate PDF" id="generatePdf" />
                     <input class="btn btn-primary" type="button" value="Generate Excel" id="generateExcel" />
                 </div>
@@ -74,6 +74,7 @@
                         <th>Product</th>
                         <th>Sum Insured</th>
                         <th>Premium due</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -95,6 +96,7 @@
                             <td>@item.Product</td>
                             <td>$@item.SumInsured</td>
                             <td>$@item.PremiumDue</td>
+                            <td>@item.PolicyStatus</td>
                         </tr>
                     }
                 </tbody>
@@ -107,10 +109,13 @@
                         <td></td>
                         <td><strong>$@premiumDueTotal</strong></td>
                         <td><strong>$@suminsured</strong></td>
+                        <td></td>
                     </tr>
                 </tfoot>
             </table>
         </div>
+
+    </div>
 
     </div>
 
@@ -144,7 +149,7 @@
                     // exclude CSS class
                     exclude: ".noExl",
                     name: "Worksheet Name",
-                    filename: "DailyReceiptsReport" //do not include extension
+                    filename: "ProductivityReport" //do not include extension
 
                 });
             });

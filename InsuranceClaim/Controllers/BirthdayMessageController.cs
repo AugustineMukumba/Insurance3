@@ -17,11 +17,17 @@ namespace InsuranceClaim.Controllers
         {
             return View();
         }
-
+ 
         [HttpGet]
         public ActionResult SendBirthdayMessage()
         {
+            var record = InsuranceContext.BirthdayMessages.All().FirstOrDefault();
 
+            if (record != null)
+            {
+                var model = Mapper.Map<BirthdayMessage, BirthdayMessageModel>(record);
+                return View(model);
+            }
             return View();
         }
 
@@ -32,10 +38,26 @@ namespace InsuranceClaim.Controllers
             {
                 bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
                 string userid = "";
-                if (userLoggedin)
+                var recordExist = InsuranceContext.BirthdayMessages.All().FirstOrDefault();
+                userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                var customer = InsuranceContext.Customers.Single(where: $"UserId = '{userid}'");
+                if (recordExist != null)
                 {
-                    userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                    var customer = InsuranceContext.Customers.Single(where: $"UserId = '{userid}'");
+                    if (userLoggedin)
+                    {
+                        var dbModel = Mapper.Map<BirthdayMessageModel, BirthdayMessage>(Model);
+                        var record = InsuranceContext.BirthdayMessages.Single(where: $"Id = '{recordExist.Id}'");
+                        dbModel.ModifiedBy = customer.Id;
+                        dbModel.ModifiedOn = DateTime.Now;
+                        dbModel.Id = recordExist.Id;
+                        dbModel.CreatedOn = Convert.ToDateTime(record.CreatedOn);
+                        InsuranceContext.BirthdayMessages.Update(dbModel);
+                        return RedirectToAction("SendBirthdayMessage");
+                    }
+                }
+
+                else
+                {
                     var dbModel = Mapper.Map<BirthdayMessageModel, BirthdayMessage>(Model);
                     dbModel.CreatedBy = customer.Id;
                     dbModel.CreatedOn = DateTime.Now;
