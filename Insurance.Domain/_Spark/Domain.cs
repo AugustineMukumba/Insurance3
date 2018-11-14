@@ -28,6 +28,8 @@ namespace Insurance.Domain
 
         public int Id { get; set; }
         public string Name { get; set; }
+
+        public string Description { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
@@ -315,6 +317,7 @@ namespace Insurance.Domain
         public decimal? VehicleLicenceFee { get; set; }
 
        public int BusinessSourceId { get; set; }
+        public int CurrencyId { get; set; }
     }
 
     public partial class VehicleMake : Entity<VehicleMake>

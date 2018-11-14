@@ -434,6 +434,8 @@ namespace InsuranceClaim.Controllers
 
             ViewBag.Sources = InsuranceContext.BusinessSources.All();
 
+            ViewBag.Currencies = InsuranceContext.Currencies.All();
+
             ViewBag.Makers = makers;
             viewModel.isUpdate = false;
             viewModel.isWebUser = true;
@@ -559,6 +561,7 @@ namespace InsuranceClaim.Controllers
                         viewModel.isUpdate = false;                         // viewModel.isUpdate = false; 
                         viewModel.vehicleindex = Convert.ToInt32(id);
                         viewModel.BusinessSourceId = data.BusinessSourceId;
+                        viewModel.CurrencyId = data.CurrencyId;
 
                         var ser = new VehicleService();
                         var model = ser.GetModel(data.MakeId);

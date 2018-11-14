@@ -105,6 +105,7 @@
     <Compile Include="CltyModel.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="CovertypeModel.cs" />
+    <Compile Include="CurrencyModel.cs" />
     <Compile Include="CustomerListingReportModel.cs" />
     <Compile Include="CustomerModel.cs" />
     <Compile Include="DailyReceiptsReportModel.cs" />

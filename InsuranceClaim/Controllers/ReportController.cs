@@ -1340,7 +1340,6 @@ namespace InsuranceClaim.Controllers
             return View("ProductivityReport", model);
         }
 
-
         public ActionResult LoyaltyPointsReport()
         {
             var ListDailyReceiptsReport = new List<LoyaltyPointsModel>();
@@ -1373,17 +1372,26 @@ namespace InsuranceClaim.Controllers
 
                                 if (loyalityDetail != null)
                                 {
-                                    ListDailyReceiptsReport.Add(new LoyaltyPointsModel()
-                                    {
-                                        CustomerName = Customer.FirstName + " " + Customer.LastName,
-                                        CellPhoneNumber = Customer.Countrycode + "-" + Customer.PhoneNumber,
-                                        Address = Customer.AddressLine1 + " " + Customer.AddressLine2,
-                                        SumInsured = Convert.ToDecimal(item.SumInsured),
-                                        PremiumPaid = Convert.ToDecimal(item.Premium),
-                                        EmailAddress = User.Email,
-                                        LoyaltyPoints = Convert.ToString(loyalityDetail),
 
-                                    });
+                                    var ListDailyReceiptsDetails = ListDailyReceiptsReport.FirstOrDefault(c => c.PolicyId == item.PolicyId);
+
+                                    if (ListDailyReceiptsDetails==null)
+                                    {
+                                        ListDailyReceiptsReport.Add(new LoyaltyPointsModel()
+                                        {
+                                            CustomerName = Customer.FirstName + " " + Customer.LastName,
+                                            CellPhoneNumber = Customer.Countrycode + "-" + Customer.PhoneNumber,
+                                            Address = Customer.AddressLine1 + " " + Customer.AddressLine2,
+                                            SumInsured = Convert.ToDecimal(summary.TotalSumInsured),
+                                            PremiumPaid = Convert.ToDecimal(summary.TotalPremium),
+                                            EmailAddress = User.Email,
+                                            LoyaltyPoints = Convert.ToString(loyalityDetail),
+                                            PolicyId = item.PolicyId,
+                                           
+                                        });
+                                    }
+
+                                    
                                 }
                                 else
                                 {
@@ -1393,9 +1401,6 @@ namespace InsuranceClaim.Controllers
                             }
                         }
                     }
-
-
-
                 }
             }
             model.LoyaltyPoints = ListDailyReceiptsReport.OrderBy(x => x.CustomerName).ToList();
@@ -1439,16 +1444,26 @@ namespace InsuranceClaim.Controllers
                                 var loyalityDetail = InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={item.CustomerId}").Sum(x => x.PointsEarned);
                                 if (loyalityDetail != null)
                                 {
-                                    ListDailyReceiptsReport.Add(new LoyaltyPointsModel()
+
+                                    var ListDailyReceiptsDetails = ListDailyReceiptsReport.FirstOrDefault(c => c.PolicyId == item.PolicyId);
+
+                                    if (ListDailyReceiptsDetails == null)
                                     {
-                                        CustomerName = Customer.FirstName + " " + Customer.LastName,
-                                        CellPhoneNumber = Customer.Countrycode + "-" + Customer.PhoneNumber,
-                                        Address = Customer.AddressLine1 + " " + Customer.AddressLine2,
-                                        SumInsured = Convert.ToDecimal(item.SumInsured),
-                                        PremiumPaid = Convert.ToDecimal(item.Premium),
-                                        EmailAddress = User.Email,
-                                        LoyaltyPoints = Convert.ToString(loyalityDetail),
-                                    });
+                                        ListDailyReceiptsReport.Add(new LoyaltyPointsModel()
+                                        {
+                                            CustomerName = Customer.FirstName + " " + Customer.LastName,
+                                            CellPhoneNumber = Customer.Countrycode + "-" + Customer.PhoneNumber,
+                                            Address = Customer.AddressLine1 + " " + Customer.AddressLine2,
+                                            SumInsured = Convert.ToDecimal(summary.TotalSumInsured),
+                                            PremiumPaid = Convert.ToDecimal(summary.TotalPremium),
+                                            EmailAddress = User.Email,
+                                            LoyaltyPoints = Convert.ToString(loyalityDetail),
+                                            PolicyId = item.PolicyId,
+
+                                        });
+                                    }
+
+
                                 }
                                 else
                                 {
