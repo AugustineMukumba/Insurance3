@@ -17,6 +17,10 @@ namespace InsuranceClaim.Models
         public decimal PremiumPaid { get; set; }
         public string EmailAddress { get; set; }
 
+        public int PolicyId { get; set; }
+
+        
+
     }
 
     public class LoyaltyPointsReport

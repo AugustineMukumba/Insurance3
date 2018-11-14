@@ -75,6 +75,9 @@ namespace InsuranceClaim.Controllers
             ViewBag.CoverType = service.GetCoverType();
             ViewBag.AgentCommission = service.GetAgentCommission();
             ViewBag.Sources = InsuranceContext.BusinessSources.All();
+
+            ViewBag.Currencies = InsuranceContext.Currencies.All();
+
             ViewBag.Makers = makers;
             viewModel.isUpdate = false;
             //TempData["Policy"] = service.GetPolicy(id);
@@ -155,6 +158,7 @@ namespace InsuranceClaim.Controllers
                         viewModel.VehicleLicenceFee = Convert.ToDecimal(data.VehicleLicenceFee);
                         viewModel.InsuranceId = data.InsuranceId;
                         viewModel.BusinessSourceId = data.BusinessSourceId;
+                        viewModel.CurrencyId = data.CurrencyId;
 
                        // viewModel.isUpdate = true; //commented on "31 oct"
                         viewModel.isUpdate = false;

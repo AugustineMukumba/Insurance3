@@ -1471,16 +1471,11 @@ namespace InsuranceClaim.Controllers
             InsuranceClaim.Models.ReinsuranceBrokerModel obj = new ReinsuranceBrokerModel();
             if (id > 0)
             {
-
                 var model = InsuranceContext.ReinsuranceBrokers.Single(id);
                 obj = Mapper.Map<ReinsuranceBroker, ReinsuranceBrokerModel>(model);
-
-
             }
 
             return View(obj);
-
-
         }
         [HttpPost]
         public ActionResult SaveReinsuranceBroker(ReinsuranceBrokerModel model)

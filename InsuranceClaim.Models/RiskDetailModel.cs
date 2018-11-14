@@ -107,5 +107,7 @@ namespace InsuranceClaim.Models
 
         public int BusinessSourceId { get; set; }
 
+        public int CurrencyId { get; set; }
+
     }
 }

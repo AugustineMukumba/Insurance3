@@ -216,6 +216,7 @@
     <Compile Include="Controllers\CommissionController.cs" />
     <Compile Include="Controllers\ContactCentreController.cs" />
     <Compile Include="Controllers\CovertypeController.cs" />
+    <Compile Include="Controllers\CurrencyController.cs" />
     <Compile Include="Controllers\CustomerRegistrationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InsuranceHomeController.cs" />
@@ -478,8 +479,11 @@
     <Content Include="Views\CustomerRegistration\PaymentFailure.cshtml" />
     <Content Include="Views\Report\LoyaltyPointsReport.cshtml" />
     <Content Include="Views\BirthdayMessage\SendBirthdayMessage.cshtml" />
-	   <Content Include="Views\Account\EndorsementRiskDetails.cshtml" />
+    <Content Include="Views\Account\EndorsementRiskDetails.cshtml" />
     <Content Include="Views\Account\EndorsementSummaryDetail.cshtml" />
+    <Content Include="Views\Currency\Index.cshtml" />
+    <Content Include="Views\Currency\Edit.cshtml" />
+    <Content Include="Views\Currency\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
