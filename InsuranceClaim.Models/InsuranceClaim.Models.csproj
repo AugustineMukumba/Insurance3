@@ -109,6 +109,8 @@
     <Compile Include="CustomerModel.cs" />
     <Compile Include="DailyReceiptsReportModel.cs" />
     <Compile Include="EndorsementRiskDetailModel.cs" />
+    <Compile Include="EndorsementSummaryDetailModel.cs" />
+    <Compile Include="EndorsementSummaryVehicleDetailModel.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="GrossWrittenPremiumReportModels.cs" />
     <Compile Include="IdentityModels.cs" />

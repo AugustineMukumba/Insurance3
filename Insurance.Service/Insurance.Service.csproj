@@ -146,6 +146,7 @@
   <ItemGroup>
     <Compile Include="ClaimQuoteLogic.cs" />
     <Compile Include="EmailService.cs" />
+    <Compile Include="EndorsementSummaryDetailService.cs" />
     <Compile Include="ICEcashService.cs" />
     <Compile Include="InsurerService.cs" />
     <Compile Include="MiscellaneousService.cs" />

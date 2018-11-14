@@ -131,6 +131,8 @@
     <Compile Include="Domain\Currency.cs" />
     <Compile Include="Domain\Customer.cs" />
     <Compile Include="Domain\CustomerWallet.cs" />
+    <Compile Include="Domain\EndorsementSummaryDetail.cs" />
+    <Compile Include="Domain\EndorsementSummaryVehicleDetail.cs" />
     <Compile Include="Domain\EndorsementVehicleDetail.cs" />
     <Compile Include="Domain\Entity.partial.cs" />
     <Compile Include="Domain\LicenceDiskDeliveryAddress.cs" />
@@ -183,6 +185,8 @@
     <Compile Include="Repository\Currencies.cs" />
     <Compile Include="Repository\Customers.cs" />
     <Compile Include="Repository\CustomerWallets.cs" />
+    <Compile Include="Repository\EndorsementSummaryDetails.cs" />
+    <Compile Include="Repository\EndorsementSummaryVehicleDetails.cs" />
     <Compile Include="Repository\EndorsementVehicleDetails.cs" />
     <Compile Include="Repository\LicenceDiskDeliveryAddresses.cs" />
     <Compile Include="Repository\LicenceTickets.cs" />
