@@ -69,6 +69,9 @@ namespace Insurance.Domain
 
         public static Cities Cities  { get { return new Cities(); } }
         public static EndorsementVehicleDetails EndorsementVehicleDetails { get { return new EndorsementVehicleDetails(); } }
+        public static EndorsementSummaryDetails EndorsementSummaryDetails { get { return new EndorsementSummaryDetails(); } }
+        public static EndorsementSummaryVehicleDetails EndorsementSummaryVehicleDetails { get { return new EndorsementSummaryVehicleDetails(); } }
+        
 
         //Second Phase Work
 
@@ -83,6 +86,7 @@ namespace Insurance.Domain
         public static Checklists Checklists { get { return new Checklists(); } }
         public static ClaimDetailsProviders ClaimDetailsProviders { get { return new ClaimDetailsProviders(); } }
         public static ClaimSettings ClaimSettings { get { return new ClaimSettings(); } }
+      
 
 
         // general purpose operations

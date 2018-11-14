@@ -1006,4 +1006,51 @@ namespace Insurance.Domain
         public int ModifiedBy { get; set; }
 
     }
+
+
+    public partial class EndorsementSummaryDetail : Entity<EndorsementSummaryDetail>
+    {
+        public EndorsementSummaryDetail() { }
+        public EndorsementSummaryDetail(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public int SummaryId { get; set; }
+        public int? VehicleDetailId { get; set; }
+        public int? CustomerId { get; set; }
+        public int? PaymentTermId { get; set; }
+        public int? PaymentMethodId { get; set; }
+        public decimal? TotalSumInsured { get; set; }
+        public decimal? TotalPremium { get; set; }
+        public decimal? TotalStampDuty { get; set; }
+        public decimal? TotalZTSCLevies { get; set; }
+        public decimal? TotalRadioLicenseCost { get; set; }
+        public decimal? AmountPaid { get; set; }
+        public string DebitNote { get; set; }
+        public string ReceiptNumber { get; set; }
+        public bool? SMSConfirmation { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? BalancePaidDate { get; set; }
+        public string Notes { get; set; }
+        public bool isQuotation { get; set; }
+
+    }
+
+    public partial class EndorsementSummaryVehicleDetail : Entity<EndorsementSummaryVehicleDetail>
+    {
+        public EndorsementSummaryVehicleDetail() { }
+        public EndorsementSummaryVehicleDetail(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public int SummaryDetailId { get; set; }
+        public int VehicleDetailsId { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
+
+    }
 }

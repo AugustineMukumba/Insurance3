@@ -3074,8 +3074,6 @@ namespace InsuranceClaim.Controllers
 
             var SummaryList = new List<SummaryDetail>();
 
-
-
             if (role == "Staff")
             {
                 SummaryList = InsuranceContext.SummaryDetails.All(where: $"CreatedBy={customerID} and isQuotation = 'True'").OrderByDescending(x => x.Id).ToList();
@@ -3114,13 +3112,8 @@ namespace InsuranceClaim.Controllers
                         {
                             var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
                             var product = InsuranceContext.Products.Single(Convert.ToInt32(vehicle.ProductId));
-
                             policylistviewmodel.PolicyNumber = policy.PolicyNumber;
-
                             int increment = 0;
-
-
-
                             var _vehicle = new VehicleDetail();
                             decimal premiumAmount = 0;
                             decimal sumInsured = 0;
@@ -3135,8 +3128,6 @@ namespace InsuranceClaim.Controllers
                                     sumInsured = sumInsured + Convert.ToDecimal(_vehicle.SumInsured);
                                 }
                             }
-
-
 
                             if (_vehicle != null)
                             {
@@ -3175,27 +3166,45 @@ namespace InsuranceClaim.Controllers
             CustomerModel custModel = new CustomerModel();
             if (id != 0)
             {
-                var summaryDetail = InsuranceContext.SummaryDetails.Single(id);
+                var endorseSummaryDetail = InsuranceContext.EndorsementSummaryDetails.All(where: $"SummaryId={id}").FirstOrDefault();
+                if (endorseSummaryDetail == null)
+                {
+                    var summaryDetail = InsuranceContext.SummaryDetails.Single(id);
+                    var Cusotmer = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
+                    custModel = AutoMapper.Mapper.Map<Customer, CustomerModel>(Cusotmer);
+
+                    if (Cusotmer != null)
+                    {
+                        var dbUser = UserManager.Users.FirstOrDefault(c => c.Id == Cusotmer.UserID);
+                        if (dbUser != null)
+                        {
+                            custModel.EmailAddress = dbUser.Email; ;
+                        }
+                    }
+                    Session["SummaryDetailIdView"] = id;
+                }
+                else
+                {
+                    var Cusotmer = InsuranceContext.Customers.Single(endorseSummaryDetail.CustomerId);
+                    custModel = AutoMapper.Mapper.Map<Customer, CustomerModel>(Cusotmer);
+
+                    if (Cusotmer != null)
+                    {
+                        var dbUser = UserManager.Users.FirstOrDefault(c => c.Id == Cusotmer.UserID);
+                        if (dbUser != null)
+                        {
+                            custModel.EmailAddress = dbUser.Email; ;
+                        }
+                    }
+                    Session["SummaryDetailIdView"] = id;
+                }
+
                 string path = Server.MapPath("~/Content/Countries.txt");
                 var countries = System.IO.File.ReadAllText(path);
                 var resultt = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObject>(countries);
                 ViewBag.Countries = resultt.countries.OrderBy(x => x.code.Replace("+", ""));
 
                 ViewBag.Cities = InsuranceContext.Cities.All();
-
-                var Cusotmer = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
-
-                custModel = AutoMapper.Mapper.Map<Customer, CustomerModel>(Cusotmer);
-
-                if (Cusotmer != null)
-                {
-                    var dbUser = UserManager.Users.FirstOrDefault(c => c.Id == Cusotmer.UserID);
-                    if (dbUser != null)
-                    {
-                        custModel.EmailAddress = dbUser.Email; ;
-                    }
-                }
-                Session["SummaryDetailIdView"] = id;
 
             }
             return View(custModel);
@@ -3257,8 +3266,6 @@ namespace InsuranceClaim.Controllers
             var service = new VehicleService();
 
             ViewBag.VehicleUsage = service.GetAllVehicleUsage();
-
-
             viewModel.NumberofPersons = 0;
             viewModel.AddThirdPartyAmount = 0.00m;
             viewModel.RadioLicenseCost = Convert.ToDecimal(RadioLicenseCosts);
@@ -3342,8 +3349,6 @@ namespace InsuranceClaim.Controllers
                         viewModel.VehicleLicenceFee = Convert.ToDecimal(data.VehicleLicenceFee);
                         viewModel.BusinessSourceId = data.BusinessSourceId;
                         viewModel.VehicleUsage = data.VehicleUsage;
-
-
                         viewModel.isUpdate = true;
                         viewModel.vehicleindex = Convert.ToInt32(id);
 
@@ -3406,27 +3411,55 @@ namespace InsuranceClaim.Controllers
         {
             Session["SummaryDetailIdView"] = summaryId;
 
-            var summaryDetail = InsuranceContext.SummaryDetails.Single(summaryId);
-            var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={summaryId}").ToList();
-            var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
-            var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
-            var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+            var endorsesummaryDetail = InsuranceContext.EndorsementSummaryDetails.All(where: $"SummaryId={summaryId}").FirstOrDefault();
+            var endorseSummaryVehicleDetails = InsuranceContext.EndorsementSummaryVehicleDetails.All(where: $"SummaryDetailId={summaryId}").ToList();
 
-
-            Session["PolicyDataView"] = policy;
-
-            List<EndorsementRiskDetailModel> listRiskDetail = new List<EndorsementRiskDetailModel>();
-            foreach (var item in SummaryVehicleDetails)
+            if (endorsesummaryDetail == null)
             {
-                var _vehicle = InsuranceContext.VehicleDetails.Single(item.VehicleDetailsId);
-                EndorsementRiskDetailModel riskDetail = Mapper.Map<VehicleDetail, EndorsementRiskDetailModel>(_vehicle);
-                listRiskDetail.Add(riskDetail);
-            }
-            Session["ViewlistVehicles"] = listRiskDetail;
+                var summaryDetail = InsuranceContext.SummaryDetails.Single(summaryId);
+                var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={summaryId}").ToList();
+                var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
 
-            SummaryDetailModel summarymodel = Mapper.Map<SummaryDetail, SummaryDetailModel>(summaryDetail);
-            summarymodel.Id = summaryDetail.Id;
-            Session["ViewSummaryDetail"] = summaryDetail;
+
+                var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
+                var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+
+                Session["PolicyDataView"] = policy;
+
+                List<EndorsementRiskDetailModel> listRiskDetail = new List<EndorsementRiskDetailModel>();
+                foreach (var item in SummaryVehicleDetails)
+                {
+                    var _vehicle = InsuranceContext.VehicleDetails.Single(item.VehicleDetailsId);
+                    EndorsementRiskDetailModel riskDetail = Mapper.Map<VehicleDetail, EndorsementRiskDetailModel>(_vehicle);
+                    listRiskDetail.Add(riskDetail);
+                }
+                Session["ViewlistVehicles"] = listRiskDetail;
+
+                SummaryDetailModel summarymodel = Mapper.Map<SummaryDetail, SummaryDetailModel>(summaryDetail);
+                summarymodel.Id = summaryDetail.Id;
+                Session["ViewSummaryDetail"] = summaryDetail;
+            }
+            else
+            {
+                var endorsevehicle = InsuranceContext.EndorsementVehicleDetails.All(where: $"VehicleId={endorseSummaryVehicleDetails[0].VehicleDetailsId}").FirstOrDefault();
+                var endorsepolicy = InsuranceContext.PolicyDetails.Single(endorsevehicle.PolicyId);
+                var endorseproduct = InsuranceContext.Products.Single(Convert.ToInt32(endorsepolicy.PolicyName));
+                Session["PolicyDataView"] = endorsepolicy;
+
+                List<EndorsementRiskDetailModel> listRiskDetail = new List<EndorsementRiskDetailModel>();
+                foreach (var item in endorseSummaryVehicleDetails)
+                {
+                    var _vehicle = InsuranceContext.VehicleDetails.Single(item.VehicleDetailsId);
+                    EndorsementRiskDetailModel riskDetail = Mapper.Map<VehicleDetail, EndorsementRiskDetailModel>(_vehicle);
+                    listRiskDetail.Add(riskDetail);
+                }
+                Session["ViewlistVehicles"] = listRiskDetail;
+
+                EndorsementSummaryDetailModel summarymodel = Mapper.Map<EndorsementSummaryDetail, EndorsementSummaryDetailModel>(endorsesummaryDetail);
+                summarymodel.Id = endorsesummaryDetail.Id;
+                Session["ViewSummaryDetail"] = endorsesummaryDetail;
+            }
+
         }
 
         public ActionResult SaveEndorsementRiskDetails(EndorsementRiskDetailModel model)
@@ -3435,8 +3468,8 @@ namespace InsuranceClaim.Controllers
             var summaryDetail = InsuranceContext.SummaryDetails.Single(summaryId);
             var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={summaryId}").ToList();
             var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
-
             var VelicleDetail = InsuranceContext.EndorsementVehicleDetails.Single(where: $"VehicleId={vehicle.Id}");
+            bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
 
             if (VelicleDetail == null)
             {
@@ -3448,6 +3481,13 @@ namespace InsuranceClaim.Controllers
                 vehicleInsert.RenewalDate = model.RenewalDate;
                 vehicleInsert.CustomerId = vehicle.CustomerId;
                 vehicleInsert.IsActive = vehicle.IsActive;
+                vehicleInsert.CreatedOn = DateTime.Now;
+                if (_userLoggedin)
+                {
+                    var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
+                    var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{_User.Id}'").FirstOrDefault();
+                    vehicleInsert.CreatedBy = _customerData.Id;
+                }
                 vehicleInsert.PassengerAccidentCoverAmount = model.PassengerAccidentCoverAmount == null ? 0 : model.PassengerAccidentCoverAmount;
                 vehicleInsert.ExcessBuyBackAmount = model.ExcessBuyBackAmount == null ? 0 : model.ExcessBuyBackAmount;
                 vehicleInsert.RoadsideAssistanceAmount = model.RoadsideAssistanceAmount == null ? 0 : model.RoadsideAssistanceAmount;
@@ -3466,6 +3506,7 @@ namespace InsuranceClaim.Controllers
             else
             {
                 var vehicleUpdate = Mapper.Map<EndorsementRiskDetailModel, EndorsementVehicleDetail>(model);
+
                 VelicleDetail.VehicleId = vehicle.Id;
                 VelicleDetail.NoOfCarsCovered = vehicleUpdate.NoOfCarsCovered;
                 VelicleDetail.PolicyId = vehicleUpdate.PolicyId;
@@ -3495,8 +3536,15 @@ namespace InsuranceClaim.Controllers
                 VelicleDetail.ExcessType = vehicleUpdate.ExcessType;
                 VelicleDetail.CreatedOn = vehicleUpdate.CreatedOn;
                 VelicleDetail.CreatedBy = vehicleUpdate.CreatedBy;
-                VelicleDetail.ModifiedOn = vehicleUpdate.ModifiedOn;
+                VelicleDetail.ModifiedOn = DateTime.Now;
                 VelicleDetail.ModifiedBy = vehicleUpdate.ModifiedBy;
+                if (_userLoggedin)
+                {
+                    var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
+                    var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{_User.Id}'").FirstOrDefault();
+
+                    VelicleDetail.ModifiedBy = _customerData.Id;
+                }
                 VelicleDetail.IsActive = vehicle.IsActive;
                 VelicleDetail.Addthirdparty = vehicleUpdate.Addthirdparty;
                 VelicleDetail.AddThirdPartyAmount = vehicleUpdate.AddThirdPartyAmount;
@@ -3538,52 +3586,190 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult EndorsementSummaryDetail(int? Id = 0)
         {
-            var _model = new SummaryDetailModel();
+            var _model = new EndorsementSummaryDetailModel();
             var summaryDetail = Session["ViewSummaryDetail"];
             var listVehicles = Session["ViewlistVehicles"];
             var vehicle = (List<EndorsementRiskDetailModel>)Session["ViewlistVehicles"];// summary.GetVehicleInformation(id);
-            var summarydetail = (SummaryDetail)Session["ViewSummaryDetail"];
-            SummaryDetailService SummaryDetailServiceObj = new SummaryDetailService();
 
-            if (summarydetail != null)
+
+            var endorsesummaryDetail = InsuranceContext.EndorsementSummaryDetails.All(where: $"SummaryId={Convert.ToInt32(Session["SummaryDetailIdView"])}").FirstOrDefault();
+            if (endorsesummaryDetail == null)
             {
+                var summarydetail = (SummaryDetail)Session["ViewSummaryDetail"];
 
+                SummaryDetailService SummaryDetailServiceObj = new SummaryDetailService();
 
-                var model = Mapper.Map<SummaryDetail, SummaryDetailModel>(summarydetail);
-                model.CarInsuredCount = vehicle.Count;
-                model.DebitNote = "INV" + Convert.ToString(SummaryDetailServiceObj.getNewDebitNote());
-                model.PaymentMethodId = summarydetail.PaymentMethodId;
-                model.PaymentTermId = 1;
-                model.ReceiptNumber = "";
-                model.SMSConfirmation = false;
-
-                model.TotalPremium = vehicle.Sum(item => item.Premium + item.ZTSCLevy + item.StampDuty + item.VehicleLicenceFee + (item.IncludeRadioLicenseCost ? item.RadioLicenseCost : 0.00m));// + vehicle.StampDuty + vehicle.ZTSCLevy;
-                                                                                                                                                                                                  //model.TotalRadioLicenseCost = vehicle.Sum(item => item.RadioLicenseCost);
-                model.TotalStampDuty = vehicle.Sum(item => item.StampDuty);
-                model.TotalSumInsured = vehicle.Sum(item => item.SumInsured);
-                model.TotalZTSCLevies = vehicle.Sum(item => item.ZTSCLevy);
-                model.ExcessBuyBackAmount = vehicle.Sum(item => item.ExcessBuyBackAmount);
-                model.MedicalExpensesAmount = vehicle.Sum(item => item.MedicalExpensesAmount);
-                model.PassengerAccidentCoverAmount = vehicle.Sum(item => item.PassengerAccidentCoverAmount);
-                model.RoadsideAssistanceAmount = vehicle.Sum(item => item.RoadsideAssistanceAmount);
-                model.ExcessAmount = vehicle.Sum(item => item.ExcessAmount);
-                model.Discount = vehicle.Sum(item => item.Discount);
-                decimal radio = 0.00m;
-                foreach (var item in vehicle)
+                if (summarydetail != null)
                 {
-                    if (item.IncludeRadioLicenseCost)
+                    var model = Mapper.Map<SummaryDetail, EndorsementSummaryDetailModel>(summarydetail);
+                    model.CarInsuredCount = vehicle.Count;
+                    model.DebitNote = "INV" + Convert.ToString(SummaryDetailServiceObj.getNewDebitNote());
+                    model.PaymentMethodId = summarydetail.PaymentMethodId;
+                    model.PaymentTermId = 1;
+                    model.ReceiptNumber = "";
+                    model.SMSConfirmation = false;
+                    model.TotalPremium = vehicle.Sum(item => item.Premium + item.ZTSCLevy + item.StampDuty + item.VehicleLicenceFee + (item.IncludeRadioLicenseCost ? item.RadioLicenseCost : 0.00m));// + vehicle.StampDuty + vehicle.ZTSCLevy;
+                    model.TotalStampDuty = vehicle.Sum(item => item.StampDuty);
+                    model.TotalSumInsured = vehicle.Sum(item => item.SumInsured);
+                    model.TotalZTSCLevies = vehicle.Sum(item => item.ZTSCLevy);
+                    model.ExcessBuyBackAmount = vehicle.Sum(item => item.ExcessBuyBackAmount);
+                    model.MedicalExpensesAmount = vehicle.Sum(item => item.MedicalExpensesAmount);
+                    model.PassengerAccidentCoverAmount = vehicle.Sum(item => item.PassengerAccidentCoverAmount);
+                    model.RoadsideAssistanceAmount = vehicle.Sum(item => item.RoadsideAssistanceAmount);
+                    model.ExcessAmount = vehicle.Sum(item => item.ExcessAmount);
+                    model.Discount = vehicle.Sum(item => item.Discount);
+                    decimal radio = 0.00m;
+                    foreach (var item in vehicle)
                     {
-                        radio += Convert.ToDecimal(item.RadioLicenseCost);
+                        if (item.IncludeRadioLicenseCost)
+                        {
+                            radio += Convert.ToDecimal(item.RadioLicenseCost);
+                        }
                     }
+                    model.TotalRadioLicenseCost = radio;
+
+                    return View(model);
                 }
-                model.TotalRadioLicenseCost = radio;
-
-                //var Model = Mapper.Map<SummaryDetailModel, SummaryDetail>(summarydetail);
-                //InsuranceContext.SummaryDetails.Insert(Model);
-
-                return View(model);
             }
+            else
+            {
+                var smrydetail = (EndorsementSummaryDetail)Session["ViewSummaryDetail"];
+
+                EndorsementSummaryDetailService endorsementService = new EndorsementSummaryDetailService();
+
+                if (smrydetail != null)
+                {
+                    var model = Mapper.Map<EndorsementSummaryDetail, EndorsementSummaryDetailModel>(smrydetail);
+                    model.CarInsuredCount = vehicle.Count;
+                    model.DebitNote = "INV" + Convert.ToString(endorsementService.getNewDebitNote());
+                    model.PaymentMethodId = smrydetail.PaymentMethodId;
+                    model.PaymentTermId = 1;
+                    model.ReceiptNumber = "";
+                    model.SMSConfirmation = false;
+                    model.TotalPremium = vehicle.Sum(item => item.Premium + item.ZTSCLevy + item.StampDuty + item.VehicleLicenceFee + (item.IncludeRadioLicenseCost ? item.RadioLicenseCost : 0.00m));// + vehicle.StampDuty + vehicle.ZTSCLevy;
+                    model.TotalStampDuty = vehicle.Sum(item => item.StampDuty);
+                    model.TotalSumInsured = vehicle.Sum(item => item.SumInsured);
+                    model.TotalZTSCLevies = vehicle.Sum(item => item.ZTSCLevy);
+                    model.ExcessBuyBackAmount = vehicle.Sum(item => item.ExcessBuyBackAmount);
+                    model.MedicalExpensesAmount = vehicle.Sum(item => item.MedicalExpensesAmount);
+                    model.PassengerAccidentCoverAmount = vehicle.Sum(item => item.PassengerAccidentCoverAmount);
+                    model.RoadsideAssistanceAmount = vehicle.Sum(item => item.RoadsideAssistanceAmount);
+                    model.ExcessAmount = vehicle.Sum(item => item.ExcessAmount);
+                    model.Discount = vehicle.Sum(item => item.Discount);
+                    decimal radio = 0.00m;
+                    foreach (var item in vehicle)
+                    {
+                        if (item.IncludeRadioLicenseCost)
+                        {
+                            radio += Convert.ToDecimal(item.RadioLicenseCost);
+                        }
+                    }
+                    model.TotalRadioLicenseCost = radio;
+
+                    return View(model);
+                }
+            }
+
+
             return View(_model);
+        }
+
+        public ActionResult SaveEndorsementSummaryDetails(EndorsementSummaryDetailModel model)
+        {
+            int summaryId = Convert.ToInt32(Session["SummaryDetailIdView"]);
+            var summaryDetail = InsuranceContext.SummaryDetails.Single(summaryId);
+            var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={summaryId}").ToList();
+            var endorseSummryVehicle = InsuranceContext.EndorsementSummaryDetails.All(where: $"SummaryId={summaryId}").FirstOrDefault();
+            var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+            var vehicleDetail = Mapper.Map<EndorsementSummaryDetailModel, EndorsementSummaryDetail>(model);
+            bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+
+            if (endorseSummryVehicle == null)
+            {
+                vehicleDetail.SummaryId = summaryDetail.Id;
+                vehicleDetail.CustomerId = vehicle.CustomerId;
+                vehicleDetail.CreatedOn = DateTime.Now;
+                vehicleDetail.BalancePaidDate = DateTime.Now;
+                if (_userLoggedin)
+                {
+                    var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
+                    var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{_User.Id}'").FirstOrDefault();
+
+                    vehicleDetail.CreatedBy = _customerData.Id;
+                }
+
+                InsuranceContext.EndorsementSummaryDetails.Insert(vehicleDetail);
+            }
+            else
+            {
+                endorseSummryVehicle.SummaryId = summaryDetail.Id;
+                endorseSummryVehicle.CustomerId = vehicle.CustomerId;
+                endorseSummryVehicle.PaymentTermId = model.PaymentTermId;
+                endorseSummryVehicle.PaymentMethodId = model.PaymentMethodId;
+                endorseSummryVehicle.TotalSumInsured = model.TotalSumInsured;
+                endorseSummryVehicle.TotalPremium = model.TotalPremium;
+                endorseSummryVehicle.TotalStampDuty = model.TotalStampDuty;
+                endorseSummryVehicle.TotalZTSCLevies = model.TotalZTSCLevies;
+                endorseSummryVehicle.TotalRadioLicenseCost = model.TotalRadioLicenseCost;
+                endorseSummryVehicle.DebitNote = model.DebitNote;
+                endorseSummryVehicle.ReceiptNumber = model.ReceiptNumber;
+                endorseSummryVehicle.SMSConfirmation = model.SMSConfirmation;
+                endorseSummryVehicle.CreatedOn = DateTime.Now;
+                endorseSummryVehicle.CreatedBy = summaryDetail.CreatedBy;
+                endorseSummryVehicle.ModifiedOn = DateTime.Now;
+                if (_userLoggedin)
+                {
+                    var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
+                    var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{_User.Id}'").FirstOrDefault();
+
+                    endorseSummryVehicle.ModifiedBy = _customerData.Id;
+                }
+                endorseSummryVehicle.IsActive = summaryDetail.IsActive;
+                endorseSummryVehicle.AmountPaid = model.AmountPaid;
+                endorseSummryVehicle.BalancePaidDate = DateTime.Now;
+                endorseSummryVehicle.Notes = model.Notes;
+                endorseSummryVehicle.isQuotation = summaryDetail.isQuotation;
+
+                InsuranceContext.EndorsementSummaryDetails.Update(endorseSummryVehicle);
+
+            }
+
+            var summaryvehicle = InsuranceContext.EndorsementSummaryVehicleDetails.All(where: $"SummaryDetailId={summaryId}").FirstOrDefault();
+            EndorsementSummaryVehicleDetailModel endorsemodel = new EndorsementSummaryVehicleDetailModel();
+            endorsemodel.SummaryDetailId = summaryId;
+            endorsemodel.VehicleDetailsId = Convert.ToInt32(vehicle.Id);
+
+            if (summaryvehicle == null)
+            {
+                endorsemodel.CreatedOn = DateTime.Now;
+                var insertSummaryVehicle = Mapper.Map<EndorsementSummaryVehicleDetailModel, EndorsementSummaryVehicleDetail>(endorsemodel);
+                if (_userLoggedin)
+                {
+                    var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
+                    var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{_User.Id}'").FirstOrDefault();
+
+                    insertSummaryVehicle.CreatedBy = _customerData.Id;
+                }
+                InsuranceContext.EndorsementSummaryVehicleDetails.Insert(insertSummaryVehicle);
+            }
+            else
+            {
+                var updateSummaryVehicle = Mapper.Map<EndorsementSummaryVehicleDetailModel, EndorsementSummaryVehicleDetail>(endorsemodel);
+                updateSummaryVehicle.Id = summaryvehicle.Id;
+                updateSummaryVehicle.CreatedOn = summaryvehicle.CreatedOn;
+                updateSummaryVehicle.CreatedBy = summaryvehicle.CreatedBy;
+                updateSummaryVehicle.ModifiedOn = DateTime.Now;
+                if (_userLoggedin)
+                {
+                    var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
+                    var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{_User.Id}'").FirstOrDefault();
+
+                    updateSummaryVehicle.ModifiedBy = _customerData.Id;
+                }
+                InsuranceContext.EndorsementSummaryVehicleDetails.Update(updateSummaryVehicle);
+            }
+
+            return RedirectToAction("MyPolicies", "Account");
         }
     }
 }
