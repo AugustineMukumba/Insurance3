@@ -74,5 +74,7 @@ namespace InsuranceClaim.Models
 
         public bool IsCustomEmail { get; set; }
 
+        public string UserRoleName { get; set; }
+
     }
 }

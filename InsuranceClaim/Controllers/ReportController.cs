@@ -103,13 +103,13 @@ namespace InsuranceClaim.Controllers
                 results = InsuranceContext.Query(strQuery)
 .Select(x => new RiskDetailModel()
 {
-   PolicyExpireDate = x.CoverEndDate.ToShortDateString(),
-   CoverTypeName = x.Name,
-   SumInsured = x.SumInsured,
-   VechicalMake = x.MakeDescription,
-   VechicalModel = x.ModelDescription,
-   VehicleYear = x.VehicleYear,
-   CustomerDetails = new CustomerModel { FirstName = x.FirstName, LastName = x.LastName, PhoneNumber = x.PhoneNumber, EmailAddress = x.Email }
+    PolicyExpireDate = x.CoverEndDate.ToShortDateString(),
+    CoverTypeName = x.Name,
+    SumInsured = x.SumInsured,
+    VechicalMake = x.MakeDescription,
+    VechicalModel = x.ModelDescription,
+    VehicleYear = x.VehicleYear,
+    CustomerDetails = new CustomerModel { FirstName = x.FirstName, LastName = x.LastName, PhoneNumber = x.PhoneNumber, EmailAddress = x.Email }
 
 
 }).ToList();
@@ -1198,23 +1198,59 @@ namespace InsuranceClaim.Controllers
             foreach (var item in vehicledetail)
             {
                 var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
-                var customer = InsuranceContext.Customers.Single(item.CustomerId);
-                var User = UserManager.FindById(customer.UserID.ToString());
+
+
                 var vehicleSummarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
                 if (vehicleSummarydetail != null)
                 {
                     var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
+
                     if (summary != null)
                     {
-                        ProductiviyReportModel obj = new ProductiviyReportModel();
-                        obj.CustomerName = customer.FirstName + " " + customer.LastName;
-                        obj.PolicyNumber = policy.PolicyNumber;
-                        obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy");
-                        obj.PremiumDue = Convert.ToDecimal(item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost);
-                        obj.SumInsured = Convert.ToDecimal(item.SumInsured);
-                        obj.UserName = User.Email;
-                        obj.Product = InsuranceContext.Products.Single(item.ProductId).ProductName;
-                        listProductiviyReport.Add(obj);
+                        var customer = InsuranceContext.Customers.Single(item.CustomerId);
+                        var customerForRole = InsuranceContext.Customers.Single(summary.CreatedBy);
+
+                        if (customerForRole != null)
+                        {
+
+                            var userDetials = UserManager.FindById(customerForRole.UserID);
+
+                            if (userDetials != null)
+                            {
+
+                                var roles = InsuranceContext.Query("select Name from AspNetUserRoles join AspNetRoles on AspNetUserRoles.RoleId = AspNetRoles.Id where UserId='" + userDetials.Id + "'  ")
+                 .Select(x => new CustomerModel()
+                 {
+                     UserRoleName = x.Name,
+                 }).FirstOrDefault();
+
+
+                                if (roles != null && roles.UserRoleName.ToString() == "Staff")
+                                {
+                                    ProductiviyReportModel obj = new ProductiviyReportModel();
+                                    obj.CustomerName = customer.FirstName + " " + customer.LastName;
+                                    obj.PolicyNumber = policy.PolicyNumber;
+                                    obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy");
+                                    obj.PremiumDue = Convert.ToDecimal(item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost);
+                                    obj.SumInsured = Convert.ToDecimal(item.SumInsured);
+                                    obj.UserName = userDetials.Email;
+                                    obj.Product = InsuranceContext.Products.Single(item.ProductId).ProductName;
+
+                                    if (summary.isQuotation)
+                                        obj.PolicyStatus = "Quotation";
+                                    else
+                                        obj.PolicyStatus = "Policy";
+
+
+
+                                    listProductiviyReport.Add(obj);
+                                }
+                            }
+                        }
+
+
+
+
                     }
                 }
             }
@@ -1243,26 +1279,60 @@ namespace InsuranceClaim.Controllers
             var Vehicledetail = vehicledetail.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
 
             #endregion
-            foreach (var item in Vehicledetail)
+            foreach (var item in vehicledetail)
             {
                 var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
-                var customer = InsuranceContext.Customers.Single(item.CustomerId);
-                var User = UserManager.FindById(customer.UserID.ToString());
+
+
                 var vehicleSummarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
                 if (vehicleSummarydetail != null)
                 {
                     var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
+
                     if (summary != null)
                     {
-                        ProductiviyReportModel obj = new ProductiviyReportModel();
-                        obj.CustomerName = customer.FirstName + " " + customer.LastName;
-                        obj.PolicyNumber = policy.PolicyNumber;
-                        obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy");
-                        obj.PremiumDue = Convert.ToDecimal(item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost);
-                        obj.SumInsured = Convert.ToDecimal(item.SumInsured);
-                        obj.UserName = User.Email;
-                        obj.Product = InsuranceContext.Products.Single(item.ProductId).ProductName;
-                        listProductiviyReport.Add(obj);
+                        var customer = InsuranceContext.Customers.Single(item.CustomerId);
+                        var customerForRole = InsuranceContext.Customers.Single(summary.CreatedBy);
+
+                        if (customerForRole != null)
+                        {
+
+                            var userDetials = UserManager.FindById(customerForRole.UserID);
+
+                            if (userDetials != null)
+                            {
+
+                                var roles = InsuranceContext.Query("select Name from AspNetUserRoles join AspNetRoles on AspNetUserRoles.RoleId = AspNetRoles.Id where UserId='" + userDetials.Id + "'  ")
+                 .Select(x => new CustomerModel()
+                 {
+                     UserRoleName = x.Name,
+                 }).FirstOrDefault();
+
+
+                                if (roles != null && roles.UserRoleName.ToString() == "Staff")
+                                {
+                                    ProductiviyReportModel obj = new ProductiviyReportModel();
+                                    obj.CustomerName = customer.FirstName + " " + customer.LastName;
+                                    obj.PolicyNumber = policy.PolicyNumber;
+                                    obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy");
+                                    obj.PremiumDue = Convert.ToDecimal(item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost);
+                                    obj.SumInsured = Convert.ToDecimal(item.SumInsured);
+                                    obj.UserName = userDetials.Email;
+                                    obj.Product = InsuranceContext.Products.Single(item.ProductId).ProductName;
+
+                                    if (summary.isQuotation)
+                                        obj.PolicyStatus = "Quotation";
+                                    else
+                                        obj.PolicyStatus = "Policy";
+
+                                    listProductiviyReport.Add(obj);
+                                }
+                            }
+                        }
+
+
+
+
                     }
                 }
             }
@@ -1389,7 +1459,7 @@ namespace InsuranceClaim.Controllers
                     }
 
 
-                                
+
                 }
             }
             _model.LoyaltyPoints = ListDailyReceiptsReport.OrderBy(x => x.CustomerName).ToList();

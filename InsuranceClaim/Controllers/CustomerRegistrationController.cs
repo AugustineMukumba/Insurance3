@@ -52,8 +52,13 @@ namespace InsuranceClaim.Controllers
         {
             // var res = MaxCustoermId();
 
-              // var res = InsuranceContext.Query("select * from Customer").Select(x => new CustomerModel() { AddressLine1 = x.AddressLine1 }).ToList();
+            // var res = InsuranceContext.Query("select * from Customer").Select(x => new CustomerModel() { AddressLine1 = x.AddressLine1 }).ToList();
 
+            // var roles = UserManager.GetRoles("Guest-1161@gmail.com").FirstOrDefault();
+
+
+
+          
 
             if (id != -1) // -1 use for getting session value when click on back button
             {
