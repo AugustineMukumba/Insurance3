@@ -156,7 +156,17 @@ namespace InsuranceClaim.Controllers
 
             var ClaimDetail = InsuranceContext.ClaimNotifications.All().SingleOrDefault(p => p.Id == id);
             //var VehicleDetail = InsuranceContext.VehicleDetails.All().Where(p => p.RegistrationNo == ClaimDetail.RegistrationNo).ToList();
-            var vehicleId = InsuranceContext.VehicleDetails.All().SingleOrDefault(p => p.RegistrationNo == ClaimDetail.RegistrationNo);
+            //var vehicleId = InsuranceContext.VehicleDetails.All().SingleOrDefault(p => p.RegistrationNo == ClaimDetail.RegistrationNo);
+
+            var query = "select VehicleDetail.* from VehicleDetail join PolicyDetail on VehicleDetail.PolicyId = PolicyDetail.Id";
+            query += " where VehicleDetail.IsActive=1 and PolicyDetail.PolicyNumber = '" + PolicyNumber +"' and VehicleDetail.RegistrationNo = '" + ClaimDetail.RegistrationNo + "'";
+
+
+            var VehicleDetail = InsuranceContext.Query(query).Select(x => new VehicleDetail()
+            {
+                Id = x.Id
+            }).FirstOrDefault();
+
 
             //save in ClaimRegistration
             ClaimRegistrationModel model = new ClaimRegistrationModel();
@@ -168,7 +178,7 @@ namespace InsuranceClaim.Controllers
             model.PlaceOfLoss = ClaimDetail == null ? null : ClaimDetail.PlaceOfLoss;
             model.DescriptionOfLoss = ClaimDetail == null ? null : ClaimDetail.DescriptionOfLoss;
             model.EstimatedValueOfLoss = ClaimDetail.EstimatedValueOfLoss;
-            model.VehicleDetailId = vehicleId.Id;
+            model.VehicleDetailId = VehicleDetail.Id;
             model.RegistrationNo = ClaimDetail.RegistrationNo;
             //model.ThirdPartyDamageValue = ClaimDetail.ThirdPartyInvolvement;
             model.Claimsatisfaction = true;
@@ -200,7 +210,9 @@ namespace InsuranceClaim.Controllers
                     var Policyid = PolicyDetail.Id;
                     var CustomerId = PolicyDetail.CustomerId;
                     //var VehicleDetail = InsuranceContext.VehicleDetails.All().Where(p => p.PolicyId == Policyid).ToList();
-                    var VehicleDetail = InsuranceContext.VehicleDetails.All().Where(p => p.RegistrationNo == ClaimDetail.RegistrationNo).ToList();
+                    var VehicleDetail = InsuranceContext.VehicleDetails.All().Where(p => p.RegistrationNo == ClaimDetail.RegistrationNo && p.PolicyId== Policyid).ToList();
+
+                
                     RegisterClaimViewModel VehicleDetailVM = new RegisterClaimViewModel();
 
                     List<RiskViewModel> VehicleData = new List<RiskViewModel>();
@@ -945,6 +957,12 @@ namespace InsuranceClaim.Controllers
         {
 
             bool result = false;
+
+            if(string.IsNullOrEmpty(Datelose) && string.IsNullOrEmpty(StartDate) && string.IsNullOrEmpty(StartDate))
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+
             if (Convert.ToDateTime(Datelose) >= (Convert.ToDateTime(StartDate)))
             {
                 if (Convert.ToDateTime(EndDate) >= Convert.ToDateTime(Datelose))
