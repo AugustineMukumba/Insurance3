@@ -822,6 +822,8 @@ namespace Insurance.Domain
         public DateTime? CreatedOn { get; set; }
 
         public string RejectionStatus { get; set; }
+        public int VehicleDetailId { get; set; }
+        public string RegistrationNo { get; set; }
 
 
         //public DateTime? ModifyOn { get; set; }   
