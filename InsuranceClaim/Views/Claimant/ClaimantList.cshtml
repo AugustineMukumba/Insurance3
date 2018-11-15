@@ -40,8 +40,9 @@
                             <th>Place Of Loss</th>
                             <th>Description Of Loss</th>
                             <th>Esti Val Of Loss</th>
-                            <th>Third Party Involv</th>
                             <th>Claimant Name</th>
+                            <th>Third Party Involv</th>
+                            <th>Third Party Involv Details</th>
                             <th class="action-th">Action</th>
                         </tr>
                     </thead>
@@ -58,13 +59,33 @@
                                     <td>@item.PlaceOfLoss</td>
                                     <td>@item.DescriptionOfLoss</td>
                                     <td>@item.EstimatedValueOfLoss</td>
-                                    <td>@item.ThirdPartyInvolvement</td>
                                     <td>@item.ClaimantName</td>
+                                    <td>@item.ThirdPartyInvolvement</td>
+                                    <td>
+                                        <table>
+                                            <tr>
+                                                <td><b>Third Party Name:</b><br />@item.ThirdPartyName<br /></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Contact Detail:</b><br />@item.ThirdPartyContactDetails<br /></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Make :</b><br />@item.ThirdPartyMakeId<br /></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Model :</b><br />@item.ThirdPartyModelId<br /></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Third Party Estimat Val  :</b><br />@item.ThirdPartyEstimatedValueOfLoss<br /></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    
                                     <td>
                                         <div class="tbl-btn-list">
                                             <ul class="list-inline">
                                                 <li>@Html.ActionLink("Register Claim", "SaveUpdatedata", new { PolicyNumber = item.PolicyNumber, id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
-                                                <li>@Html.ActionLink("Edit", "EditClaimant", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
+                                                @*<li>@Html.ActionLink("Edit", "EditClaimant", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>*@
                                                 <li><button type="button" class="btn-sm btn-danger" onclick="ShowPopup('@item.Id')">Delete</button></li>
                                             </ul>
                                         </div>

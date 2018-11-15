@@ -239,7 +239,7 @@
                                             <div class="form-group">
                                                 <div class="number-block">
                                                     @Html.LabelFor(x => x.PhoneNumber, new { @class = "gender-label" })
-                                                    <small> In The Format:###-###-####</small>
+                                                    <small> In The Format: 0123456789</small>
                                                     @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control", @name = "PhoneNumber", @autocomplete = "off", @id = "PhoneNumber", @placeholder = "Enter Phone Number" })
                                                     @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
                                                 </div>

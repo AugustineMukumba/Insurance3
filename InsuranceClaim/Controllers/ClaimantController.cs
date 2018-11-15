@@ -17,6 +17,15 @@ namespace InsuranceClaim.Controllers
     {
         public ActionResult SaveClaimant()
         {
+
+            var service = new VehicleService();
+            var makers = service.GetMakers();
+            ViewBag.Makers = makers;
+            if (makers.Count > 0)
+            {
+                var model = service.GetModel(makers.FirstOrDefault().MakeCode);
+                ViewBag.Model = model;
+            }
             return View();
         }
 
@@ -40,12 +49,12 @@ namespace InsuranceClaim.Controllers
                     var enddate = Detailofpolicy.EndDate;
                     //if (model.DateOfLoss >= startdate && model.DateOfLoss <= enddate)
                     //{
-                        dbModel.CreatedBy = customer.Id;
-                        dbModel.CreatedOn = DateTime.Now;
-                        dbModel.IsDeleted = true;
-                        dbModel.IsRegistered = false;
-                        InsuranceContext.ClaimNotifications.Insert(dbModel);
-                        return RedirectToAction("ClaimantList");
+                    dbModel.CreatedBy = customer.Id;
+                    dbModel.CreatedOn = DateTime.Now;
+                    dbModel.IsDeleted = true;
+                    dbModel.IsRegistered = false;
+                    InsuranceContext.ClaimNotifications.Insert(dbModel);
+                    return RedirectToAction("ClaimantList");
                     //}
                     //TempData["errorMsg"] = "Date of Loss Not Exist in Policy Period";
                 }
@@ -77,6 +86,14 @@ namespace InsuranceClaim.Controllers
                            EstimatedValueOfLoss = j.EstimatedValueOfLoss,
                            ThirdPartyInvolvement = j.ThirdPartyInvolvement,
                            ClaimantName = j.ClaimantName,
+                           RegistrationNo = j.RegistrationNo,
+                           CustomerName = j.ThirdPartyName,
+                           ThirdPartyName = j.ThirdPartyName,
+                           ThirdPartyContactDetails = j.ThirdPartyContactDetails,
+                           ThirdPartyMakeId = j.ThirdPartyMakeId,
+                           ThirdPartyModelId = j.ThirdPartyModelId,
+                           ThirdPartyEstimatedValueOfLoss = j.ThirdPartyEstimatedValueOfLoss,
+
                            Id = j.Id,
                            IsExists = rt == null ? false : true,
                        }
@@ -90,6 +107,15 @@ namespace InsuranceClaim.Controllers
         {
             var record = InsuranceContext.ClaimNotifications.All(where: $"Id ={Id}").FirstOrDefault();
             var model = Mapper.Map<ClaimNotification, ClaimNotificationModel>(record);
+            var service = new VehicleService();
+            var makers = service.GetMakers();
+            ViewBag.Makers = makers;
+            if (makers.Count > 0)
+            {
+                var _model = service.GetModel(makers.FirstOrDefault().MakeCode);
+                ViewBag.Model = _model;
+            }
+            model.ThirdPartyModelId = record.ThirdPartyModelId;
             return View(model);
         }
 
@@ -831,36 +857,106 @@ namespace InsuranceClaim.Controllers
         {
 
             List<ClaimNotificationModel> objList = new List<ClaimNotificationModel>();
-            var Policylist = InsuranceContext.PolicyDetails.All().ToList();   ////  get data from database 
+            /*var Policylist = InsuranceContext.PolicyDetails.All().ToList();*/   ////  get data from database 
             var NotificationList = new List<ClaimNotificationModel>(); /// create list 
-            NotificationList = Policylist.Select(p => new ClaimNotificationModel()  //// get data from table using loop and added in model.
-            {
-                PolicyNumber = p.PolicyNumber
 
-            }).ToList();
-            var result = (from j in NotificationList
-                          select new
+            var result = (from Vehicle in InsuranceContext.VehicleDetails.All().ToList()
+                          join Policylist in InsuranceContext.PolicyDetails.All().ToList()
+                          on Vehicle.PolicyId equals Policylist.Id
+                          join customer in InsuranceContext.Customers.All()
+                          on Vehicle.CustomerId equals customer.Id
+                          where Vehicle.IsActive == true
+                          select new ClaimNotificationModel
                           {
-                              j.PolicyNumber
-                          }).ToList().Take(10);
+                              PolicyNumber = Policylist.PolicyNumber,
+                              VRNNumber = Vehicle.RegistrationNo,
+                              VehicleId = Vehicle.Id,
+                              PolicyId = Vehicle.PolicyId,
+                              CustomerName = customer.FirstName + " " + customer.LastName
+
+                          }).ToList().OrderBy(x => x.PolicyId).Take(30);
+            //NotificationList = Policylist.Select(p => new ClaimNotificationModel()  //// get data from table using loop and added in model.
+            //{
+            //    PolicyNumber = p.PolicyNumber
+
+            //}).ToList();
+            //var result = (from j in NotificationList
+            //              select new
+            //              {
+            //                  j.PolicyNumber
+            //              }).ToList().Take(10);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult GetCustomername(string Policynumber)
+        public JsonResult GetCustomername(string txtvalue)
         {
-
             var customerName = "";
-            var detail = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{Policynumber}'");
+            var policyNumber = "";
+            var vrn = "";
+            var policyAndRegistrationNumber = txtvalue; //Policy Number,VRN Number,Customer Name 
+            var policyAndRegistrationNumberArray = policyAndRegistrationNumber.Split(',');
+            if (policyAndRegistrationNumberArray.Length > 1)
+            {
+                policyNumber = policyAndRegistrationNumberArray[0]; //Policy Number
+                vrn = policyAndRegistrationNumberArray[1];//VRN Number
+            }
+            else
+            {
+                policyNumber = policyAndRegistrationNumberArray[0];
+            }
+
+            ClaimNotificationModel model = new ClaimNotificationModel();
+
+            var detail = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{policyNumber}'");
             if (detail != null)
             {
+                var vehicle = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}'");
                 var customerdetail = InsuranceContext.Customers.Single(where: $"Id='{detail.CustomerId}'");
                 customerName = customerdetail.FirstName + " " + customerdetail.LastName;
 
+                model.CustomerName = customerName;
+                model.RegistrationNo = vrn;
+                model.PolicyNumber = policyNumber;
 
+                model.CoverStartDate = vehicle.CoverStartDate;
+                model.CoverEndDate = vehicle.CoverEndDate;
+                //model.CoverStartDate =Convert.ToDateTime(vehicle.CoverStartDate).ToShortDateString();
+                //model.CoverEndDate =Convert.ToDateTime(vehicle.CoverEndDate).ToShortDateString();
 
-                return Json(customerName, JsonRequestBehavior.AllowGet);
+                return Json(model, JsonRequestBehavior.AllowGet);
             }
-            return Json("", JsonRequestBehavior.AllowGet);
+            return Json(model, JsonRequestBehavior.AllowGet);
 
+        }
+        public JsonResult GetVehicleModel(string makeCode)
+        {
+            var service = new VehicleService();
+            var model = service.GetModel(makeCode);
+            JsonResult jsonResult = new JsonResult();
+            jsonResult.Data = model;
+            jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            return jsonResult;
+        }
+        public JsonResult GetPolicydate(string Datelose, string StartDate, string EndDate)
+        {
+
+            bool result = false;
+            if (Convert.ToDateTime(Datelose) >= (Convert.ToDateTime(StartDate)))
+            {
+                if (Convert.ToDateTime(EndDate) >= Convert.ToDateTime(Datelose))
+                {
+                    result = true;
+                    return Json(result, JsonRequestBehavior.AllowGet);
+                }
+                else
+                    result = false;
+            }
+            else
+            {
+                return Json(result, JsonRequestBehavior.AllowGet);
+
+            }
+
+            return Json(false, JsonRequestBehavior.AllowGet);
         }
 
     }

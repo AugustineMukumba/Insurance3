@@ -758,6 +758,17 @@ namespace Insurance.Domain
         public bool? IsRegistered { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
+        public int? VehicleId { get; set; }
+        public int? PolicyId { get; set; }
+        public string ThirdPartyName { get; set; }
+        public string ThirdPartyContactDetails { get; set; }
+        public string ThirdPartyMakeId { get; set; }
+        public string ThirdPartyModelId { get; set; }
+        public decimal? ThirdPartyEstimatedValueOfLoss { get; set; }
+        public string RegistrationNo { get; set; }
+        public DateTime? CoverStartDate { get; set; }
+        public DateTime? CoverEndDate { get; set; }
+        public string CustomerName { get; set; }
     }
 
 

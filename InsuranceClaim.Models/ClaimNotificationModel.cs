@@ -14,6 +14,16 @@ namespace InsuranceClaim.Models
         [Display(Name = "Policy Number")]
         public string PolicyNumber { get; set; }
 
+        //[Required(ErrorMessage = "Please Enter VRN Detail")]
+        [Display(Name = "Search VRN/Policy Detail")]
+        public string VRNDetail { get; set; }
+        [Required(ErrorMessage = "Please Enter VRN Number")]
+        [Display(Name = "VRN Number")]
+        public string RegistrationNo { get; set; }
+        [Required(ErrorMessage = "Please Enter Customer Name")]
+        [Display(Name = "Customer Name")]
+        public string CustomerName { get; set; }
+
         [Required(ErrorMessage = "Please Enter Date")]
         [Display(Name = "Date Of Loss")]
         public DateTime DateOfLoss { get; set; }
@@ -30,7 +40,7 @@ namespace InsuranceClaim.Models
         [Display(Name = "Estimated Value Of Loss")]
         public decimal EstimatedValueOfLoss { get; set; }
 
-        [Required(ErrorMessage = "This is required field")]
+        //[Required(ErrorMessage = "This is required field")]
         [Display(Name = "Third Party Involvement")]
         public bool? ThirdPartyInvolvement { get; set; }
         //public int CreatedBy { get; set; }
@@ -47,6 +57,24 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please Enter Claimant Name")]
         [Display(Name = "Claimant Name")]
         public string ClaimantName { get; set; }
+        public string VRNNumber { get; set; }
+        public int? VehicleId { get; set; }
+        public int? PolicyId { get; set; }
+        [Display(Name = "Third Party Name")]
+        public string ThirdPartyName { get; set; }
+        [Display(Name = "Contact Details")]
+        public string ThirdPartyContactDetails { get; set; }
+        [Display(Name = "Make")]
+        public string ThirdPartyMakeId { get; set; }
+        [Display(Name = "Model")]
+        public string ThirdPartyModelId { get; set; }
+        [Display(Name = "Third Party Estimated Value Of Loss")]
+        public decimal? ThirdPartyEstimatedValueOfLoss { get; set; }
+        [Display(Name = "Cover Start Date")]
+        public DateTime? CoverStartDate { get; set; }
+        [Display(Name = "Cover End Date")]
+        public DateTime? CoverEndDate { get; set; }
+
 
     }
 }

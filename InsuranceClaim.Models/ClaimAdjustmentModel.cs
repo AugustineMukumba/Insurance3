@@ -56,7 +56,7 @@ namespace InsuranceClaim.Models
         public int ModifiedBy { get; set; }
         [Display(Name = "Phone Number")]
         //[Required(ErrorMessage = "Please Enter Phone Number")]
-        [RegularExpression(@"^([0-9]{3}-[0-9]{3}-[0-9]{4})$", ErrorMessage = "Not a Valid Phone Number")]
+        [RegularExpression(@"^([0-9]{3}[0-9]{3}[0-9]{4})$", ErrorMessage = "Not a Valid Phone Number")]
         public string PhoneNumber { get; set; }
         public string PolicyNumber { get; set; }
         public int ClaimNumber { get; set; }
