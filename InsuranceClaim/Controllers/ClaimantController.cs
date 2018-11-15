@@ -76,6 +76,10 @@ namespace InsuranceClaim.Controllers
                        on j.PolicyNumber equals jt.PolicyNumber
                        into rd
                        from rt in rd.DefaultIfEmpty()
+                       join make in InsuranceContext.VehicleMakes.All() on j.ThirdPartyMakeId equals make.MakeCode into makes
+                       from m in makes.DefaultIfEmpty()
+                       join model in InsuranceContext.VehicleModels.All() on j.ThirdPartyModelId equals model.ModelCode into models 
+                       from mod in models.DefaultIfEmpty()
                        where j.IsDeleted == true && j.IsRegistered == false
                        select new ClaimNotificationModel
                        {
@@ -90,8 +94,8 @@ namespace InsuranceClaim.Controllers
                            RegistrationNo = j.RegistrationNo,
                            ThirdPartyName = j.ThirdPartyName,
                            ThirdPartyContactDetails = j.ThirdPartyContactDetails,
-                           ThirdPartyMakeId = j.ThirdPartyMakeId,
-                           ThirdPartyModelId = j.ThirdPartyModelId,
+                           ThirdPartyMakeId =m==null?"" : m.MakeDescription,
+                           ThirdPartyModelId = mod==null ? "" :  mod.ModelDescription,
                            ThirdPartyEstimatedValueOfLoss = j.ThirdPartyEstimatedValueOfLoss,
                            CustomerName = j.CustomerName,
                            Id = j.Id,
