@@ -72,7 +72,8 @@ namespace InsuranceClaim.Controllers
             List<ClaimNotificationModel> objList = new List<ClaimNotificationModel>();
 
             objList = (from j in InsuranceContext.ClaimNotifications.All().ToList()
-                       join jt in InsuranceContext.PolicyDetails.All().ToList() on j.PolicyNumber equals jt.PolicyNumber
+                       join jt in InsuranceContext.PolicyDetails.All().ToList() 
+                       on j.PolicyNumber equals jt.PolicyNumber
                        into rd
                        from rt in rd.DefaultIfEmpty()
                        where j.IsDeleted == true && j.IsRegistered == false
@@ -87,13 +88,12 @@ namespace InsuranceClaim.Controllers
                            ThirdPartyInvolvement = j.ThirdPartyInvolvement,
                            ClaimantName = j.ClaimantName,
                            RegistrationNo = j.RegistrationNo,
-                           CustomerName = j.ThirdPartyName,
                            ThirdPartyName = j.ThirdPartyName,
                            ThirdPartyContactDetails = j.ThirdPartyContactDetails,
                            ThirdPartyMakeId = j.ThirdPartyMakeId,
                            ThirdPartyModelId = j.ThirdPartyModelId,
                            ThirdPartyEstimatedValueOfLoss = j.ThirdPartyEstimatedValueOfLoss,
-
+                           CustomerName = j.CustomerName,
                            Id = j.Id,
                            IsExists = rt == null ? false : true,
                        }
@@ -155,6 +155,8 @@ namespace InsuranceClaim.Controllers
         {
 
             var ClaimDetail = InsuranceContext.ClaimNotifications.All().SingleOrDefault(p => p.Id == id);
+            //var VehicleDetail = InsuranceContext.VehicleDetails.All().Where(p => p.RegistrationNo == ClaimDetail.RegistrationNo).ToList();
+            var vehicleId = InsuranceContext.VehicleDetails.All().SingleOrDefault(p => p.RegistrationNo == ClaimDetail.RegistrationNo);
 
             //save in ClaimRegistration
             ClaimRegistrationModel model = new ClaimRegistrationModel();
@@ -166,6 +168,8 @@ namespace InsuranceClaim.Controllers
             model.PlaceOfLoss = ClaimDetail == null ? null : ClaimDetail.PlaceOfLoss;
             model.DescriptionOfLoss = ClaimDetail == null ? null : ClaimDetail.DescriptionOfLoss;
             model.EstimatedValueOfLoss = ClaimDetail.EstimatedValueOfLoss;
+            model.VehicleDetailId = vehicleId.Id;
+            model.RegistrationNo = ClaimDetail.RegistrationNo;
             //model.ThirdPartyDamageValue = ClaimDetail.ThirdPartyInvolvement;
             model.Claimsatisfaction = true;
             model.ClaimStatus = "1";
@@ -195,7 +199,8 @@ namespace InsuranceClaim.Controllers
                     var ClaimDetail = InsuranceContext.ClaimNotifications.All().SingleOrDefault(p => p.Id == id);
                     var Policyid = PolicyDetail.Id;
                     var CustomerId = PolicyDetail.CustomerId;
-                    var VehicleDetail = InsuranceContext.VehicleDetails.All().Where(p => p.PolicyId == Policyid).ToList();
+                    //var VehicleDetail = InsuranceContext.VehicleDetails.All().Where(p => p.PolicyId == Policyid).ToList();
+                    var VehicleDetail = InsuranceContext.VehicleDetails.All().Where(p => p.RegistrationNo == ClaimDetail.RegistrationNo).ToList();
                     RegisterClaimViewModel VehicleDetailVM = new RegisterClaimViewModel();
 
                     List<RiskViewModel> VehicleData = new List<RiskViewModel>();

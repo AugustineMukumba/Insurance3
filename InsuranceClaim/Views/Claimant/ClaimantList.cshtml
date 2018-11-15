@@ -38,9 +38,11 @@
                             <th>Policy Number</th>
                             <th>Date Of Loss</th>
                             <th>Place Of Loss</th>
+                            <th>Customer Name</th>
                             <th>Description Of Loss</th>
                             <th>Esti Val Of Loss</th>
                             <th>Claimant Name</th>
+                            <th>Registration No</th>
                             <th>Third Party Involv</th>
                             <th>Third Party Involv Details</th>
                             <th class="action-th">Action</th>
@@ -57,10 +59,13 @@
 
                                     <td>@item.DateOfLoss.ToShortDateString().ToString()</td>
                                     <td>@item.PlaceOfLoss</td>
+                                    <td>@item.CustomerName</td>
                                     <td>@item.DescriptionOfLoss</td>
                                     <td>@item.EstimatedValueOfLoss</td>
                                     <td>@item.ClaimantName</td>
+                                   <td>@item.RegistrationNo</td>
                                     <td>@item.ThirdPartyInvolvement</td>
+                                  
                                     <td>
                                         <table>
                                             <tr>
@@ -122,7 +127,7 @@
                                                     <li>@Html.ActionLink("Register Claim", "SaveUpdatedata", new { PolicyNumber = item.PolicyNumber, id = item.Id }, new { @class = "btn-sm btn-primary", @style = "display :none" })</li>
                                                 }
 
-                                                <li>@Html.ActionLink("Edit", "EditClaimant", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
+                                                @*<li>@Html.ActionLink("Edit", "EditClaimant", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>*@
                                                 <li><button type="button" class="btn-sm btn-danger" onclick="ShowPopup('@item.Id')">Delete</button></li>
                                             </ul>
                                         </div>
