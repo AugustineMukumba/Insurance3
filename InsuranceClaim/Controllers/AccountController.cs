@@ -3578,6 +3578,13 @@ namespace InsuranceClaim.Controllers
                 VelicleDetail.VehicleLicenceFee = vehicleUpdate.VehicleLicenceFee;
                 VelicleDetail.BusinessSourceId = vehicleUpdate.BusinessSourceId;
 
+
+                Session["SummaryDetailIdView"] = null;
+                Session["ViewlistVehicles"] = null;
+                Session["PolicyDataView"] = null;
+                Session["ViewSummaryDetail"] = null;
+
+
                 InsuranceContext.EndorsementVehicleDetails.Update(VelicleDetail);
             }
 
