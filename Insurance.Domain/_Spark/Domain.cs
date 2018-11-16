@@ -225,6 +225,7 @@ namespace Insurance.Domain
         public SummaryDetail(bool defaults) : base(defaults) { }
 
         public int Id { get; set; }
+      
         public int? VehicleDetailId { get; set; }
         public int? CustomerId { get; set; }
         public int? PaymentTermId { get; set; }
@@ -824,8 +825,8 @@ namespace Insurance.Domain
         public string RejectionStatus { get; set; }
         public int VehicleDetailId { get; set; }
         public string RegistrationNo { get; set; }
-
-
+        public DateTime? ModifyOn { get; set; }
+        
         //public DateTime? ModifyOn { get; set; }   
     }
 

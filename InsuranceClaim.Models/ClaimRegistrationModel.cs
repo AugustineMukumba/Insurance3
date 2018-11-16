@@ -33,7 +33,7 @@ namespace InsuranceClaim.Models
         public string RegistrationNo { get; set; }
 
         public string ClaimValue { get; set; }
-        //public DateTime? ModifyOn { get; set; }
+        public DateTime? ModifyOn { get; set; }
     }
 
     public class ClaimRegistrationModelNew

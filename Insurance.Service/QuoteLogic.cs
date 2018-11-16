@@ -464,52 +464,100 @@ namespace Insurance.Service
 
 
 
-            if (ProductId == 1)
-            {
-
-                if (PaymentTermid == 1)
-                {
-                    if (Convert.ToDouble(this.ZtscLevy) > 10.80)
-                    {
-                        double maxZTSC = 10.80;
-                        this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
-                    }
-                }
-                else if (PaymentTermid == 4)
-                {
-                    double maxZTSC = 10.80 / 3;
-
-                    if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
-                    {
-
-                        this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
-                    }
-                }
-            }
-
+            double maxZTSC = 10.80; // default ProductId=1;
             if (ProductId == 3)
             {
-
-                if (PaymentTermid == 1)
-                {
-                    if (Convert.ToDouble(this.ZtscLevy) > 22.00)
-                    {
-                        double maxZTSC = 22.00;
-                        this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
-                    }
-                }
-                else if (PaymentTermid == 4)
-                {
-                    double maxZTSC = 22.00 / 3;
-
-                    if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
-                    {
-
-                        this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
-                    }
-                }
-
+                maxZTSC = 22.00;
             }
+
+
+                switch (PaymentTermid)
+                {                 
+                    case 1:
+
+                        if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
+                        {                   
+                            this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
+                        }
+                        break;
+             
+
+                    case 3:
+                        maxZTSC = maxZTSC / 4;
+                        if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
+                        {
+                            this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
+                        }
+
+                        break;
+                    case 4:
+                        maxZTSC = maxZTSC / 3;
+                        if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
+                        {
+                            this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
+                        }
+                        break;
+                    case 5:
+                        maxZTSC = maxZTSC / 5;
+                        if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
+                        {
+                            this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
+                        }
+                        break;
+                    case 6:
+                        maxZTSC = maxZTSC / 6;
+                        if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
+                        {
+                            this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
+                        }
+                        break;
+                    case 7:
+                        maxZTSC = maxZTSC / 7;
+                        if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
+                        {
+                            this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
+                        }
+                        break;
+                    case 8:
+                        maxZTSC = maxZTSC / 8;
+                        if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
+                        {
+                            this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
+                        }
+                        break;
+                    case 9:
+                        maxZTSC = maxZTSC / 9;
+                        if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
+                        {
+                            this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
+                        }
+                        break;
+                    case 10:
+                        maxZTSC = maxZTSC / 10;
+                        if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
+                        {
+                            this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
+                        }
+                        break;
+                    case 11:
+                        maxZTSC = maxZTSC / 11;
+                        if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
+                        {
+                            this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
+                        }
+                        break;
+                }
+
+
+
+
+
+
+
+                
+         
+
+            
 
 
 

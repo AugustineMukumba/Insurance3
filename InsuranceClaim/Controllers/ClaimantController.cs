@@ -584,7 +584,7 @@ namespace InsuranceClaim.Controllers
 
                         }).ToList();
 
-            return View(list.OrderByDescending(x => x.Id));
+            return View(list.OrderByDescending(x => x.ModifyOn));
         }
 
 
@@ -1132,7 +1132,7 @@ namespace InsuranceClaim.Controllers
                         RiskViewModel = VehicleData,
                         chklistDetail = VehicleDetailList,
                         checklistvalue = claimregistrationdetail.Checklist,
-
+                        ThirdPartyDamageValue = claimregistrationdetail.ThirdPartyDamageValue,
                         FirstName = InsuranceContext.Customers.All().Where(q => q.Id == CustomerId).FirstOrDefault().FirstName,
                         LastName = InsuranceContext.Customers.All().Where(q => q.Id == CustomerId).FirstOrDefault().LastName,
 
@@ -1181,17 +1181,19 @@ namespace InsuranceClaim.Controllers
         public ActionResult updateRegisterDetail(RegisterClaimViewModel model)
         {
 
-            RemoveValidation();
+            //RemoveValidation();
 
             //if (ModelState.IsValid)
             //{
                 var caimNumber = model.Claimnumber;
                 var claimStatis = model.Claimsatisfaction;
                 var status = model.Status;
-                var names = String.Join(",", model.chklist.Where(p => p.IsChecked).Select(p => p.Id));
-                var updateRecord = InsuranceContext.ClaimRegistrations.Single(model.ClaimId);
+            //var names = String.Join(",", model.chklist.Where(p => p.IsChecked).Select(p => p.Id));
+            var names = String.Join(",", model.chklistDetail.Where(p => p.isChecked).Select(p => p.checkId));
+            var updateRecord = InsuranceContext.ClaimRegistrations.Single(model.ClaimId);
                 updateRecord.Checklist = names;
-                if (model.PlaceOfLoss != "")
+               updateRecord.ModifyOn = DateTime.Now;
+            if (model.PlaceOfLoss != "")
                 {
                     updateRecord.PlaceOfLoss = model.PlaceOfLoss;
                 }
@@ -1222,18 +1224,18 @@ namespace InsuranceClaim.Controllers
                 return RedirectToAction("ClaimRegistrationList");
             //}
             
-            return RedirectToAction("RegisterClaim");
+            //return RedirectToAction("RegisterClaim");
         }
 
-        public void RemoveValidation()
-        {
-            ModelState.Remove("PlaceOfLoss");
+        //public void RemoveValidation()
+        //{
+        //    ModelState.Remove("PlaceOfLoss");
 
-            ModelState.Remove("PlaceOfLoss");
-            ModelState.Remove("DescriptionOfLoss");
-            ModelState.Remove("EstimatedValueOfLoss");
-            ModelState.Remove("ThirdPartyDamageValue");
-        }
+        //    ModelState.Remove("PlaceOfLoss");
+        //    ModelState.Remove("DescriptionOfLoss");
+        //    ModelState.Remove("EstimatedValueOfLoss");
+        //    ModelState.Remove("ThirdPartyDamageValue");
+        //}
 
 
     }
