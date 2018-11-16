@@ -45,10 +45,19 @@ namespace InsuranceClaim.Controllers
                     var dbModel = Mapper.Map<ClaimNotificationModel, ClaimNotification>(model);
                     var policy = model.PolicyNumber;
                     var Detailofpolicy = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{policy}'");
+
+                    var vehicalDetails = InsuranceContext.VehicleDetails.Single(where: $"PolicyId='{Detailofpolicy.Id}' and RegistrationNo='"+ model.RegistrationNo + "'");
+
+                    if(vehicalDetails!=null)
+                    {
+                        dbModel.VehicleId = vehicalDetails.Id;
+                    }
+
                     var startdate = Detailofpolicy.StartDate;
                     var enddate = Detailofpolicy.EndDate;
                     //if (model.DateOfLoss >= startdate && model.DateOfLoss <= enddate)
                     //{
+                    dbModel.PolicyId = Detailofpolicy.Id;
                     dbModel.CreatedBy = customer.Id;
                     dbModel.CreatedOn = DateTime.Now;
                     dbModel.IsDeleted = true;
@@ -570,7 +579,7 @@ namespace InsuranceClaim.Controllers
                             RepairProviderName = GetProvider(date == null ? 0 : date.RepairersProviderType, service),
                             ClaimStatus = Convert.ToString(Claimstatusdata.Status),
                             Id = _claimRegistration.Id,
-
+                            VehicleDetailId= _claimRegistration.VehicleDetailId,
                             ClaimValue = GetClaimValue(_claimRegistration.ClaimNumber, Adjustments),
 
 
@@ -986,6 +995,247 @@ namespace InsuranceClaim.Controllers
 
             return Json(false, JsonRequestBehavior.AllowGet);
         }
+
+
+
+
+        public ActionResult EditRegisterClaim(string PolicyNumber, int ClaimRegisterid, int VehicleDetailId)
+        {
+            try
+            {
+                ViewBag.ClaimStatus = InsuranceContext.ClaimStatuss.All().ToList();
+                var service = new VehicleService();
+                if (PolicyNumber != "")
+                {
+                    var PolicyDetail = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber = '{PolicyNumber}'");
+
+                    var ClaimDetail = InsuranceContext.ClaimNotifications.Single(where: $"VehicleId = '{VehicleDetailId}' and PolicyId=" + PolicyDetail.Id);
+
+
+                   // var RegisterDetail = InsuranceContext.ClaimRegistrations.All().SingleOrDefault(p => p.Id == ClaimRegisterid);
+
+                    var claimregistrationdetail = InsuranceContext.ClaimRegistrations.Single(where: $"Id = '{ClaimRegisterid}'");
+
+
+
+                    var CustomerId = PolicyDetail.CustomerId;
+
+                    var VehicleDetail = InsuranceContext.VehicleDetails.All(where: $"Id = '{VehicleDetailId}' and PolicyId=" + PolicyDetail.Id).ToList();
+
+
+                    RegisterClaimViewModel VehicleDetailVM = new RegisterClaimViewModel();
+
+                    List<RiskViewModel> VehicleData = new List<RiskViewModel>();
+                    List<ChecklistModel> ChecklistModel = new List<ChecklistModel>();
+
+                    var Checklist = InsuranceContext.Checklists.All().ToList();
+
+                   
+                    ChecklistModel = Checklist.Select(p => new ChecklistModel()
+                    {
+                        Id = p.Id,
+                        ChecklistDetail = p.ChecklistDetail,
+                        IsChecked = false,
+                    }).ToList();
+
+
+                    List<RegisterClaimViewModel> VehicleDetailList = new List<RegisterClaimViewModel>();
+
+
+                    string[] getCheckList = null;
+
+                    if (claimregistrationdetail.Checklist!=null)
+                    {
+                        getCheckList = claimregistrationdetail.Checklist.Split(',');
+                    }
+
+               
+
+
+
+                    for (var i = 0; i < ChecklistModel.Count(); i++)
+                    {
+                        RegisterClaimViewModel VehicleVM = new RegisterClaimViewModel();
+
+                        var chekExist = false;
+
+                        if(getCheckList!=null)
+                        {
+                            chekExist = getCheckList.Contains(ChecklistModel[i].Id.ToString());
+                        }
+                        
+
+                        if (chekExist)
+                        {
+                            VehicleVM.isChecked = true;
+                            VehicleVM.CheckBoxName = ChecklistModel[i].ChecklistDetail;
+                            VehicleVM.checkId = ChecklistModel[i].Id;
+
+                        }
+                        else
+                        {
+                            VehicleVM.isChecked = false;
+                            VehicleVM.CheckBoxName = ChecklistModel[i].ChecklistDetail;
+                            VehicleVM.checkId = ChecklistModel[i].Id;
+
+                        }
+
+                        VehicleDetailList.Add(VehicleVM);
+                    }
+
+
+                    //get only Vehicle Detail
+                    VehicleData = VehicleDetail.Select(p => new RiskViewModel()
+                    {
+                        Make = InsuranceContext.VehicleMakes.All().Where(q => q.MakeCode == p.MakeId).FirstOrDefault().MakeDescription,
+                        Model = InsuranceContext.VehicleModels.All().Where(q => q.ModelCode == p.ModelId).FirstOrDefault().ModelDescription,
+                        paymentTerm = InsuranceContext.PaymentTerms.All().Where(q => q.Id == p.PaymentTermId).FirstOrDefault().Name,
+                        Product = InsuranceContext.Products.All().Where(q => q.Id == p.ProductId).FirstOrDefault().ProductName,
+                        VehUsage = InsuranceContext.VehicleUsages.All().Where(q => q.Id == p.VehicleUsage).FirstOrDefault().VehUsage,
+                        CoverType = InsuranceContext.CoverTypes.All().Where(q => q.Id == p.CoverTypeId).FirstOrDefault().Name,
+                        VehicleYear = p.VehicleYear,
+                        CubicCapacity = p.CubicCapacity,
+                        EngineNumber = p.EngineNumber,
+                        ChasisNumber = p.ChasisNumber,
+                        AddThirdPartyAmount = p.AddThirdPartyAmount,
+                        Excess = p.Excess,
+                        ExcessType = Convert.ToString(p.ExcessType),
+                        Premium = p.Premium,
+                        StampDuty = p.StampDuty,
+                        ZTSCLevy = p.ZTSCLevy,
+                        Discount = p.Discount,
+
+                        VehicleLicenceFee = p.VehicleLicenceFee,
+                        Addthirdparty = p.Addthirdparty == true ? "yes" : "No",
+                        IncludeRadioLicenseCost = p.IncludeRadioLicenseCost == true ? "yes" : "No",
+                        IsLicenseDiskNeeded = p.IsLicenseDiskNeeded == true ? "yes" : "No",
+                        FirstName = InsuranceContext.Customers.All().Where(q => q.Id == p.CustomerId).FirstOrDefault().FirstName,
+                        LastName = InsuranceContext.Customers.All().Where(q => q.Id == p.CustomerId).FirstOrDefault().LastName,
+                        RegisterNumber = p.RegistrationNo,
+                        CoverStartDate = Convert.ToString(p.CoverStartDate.Value.ToShortDateString()),
+                        CoverEndDate = Convert.ToString(p.CoverEndDate.Value.ToShortDateString()),
+                        SumInsured = p.SumInsured,
+                        RadioLicenseCost = p.RadioLicenseCost,
+                        PassengerAccidentCover = p.PassengerAccidentCover == true ? "yes" : "No",
+                        ExcessBuyBack = p.ExcessBuyBack == true ? "yes" : "No",
+                        RoadsideAssistance = p.RoadsideAssistance == true ? "yes" : "No",
+                        MedicalExpenses = p.MedicalExpenses == true ? "yes" : "No"
+                    }).ToList();
+
+                    VehicleDetailVM = new RegisterClaimViewModel()
+                    {
+                        PolicyNumber = PolicyDetail.PolicyNumber,
+                        DateOfLoss = claimregistrationdetail.DateOfLoss.ToString(),// dispaly only date
+                        PlaceOfLoss = claimregistrationdetail == null ? null : claimregistrationdetail.PlaceOfLoss,
+                        DescriptionOfLoss = claimregistrationdetail == null ? null : claimregistrationdetail.DescriptionOfLoss,
+                        EstimatedValueOfLoss = claimregistrationdetail.EstimatedValueOfLoss,
+                        DateOfNotifications = claimregistrationdetail.CreatedOn.ToString(),// dispaly only date
+                        RiskViewModel = VehicleData,
+                        chklistDetail = VehicleDetailList,
+                        checklistvalue = claimregistrationdetail.Checklist,
+
+                        FirstName = InsuranceContext.Customers.All().Where(q => q.Id == CustomerId).FirstOrDefault().FirstName,
+                        LastName = InsuranceContext.Customers.All().Where(q => q.Id == CustomerId).FirstOrDefault().LastName,
+
+                    };
+                    
+
+                    VehicleDetailVM.ClaimId = ClaimRegisterid;
+                    VehicleDetailVM.Claimnumber = claimregistrationdetail.ClaimNumber;
+                    VehicleDetailVM.Claimsatisfaction = claimregistrationdetail.Claimsatisfaction;
+                    VehicleDetailVM.Id = claimregistrationdetail.Id;
+                    return View(VehicleDetailVM);
+                }
+                return View();
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool GetcheckdValue(string ChecklistDetail)
+        {
+            bool IsChecked = false;
+            if (ChecklistDetail == "Driverslicence")
+            {
+                IsChecked = true;
+            }
+            else if (ChecklistDetail == "ClaimantCopyOfID")
+            {
+                IsChecked = true;
+            }
+            else if (ChecklistDetail == "PoliceReport")
+            {
+                IsChecked = true;
+            }
+
+            else if (ChecklistDetail == "ClaimForm")
+            {
+                IsChecked = true;
+            }
+
+            return IsChecked;
+        }
+
+        public ActionResult updateRegisterDetail(RegisterClaimViewModel model)
+        {
+
+            RemoveValidation();
+
+            //if (ModelState.IsValid)
+            //{
+                var caimNumber = model.Claimnumber;
+                var claimStatis = model.Claimsatisfaction;
+                var status = model.Status;
+                var names = String.Join(",", model.chklist.Where(p => p.IsChecked).Select(p => p.Id));
+                var updateRecord = InsuranceContext.ClaimRegistrations.Single(model.ClaimId);
+                updateRecord.Checklist = names;
+                if (model.PlaceOfLoss != "")
+                {
+                    updateRecord.PlaceOfLoss = model.PlaceOfLoss;
+                }
+
+                if (model.DescriptionOfLoss != "")
+                {
+                    updateRecord.DescriptionOfLoss = model.DescriptionOfLoss;
+                }
+                if (model.EstimatedValueOfLoss > 0)
+                {
+                    updateRecord.EstimatedValueOfLoss = model.EstimatedValueOfLoss;
+                }
+
+                if (model.ThirdPartyDamageValue != "")
+                {
+                    updateRecord.ThirdPartyDamageValue = model.ThirdPartyDamageValue;
+                }
+                if (model.RejectionStatus != "")
+                {
+                    updateRecord.RejectionStatus = model.RejectionStatus;
+                }
+                if (model.Status != "")
+                {
+                    updateRecord.ClaimStatus = Convert.ToInt32(model.Status);
+                }
+                updateRecord.Claimsatisfaction = claimStatis;
+                InsuranceContext.ClaimRegistrations.Update(updateRecord);
+                return RedirectToAction("ClaimRegistrationList");
+            //}
+            
+            return RedirectToAction("RegisterClaim");
+        }
+
+        public void RemoveValidation()
+        {
+            ModelState.Remove("PlaceOfLoss");
+
+            ModelState.Remove("PlaceOfLoss");
+            ModelState.Remove("DescriptionOfLoss");
+            ModelState.Remove("EstimatedValueOfLoss");
+            ModelState.Remove("ThirdPartyDamageValue");
+        }
+
 
     }
 }

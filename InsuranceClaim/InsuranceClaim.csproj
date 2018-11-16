@@ -484,6 +484,7 @@
     <Content Include="Views\Currency\Index.cshtml" />
     <Content Include="Views\Currency\Edit.cshtml" />
     <Content Include="Views\Currency\Create.cshtml" />
+    <Content Include="Views\Claimant\EditRegisterClaim.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

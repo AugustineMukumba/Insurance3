@@ -130,6 +130,12 @@
                                                 }*@
                                         }
 
+
+                                        @if (item.VehicleDetailId != null && item.VehicleDetailId != 0)
+                                        {
+                                            <li>@Html.ActionLink("Edit", "EditRegisterClaim", "Claimant", new { PolicyNumber = item.PolicyNumber, ClaimRegisterid = item.Id, VehicleDetailId = item.VehicleDetailId }, new { @class = "btn-sm btn-primary" })</li>
+                                        }
+
                                     </ul>
                                 </div>
                             </td>
