@@ -851,17 +851,18 @@ namespace Insurance.Domain
         public ClaimDetailsProvider() { }
         public ClaimDetailsProvider(bool defaults) : base(defaults) { }
         public int Id { get; set; }
-        public int AssessorsProviderType { get; set; }
-        public int ValuersProviderType { get; set; }
+        public int? AssessorsProviderType { get; set; }
+        public int? ValuersProviderType { get; set; }
         public string PolicyNumber { get; set; }
-        public int LawyersProviderType { get; set; }
-        public int RepairersProviderType { get; set; }
+        public int? LawyersProviderType { get; set; }
+        public int? RepairersProviderType { get; set; }
         public int ClaimNumber { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
+        public int? TotalProviderFees { get; set; }
 
 
     }
