@@ -63,6 +63,7 @@ namespace InsuranceClaim.Controllers
             return View();
         }
 
+
         // GET: Claimant
         //[Authorize(Roles = "Staff")]
         [HttpGet]
