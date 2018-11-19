@@ -866,7 +866,16 @@ namespace Insurance.Domain
         public bool? IsActive { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
-        public int? TotalProviderFees { get; set; }
+        public decimal? TotalProviderFees { get; set; }
+        public int? TownlyProviderType { get; set; }
+        public int? MedicalProviderType { get; set; }
+        public decimal? AssessorsProviderFees { get; set; }
+        public decimal? ValuersProviderFees { get; set; }
+        public decimal? LawyersProviderFees { get; set; }
+        public decimal? RepairersProviderFees { get; set; }
+        public decimal? TownlyProviderFees { get; set; }
+        public decimal? MedicalProviderFees { get; set; }
+
 
 
     }
