@@ -3313,7 +3313,7 @@ namespace InsuranceClaim.Controllers
                         viewModel.CoverNoteNo = data.CoverNoteNo;
                         viewModel.CoverStartDate = data.CoverStartDate;
                         viewModel.CoverTypeId = data.CoverTypeId;
-                        viewModel.CubicCapacity = (int)Math.Round(data.CubicCapacity.Value, 0);
+                        viewModel.CubicCapacity = data.CubicCapacity==null ? 0 :(int)Math.Round(data.CubicCapacity.Value, 0);
                         viewModel.CustomerId = data.CustomerId;
                         viewModel.EngineNumber = data.EngineNumber;
                         // viewModel.Equals = data.Equals;
@@ -3431,23 +3431,54 @@ namespace InsuranceClaim.Controllers
                     var vehicle = InsuranceContext.VehicleDetails.Single(where: $"Id={item.VehicleDetailsId}");
                     var VelicleDetailEndersoment = InsuranceContext.EndorsementVehicleDetails.Single(where: $"VehicleId={vehicle.Id}");
 
+
+
+
+
                     if (VelicleDetailEndersoment == null)
                     {
                         var vehicleInsert = new EndorsementVehicleDetail();
                         vehicleInsert.VehicleId = vehicle.Id;
+                        vehicleInsert.NoOfCarsCovered = vehicle.NoOfCarsCovered;
                         vehicleInsert.PolicyId = vehicle.PolicyId;
+                        vehicleInsert.RegistrationNo = vehicle.RegistrationNo;
+                        vehicleInsert.CustomerId = vehicle.CustomerId;
+                        vehicleInsert.MakeId = vehicle.MakeId;
+                        vehicleInsert.ModelId = vehicle.ModelId;
+                        vehicleInsert.ModelId = vehicle.ModelId;
+                        vehicleInsert.CubicCapacity = vehicle.CubicCapacity;
+                        vehicleInsert.VehicleYear = vehicle.VehicleYear;
+                         vehicleInsert.EngineNumber = vehicle.EngineNumber;
+                        vehicleInsert.ChasisNumber = vehicle.ChasisNumber;
+                        vehicleInsert.VehicleColor = vehicle.VehicleColor;
+                        vehicleInsert.VehicleUsage = vehicle.VehicleUsage;
+                        vehicleInsert.CoverTypeId = vehicle.CoverTypeId;
+                        vehicleInsert.CoverTypeId = vehicle.CoverTypeId;
                         vehicleInsert.CoverStartDate = vehicle.CoverStartDate;
                         vehicleInsert.CoverEndDate = vehicle.CoverEndDate;
+
+                        vehicleInsert.SumInsured = vehicle.SumInsured;
+                        vehicleInsert.Premium = vehicle.Premium;
+                        vehicleInsert.AgentCommissionId = vehicle.AgentCommissionId;
+                        vehicleInsert.Rate = vehicle.Rate;
+                        vehicleInsert.StampDuty = vehicle.StampDuty;
+                        vehicleInsert.ZTSCLevy = vehicle.ZTSCLevy;
+                        vehicleInsert.RadioLicenseCost = vehicle.RadioLicenseCost;
+                        vehicleInsert.OptionalCovers = vehicle.OptionalCovers;
+
+
+
+
                         vehicleInsert.TransactionDate = DateTime.Now;
                         vehicleInsert.RenewalDate = vehicle.RenewalDate;
-                        vehicleInsert.CustomerId = vehicle.CustomerId;
+
                         vehicleInsert.IsActive = vehicle.IsActive;
                         vehicleInsert.CreatedOn = DateTime.Now;
-                        vehicleInsert.RegistrationNo = vehicle.RegistrationNo;
+
                         if (_userLoggedin)
                         {
                             var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
-                             _customerData = InsuranceContext.Customers.All(where: $"UserId ='{_User.Id}'").FirstOrDefault();
+                            _customerData = InsuranceContext.Customers.All(where: $"UserId ='{_User.Id}'").FirstOrDefault();
                             vehicleInsert.CreatedBy = _customerData.Id;
                         }
                         vehicleInsert.PassengerAccidentCoverAmount = vehicle.PassengerAccidentCoverAmount == null ? 0 : vehicle.PassengerAccidentCoverAmount;
@@ -3556,7 +3587,7 @@ namespace InsuranceClaim.Controllers
         {
             Session["SummaryDetailIdView"] = summaryId;
 
-            var endorsesummaryDetail = InsuranceContext.EndorsementSummaryDetails.All(where: $"SummaryId={summaryId}").FirstOrDefault();
+            var endorsesummaryDetail = InsuranceContext.EndorsementSummaryDetails.Single(where: $"SummaryId={summaryId}");
             var endorseSummaryVehicleDetails = InsuranceContext.EndorsementSummaryVehicleDetails.All(where: $"SummaryDetailId={summaryId}").ToList();
 
 

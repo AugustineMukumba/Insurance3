@@ -86,8 +86,8 @@ namespace Insurance.Domain
         public static Checklists Checklists { get { return new Checklists(); } }
         public static ClaimDetailsProviders ClaimDetailsProviders { get { return new ClaimDetailsProviders(); } }
         public static ClaimSettings ClaimSettings { get { return new ClaimSettings(); } }
-      
 
+        public static SourceDetails SourceDetails { get { return new SourceDetails(); } }
 
         // general purpose operations
 

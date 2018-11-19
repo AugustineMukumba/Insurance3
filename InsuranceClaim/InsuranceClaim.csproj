@@ -228,6 +228,7 @@
     <Compile Include="Controllers\RenewController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\ServiceProviderController.cs" />
+    <Compile Include="Controllers\SourceDetailController.cs" />
     <Compile Include="Controllers\VehicleMakeController.cs" />
     <Compile Include="Controllers\VehicleModelController.cs" />
     <Compile Include="Controllers\VehicleUsageController.cs" />
@@ -485,6 +486,9 @@
     <Content Include="Views\Currency\Edit.cshtml" />
     <Content Include="Views\Currency\Create.cshtml" />
     <Content Include="Views\Claimant\EditRegisterClaim.cshtml" />
+    <Content Include="Views\SourceDetail\AddSourceDetails.cshtml" />
+    <Content Include="Views\SourceDetail\EditSourceDetail.cshtml" />
+    <Content Include="Views\SourceDetail\SourceDetailsList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

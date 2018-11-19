@@ -47,7 +47,7 @@ namespace InsuranceClaim.Models
         public List<ChecklistModel> chklist { get; set; }
         public List<RegisterClaimViewModel> chklistDetail { get; set; }
         public string names { get; set; }
-        public List<RiskViewModel> RiskViewModel { get; set; }
+        public List<RiskViewModel> RiskViewModel { get; set; }        
 
     }
 
