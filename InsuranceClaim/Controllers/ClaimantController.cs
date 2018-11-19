@@ -1032,7 +1032,7 @@ namespace InsuranceClaim.Controllers
 
                     var claimregistrationdetail = InsuranceContext.ClaimRegistrations.Single(where: $"Id = '{ClaimRegisterid}'");
 
-
+                    var ClaimProvider = InsuranceContext.ClaimDetailsProviders.Single(where: $"ClaimNumber = '{claimregistrationdetail.ClaimNumber}'");
 
                     var CustomerId = PolicyDetail.CustomerId;
 
@@ -1173,6 +1173,16 @@ namespace InsuranceClaim.Controllers
                     //}
 
                     VehicleDetailVM.ClaimId = ClaimRegisterid;
+                    if (ClaimProvider != null && ClaimProvider.Count() > 0)
+                    {
+
+
+                        VehicleDetailVM.AssessorsProviderType = ClaimProvider.AssessorsProviderType;
+                        VehicleDetailVM.ValuersProviderType = ClaimProvider.ValuersProviderType;
+                        VehicleDetailVM.RepairersProviderType = ClaimProvider.RepairersProviderType;
+                        VehicleDetailVM.TotalProviderFees = ClaimProvider.TotalProviderFees;
+                        VehicleDetailVM.LawyersProviderType = ClaimProvider.LawyersProviderType;
+                    }
                     VehicleDetailVM.Claimnumber = claimregistrationdetail.ClaimNumber;
                     VehicleDetailVM.Claimsatisfaction = claimregistrationdetail.Claimsatisfaction;
                     VehicleDetailVM.Id = claimregistrationdetail.Id;

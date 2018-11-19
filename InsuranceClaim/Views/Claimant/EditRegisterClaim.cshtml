@@ -206,7 +206,7 @@
                             <div class="row">
                                 <div class="col-sm-6 col-md-6">
                                     <div class="text-left">
-                                        <button type="button" class="btn" onclick="window.location.href='@Url.Action("ClaimantList", "Claimant")'">Cancel</button>
+                                        <button type="button" class="btn" onclick="window.location.href='@Url.Action("ClaimRegistrationList", "Claimant")'">Cancel</button>
                                     </div>
                                 </div>
                             </div>
@@ -303,6 +303,32 @@
             $("#spanRejectVal").hide();
         }
     }
+
+
+    var getAssessorsPro= $("#AssessorsProviderType option:selected").text()
+    if (getAssessorsPro !='Select Provider') {
+        debugger;
+        $("#Assessprovider").text(getAssessorsPro);
+
+    }
+    var getValuersvalPro= $("#ValuersProviderType option:selected").text()
+    if (getValuersvalPro !='Select Provider') {
+        debugger;
+        $("#Valuersprovider").text(getValuersvalPro);
+    }
+    var getRepirsvalPro= $("#RepairersProviderType option:selected").text()
+    if (getRepirsvalPro !='Select Provider') {
+        debugger;
+        $("#Repairersprovider").text(getRepirsvalPro);
+    }
+
+    var getLawersvalPro= $("#LawyersProviderType option:selected").text()
+    if (getLawersvalPro !='Select Provider') {
+        debugger;
+        $("#Lawyersprovider").text(getLawersvalPro);
+    }
+
+
     function Rejectval() {
         debugger;
         var asservalue = 0;
