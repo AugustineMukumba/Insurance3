@@ -74,7 +74,27 @@ namespace InsuranceClaim.Controllers
             var makers = service.GetMakers();
             ViewBag.CoverType = service.GetCoverType();
             ViewBag.AgentCommission = service.GetAgentCommission();
-            ViewBag.Sources = InsuranceContext.BusinessSources.All();
+
+
+            var data1 = (from p in InsuranceContext.BusinessSources.All().ToList()
+                         join f in InsuranceContext.SourceDetails.All().ToList()
+                         on p.Id equals f.BusinessId
+                         select new
+                         {
+                             Value = f.Id,
+                             Text = f.FirstName + " " + f.LastName + " - " + p.Source
+                         }).ToList();
+
+            List<SelectListItem> listdata = new List<SelectListItem>();
+            foreach (var item in data1)
+            {
+                SelectListItem sli = new SelectListItem();
+                sli.Value = Convert.ToString(item.Value);
+                sli.Text = item.Text;
+                listdata.Add(sli);
+            }
+            ViewBag.Sources = new SelectList(listdata, "Value", "Text");
+            //ViewBag.Sources = InsuranceContext.BusinessSources.All();
 
             ViewBag.Currencies = InsuranceContext.Currencies.All();
 
@@ -157,7 +177,7 @@ namespace InsuranceClaim.Controllers
                         viewModel.Discount = data.Discount;
                         viewModel.VehicleLicenceFee = Convert.ToDecimal(data.VehicleLicenceFee);
                         viewModel.InsuranceId = data.InsuranceId;
-                        viewModel.BusinessSourceId = data.BusinessSourceId;
+                        viewModel.BusinessSourceDetailId = data.BusinessSourceDetailId;
                         viewModel.CurrencyId = data.CurrencyId;
 
                        // viewModel.isUpdate = true; //commented on "31 oct"

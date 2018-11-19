@@ -317,7 +317,10 @@ namespace Insurance.Domain
         public decimal? BalanceAmount { get; set; }
         public decimal? VehicleLicenceFee { get; set; }
 
-       public int BusinessSourceId { get; set; }
+        //public int BusinessSourceId { get; set; }
+
+
+        public int BusinessSourceDetailId { get; set; }
         public int CurrencyId { get; set; }
     }
 
@@ -1006,6 +1009,8 @@ namespace Insurance.Domain
         public decimal? VehicleLicenceFee { get; set; }
 
         public int BusinessSourceId { get; set; }
+
+        public int CurrencyId { get; set; }
     }
 
 

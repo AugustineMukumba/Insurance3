@@ -104,8 +104,7 @@ namespace InsuranceClaim.Models
         public string CoverTypeName { get; set; }
 
         public string PolicyExpireDate { get; set; }
-
-        public int BusinessSourceId { get; set; }
+        public int BusinessSourceDetailId { get; set; }
 
         public int CurrencyId { get; set; }
 

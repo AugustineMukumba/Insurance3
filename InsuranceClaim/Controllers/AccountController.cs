@@ -3353,6 +3353,7 @@ namespace InsuranceClaim.Controllers
                         viewModel.VehicleUsage = data.VehicleUsage;
                         viewModel.isUpdate = true;
                         viewModel.vehicleindex = Convert.ToInt32(id);
+                        viewModel.VehicleId = data.VehicleId;
 
                         var ser = new VehicleService();
                         var model = ser.GetModel(data.MakeId);
@@ -3380,10 +3381,8 @@ namespace InsuranceClaim.Controllers
             var VehicelDetail = InsuranceContext.EndorsementVehicleDetails.Single(where: $"VehicleId={vehicalId}");
 
 
-
             if (VehicelDetail == null)
             {
-
                 //EndorsementSummaryDetail endorsementSummaryDetailModel = Mapper.Map<SummaryDetail, EndorsementSummaryDetail>(summaryDetail);
                 //endorsementSummaryDetailModel.SummaryId = summaryDetail.Id;
                 //InsuranceContext.EndorsementSummaryDetails.Insert(endorsementSummaryDetailModel);
@@ -3423,17 +3422,10 @@ namespace InsuranceClaim.Controllers
                 InsuranceContext.EndorsementSummaryDetails.Insert(endorsementSummaryDetail);
 
 
-
-            
-
                 foreach (var item in SummaryVehicleDetails)
                 {
                     var vehicle = InsuranceContext.VehicleDetails.Single(where: $"Id={item.VehicleDetailsId}");
                     var VelicleDetailEndersoment = InsuranceContext.EndorsementVehicleDetails.Single(where: $"VehicleId={vehicle.Id}");
-
-
-
-
 
                     if (VelicleDetailEndersoment == null)
                     {
@@ -3465,34 +3457,62 @@ namespace InsuranceClaim.Controllers
                         vehicleInsert.ZTSCLevy = vehicle.ZTSCLevy;
                         vehicleInsert.RadioLicenseCost = vehicle.RadioLicenseCost;
                         vehicleInsert.OptionalCovers = vehicle.OptionalCovers;
-
-
-
-
-                        vehicleInsert.TransactionDate = DateTime.Now;
-                        vehicleInsert.RenewalDate = vehicle.RenewalDate;
-
-                        vehicleInsert.IsActive = vehicle.IsActive;
+                        vehicleInsert.Excess = vehicle.Excess;
+                        vehicleInsert.CoverNoteNo = vehicle.CoverNoteNo;
+                        vehicleInsert.ExcessType = vehicle.ExcessType;
+                        vehicleInsert.ExcessType = vehicle.ExcessType;
                         vehicleInsert.CreatedOn = DateTime.Now;
-
                         if (_userLoggedin)
                         {
                             var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
                             _customerData = InsuranceContext.Customers.All(where: $"UserId ='{_User.Id}'").FirstOrDefault();
                             vehicleInsert.CreatedBy = _customerData.Id;
                         }
+
+                        vehicleInsert.IsActive = vehicle.IsActive;
+                        vehicleInsert.Addthirdparty = vehicle.Addthirdparty;
+                        vehicleInsert.Addthirdparty = vehicle.Addthirdparty;
+                        vehicleInsert.AddThirdPartyAmount = vehicle.AddThirdPartyAmount;
+
+                     
+
+                                                             
                         vehicleInsert.PassengerAccidentCoverAmount = vehicle.PassengerAccidentCoverAmount == null ? 0 : vehicle.PassengerAccidentCoverAmount;
                         vehicleInsert.ExcessBuyBackAmount = vehicle.ExcessBuyBackAmount == null ? 0 : vehicle.ExcessBuyBackAmount;
-                        vehicleInsert.RoadsideAssistanceAmount = vehicle.RoadsideAssistanceAmount == null ? 0 : vehicle.RoadsideAssistanceAmount;
-                        vehicleInsert.MedicalExpensesAmount = vehicle.MedicalExpensesAmount == null ? 0 : vehicle.MedicalExpensesAmount;
+                      
+                        vehicleInsert.NumberofPersons = vehicle.NumberofPersons;
+                        vehicleInsert.IsLicenseDiskNeeded = vehicle.IsLicenseDiskNeeded;
+                       
+
                         vehicleInsert.PassengerAccidentCoverAmountPerPerson = vehicle.PassengerAccidentCoverAmountPerPerson == null ? 0 : vehicle.PassengerAccidentCoverAmountPerPerson;
                         vehicleInsert.ExcessBuyBackPercentage = vehicle.ExcessBuyBackPercentage == null ? 0 : vehicle.ExcessBuyBackPercentage;
-                        vehicleInsert.RoadsideAssistancePercentage = vehicle.RoadsideAssistancePercentage == null ? 0 : vehicle.RoadsideAssistancePercentage;
-                        vehicleInsert.MedicalExpensesPercentage = vehicle.MedicalExpensesPercentage == null ? 0 : vehicle.MedicalExpensesPercentage;
+
+                        vehicleInsert.PaymentTermId = vehicle.PaymentTermId;
+                        vehicleInsert.ProductId = vehicle.ProductId;
+                        vehicleInsert.RoadsideAssistanceAmount = vehicle.RoadsideAssistanceAmount == null ? 0 : vehicle.RoadsideAssistanceAmount;
+                        vehicleInsert.MedicalExpensesAmount = vehicle.MedicalExpensesAmount == null ? 0 : vehicle.MedicalExpensesAmount;
+
+                        vehicleInsert.ExcessAmount = vehicle.ExcessAmount;
+
+                        vehicleInsert.TransactionDate = DateTime.Now;
+                        vehicleInsert.RenewalDate = vehicle.RenewalDate;
+                        vehicleInsert.IncludeRadioLicenseCost = vehicle.IncludeRadioLicenseCost;
+                        vehicleInsert.InsuranceId = vehicle.InsuranceId;
+                        vehicleInsert.InsuranceId = vehicle.InsuranceId;
                         vehicleInsert.AnnualRiskPremium = vehicle.AnnualRiskPremium == null ? 0 : vehicle.AnnualRiskPremium;
                         vehicleInsert.TermlyRiskPremium = vehicle.TermlyRiskPremium == null ? 0 : vehicle.TermlyRiskPremium;
                         vehicleInsert.QuaterlyRiskPremium = vehicle.QuaterlyRiskPremium == null ? 0 : vehicle.QuaterlyRiskPremium;
+                        vehicleInsert.Discount = vehicle.Discount;
+
+                        vehicleInsert.isLapsed = vehicle.isLapsed;
                         vehicleInsert.BalanceAmount = vehicle.BalanceAmount;
+                        vehicleInsert.VehicleLicenceFee = vehicle.VehicleLicenceFee;
+                        vehicleInsert.BusinessSourceId = vehicle.BusinessSourceDetailId;
+                        vehicleInsert.CurrencyId = vehicle.CurrencyId;
+
+                        vehicleInsert.RoadsideAssistancePercentage = vehicle.RoadsideAssistancePercentage == null ? 0 : vehicle.RoadsideAssistancePercentage;
+                        vehicleInsert.MedicalExpensesPercentage = vehicle.MedicalExpensesPercentage == null ? 0 : vehicle.MedicalExpensesPercentage;
+                        
                         InsuranceContext.EndorsementVehicleDetails.Insert(vehicleInsert);
 
                     }
@@ -3601,6 +3621,7 @@ namespace InsuranceClaim.Controllers
             {
                 var _vehicle = InsuranceContext.EndorsementVehicleDetails.Single(where: $"VehicleId={item.VehicleDetailsId}");
                 EndorsementRiskDetailModel riskDetail = Mapper.Map<EndorsementVehicleDetail, EndorsementRiskDetailModel>(_vehicle);
+                riskDetail.VehicleId = _vehicle.VehicleId;
                 listRiskDetail.Add(riskDetail);
             }
             Session["ViewlistVehicles"] = listRiskDetail;
@@ -3617,8 +3638,8 @@ namespace InsuranceClaim.Controllers
 
             // update endersoment details 
 
-            var dbVehicle = InsuranceContext.VehicleDetails.Single(model.Id);
-            var EnderSomentVehical = InsuranceContext.EndorsementVehicleDetails.Single(where: $"VehicleId={model.Id}");
+            var dbVehicle = InsuranceContext.VehicleDetails.Single(where: $"Id={model.VehicleId}");
+            var EnderSomentVehical = InsuranceContext.EndorsementVehicleDetails.Single(where: $"VehicleId={model.VehicleId}");
             bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
 
 
