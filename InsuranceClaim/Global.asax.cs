@@ -60,7 +60,8 @@ namespace InsuranceClaim
                 cfg.CreateMap<EndorsementSummaryDetail, EndorsementSummaryDetailModel>().ReverseMap();
                 cfg.CreateMap<SummaryDetail, EndorsementSummaryDetailModel>().ReverseMap();
                 cfg.CreateMap<EndorsementSummaryVehicleDetail, EndorsementSummaryVehicleDetailModel>().ReverseMap();
-                
+                cfg.CreateMap<SourceDetail, SourceDetailModel>().ReverseMap();   
+
             });
         }
     }

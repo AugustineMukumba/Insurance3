@@ -206,6 +206,7 @@ namespace InsuranceClaim.Controllers
 
             // save in claimNotification
 
+
             var NotificationId = ClaimDetail.Id;
             var updateNotificationRecord = InsuranceContext.ClaimNotifications.Single(NotificationId);
             updateNotificationRecord.IsRegistered = true;

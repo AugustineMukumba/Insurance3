@@ -157,6 +157,7 @@
     <Compile Include="Domain\ServiceProviderType.cs" />
     <Compile Include="Domain\Setting.cs" />
     <Compile Include="Domain\SmsLog.cs" />
+    <Compile Include="Domain\SourceDetail.cs" />
     <Compile Include="Domain\SpecificExcess.cs" />
     <Compile Include="Domain\SummaryDetail.cs" />
     <Compile Include="Domain\SummaryVehicleDetail.cs" />
@@ -211,6 +212,7 @@
     <Compile Include="Repository\ServiceProviderTypes.cs" />
     <Compile Include="Repository\Settings.cs" />
     <Compile Include="Repository\SmsLogs.cs" />
+    <Compile Include="Repository\SourceDetails.cs" />
     <Compile Include="Repository\SpecificExcesses.cs" />
     <Compile Include="Repository\SummaryDetails.cs" />
     <Compile Include="Repository\SummaryVehicleDetails.cs" />

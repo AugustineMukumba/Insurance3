@@ -145,6 +145,7 @@
     <Compile Include="ServiceProviderTypeModel.cs" />
     <Compile Include="SettingModel.cs" />
     <Compile Include="SmsLogModel.cs" />
+    <Compile Include="SourceDetailModel.cs" />
     <Compile Include="StampDutyReportModels.cs" />
     <Compile Include="SummaryDetailModel.cs" />
     <Compile Include="SummaryVehicleDetailsModel.cs" />

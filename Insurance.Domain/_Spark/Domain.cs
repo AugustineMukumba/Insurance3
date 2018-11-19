@@ -1068,4 +1068,28 @@ namespace Insurance.Domain
         public int? ModifiedBy { get; set; }
 
     }
+
+    public partial class SourceDetail : Entity<SourceDetail>
+    {
+        public SourceDetail() { }
+        public SourceDetail(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Address { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int CreatedBy { get; set; }
+
+        public int BusinessId { get; set; }
+
+        //public string BusinessId { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+    }
 }
