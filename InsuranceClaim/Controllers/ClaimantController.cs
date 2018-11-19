@@ -579,7 +579,7 @@ namespace InsuranceClaim.Controllers
                             RepairProviderName = GetProvider(date == null ? 0 : date.RepairersProviderType, service),
                             ClaimStatus = Convert.ToString(Claimstatusdata.Status),
                             //TotalProviderFees = (date.TotalProviderFees)==null  ? 0 ,
-                            TotalProviderFees = date == null ? 0: date.TotalProviderFees,
+                            TotalProviderFees = date == null ? 0 : date.TotalProviderFees,
                             Id = _claimRegistration.Id,
                             VehicleDetailId = _claimRegistration.VehicleDetailId,
                             ClaimValue = GetClaimValue(_claimRegistration.ClaimNumber, Adjustments),
@@ -1001,7 +1001,7 @@ namespace InsuranceClaim.Controllers
 
 
 
-        public ActionResult EditRegisterClaim(string PolicyNumber, int ClaimRegisterid, int VehicleDetailId,int ClaimNumer)
+        public ActionResult EditRegisterClaim(string PolicyNumber, int ClaimRegisterid, int VehicleDetailId, int ClaimNumer)
         {
             try
             {
@@ -1165,11 +1165,11 @@ namespace InsuranceClaim.Controllers
                     //    ViewBag.LawyersType = ServiceProvidersList.Where(w => w.ServiceProviderType == 3).ToList();
                     //    ViewBag.RepairersType = ServiceProvidersList.Where(w => w.ServiceProviderType == 4).ToList();
 
-                       
+
                     //    VehicleDetailVM.ValuersProviderType = ServiceProvidersList.FirstOrDefault(c => c.Id == claimdetail.ValuersProviderType).Id;
                     //    VehicleDetailVM.LawyersProviderType = ServiceProvidersList.FirstOrDefault(c => c.Id == claimdetail.LawyersProviderType).Id;
                     //    VehicleDetailVM.RepairersProviderType = ServiceProvidersList.FirstOrDefault(c => c.Id == claimdetail.RepairersProviderType).Id;
-                       
+
                     //}
 
                     VehicleDetailVM.ClaimId = ClaimRegisterid;
@@ -1228,16 +1228,17 @@ namespace InsuranceClaim.Controllers
 
             //if (ModelState.IsValid)
             //{
-                var caimNumber = model.Claimnumber;
-                var claimStatis = model.Claimsatisfaction;
-                var status = model.Status;
-                var names = String.Join(",", model.chklist.Where(p => p.IsChecked).Select(p => p.Id));
-                var updateRecord = InsuranceContext.ClaimRegistrations.Single(model.ClaimId);
-                updateRecord.Checklist = names;
-                if (model.PlaceOfLoss != "")
-                {
-                    updateRecord.PlaceOfLoss = model.PlaceOfLoss;
-                }
+            var caimNumber = model.Claimnumber;
+            var claimStatis = model.Claimsatisfaction;
+            var status = model.Status;
+            //  var names = String.Join(",", model.chklist.Where(p => p.IsChecked).Select(p => p.Id));
+            var names = String.Join(",", model.chklistDetail.Where(p => p.isChecked).Select(p => p.checkId));
+            var updateRecord = InsuranceContext.ClaimRegistrations.Single(model.ClaimId);
+            updateRecord.Checklist = names;
+            if (model.PlaceOfLoss != "")
+            {
+                updateRecord.PlaceOfLoss = model.PlaceOfLoss;
+            }
 
             if (model.DescriptionOfLoss != "")
             {
@@ -1282,8 +1283,8 @@ namespace InsuranceClaim.Controllers
                     obj.ValuersProviderType = model.ValuersProviderType;
                     obj.TotalProviderFees = model.TotalProviderFees;
                     obj.PolicyNumber = model.PolicyNumber;
-                    obj.ClaimNumber =Convert.ToInt32( model.Claimnumber);
-                    
+                    obj.ClaimNumber = Convert.ToInt32(model.Claimnumber);
+
 
                     obj.CreatedBy = Convert.ToInt32(customId);
                     obj.CreatedOn = DateTime.Now;
@@ -1315,21 +1316,22 @@ namespace InsuranceClaim.Controllers
                     InsuranceContext.ClaimDetailsProviders.Update(claimdata);
                 }
                 return RedirectToAction("ClaimRegistrationList");
+                //}
+
+                return RedirectToAction("RegisterClaim");
+            }
+
+            //public void RemoveValidation()
+            //{
+            //    ModelState.Remove("PlaceOfLoss");
+
+            //    ModelState.Remove("PlaceOfLoss");
+            //    ModelState.Remove("DescriptionOfLoss");
+            //    ModelState.Remove("EstimatedValueOfLoss");
+            //    ModelState.Remove("ThirdPartyDamageValue");
             //}
-            
-            return RedirectToAction("RegisterClaim");
+
+
         }
-
-        //public void RemoveValidation()
-        //{
-        //    ModelState.Remove("PlaceOfLoss");
-
-        //    ModelState.Remove("PlaceOfLoss");
-        //    ModelState.Remove("DescriptionOfLoss");
-        //    ModelState.Remove("EstimatedValueOfLoss");
-        //    ModelState.Remove("ThirdPartyDamageValue");
-        //}
-
-
     }
 }
