@@ -31,6 +31,7 @@ namespace InsuranceClaim.Models
         public string RepairProviderName { get; set; }
         public int VehicleDetailId { get; set; }
         public string RegistrationNo { get; set; }
+        public int? TotalProviderFees { get; set; }
 
         public string ClaimValue { get; set; }
         public DateTime? ModifyOn { get; set; }

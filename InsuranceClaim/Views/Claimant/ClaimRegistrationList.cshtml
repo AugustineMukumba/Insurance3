@@ -101,6 +101,7 @@
                                     <tr>
                                         <td><b>Repairers :</b>@item.RepairProviderName</td>
                                     </tr>
+                                    <tr><td><b>Provider Fees :</b>@item.TotalProviderFees</td></tr>
                                 </table>
                             </td>
 
@@ -109,7 +110,7 @@
                                     <ul class="list-inline">
                                         @if (item.ClaimStatus != "Rejected")
                                         {
-                                            <li>@Html.ActionLink("Assign Service Provider", "ClaimDetailServiceProvider", "Claimant", new { id = item.Id, PolicyNumber = item.PolicyNumber, claimNumber = item.ClaimNumber }, new { @class = "btn-sm btn-primary" })</li>
+                                            @*<li>@Html.ActionLink("Assign Service Provider", "ClaimDetailServiceProvider", "Claimant", new { id = item.Id, PolicyNumber = item.PolicyNumber, claimNumber = item.ClaimNumber }, new { @class = "btn-sm btn-primary" })</li>*@
                                             <li><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.ClaimNumber');">View/Upload Document</button></li>
 
 
@@ -133,7 +134,7 @@
 
                                         @if (item.VehicleDetailId != null && item.VehicleDetailId != 0)
                                         {
-                                            <li>@Html.ActionLink("Edit", "EditRegisterClaim", "Claimant", new { PolicyNumber = item.PolicyNumber, ClaimRegisterid = item.Id, VehicleDetailId = item.VehicleDetailId }, new { @class = "btn-sm btn-primary" })</li>
+                                            <li>@Html.ActionLink("Edit", "EditRegisterClaim", "Claimant", new { PolicyNumber = item.PolicyNumber, ClaimRegisterid = item.Id, VehicleDetailId = item.VehicleDetailId,ClaimNumer = item.ClaimNumber }, new { @class = "btn-sm btn-primary" })</li>
                                         }
 
                                     </ul>

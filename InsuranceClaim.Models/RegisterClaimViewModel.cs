@@ -35,12 +35,13 @@ namespace InsuranceClaim.Models
         public bool isChecked { get; set; }
         public int checkId { get; set; }
         public string CheckBoxName { get; set; }
-
-
         public bool Claimsatisfaction { get; set; }
-
         public string checklistvalue { get; set; }
-
+        public int? AssessorsProviderType { get; set; }
+        public int? ValuersProviderType { get; set; }
+        public int? LawyersProviderType { get; set; }
+        public int? RepairersProviderType { get; set; }
+        public int? TotalProviderFees { get; set; }
 
         //For Vehicle details 
         public List<ChecklistModel> chklist { get; set; }

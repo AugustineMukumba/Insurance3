@@ -3,7 +3,6 @@
     ViewBag.Title = "EditRegisterClaim";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
-
 <div class="body-content-section">
     <div class="form-section-top-riskdetail">
         <div class="container">
@@ -21,6 +20,15 @@
                         @Html.HiddenFor(model => Model.Id)
                         @Html.HiddenFor(model => Model.ClaimId)
                         @Html.HiddenFor(model => Model.Claimnumber)
+                        @Html.HiddenFor(m=>m. TotalProviderFees)
+                        @Html.HiddenFor(m => m.PolicyNumber)
+                        @Html.HiddenFor(m=>m.LastName)
+                        @Html.HiddenFor(m => m.FirstName)
+                        @Html.HiddenFor(m => m.DateOfLoss)
+                        @Html.HiddenFor(m => m.DateOfNotifications)
+                        @*@Html.HiddenFor(m => m.LastName)*@
+
+
 
                         //---------------------Changes--------------------------------------------
 
@@ -31,7 +39,6 @@
                             </div>
                             <div class="riskdetail-section">
                                 <div class="container-riskdetail">
-
                                     <div class="riskdetail-box">
                                         <div class="row">
                                             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
@@ -50,7 +57,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="riskdetail-box">
                                         <div class="row">
                                             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
@@ -60,27 +66,22 @@
                                             </div>
                                             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
                                                 <label>Description Of Loss</label>
-
                                                 @Html.TextBoxFor(x => x.DescriptionOfLoss, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Description Of Loss", @id = "txtDescriptionOfLoss", @Value = Model.DescriptionOfLoss })
                                                 @Html.ValidationMessageFor(x => x.DescriptionOfLoss, "", new { @class = "text-danger" })
                                             </div>
                                             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
                                                 <label>Estimated Value Of Loss</label>
 
-
                                                 @Html.TextBoxFor(x => x.EstimatedValueOfLoss, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Estimated Value Of Loss", @id = "txtEstimatedValueOfLoss", @Value = Model.EstimatedValueOfLoss })
                                                 @Html.ValidationMessageFor(x => x.EstimatedValueOfLoss, "", new { @class = "text-danger" })
                                             </div>
                                             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
                                                 <label>Third Party Damage Value</label>
-
                                                 @Html.TextBoxFor(x => x.ThirdPartyDamageValue, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Third Party Damage Value", @id = "txtThirdPartyDamageValue", @Value = Model.ThirdPartyDamageValue, required = "required" })
                                                 @Html.ValidationMessageFor(x => x.ThirdPartyDamageValue, "", new { @class = "text-danger" })
-
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="riskdetail-box">
                                         <div class="row">
                                             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 claim-status">
@@ -104,13 +105,38 @@
 
                                                         <label>@Html.CheckBoxFor(x => Model.chklistDetail[i].isChecked, new { @class = "custom-checkbox" }) @Model.chklistDetail[i].CheckBoxName</label>
 
-                                                        @Html.HiddenFor(x => Model.chklistDetail[i].checkId)
+                                                        @Html.HiddenFor(x => Model.chklistDetail[i].Id)
                                                         @Html.HiddenFor(x => Model.chklistDetail[i].CheckBoxName)
                                                     }
                                                 </span>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="riskdetail-box">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                <label>Assign Assessors</label>
+                                                @Html.DropDownListFor(x => x.AssessorsProviderType, new SelectList(ViewBag.AssessorsType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                <label>Provider Name/Fees:</label><span id="Assessprovider"></span>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                <label>Assign Valuers</label>
+                                                @Html.DropDownListFor(x => x.ValuersProviderType, new SelectList(ViewBag.ValuersType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                <label>Provider Name/Fees:</label><span id="Valuersprovider"></span>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                <label>Assign Repairers</label>
+                                                @Html.DropDownListFor(x => x.RepairersProviderType, new SelectList(ViewBag.RepairersType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                <label>Provider Name/Fees:</label><span id="Repairersprovider"></span>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                <label>Assign Lawyers</label>
+                                                @Html.DropDownListFor(x => x.LawyersProviderType, new SelectList(ViewBag.LawyersType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                <label>Provider Name/Fees:</label><span id="Lawyersprovider"></span>
+                                            </div>
 
                                         </div>
+
                                     </div>
                                 </div>
                                 <div class="col-sm-12 col-md-12">
@@ -153,16 +179,13 @@
                                                     <label>Excess Type</label>
                                                     <span>
                                                         @(item.ExcessType == "1" ? "Percentage" : "Fixed Amount")
-
                                                     </span>
                                                 </li>
-
                                                 <li><label>Excess</label><span>@item.Excess</span></li>
                                                 <li><label>Passenger Accident Cover</label><span>@item.PassengerAccidentCover</span></li>
                                                 <li><label>Excess BuyBack</label><span>@item.ExcessBuyBack</span></li>
                                                 <li><label>Roadside Assistance</label><span>@item.RoadsideAssistance </span></li>
                                                 <li><label>Medical Expenses</label><span>@item.MedicalExpenses </span></li>
-
                                                 <li><label>Number of Persons</label><span>0</span></li>
                                                 <li><label>Basic Premium</label><span>@item.Premium</span></li>
                                                 <li><label>Stamp Duty</label><span>@item.StampDuty</span></li>
@@ -172,7 +195,6 @@
                                                 <li><label>Radio License Cost</label><span>@item.RadioLicenseCost</span></li>
                                                 <li><label>Vehicle Licence Fee</label><span>@item.VehicleLicenceFee</span></li>
                                             </ul>
-
                                         </div>
                                     </div>
                                 }
@@ -194,11 +216,11 @@
         </div>
     </div>
 </div>
-
 <script>
     $(document).ready(function () {
         debugger;
         $("#ddlClaimStatus").change(function () {
+            debugger;
             var getddlValue = $("#ddlClaimStatus").val();
             if (getddlValue == "3") {
                 $("#txtClaimStatus").show();
@@ -208,6 +230,55 @@
                 $("#txtClaimStatus").hide();
             }
         });
+
+
+        $("#AssessorsProviderType").change(function () {
+            debugger;
+
+            if ($("#AssessorsProviderType").val() != "") {
+                $("#Assessprovider").text($("#AssessorsProviderType option:selected").text());
+            }
+            else {
+                $("#Assessprovider").text("");
+            }
+        })
+
+        $("#ValuersProviderType").change(function () {
+            debugger;
+
+            if ($("#ValuersProviderType").val() != "") {
+                $("#Valuersprovider").text($("#ValuersProviderType option:selected").text());
+            }
+            else {
+                $("#Valuersprovider").text("");
+            }
+        })
+
+        $("#RepairersProviderType").change(function () {
+            debugger;
+
+            if ($("#RepairersProviderType").val() != "") {
+                $("#Repairersprovider").text($("#RepairersProviderType option:selected").text());
+            }
+            else {
+                $("#Repairersprovider").text("");
+            }
+        })
+
+
+        $("#LawyersProviderType").change(function () {
+            debugger;
+
+            if ($("#LawyersProviderType").val() != "") {
+                $("#Lawyersprovider").text($("#LawyersProviderType option:selected").text());
+            }
+            else {
+                $("#Lawyersprovider").text("");
+            }
+        })
+
+
+
     });
     function removeValidation(e) {
         debugger;
@@ -233,6 +304,57 @@
     }
     function Rejectval() {
         debugger;
+        var asservalue = 0;
+        var  Valueersvalue = 0;
+        var  Repairvalue = 0;
+        var  Lawervalue = 0;
+        var total = 0;
+        var getAssessorsval= $("#AssessorsProviderType option:selected").text()
+        if (getAssessorsval!="Select Provider") {
+            if (getAssessorsval!=null && getAssessorsval !="") {
+                var splitarrt =  getAssessorsval.split(", ");
+                if (splitarrt.length>0) {
+                    asservalue = (splitarrt[1])
+                } 
+           
+            }
+        }
+        
+        var getValuersval= $("#ValuersProviderType option:selected").text()
+        if (getValuersval!='Select Provider') {
+            if (getValuersval!=null && getValuersval !="") {
+                var splitarrt =  getValuersval.split(", ");
+                if (splitarrt.length>0) {
+                    Valueersvalue =splitarrt[1];
+                } 
+            
+            }
+        }
+
+        var getRepirsval= $("#RepairersProviderType option:selected").text()
+        if (getRepirsval!='Select Provider') {
+            if (getRepirsval!=null && getRepirsval !="") {
+                var splitarrt =  getRepirsval.split(", ");
+                if (splitarrt.length>0) {
+                    Repairvalue =splitarrt[1];
+                } 
+            
+            }
+        }
+        var getLawersval= $("#LawyersProviderType option:selected").text()
+        if (getLawersval!='Select Provider') {
+            if (getLawersval!=null && getLawersval !="") {
+                var splitarrt =  getLawersval.split(", ");
+                if (splitarrt.length>0) {
+                    Lawervalue =splitarrt[1];
+                } 
+            }
+        }
+        total = parseFloat(asservalue) + parseFloat(Valueersvalue) + parseFloat(Repairvalue) + parseFloat(Lawervalue);
+        $('#TotalProviderFees').val(total);
+        //alert($('#TotalProviderFees').val(total));
+        //return false;
+
         var getVal = $("#txtClaimStatus").val();
         var getddlvalue = $("#ddlClaimStatus").val();
         if (getddlvalue != "3") {
@@ -248,6 +370,7 @@
                 return true;
             }
         }
+        
     }
 
 </script>
