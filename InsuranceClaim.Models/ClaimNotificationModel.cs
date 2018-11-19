@@ -40,7 +40,7 @@ namespace InsuranceClaim.Models
         [Display(Name = "Estimated Value Of Loss")]
         public decimal EstimatedValueOfLoss { get; set; }
 
-        //[Required(ErrorMessage = "This is required field")]
+        [Required(ErrorMessage = "This is required field")]
         [Display(Name = "Third Party Involvement")]
         public bool? ThirdPartyInvolvement { get; set; }
         //public int CreatedBy { get; set; }
@@ -71,9 +71,11 @@ namespace InsuranceClaim.Models
         [Display(Name = "Third Party Estimated Value Of Loss")]
         public decimal? ThirdPartyEstimatedValueOfLoss { get; set; }
         [Display(Name = "Cover Start Date")]
-        public DateTime? CoverStartDate { get; set; }
+        [Required(ErrorMessage = "Please Cover Start Date")]
+        public DateTime CoverStartDate { get; set; }
+        [Required(ErrorMessage = "Please Cover Start Date")]
         [Display(Name = "Cover End Date")]
-        public DateTime? CoverEndDate { get; set; }
+        public DateTime CoverEndDate { get; set; }
 
 
     }

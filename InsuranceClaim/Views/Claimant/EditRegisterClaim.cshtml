@@ -20,9 +20,9 @@
                         @Html.HiddenFor(model => Model.Id)
                         @Html.HiddenFor(model => Model.ClaimId)
                         @Html.HiddenFor(model => Model.Claimnumber)
-                        @Html.HiddenFor(m=>m. TotalProviderFees)
+                        @Html.HiddenFor(m => m.TotalProviderFees)
                         @Html.HiddenFor(m => m.PolicyNumber)
-                        @Html.HiddenFor(m=>m.LastName)
+                        @Html.HiddenFor(m => m.LastName)
                         @Html.HiddenFor(m => m.FirstName)
                         @Html.HiddenFor(m => m.DateOfLoss)
                         @Html.HiddenFor(m => m.DateOfNotifications)
@@ -71,7 +71,6 @@
                                             </div>
                                             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
                                                 <label>Estimated Value Of Loss</label>
-
                                                 @Html.TextBoxFor(x => x.EstimatedValueOfLoss, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Estimated Value Of Loss", @id = "txtEstimatedValueOfLoss", @Value = Model.EstimatedValueOfLoss })
                                                 @Html.ValidationMessageFor(x => x.EstimatedValueOfLoss, "", new { @class = "text-danger" })
                                             </div>
@@ -115,28 +114,72 @@
                                     <div class="riskdetail-box">
                                         <div class="row">
                                             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                                                <label>Assign Assessors</label>
-                                                @Html.DropDownListFor(x => x.AssessorsProviderType, new SelectList(ViewBag.AssessorsType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
-                                                <label>Provider Name/Fees:</label><span id="Assessprovider"></span>
+                                                <div class="form-group ml-0">
+                                                    <label>Assign Assessors</label>
+                                                    @Html.DropDownListFor(x => x.AssessorsProviderType, new SelectList(ViewBag.AssessorsType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                </div>
+                                                <div class="">
+                                                    <label>Assign Assessors Fees</label>
+                                                    @Html.TextBoxFor(x => x.AssessorsProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Assessors Provider Fees" })
+                                                </div>
                                             </div>
                                             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                                                <label>Assign Valuers</label>
-                                                @Html.DropDownListFor(x => x.ValuersProviderType, new SelectList(ViewBag.ValuersType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
-                                                <label>Provider Name/Fees:</label><span id="Valuersprovider"></span>
+                                                <div class="form-group  ml-0">
+                                                    <label>Assign Valuers</label>
+                                                    @Html.DropDownListFor(x => x.ValuersProviderType, new SelectList(ViewBag.ValuersType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                </div>
+                                                <div>
+                                                    <label>Assign Valuers Fees</label>
+                                                    @Html.TextBoxFor(x => x.ValuersProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Valuers Provider Fees" })
+                                                </div>
                                             </div>
                                             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                                                <label>Assign Repairers</label>
-                                                @Html.DropDownListFor(x => x.RepairersProviderType, new SelectList(ViewBag.RepairersType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
-                                                <label>Provider Name/Fees:</label><span id="Repairersprovider"></span>
+                                                <div class="form-group  ml-0">
+                                                    <label>Assign Repairers</label>
+                                                    @Html.DropDownListFor(x => x.RepairersProviderType, new SelectList(ViewBag.RepairersType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                </div>
+                                                <div>
+                                                    <label>Assign Repairers Fees</label>
+                                                    @Html.TextBoxFor(x => x.RepairersProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Repairers Provider Fees" })
+                                                </div>
                                             </div>
                                             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                                                <label>Assign Lawyers</label>
-                                                @Html.DropDownListFor(x => x.LawyersProviderType, new SelectList(ViewBag.LawyersType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
-                                                <label>Provider Name/Fees:</label><span id="Lawyersprovider"></span>
+                                                <div class="form-group  ml-0">
+                                                    <label>Assign Lawyers</label>
+                                                    @Html.DropDownListFor(x => x.LawyersProviderType, new SelectList(ViewBag.LawyersType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                </div>
+                                                <div>
+                                                    <label>Assign Lawyers Fees</label>
+                                                    @Html.TextBoxFor(x => x.LawyersProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Lawyers Provider Fees" })
+                                                </div>
                                             </div>
 
                                         </div>
-
+                                    </div>
+                                    <div class="riskdetail-box">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                <div class="form-group  ml-0">
+                                                    <label>Assign Towing</label>
+                                                    @Html.DropDownListFor(x => x.TownlyProviderType, new SelectList(ViewBag.TownlyType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                </div>
+                                                <div>
+                                                    <label>Assign Towing Fees</label>
+                                                    @Html.TextBoxFor(x => x.TownlyProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Townly Provider Fees" })
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                <div class="form-group  ml-0">
+                                                    <label>Assign Medical</label>
+                                                    @Html.DropDownListFor(x => x.MedicalProviderType, new SelectList(ViewBag.MedicalType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                </div>
+                                                <div>
+                                                    <label>Assign Medical Fees</label>
+                                                    @Html.TextBoxFor(x => x.MedicalProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Medical Provider Fees" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                      
                                     </div>
                                 </div>
                                 <div class="col-sm-12 col-md-12">
@@ -236,10 +279,13 @@
             debugger;
 
             if ($("#AssessorsProviderType").val() != "") {
-                $("#Assessprovider").text($("#AssessorsProviderType option:selected").text());
+                var Assertextvalue = $("#AssessorsProviderType option:selected").text();
+                var Asservalue = Assertextvalue.split(", ");
+                $("#AssessorsProviderFees").val(Asservalue[1]);
+
             }
             else {
-                $("#Assessprovider").text("");
+                $("#AssessorsProviderFees").val("");
             }
         })
 
@@ -247,10 +293,12 @@
             debugger;
 
             if ($("#ValuersProviderType").val() != "") {
-                $("#Valuersprovider").text($("#ValuersProviderType option:selected").text());
+                var valuetextvalue =$("#ValuersProviderType option:selected").text();
+                var valuetype = valuetextvalue.split(", ");
+                $("#ValuersProviderFees").val(valuetype[1]);
             }
             else {
-                $("#Valuersprovider").text("");
+                $("#ValuersProviderFees").val("");
             }
         })
 
@@ -258,10 +306,12 @@
             debugger;
 
             if ($("#RepairersProviderType").val() != "") {
-                $("#Repairersprovider").text($("#RepairersProviderType option:selected").text());
+                var repairtextvalue=$("#RepairersProviderType option:selected").text();
+                var repairvalue = repairtextvalue.split(", ");
+                $("#RepairersProviderFees").val(repairvalue[1]);
             }
             else {
-                $("#Repairersprovider").text("");
+                $("#RepairersProviderFees").val("");
             }
         })
 
@@ -270,13 +320,39 @@
             debugger;
 
             if ($("#LawyersProviderType").val() != "") {
-                $("#Lawyersprovider").text($("#LawyersProviderType option:selected").text());
+                var lawyertextvalue =$("#LawyersProviderType option:selected").text();
+                var lawyervalue = lawyertextvalue.split(", ");
+                $("#LawyersProviderFees").val(lawyervalue[1]);
             }
             else {
-                $("#Lawyersprovider").text("");
+                $("#LawyersProviderFees").val("");
             }
         })
 
+        $("#TownlyProviderType").change(function () {
+            debugger;
+
+            if ($("#LawyersProviderType").val() != "") {
+                var townlytextvalue =$("#TownlyProviderType option:selected").text();
+                var townlyvalue = townlytextvalue.split(", ");
+                $("#TownlyProviderFees").val(townlyvalue[1]);
+            }
+            else {
+                $("#TownlyProviderFees").val("");
+            }
+        })
+        $("#MedicalProviderType").change(function () {
+            debugger;
+
+            if ($("#MedicalProviderType").val() != "") {
+                var medicaltextvalue =$("#MedicalProviderType option:selected").text();
+                var medicalvalue = medicaltextvalue.split(", ");
+                $("#MedicalProviderFees").val(medicalvalue[1]);
+            }
+            else {
+                $("#MedicalProviderFees").val("");
+            }
+        })
 
 
     });
@@ -334,49 +410,36 @@
         var  Valueersvalue = 0;
         var  Repairvalue = 0;
         var  Lawervalue = 0;
+        var Townlyvalue = 0;
+        var Medicalvalue = 0;
         var total = 0;
-        var getAssessorsval= $("#AssessorsProviderType option:selected").text()
-        if (getAssessorsval!="Select Provider") {
-            if (getAssessorsval!=null && getAssessorsval !="") {
-                var splitarrt =  getAssessorsval.split(", ");
-                if (splitarrt.length>0) {
-                    asservalue = (splitarrt[1])
-                } 
-           
-            }
+        var getAssessorsval= $("#AssessorsProviderFees").val()
+        if (getAssessorsval!=null && getAssessorsval !="") {
+            asservalue = getAssessorsval;
+        };
+        var getValuersval= $("#ValuersProviderFees").val()
+
+        if (getValuersval!=null && getValuersval !="") {
+            Valueersvalue =getValuersval;
+        };
+        var getRepirsval= $("#RepairersProviderFees").val()
+        if (getRepirsval!=null && getRepirsval !="") {
+            Repairvalue =getRepirsval;
         }
-        
-        var getValuersval= $("#ValuersProviderType option:selected").text()
-        if (getValuersval!='Select Provider') {
-            if (getValuersval!=null && getValuersval !="") {
-                var splitarrt =  getValuersval.split(", ");
-                if (splitarrt.length>0) {
-                    Valueersvalue =splitarrt[1];
-                } 
-            
-            }
+        var getLawersval= $("#LawyersProviderFees").val()
+        if (getLawersval!=null && getLawersval !="") {
+            Lawervalue =getLawersval;
+        }
+        var getTownlyval= $("#TownlyProviderFees").val()
+        if (getTownlyval!=null && getTownlyval !="") {
+            Townlyvalue =getTownlyval;
+        }
+        var getMedicalval= $("#TownlyProviderFees").val()
+        if (getMedicalval!=null && getMedicalval !="") {
+            Medicalvalue =getMedicalval;
         }
 
-        var getRepirsval= $("#RepairersProviderType option:selected").text()
-        if (getRepirsval!='Select Provider') {
-            if (getRepirsval!=null && getRepirsval !="") {
-                var splitarrt =  getRepirsval.split(", ");
-                if (splitarrt.length>0) {
-                    Repairvalue =splitarrt[1];
-                } 
-            
-            }
-        }
-        var getLawersval= $("#LawyersProviderType option:selected").text()
-        if (getLawersval!='Select Provider') {
-            if (getLawersval!=null && getLawersval !="") {
-                var splitarrt =  getLawersval.split(", ");
-                if (splitarrt.length>0) {
-                    Lawervalue =splitarrt[1];
-                } 
-            }
-        }
-        total = parseFloat(asservalue) + parseFloat(Valueersvalue) + parseFloat(Repairvalue) + parseFloat(Lawervalue);
+        total = parseFloat(asservalue) + parseFloat(Valueersvalue) + parseFloat(Repairvalue) + parseFloat(Lawervalue) + parseFloat(Townlyvalue) + parseFloat(Medicalvalue);
         $('#TotalProviderFees').val(total);
         //alert($('#TotalProviderFees').val(total));
         //return false;
@@ -396,7 +459,51 @@
                 return true;
             }
         }
-        
+
     }
 
+
+    $("#AssessorsProviderFees").keypress(function (event) {
+        debugger;
+        $(this).val($(this).val().replace(/[^\d].+/, ""));
+        if ((event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
+    $("#ValuersProviderFees").keypress(function (event) {
+        debugger;
+        $(this).val($(this).val().replace(/[^\d].+/, ""));
+        if ((event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
+    $("#RepairersProviderFees").keypress(function (event) {
+        debugger;
+        $(this).val($(this).val().replace(/[^\d].+/, ""));
+        if ((event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
+    $("#LawyersProviderFees").keypress(function (event) {
+        debugger;
+        $(this).val($(this).val().replace(/[^\d].+/, ""));
+        if ((event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
+    $("#TownlyProviderFees").keypress(function (event) {
+        debugger;
+        $(this).val($(this).val().replace(/[^\d].+/, ""));
+        if ((event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
+    $("#MedicalProviderFees").keypress(function (event) {
+        debugger;
+        $(this).val($(this).val().replace(/[^\d].+/, ""));
+        if ((event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
+  
 </script>

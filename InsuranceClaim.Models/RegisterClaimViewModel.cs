@@ -41,7 +41,15 @@ namespace InsuranceClaim.Models
         public int? ValuersProviderType { get; set; }
         public int? LawyersProviderType { get; set; }
         public int? RepairersProviderType { get; set; }
-        public int? TotalProviderFees { get; set; }
+        public decimal? TotalProviderFees { get; set; }
+        public int? TownlyProviderType { get; set; }
+        public int? MedicalProviderType { get; set; }
+        public decimal? AssessorsProviderFees { get; set; }
+        public decimal? ValuersProviderFees { get; set; }
+        public decimal? LawyersProviderFees { get; set; }
+        public decimal? RepairersProviderFees { get; set; }
+        public decimal? TownlyProviderFees { get; set; }
+        public decimal? MedicalProviderFees { get; set; }
 
         //For Vehicle details 
         public List<ChecklistModel> chklist { get; set; }

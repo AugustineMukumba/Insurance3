@@ -29,9 +29,11 @@ namespace InsuranceClaim.Models
         public string ValueProviderName { get; set; }
         public string LawyeProviderName { get; set; }
         public string RepairProviderName { get; set; }
+        public string TownlyName { get; set; }
+        public string MeadicalName { get; set; }
         public int VehicleDetailId { get; set; }
         public string RegistrationNo { get; set; }
-        public int? TotalProviderFees { get; set; }
+        public decimal? TotalProviderFees { get; set; }
 
         public string ClaimValue { get; set; }
         public DateTime? ModifyOn { get; set; }

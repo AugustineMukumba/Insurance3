@@ -36,7 +36,7 @@
                     <thead>
                         <tr>
                             <th>Policy Number</th>
-                            <th>Date Of Loss</th>
+                            <th>Dates</th>
                             <th>Place Of Loss</th>
                             <th>Customer Name</th>
                             <th>Description Of Loss</th>
@@ -57,7 +57,19 @@
                                 <tr>
                                     <td>@item.PolicyNumber</td>
 
-                                    <td>@item.DateOfLoss.ToShortDateString().ToString()</td>
+                                    <td>
+                                    <table>
+                                        <tr>
+                                            <td><b>Date Of Loss:</b><br />@item.DateOfLoss.ToShortDateString().ToString()<br /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Cover Start Date:</b><br />@item.CoverStartDate.ToShortDateString().ToString()<br /></td>
+                                        </tr>
+                                        <tr>
+                                        <td><b>Cover End Date:</b><br />@item.CoverEndDate.ToShortDateString().ToString()<br /></td>
+                                        </tr>
+                                    </table>
+                                    </td>
                                     <td>@item.PlaceOfLoss</td>
                                     <td>@item.CustomerName</td>
                                     <td>@item.DescriptionOfLoss</td>

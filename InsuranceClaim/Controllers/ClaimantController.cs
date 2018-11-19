@@ -20,6 +20,7 @@ namespace InsuranceClaim.Controllers
 
             var service = new VehicleService();
             var makers = service.GetMakers();
+
             ViewBag.Makers = makers;
             if (makers.Count > 0)
             {
@@ -106,6 +107,8 @@ namespace InsuranceClaim.Controllers
                            ThirdPartyContactDetails = j.ThirdPartyContactDetails,
                            ThirdPartyMakeId = m == null ? "" : m.MakeDescription,
                            ThirdPartyModelId = mod == null ? "" : mod.ModelDescription,
+                           CoverStartDate =Convert.ToDateTime(j.CoverStartDate),
+                           CoverEndDate = Convert.ToDateTime(j.CoverEndDate),
                            ThirdPartyEstimatedValueOfLoss = j.ThirdPartyEstimatedValueOfLoss,
                            CustomerName = j.CustomerName,
                            Id = j.Id,
@@ -408,16 +411,26 @@ namespace InsuranceClaim.Controllers
                 foreach (var item in claimList)
                 {
                     ClaimDetailsProviderModel model = new ClaimDetailsProviderModel();
+                    var asserorType = ServiceProvidersList.FirstOrDefault(c => c.Id == item.AssessorsProviderType);
+                    var valuerTypes = ServiceProvidersList.FirstOrDefault(c => c.Id == item.ValuersProviderType);
+                    var lawerType = ServiceProvidersList.FirstOrDefault(c => c.Id == item.LawyersProviderType);
+                    var repaireType = ServiceProvidersList.FirstOrDefault(c => c.Id == item.RepairersProviderType);
+                    var towingtype = ServiceProvidersList.FirstOrDefault(c => c.Id == item.TownlyProviderType);
+                    var medicaltype = ServiceProvidersList.FirstOrDefault(c => c.Id == item.MedicalProviderType);
 
-                    model.Assessors_Type = ServiceProvidersList.FirstOrDefault(c => c.Id == item.AssessorsProviderType).ServiceProviderName;
-                    model.Valuers_Type = ServiceProvidersList.FirstOrDefault(c => c.Id == item.ValuersProviderType).ServiceProviderName;
-                    model.Lawyers_Type = ServiceProvidersList.FirstOrDefault(c => c.Id == item.LawyersProviderType).ServiceProviderName;
-                    model.Repairers_Type = ServiceProvidersList.FirstOrDefault(c => c.Id == item.RepairersProviderType).ServiceProviderName;
+
+                    model.Assessors_Type = asserorType==null ?"" : asserorType.ServiceProviderName;
+                    model.Valuers_Type = valuerTypes==null? "" : valuerTypes.ServiceProviderName;
+                    model.Lawyers_Type = lawerType ==null ? "" : lawerType.ServiceProviderName;
+                    model.Repairers_Type = repaireType ==null ? "" : repaireType.ServiceProviderName;
+                    model.Towing_Type = towingtype == null ? "" : towingtype.ServiceProviderName;
+                    model.Medical_Type = medicaltype == null ? "" : medicaltype.ServiceProviderName;
                     model.PolicyNumber = item.PolicyNumber;
                     model.ClaimNumber = item.ClaimNumber;
                     model.CreatedOn = Convert.ToDateTime(item.CreatedOn).ToShortDateString();
                     model.Id = item.Id;
                     model.CreatedBy = item.CreatedBy;
+                    
 
                     ClaimDetailsProviderList.Add(model);
                 }
@@ -577,17 +590,19 @@ namespace InsuranceClaim.Controllers
                             LawyeProviderName = GetProvider(date == null ? 0 : date.LawyersProviderType, service),
                             ValueProviderName = GetProvider(date == null ? 0 : date.ValuersProviderType, service),
                             RepairProviderName = GetProvider(date == null ? 0 : date.RepairersProviderType, service),
+                            TownlyName = GetProvider(date == null ? 0 : date.TownlyProviderType, service),
+                            MeadicalName = GetProvider(date == null ? 0 : date.MedicalProviderType, service),
                             ClaimStatus = Convert.ToString(Claimstatusdata.Status),
-                            //TotalProviderFees = (date.TotalProviderFees)==null  ? 0 ,
                             TotalProviderFees = date == null ? 0 : date.TotalProviderFees,
                             Id = _claimRegistration.Id,
                             VehicleDetailId = _claimRegistration.VehicleDetailId,
                             ClaimValue = GetClaimValue(_claimRegistration.ClaimNumber, Adjustments),
+                            //ModifyOn = date = date.ModifiedOn
 
 
                         }).ToList();
 
-            return View(list.OrderByDescending(x => x.ModifyOn));
+            return View(list.OrderByDescending(x => x.Id));
         }
 
 
@@ -608,46 +623,6 @@ namespace InsuranceClaim.Controllers
             return ClaimNumber;
         }
 
-
-
-
-        ////public ActionResult ClaimRegistrationList()
-        ////{
-        ////    ViewBag.servicename = InsuranceContext.ServiceProviderTypes.All();
-        ////    ViewBag.providername = InsuranceContext.ServiceProviders.All(where: $"IsDeleted = 'True'").ToList();
-        ////    var service = InsuranceContext.ServiceProviders.All(where: $"IsDeleted = 'True'").ToList();
-        ////    var claimList = InsuranceContext.ClaimDetailsProviders.All(where: $"IsActive = 'True' or IsActive is null").ToList();
-
-        ////    var list = (from _claimRegistration in InsuranceContext.ClaimRegistrations.All().ToList()
-        ////                join _clamdetail in InsuranceContext.ClaimDetailsProviders.All().ToList()
-        ////                on _claimRegistration.ClaimNumber equals _clamdetail.ClaimNumber into data
-        ////                from date in data.DefaultIfEmpty()
-        ////                join Claimstatusdata in InsuranceContext.ClaimStatuss.All().ToList()
-        ////                on _claimRegistration.ClaimStatus equals Claimstatusdata.Id
-        ////                //join claimadjust in InsuranceContext.ClaimAdjustments.All().ToList()
-
-
-        ////                select new ClaimRegistrationModel
-        ////                {
-        ////                    PolicyNumber = _claimRegistration.PolicyNumber,
-        ////                    PaymentDetails = _claimRegistration.PaymentDetails,
-        ////                    ClaimNumber = _claimRegistration.ClaimNumber,
-        ////                    PlaceOfLoss = _claimRegistration.PlaceOfLoss,
-        ////                    DescriptionOfLoss = _claimRegistration.DescriptionOfLoss,
-        ////                    EstimatedValueOfLoss = _claimRegistration.EstimatedValueOfLoss,
-        ////                    ThirdPartyDamageValue = _claimRegistration.ThirdPartyDamageValue,
-        ////                    AssessProviderName = GetProvider(date == null ? 0 : date.AssessorsProviderType, service),
-        ////                    LawyeProviderName = GetProvider(date == null ? 0 : date.LawyersProviderType, service),
-        ////                    ValueProviderName = GetProvider(date == null ? 0 : date.ValuersProviderType, service),
-        ////                    RepairProviderName = GetProvider(date == null ? 0 : date.RepairersProviderType, service),
-        ////                    ClaimStatus = Convert.ToString(Claimstatusdata.Status),
-        ////                    Id = _claimRegistration.Id
-
-
-        ////                }).ToList();
-
-        ////    return View(list.OrderByDescending(x => x.Id));
-        //}
         public string GetProvider(int? providerId, List<ServiceProvider> serviceList)
         {
             string provideName = "";
@@ -950,8 +925,8 @@ namespace InsuranceClaim.Controllers
                 model.RegistrationNo = vrn;
                 model.PolicyNumber = policyNumber;
 
-                model.CoverStartDate = vehicle.CoverStartDate;
-                model.CoverEndDate = vehicle.CoverEndDate;
+                model.CoverStartDate =Convert.ToDateTime(vehicle.CoverStartDate);
+                model.CoverEndDate =Convert.ToDateTime(vehicle.CoverEndDate);
                 //model.CoverStartDate =Convert.ToDateTime(vehicle.CoverStartDate).ToShortDateString();
                 //model.CoverEndDate =Convert.ToDateTime(vehicle.CoverEndDate).ToShortDateString();
 
@@ -1017,6 +992,10 @@ namespace InsuranceClaim.Controllers
                                        select new ServiceProvider { ServiceProviderName = lawe.ServiceProviderName + ", " + lawe.ServiceProviderFees, Id = lawe.Id }).ToList();
 
                 ViewBag.RepairersType = (from repa in Providertype.Where(w => w.ServiceProviderType == 4)
+                                         select new ServiceProvider { ServiceProviderName = repa.ServiceProviderName + ", " + repa.ServiceProviderFees, Id = repa.Id }).ToList();
+                ViewBag.TownlyType = (from repa in Providertype.Where(w => w.ServiceProviderType == 5)
+                                         select new ServiceProvider { ServiceProviderName = repa.ServiceProviderName + ", " + repa.ServiceProviderFees, Id = repa.Id }).ToList();
+                ViewBag.MedicalType = (from repa in Providertype.Where(w => w.ServiceProviderType == 6)
                                          select new ServiceProvider { ServiceProviderName = repa.ServiceProviderName + ", " + repa.ServiceProviderFees, Id = repa.Id }).ToList();
 
                 ViewBag.ClaimStatus = InsuranceContext.ClaimStatuss.All().ToList();
@@ -1182,6 +1161,17 @@ namespace InsuranceClaim.Controllers
                         VehicleDetailVM.RepairersProviderType = ClaimProvider.RepairersProviderType;
                         VehicleDetailVM.TotalProviderFees = ClaimProvider.TotalProviderFees;
                         VehicleDetailVM.LawyersProviderType = ClaimProvider.LawyersProviderType;
+                        VehicleDetailVM.TownlyProviderType = ClaimProvider.TownlyProviderType;
+                        VehicleDetailVM.MedicalProviderType = ClaimProvider.MedicalProviderType;
+                        //Fees
+                        VehicleDetailVM.AssessorsProviderFees = ClaimProvider.AssessorsProviderFees;
+                        VehicleDetailVM.ValuersProviderFees = ClaimProvider.ValuersProviderFees;
+                        VehicleDetailVM.RepairersProviderFees = ClaimProvider.RepairersProviderFees;
+                        VehicleDetailVM.LawyersProviderFees = ClaimProvider.LawyersProviderFees;
+                        VehicleDetailVM.TownlyProviderFees = ClaimProvider.TownlyProviderFees;
+                        VehicleDetailVM.MedicalProviderFees = ClaimProvider.MedicalProviderFees;
+
+
                     }
                     VehicleDetailVM.Claimnumber = claimregistrationdetail.ClaimNumber;
                     VehicleDetailVM.Claimsatisfaction = claimregistrationdetail.Claimsatisfaction;
@@ -1284,6 +1274,14 @@ namespace InsuranceClaim.Controllers
                     obj.TotalProviderFees = model.TotalProviderFees;
                     obj.PolicyNumber = model.PolicyNumber;
                     obj.ClaimNumber = Convert.ToInt32(model.Claimnumber);
+                    obj.TownlyProviderType = model.TownlyProviderType;
+                    obj.MedicalProviderType = model.MedicalProviderType;
+                    obj.AssessorsProviderFees = model.AssessorsProviderFees;
+                    obj.ValuersProviderFees = model.ValuersProviderFees;
+                    obj.RepairersProviderFees = model.RepairersProviderFees;
+                    obj.LawyersProviderFees = model.LawyersProviderFees;
+                    obj.TownlyProviderFees = model.TownlyProviderFees;
+                    obj.MedicalProviderFees = model.MedicalProviderFees;
 
 
                     obj.CreatedBy = Convert.ToInt32(customId);
@@ -1307,7 +1305,15 @@ namespace InsuranceClaim.Controllers
                     claimdata.ValuersProviderType = model.ValuersProviderType;
                     claimdata.LawyersProviderType = model.LawyersProviderType;
                     claimdata.RepairersProviderType = model.RepairersProviderType;
+                    claimdata.TownlyProviderType = model.TownlyProviderType;
+                    claimdata.MedicalProviderType = model.MedicalProviderType;
                     claimdata.PolicyNumber = model.PolicyNumber;
+                    claimdata.AssessorsProviderFees = model.AssessorsProviderFees;
+                    claimdata.ValuersProviderFees = model.ValuersProviderFees;
+                    claimdata.RepairersProviderFees = model.RepairersProviderFees;
+                    claimdata.LawyersProviderFees = model.LawyersProviderFees;
+                    claimdata.TownlyProviderFees = model.TownlyProviderFees;
+                    claimdata.MedicalProviderFees = model.MedicalProviderFees;
                     claimdata.TotalProviderFees = model.TotalProviderFees;
                     claimdata.ClaimNumber = Convert.ToInt32(model.Claimnumber);
                     claimdata.ModifiedBy = Convert.ToInt32(customId);

@@ -25,6 +25,7 @@ namespace InsuranceClaim.Models
         [Display(Name = "Assign Repairers ")]
         [Required(ErrorMessage = "Please Select Repairers Provider.")]
         public int RepairersProviderType { get; set; }
+
         //[Display(Name = "Assessors Provider Type")]
         //[Required(ErrorMessage = "Please Select Assessors Provider Type.")]
         public int ClaimNumber { get; set; }
@@ -35,10 +36,24 @@ namespace InsuranceClaim.Models
         public int? ModifiedBy { get; set; }
 
         public string Assessors_Type { get; set; }
+        public string Towing_Type { get; set; }
+        public string Medical_Type { get; set; }
 
         public string Valuers_Type { get; set; }
         public string Lawyers_Type { get; set; }
         public string Repairers_Type { get; set; }
+        [Display(Name = "Townly Provider Type ")]
+        [Required(ErrorMessage = "Please Select Townly Provider.")]
+        public int TownlyProviderType { get; set; }
+        [Display(Name = "Medical Provider Type ")]
+        [Required(ErrorMessage = "Please Select Medical Provider.")]
+        public int MedicalProviderType { get; set; }
+        public decimal? AssessorsProviderFees { get; set; }
+        public decimal? ValuersProviderFees { get; set; }
+        public decimal? LawyersProviderFees { get; set; }
+        public decimal? RepairersProviderFees { get; set; }
+        public decimal? TownlyProviderFees { get; set; }
+        public decimal? MedicalProviderFees { get; set; }
 
     }
 }

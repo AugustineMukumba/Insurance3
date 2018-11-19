@@ -36,18 +36,19 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.PolicyNumber, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.PolicyNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Policy Number", @Id = "PolicyNumber" })
+                                            @Html.TextBoxFor(x => x.PolicyNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Policy Number", @Id = "PolicyNumber",@readonly= "readonly" })
                                             @Html.ValidationMessageFor(x => x.PolicyNumber, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.CustomerName, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.CustomerName, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Customer Name", @Id = "CustomerName" })
+                                            @Html.TextBoxFor(x => x.CustomerName, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Customer Name", @Id = "CustomerName", @readonly = "readonly" })
                                             @*@Html.ValidationMessageFor(x => x.CustomerName, "", new { @class = "text-danger" })*@
                                         </div>
                                     </div>
@@ -58,13 +59,32 @@
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.CoverStartDate, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.CoverStartDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Cover Start Date", @Id = "CoverStartDate" })
+
+                                            <div class="form-group-label">
+                                                <div class='input-group' id='datetime1'>
+                                                    @Html.TextBoxFor(x => x.CoverStartDate, new { @class = "form-control", @placeholder = "Cover Start Date", @readonly = "readonly" })
+                                                    <span class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-calendar "></span>
+                                                    </span>
+                                                </div>
+                                                @Html.ValidationMessageFor(x => x.CoverStartDate, "", new { @class = "text-danger" })
+                                            </div>
+                                            @*@Html.TextBoxFor(x => x.CoverStartDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Cover Start Date", @Id = "CoverStartDate" })*@
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.CoverEndDate, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.CoverEndDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Cover End Date", @Id = "CoverEndDate" })
+                                            <div class="form-group-label">
+                                                <div class='input-group' id='datetime2'>
+                                                    @Html.TextBoxFor(x => x.CoverEndDate, new { @class = "form-control", @placeholder = "Cover End Date", @readonly = "readonly" })
+                                                    <span class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-calendar "></span>
+                                                    </span>
+                                                </div>
+                                                @Html.ValidationMessageFor(x => x.CoverEndDate, "", new { @class = "text-danger" })
+                                            </div>
+                                            @*@Html.TextBoxFor(x => x.CoverEndDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Cover End Date", @Id = "CoverEndDate" })*@
                                         </div>
                                     </div>
                                 </div>
@@ -72,7 +92,7 @@
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.RegistrationNo, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.RegistrationNo, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Registration Number", @Id = "RegistrationNo" })
+                                            @Html.TextBoxFor(x => x.RegistrationNo, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Registration Number", @Id = "RegistrationNo", @readonly = "readonly" })
                                             @Html.ValidationMessageFor(x => x.RegistrationNo, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -83,6 +103,7 @@
                                             </div>*@
                                     </div>
                                 </div>
+
                                 <fieldset disabled>
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
@@ -141,8 +162,8 @@
                                                 <div class="form-group-radio">
                                                     <label>@Html.RadioButtonFor(x => x.ThirdPartyInvolvement, true)Yes</label>
                                                     <label>@Html.RadioButtonFor(x => x.ThirdPartyInvolvement, false)No</label>
-                                                    @*@Html.ValidationMessageFor(x => x.ThirdPartyInvolvement, "", new { @class = "text-danger" })*@
-                                                    <span id="spthirdPartyInvolvement"></span>
+                                                    @Html.ValidationMessageFor(x => x.ThirdPartyInvolvement, "", new { @class = "text-danger" })
+                                                    @*<span id="spthirdPartyInvolvement"></span>*@
 
                                                 </div>
                                             </div>
@@ -230,6 +251,14 @@
 
 <script>
     $(document).ready(function () {
+        $("#datetime1").datetimepicker({
+            format: 'MM/D/YYYY',
+            maxDate: new Date()
+        });
+        $("#datetime2").datetimepicker({
+            format: 'MM/D/YYYY',
+            maxDate: new Date()
+        });
         $("#datetime3").datetimepicker({
             format: 'MM/D/YYYY',
             maxDate: new Date()
@@ -414,17 +443,46 @@
                 return false;
             }
         }
-        //if ($("#ThirdPartyInvolvement").val()=="") {
-        //    $("#spthirdPartyInvolvement").text("This is Required Field").css("color", "#a94442");
-        //    return false;
-        //}
         if ($("#dateValidte").val() == 'false') {
             toastr.warning("You Date of Lose outside Of Insurance Period  ")
             return false;
         }
     }
 
-    $("#txtPolicyNumber").change(function () {
+    //$("#txtPolicyNumber").change(function () {
+    //    debugger;
+
+    //    $("#txtPolicyNumber").val();
+    //    $.ajax({
+    //        url: "/Claimant/GetCustomername",
+    //        async: false,
+    //        data: { txtvalue: $("#txtPolicyNumber").val() },
+    //        success: function (data) {
+    //            debugger;
+
+
+    //            $("#CustomerName").val(data.CustomerName);
+    //            $("#PolicyNumber").val(data.PolicyNumber);
+    //            $("#RegistrationNo").val(data.RegistrationNo);
+    //            $("#CoverStartDate").val(ToJavaScriptDate(data.CoverStartDate));
+    //            $("#CoverEndDate").val(ToJavaScriptDate(data.CoverEndDate));
+    //            if (data.CustomerName != null && data.PolicyNumber != null && data.RegistrationNo != null) {
+    //                $("fieldset").removeAttr("disabled");
+    //            }
+    //            else {
+    //                $("fieldset").removeAttr("disabled");
+    //            }
+    //        },
+    //        error: function (error) {
+    //            debugger;
+    //            alert("error");
+    //        }
+    //    })
+
+
+    //});
+
+    $("#txtPolicyNumber").blur(function () {
         debugger;
 
         $("#txtPolicyNumber").val();
@@ -439,13 +497,18 @@
                 $("#CustomerName").val(data.CustomerName);
                 $("#PolicyNumber").val(data.PolicyNumber);
                 $("#RegistrationNo").val(data.RegistrationNo);
-                $("#CoverStartDate").val(ToJavaScriptDate(data.CoverStartDate));
-                $("#CoverEndDate").val(ToJavaScriptDate(data.CoverEndDate));
+               
                 if (data.CustomerName != null && data.PolicyNumber != null && data.RegistrationNo != null) {
+                    $("#CoverStartDate").val(ToJavaScriptDate(data.CoverStartDate));
+                    $("#CoverEndDate").val(ToJavaScriptDate(data.CoverEndDate));
+                    toastr.success("You Policy No/VRN No/Customer Name Is  Exist.")
                     $("fieldset").removeAttr("disabled");
+
                 }
                 else {
-                    $("fieldset").removeAttr("disabled");
+                    ($("fieldset").attr("disabled") )    ;
+                    toastr.warning("You Policy No/VRN No/Customer Name Is Not Exist. Please Try Again")
+                    return false;
                 }
             },
             error: function (error) {
@@ -456,7 +519,6 @@
 
 
     });
-
 
 
 
