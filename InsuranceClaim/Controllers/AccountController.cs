@@ -107,14 +107,11 @@ namespace InsuranceClaim.Controllers
 
                     if (role == "Administrator")
                     {
-
                         return RedirectToAction("Dashboard", "Account");
                     }
                     else
                     {
-
                         return Redirect("/CustomerRegistration/index");
-                        // return RedirectToAction("Index", "CustomerRegistration");
                     }
 
                 case SignInStatus.LockedOut:

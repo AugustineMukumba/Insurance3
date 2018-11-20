@@ -3,6 +3,43 @@
     ViewBag.Title = "EditRegisterClaim";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
+
+
+<style>
+    .multiselect {
+        width: 200px;
+    }
+
+    .selectBox {
+        position: relative;
+    }
+
+        .selectBox select {
+            width: 100%;
+        }
+
+    .overSelect {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+    }
+
+    #checkboxes {
+        display: none;
+        border: 1px #dadada solid;
+    }
+
+        #checkboxes label {
+            display: block;
+        }
+
+            #checkboxes label:hover {
+                background-color: #1e90ff;
+            }
+</style>
+
 <div class="body-content-section">
     <div class="form-section-top-riskdetail">
         <div class="container">
@@ -111,77 +148,150 @@
                                             </div>
                                         </div>
                                     </div>
+
+
+
                                     <div class="riskdetail-box">
                                         <div class="row">
-                                            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                                                <div class="form-group ml-0">
-                                                    <label>Assign Assessors</label>
-                                                    @Html.DropDownListFor(x => x.AssessorsProviderType, new SelectList(ViewBag.AssessorsType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 claim-status">
+
+                                                <div class="multiselect">
+                                                    <div class="selectBox" onclick="showCheckboxes()">
+                                                        <select class="form-control">
+                                                            <option>Select Service Provider</option>
+                                                        </select>
+                                                        <div class="overSelect"></div>
+                                                    </div>
+                                                    <div id="checkboxes">
+                                                        @foreach (var item in ViewBag.ServiceProviderTypes)
+                                                        {
+                                                            <label for="@item.Id" class="form-control">
+                                                                <input onclick="DisplayServiceProvider(@item.Id)" type="checkbox" id="chkProviderType_@item.Id" />@item.ProviderType
+                                                            </label>
+                                                        }
+                                                    </div>
                                                 </div>
-                                                <div class="">
-                                                    <label>Assign Assessors Fees</label>
-                                                    @Html.TextBoxFor(x => x.AssessorsProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Assessors Provider Fees" })
-                                                </div>
+
+
+
                                             </div>
-                                            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                                                <div class="form-group  ml-0">
-                                                    <label>Assign Valuers</label>
-                                                    @Html.DropDownListFor(x => x.ValuersProviderType, new SelectList(ViewBag.ValuersType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
-                                                </div>
-                                                <div>
-                                                    <label>Assign Valuers Fees</label>
-                                                    @Html.TextBoxFor(x => x.ValuersProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Valuers Provider Fees" })
-                                                </div>
-                                            </div>
-                                            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                                                <div class="form-group  ml-0">
-                                                    <label>Assign Repairers</label>
-                                                    @Html.DropDownListFor(x => x.RepairersProviderType, new SelectList(ViewBag.RepairersType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
-                                                </div>
-                                                <div>
-                                                    <label>Assign Repairers Fees</label>
-                                                    @Html.TextBoxFor(x => x.RepairersProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Repairers Provider Fees" })
-                                                </div>
-                                            </div>
-                                            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                                                <div class="form-group  ml-0">
-                                                    <label>Assign Lawyers</label>
-                                                    @Html.DropDownListFor(x => x.LawyersProviderType, new SelectList(ViewBag.LawyersType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
-                                                </div>
-                                                <div>
-                                                    <label>Assign Lawyers Fees</label>
-                                                    @Html.TextBoxFor(x => x.LawyersProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Lawyers Provider Fees" })
-                                                </div>
-                                            </div>
+
+
+                                            @foreach (var item in ViewBag.ServiceProviderTypes)
+                                            {
+
+                                                var list = Model.ProviderList.Where(c => c.ProviderTypeId == item.Id).ToList();
+
+                                                if (list.Count > 0)
+                                                {
+                                                    <div id="ddlProvider_@item.Id" style="display:none">
+                                                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                            <div class="form-group ml-0">
+                                                                <label>Assign @list[0].ServiceProviderType</label>
+                                                                @Html.DropDownListFor(x => x.ProviderId, new SelectList(list, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control", id = "Provider_" + @item.Id, onchange = "BindProviderFee(" + @item.Id + ");" })
+                                                            </div>
+                                                            <div class="">
+                                                                <label>Assign @list[0].ServiceProviderType Fees</label>
+                                                                @Html.TextBoxFor(x => x.ProviderFee, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Assessors Provider Fees", id = "ProviderFee_" + @item.Id })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+
+                                            }
+
+
+
+
+
+
 
                                         </div>
                                     </div>
-                                    <div class="riskdetail-box">
-                                        <div class="row">
-                                            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                                                <div class="form-group  ml-0">
-                                                    <label>Assign Towing</label>
-                                                    @Html.DropDownListFor(x => x.TownlyProviderType, new SelectList(ViewBag.TownlyType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+
+
+
+                                  
+
+
+                                    @*<div class="riskdetail-box">
+                                            <div class="row">
+                                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                    <div class="form-group ml-0">
+                                                        <label>Assign Assessors</label>
+                                                        @Html.DropDownListFor(x => x.AssessorsProviderType, new SelectList(ViewBag.AssessorsType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                    </div>
+                                                    <div class="">
+                                                        <label>Assign Assessors Fees</label>
+                                                        @Html.TextBoxFor(x => x.AssessorsProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Assessors Provider Fees" })
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <label>Assign Towing Fees</label>
-                                                    @Html.TextBoxFor(x => x.TownlyProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Townly Provider Fees" })
+                                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                    <div class="form-group  ml-0">
+                                                        <label>Assign Valuers</label>
+                                                        @Html.DropDownListFor(x => x.ValuersProviderType, new SelectList(ViewBag.ValuersType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                    </div>
+                                                    <div>
+                                                        <label>Assign Valuers Fees</label>
+                                                        @Html.TextBoxFor(x => x.ValuersProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Valuers Provider Fees" })
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                                                <div class="form-group  ml-0">
-                                                    <label>Assign Medical</label>
-                                                    @Html.DropDownListFor(x => x.MedicalProviderType, new SelectList(ViewBag.MedicalType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                    <div class="form-group  ml-0">
+                                                        <label>Assign Repairers</label>
+                                                        @Html.DropDownListFor(x => x.RepairersProviderType, new SelectList(ViewBag.RepairersType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                    </div>
+                                                    <div>
+                                                        <label>Assign Repairers Fees</label>
+                                                        @Html.TextBoxFor(x => x.RepairersProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Repairers Provider Fees" })
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <label>Assign Medical Fees</label>
-                                                    @Html.TextBoxFor(x => x.MedicalProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Medical Provider Fees" })
+                                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                    <div class="form-group  ml-0">
+                                                        <label>Assign Lawyers</label>
+                                                        @Html.DropDownListFor(x => x.LawyersProviderType, new SelectList(ViewBag.LawyersType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                    </div>
+                                                    <div>
+                                                        <label>Assign Lawyers Fees</label>
+                                                        @Html.TextBoxFor(x => x.LawyersProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Lawyers Provider Fees" })
+                                                    </div>
                                                 </div>
+
                                             </div>
                                         </div>
-                                      
-                                    </div>
+                                        <div class="riskdetail-box">
+                                            <div class="row">
+                                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                    <div class="form-group  ml-0">
+                                                        <label>Assign Towing</label>
+                                                        @Html.DropDownListFor(x => x.TownlyProviderType, new SelectList(ViewBag.TownlyType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                    </div>
+                                                    <div>
+                                                        <label>Assign Towing Fees</label>
+                                                        @Html.TextBoxFor(x => x.TownlyProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Townly Provider Fees" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                    <div class="form-group  ml-0">
+                                                        <label>Assign Medical</label>
+                                                        @Html.DropDownListFor(x => x.MedicalProviderType, new SelectList(ViewBag.MedicalType, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control" })
+                                                    </div>
+                                                    <div>
+                                                        <label>Assign Medical Fees</label>
+                                                        @Html.TextBoxFor(x => x.MedicalProviderFees, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Medical Provider Fees" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>*@
+
+
+
                                 </div>
+
+
+
+
                                 <div class="col-sm-12 col-md-12">
                                     <div class="row">
                                         <div class="text-left">
@@ -293,7 +403,7 @@
             debugger;
 
             if ($("#ValuersProviderType").val() != "") {
-                var valuetextvalue =$("#ValuersProviderType option:selected").text();
+                var valuetextvalue = $("#ValuersProviderType option:selected").text();
                 var valuetype = valuetextvalue.split(", ");
                 $("#ValuersProviderFees").val(valuetype[1]);
             }
@@ -306,7 +416,7 @@
             debugger;
 
             if ($("#RepairersProviderType").val() != "") {
-                var repairtextvalue=$("#RepairersProviderType option:selected").text();
+                var repairtextvalue = $("#RepairersProviderType option:selected").text();
                 var repairvalue = repairtextvalue.split(", ");
                 $("#RepairersProviderFees").val(repairvalue[1]);
             }
@@ -320,7 +430,7 @@
             debugger;
 
             if ($("#LawyersProviderType").val() != "") {
-                var lawyertextvalue =$("#LawyersProviderType option:selected").text();
+                var lawyertextvalue = $("#LawyersProviderType option:selected").text();
                 var lawyervalue = lawyertextvalue.split(", ");
                 $("#LawyersProviderFees").val(lawyervalue[1]);
             }
@@ -333,7 +443,7 @@
             debugger;
 
             if ($("#LawyersProviderType").val() != "") {
-                var townlytextvalue =$("#TownlyProviderType option:selected").text();
+                var townlytextvalue = $("#TownlyProviderType option:selected").text();
                 var townlyvalue = townlytextvalue.split(", ");
                 $("#TownlyProviderFees").val(townlyvalue[1]);
             }
@@ -345,7 +455,7 @@
             debugger;
 
             if ($("#MedicalProviderType").val() != "") {
-                var medicaltextvalue =$("#MedicalProviderType option:selected").text();
+                var medicaltextvalue = $("#MedicalProviderType option:selected").text();
                 var medicalvalue = medicaltextvalue.split(", ");
                 $("#MedicalProviderFees").val(medicalvalue[1]);
             }
@@ -353,9 +463,34 @@
                 $("#MedicalProviderFees").val("");
             }
         })
-
-
     });
+
+    function DisplayServiceProvider(providerTypeId) {
+        if ($("#chkProviderType_" + providerTypeId).is(":checked")) {
+            $("#ddlProvider_" + providerTypeId).show();
+        }
+        else {
+            $("#ddlProvider_" + providerTypeId).hide();
+        }
+    }
+
+    function BindProviderFee(providerTypeId) {
+
+        var providerId = $("#Provider_" + providerTypeId).val();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetProviderFee", "Claimant")",
+            data: { providerId: providerId},
+            success: function (data) {
+
+                $("#ProviderFee_" + providerTypeId).val(data);
+
+                
+            }
+        })
+    }
+
+
     function removeValidation(e) {
         debugger;
         if (e.value == "3") {
@@ -380,25 +515,25 @@
     }
 
 
-    var getAssessorsPro= $("#AssessorsProviderType option:selected").text()
-    if (getAssessorsPro !='Select Provider') {
+    var getAssessorsPro = $("#AssessorsProviderType option:selected").text()
+    if (getAssessorsPro != 'Select Provider') {
         debugger;
         $("#Assessprovider").text(getAssessorsPro);
 
     }
-    var getValuersvalPro= $("#ValuersProviderType option:selected").text()
-    if (getValuersvalPro !='Select Provider') {
+    var getValuersvalPro = $("#ValuersProviderType option:selected").text()
+    if (getValuersvalPro != 'Select Provider') {
         debugger;
         $("#Valuersprovider").text(getValuersvalPro);
     }
-    var getRepirsvalPro= $("#RepairersProviderType option:selected").text()
-    if (getRepirsvalPro !='Select Provider') {
+    var getRepirsvalPro = $("#RepairersProviderType option:selected").text()
+    if (getRepirsvalPro != 'Select Provider') {
         debugger;
         $("#Repairersprovider").text(getRepirsvalPro);
     }
 
-    var getLawersvalPro= $("#LawyersProviderType option:selected").text()
-    if (getLawersvalPro !='Select Provider') {
+    var getLawersvalPro = $("#LawyersProviderType option:selected").text()
+    if (getLawersvalPro != 'Select Provider') {
         debugger;
         $("#Lawyersprovider").text(getLawersvalPro);
     }
@@ -407,36 +542,36 @@
     function Rejectval() {
         debugger;
         var asservalue = 0;
-        var  Valueersvalue = 0;
-        var  Repairvalue = 0;
-        var  Lawervalue = 0;
+        var Valueersvalue = 0;
+        var Repairvalue = 0;
+        var Lawervalue = 0;
         var Townlyvalue = 0;
         var Medicalvalue = 0;
         var total = 0;
-        var getAssessorsval= $("#AssessorsProviderFees").val()
-        if (getAssessorsval!=null && getAssessorsval !="") {
+        var getAssessorsval = $("#AssessorsProviderFees").val()
+        if (getAssessorsval != null && getAssessorsval != "") {
             asservalue = getAssessorsval;
         };
-        var getValuersval= $("#ValuersProviderFees").val()
+        var getValuersval = $("#ValuersProviderFees").val()
 
-        if (getValuersval!=null && getValuersval !="") {
-            Valueersvalue =getValuersval;
+        if (getValuersval != null && getValuersval != "") {
+            Valueersvalue = getValuersval;
         };
-        var getRepirsval= $("#RepairersProviderFees").val()
-        if (getRepirsval!=null && getRepirsval !="") {
-            Repairvalue =getRepirsval;
+        var getRepirsval = $("#RepairersProviderFees").val()
+        if (getRepirsval != null && getRepirsval != "") {
+            Repairvalue = getRepirsval;
         }
-        var getLawersval= $("#LawyersProviderFees").val()
-        if (getLawersval!=null && getLawersval !="") {
-            Lawervalue =getLawersval;
+        var getLawersval = $("#LawyersProviderFees").val()
+        if (getLawersval != null && getLawersval != "") {
+            Lawervalue = getLawersval;
         }
-        var getTownlyval= $("#TownlyProviderFees").val()
-        if (getTownlyval!=null && getTownlyval !="") {
-            Townlyvalue =getTownlyval;
+        var getTownlyval = $("#TownlyProviderFees").val()
+        if (getTownlyval != null && getTownlyval != "") {
+            Townlyvalue = getTownlyval;
         }
-        var getMedicalval= $("#TownlyProviderFees").val()
-        if (getMedicalval!=null && getMedicalval !="") {
-            Medicalvalue =getMedicalval;
+        var getMedicalval = $("#TownlyProviderFees").val()
+        if (getMedicalval != null && getMedicalval != "") {
+            Medicalvalue = getMedicalval;
         }
 
         total = parseFloat(asservalue) + parseFloat(Valueersvalue) + parseFloat(Repairvalue) + parseFloat(Lawervalue) + parseFloat(Townlyvalue) + parseFloat(Medicalvalue);
@@ -505,5 +640,19 @@
             event.preventDefault();
         }
     });
-  
+
+
+    var expanded = false;
+
+    function showCheckboxes() {
+        var checkboxes = document.getElementById("checkboxes");
+        if (!expanded) {
+            checkboxes.style.display = "block";
+            expanded = true;
+        } else {
+            checkboxes.style.display = "none";
+            expanded = false;
+        }
+    }
+
 </script>

@@ -30,5 +30,7 @@ namespace InsuranceClaim.Models
         public bool? IsDeleted { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
+
+        public int ProviderTypeId { get; set; }
     }
 }

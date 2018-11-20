@@ -51,12 +51,17 @@ namespace InsuranceClaim.Models
         public decimal? TownlyProviderFees { get; set; }
         public decimal? MedicalProviderFees { get; set; }
 
+        public int ProviderId { get; set; }
+
+        public decimal ProviderFee { get; set; }
+
         //For Vehicle details 
         public List<ChecklistModel> chklist { get; set; }
         public List<RegisterClaimViewModel> chklistDetail { get; set; }
         public string names { get; set; }
-        public List<RiskViewModel> RiskViewModel { get; set; }        
-
+        public List<RiskViewModel> RiskViewModel { get; set; }    
+         
+        public List<ServiceProviderModel> ProviderList { get; set; }
     }
 
 
