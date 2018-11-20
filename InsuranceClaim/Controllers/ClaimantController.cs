@@ -1132,6 +1132,7 @@ namespace InsuranceClaim.Controllers
                         ThirdPartyDamageValue = claimregistrationdetail.ThirdPartyDamageValue,
                         FirstName = InsuranceContext.Customers.All().Where(q => q.Id == CustomerId).FirstOrDefault().FirstName,
                         LastName = InsuranceContext.Customers.All().Where(q => q.Id == CustomerId).FirstOrDefault().LastName,
+                        Status =Convert.ToString(claimregistrationdetail.ClaimStatus),
 
 
 
@@ -1253,6 +1254,7 @@ namespace InsuranceClaim.Controllers
                 updateRecord.ClaimStatus = Convert.ToInt32(model.Status);
             }
             updateRecord.Claimsatisfaction = claimStatis;
+            updateRecord.ModifyOn = DateTime.Now;
             InsuranceContext.ClaimRegistrations.Update(updateRecord);
             /////Insert
 
