@@ -100,7 +100,7 @@ namespace InsuranceClaim.Controllers
                            ThirdPartyContactDetails = j.ThirdPartyContactDetails,
                            ThirdPartyMakeId = m == null ? "" : m.MakeDescription,
                            ThirdPartyModelId = mod == null ? "" : mod.ModelDescription,
-                           CoverStartDate =Convert.ToDateTime(j.CoverStartDate),
+                           CoverStartDate = Convert.ToDateTime(j.CoverStartDate),
                            CoverEndDate = Convert.ToDateTime(j.CoverEndDate),
                            ThirdPartyEstimatedValueOfLoss = j.ThirdPartyEstimatedValueOfLoss,
                            CustomerName = j.CustomerName,
@@ -129,6 +129,10 @@ namespace InsuranceClaim.Controllers
             model.ThirdPartyModelId = record.ThirdPartyModelId;
             return View(model);
         }
+
+
+
+
 
         [HttpPost]
         public ActionResult EditClaimant(ClaimNotificationModel model)
@@ -420,10 +424,10 @@ namespace InsuranceClaim.Controllers
                     var medicaltype = ServiceProvidersList.FirstOrDefault(c => c.Id == item.MedicalProviderType);
 
 
-                    model.Assessors_Type = asserorType==null ?"" : asserorType.ServiceProviderName;
-                    model.Valuers_Type = valuerTypes==null? "" : valuerTypes.ServiceProviderName;
-                    model.Lawyers_Type = lawerType ==null ? "" : lawerType.ServiceProviderName;
-                    model.Repairers_Type = repaireType ==null ? "" : repaireType.ServiceProviderName;
+                    model.Assessors_Type = asserorType == null ? "" : asserorType.ServiceProviderName;
+                    model.Valuers_Type = valuerTypes == null ? "" : valuerTypes.ServiceProviderName;
+                    model.Lawyers_Type = lawerType == null ? "" : lawerType.ServiceProviderName;
+                    model.Repairers_Type = repaireType == null ? "" : repaireType.ServiceProviderName;
                     model.Towing_Type = towingtype == null ? "" : towingtype.ServiceProviderName;
                     model.Medical_Type = medicaltype == null ? "" : medicaltype.ServiceProviderName;
                     model.PolicyNumber = item.PolicyNumber;
@@ -431,7 +435,7 @@ namespace InsuranceClaim.Controllers
                     model.CreatedOn = Convert.ToDateTime(item.CreatedOn).ToShortDateString();
                     model.Id = item.Id;
                     model.CreatedBy = item.CreatedBy;
-                    
+
 
                     ClaimDetailsProviderList.Add(model);
                 }
@@ -933,8 +937,8 @@ namespace InsuranceClaim.Controllers
                 model.RegistrationNo = vrn;
                 model.PolicyNumber = policyNumber;
 
-                model.CoverStartDate =Convert.ToDateTime(vehicle.CoverStartDate);
-                model.CoverEndDate =Convert.ToDateTime(vehicle.CoverEndDate);
+                model.CoverStartDate = Convert.ToDateTime(vehicle.CoverStartDate);
+                model.CoverEndDate = Convert.ToDateTime(vehicle.CoverEndDate);
                 //model.CoverStartDate =Convert.ToDateTime(vehicle.CoverStartDate).ToShortDateString();
                 //model.CoverEndDate =Convert.ToDateTime(vehicle.CoverEndDate).ToShortDateString();
 
@@ -988,6 +992,13 @@ namespace InsuranceClaim.Controllers
         {
             try
             {
+
+                ViewBag.ServiceProviderTypes = InsuranceContext.ServiceProviderTypes.All().ToList();
+
+
+
+
+
                 var Providertype = InsuranceContext.ServiceProviders.All(where: $"IsDeleted = 'True' or IsDeleted is null ").ToList();
 
                 ViewBag.AssessorsType = (from res in Providertype.Where(w => w.ServiceProviderType == 1)
@@ -1002,9 +1013,13 @@ namespace InsuranceClaim.Controllers
                 ViewBag.RepairersType = (from repa in Providertype.Where(w => w.ServiceProviderType == 4)
                                          select new ServiceProvider { ServiceProviderName = repa.ServiceProviderName + ", " + repa.ServiceProviderFees, Id = repa.Id }).ToList();
                 ViewBag.TownlyType = (from repa in Providertype.Where(w => w.ServiceProviderType == 5)
-                                         select new ServiceProvider { ServiceProviderName = repa.ServiceProviderName + ", " + repa.ServiceProviderFees, Id = repa.Id }).ToList();
+                                      select new ServiceProvider { ServiceProviderName = repa.ServiceProviderName + ", " + repa.ServiceProviderFees, Id = repa.Id }).ToList();
                 ViewBag.MedicalType = (from repa in Providertype.Where(w => w.ServiceProviderType == 6)
-                                         select new ServiceProvider { ServiceProviderName = repa.ServiceProviderName + ", " + repa.ServiceProviderFees, Id = repa.Id }).ToList();
+                                       select new ServiceProvider { ServiceProviderName = repa.ServiceProviderName + ", " + repa.ServiceProviderFees, Id = repa.Id }).ToList();
+
+
+
+
 
                 ViewBag.ClaimStatus = InsuranceContext.ClaimStatuss.All().ToList();
                 var service = new VehicleService();
@@ -1139,7 +1154,7 @@ namespace InsuranceClaim.Controllers
                         ThirdPartyDamageValue = claimregistrationdetail.ThirdPartyDamageValue,
                         FirstName = InsuranceContext.Customers.All().Where(q => q.Id == CustomerId).FirstOrDefault().FirstName,
                         LastName = InsuranceContext.Customers.All().Where(q => q.Id == CustomerId).FirstOrDefault().LastName,
-                        Status =Convert.ToString(claimregistrationdetail.ClaimStatus),
+                        Status = Convert.ToString(claimregistrationdetail.ClaimStatus),
 
 
 
@@ -1185,6 +1200,14 @@ namespace InsuranceClaim.Controllers
                     VehicleDetailVM.Claimnumber = claimregistrationdetail.ClaimNumber;
                     VehicleDetailVM.Claimsatisfaction = claimregistrationdetail.Claimsatisfaction;
                     VehicleDetailVM.Id = claimregistrationdetail.Id;
+
+                    var query = "select ServiceProvider.Id, ServiceProvider.ServiceProviderName , ServiceProviderType.ProviderType, ServiceProviderType.Id as ProviderTypeId  from ServiceProvider join ServiceProviderType ";
+                    query += " on ServiceProvider.ServiceProviderType = ServiceProviderType.Id";
+
+
+                    VehicleDetailVM.ProviderList = InsuranceContext.Query(query).Select(c => new ServiceProviderModel { Id = c.Id, ServiceProviderName = c.ServiceProviderName, ServiceProviderType = c.ProviderType, ProviderTypeId = c.ProviderTypeId }).ToList();
+
+
                     return View(VehicleDetailVM);
                 }
                 return View();
@@ -1194,6 +1217,21 @@ namespace InsuranceClaim.Controllers
             {
                 throw ex;
             }
+        }
+
+
+        [HttpPost]
+        public JsonResult GetProviderFee(string ProviderId)
+        {
+            decimal fee = 0;
+            var providerDetils = InsuranceContext.ServiceProviders.Single(where: $"Id='{ProviderId}'");
+
+            if (providerDetils != null)
+            {
+                fee = providerDetils.ServiceProviderFees;
+            }
+
+            return Json(fee, JsonRequestBehavior.AllowGet);
         }
 
         public bool GetcheckdValue(string ChecklistDetail)
