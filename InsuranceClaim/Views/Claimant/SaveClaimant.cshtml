@@ -8,7 +8,6 @@
 <div class="body-content-section">
     <div class="form-section-top">
         <div class="container">
-
             @{
                 var menutab = Html.Partial("ClaimRegister");
             }
@@ -19,7 +18,6 @@
                         <div class="form-title">
                             <h4>Claims Notification</h4>
                         </div>
-
                         <div class="form-group-input">
                             @using (Html.BeginForm("SaveClaimant", "Claimant", FormMethod.Post, new { @class = "form-horizontal" }))
                             {
@@ -41,7 +39,7 @@
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.PolicyNumber, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.PolicyNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Policy Number", @Id = "PolicyNumber",@readonly= "readonly" })
+                                            @Html.TextBoxFor(x => x.PolicyNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Policy Number", @Id = "PolicyNumber", @readonly = "readonly" })
                                             @Html.ValidationMessageFor(x => x.PolicyNumber, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -52,14 +50,12 @@
                                             @*@Html.ValidationMessageFor(x => x.CustomerName, "", new { @class = "text-danger" })*@
                                         </div>
                                     </div>
-
                                 </div>
 
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.CoverStartDate, new { @class = "gender-label" })
-
                                             <div class="form-group-label">
                                                 <div class='input-group' id='datetime1'>
                                                     @Html.TextBoxFor(x => x.CoverStartDate, new { @class = "form-control", @placeholder = "Cover Start Date", @readonly = "readonly" })
@@ -117,10 +113,8 @@
                                             <div class="form-group">
                                                 @Html.LabelFor(x => x.DateOfLoss, new { @class = "gender-label" })
                                                 <div class="form-group-label">
-
                                                     <div class='input-group' id='datetime3'>
                                                         @Html.TextBoxFor(x => x.DateOfLoss, new { @class = "form-control", @placeholder = "Date Of Loss" })
-
                                                         <span class="input-group-addon">
                                                             <span class="glyphicon glyphicon-calendar "></span>
                                                         </span>
@@ -137,7 +131,6 @@
                                                 @Html.TextBoxFor(x => x.PlaceOfLoss, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Place" })
                                                 @Html.ValidationMessageFor(x => x.PlaceOfLoss, "", new { @class = "text-danger" })
                                             </div>
-
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
@@ -145,7 +138,6 @@
                                                 @Html.TextBoxFor(x => x.DescriptionOfLoss, new { @class = "form-control", @autocomplete = "off", @placeholder = "Description" })
                                                 @Html.ValidationMessageFor(x => x.DescriptionOfLoss, "", new { @class = "text-danger" })
                                             </div>
-
                                         </div>
                                     </div>
                                     <div class="row">
@@ -163,8 +155,6 @@
                                                     <label>@Html.RadioButtonFor(x => x.ThirdPartyInvolvement, true)Yes</label>
                                                     <label>@Html.RadioButtonFor(x => x.ThirdPartyInvolvement, false)No</label>
                                                     @Html.ValidationMessageFor(x => x.ThirdPartyInvolvement, "", new { @class = "text-danger" })
-                                                    @*<span id="spthirdPartyInvolvement"></span>*@
-
                                                 </div>
                                             </div>
                                         </div>
@@ -175,7 +165,6 @@
                                                 <div class="form-group">
                                                     @Html.LabelFor(x => x.ThirdPartyName, new { @class = "gender-label" })
                                                     @Html.TextBoxFor(x => x.ThirdPartyName, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Third Party Name" })
-                                                    @*@Html.ValidationMessageFor(x => x.ThirdPartyName, "", new { @class = "text-danger" })*@
                                                     <span id="spthirdPartyName"></span>
                                                 </div>
                                             </div>
@@ -183,7 +172,6 @@
                                                 <div class="form-group">
                                                     @Html.LabelFor(x => x.ThirdPartyContactDetails, new { @class = "gender-label" })
                                                     @Html.TextBoxFor(x => x.ThirdPartyContactDetails, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Contact Details" })
-                                                    @*@Html.ValidationMessageFor(x => x.ThirdPartyContactDetails, "", new { @class = "text-danger" })*@
                                                     <span id="spnthirdPartyContactDetails"></span>
                                                 </div>
                                             </div>
@@ -192,18 +180,14 @@
                                             <div class="col-sm-6 col-md-6 form-group-select">
                                                 <div class="form-group">
                                                     @Html.LabelFor(x => x.ThirdPartyMakeId, new { @class = "gender-label" })
-                                                    @*@Html.TextBoxFor(x => x.Make, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Vehicle Make" })*@
                                                     @Html.DropDownListFor(x => x.ThirdPartyMakeId, new SelectList(ViewBag.Makers, "MakeCode", "MakeDescription"), "Select Vehicle Make", new { @class = "form-control" })
-                                                    @*@Html.ValidationMessageFor(x => x.ThirdPartyMakeId, "", new { @class = "text-danger" })*@
                                                     <span id="spnthirdPartyMakeId"></span>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6 col-md-6 form-group-select">
                                                 <div class="form-group">
                                                     @Html.LabelFor(x => x.ThirdPartyModelId, new { @class = "gender-label" })
-                                                    @*@Html.TextBoxFor(x => x.Model, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Vehicle Model" })*@
                                                     @Html.DropDownListFor(x => x.ThirdPartyModelId, new SelectList(ViewBag.Model, "ModelCode", "ModelDescription"), "Select Vehicle Model", new { @class = "form-control" })
-                                                    @*@Html.ValidationMessageFor(x => x.ThirdPartyModelId, "", new { @class = "text-danger" })*@
                                                     <span id="spnthirdPartyModelId"></span>
                                                 </div>
                                             </div>
@@ -213,8 +197,14 @@
                                                 <div class="form-group">
                                                     @Html.LabelFor(x => x.ThirdPartyEstimatedValueOfLoss, new { @class = "gender-label" })
                                                     @Html.TextBoxFor(x => x.ThirdPartyEstimatedValueOfLoss, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Third Party Estimat Val Of Loss" })
-                                                    @*@Html.ValidationMessageFor(x => x.ThirdPartyEstimatedValueOfLoss, "", new { @class = "text-danger" })*@
                                                     <span id="spnthirdPartyEstimatedValueOfLoss"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(x => x.ThirdPartyDamageValue, new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(x => x.ThirdPartyDamageValue, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Third Party Damage Value" })
+                                                    <span id="spnthirdPartyDamageValue"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -244,10 +234,7 @@
         </div>
     </div>
 </div>
-
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-
 
 <script>
     $(document).ready(function () {
@@ -298,33 +285,33 @@
 
 
 
-            $("#DateOfLoss").focusout(function () {
-                debugger;
-                $("#DateOfLoss").val();
-                $("#CoverStartDate").val();
-                $("#CoverEndDate").val();
+        $("#DateOfLoss").focusout(function () {
+            debugger;
+            $("#DateOfLoss").val();
+            $("#CoverStartDate").val();
+            $("#CoverEndDate").val();
 
-                $.ajax({
-                    url: "/Claimant/GetPolicydate",
-                    async: false,
-                    data: { Datelose: $("#DateOfLoss").val(), StartDate: $("#CoverStartDate").val(), EndDate: $("#CoverEndDate").val() },
-                    success: function (data) {
-                        if (data == true) {
-                            toastr.success("You Claim is Approved")
-                            $("#dateValidte").val(data)
-                            return true;
-                        }
-                        else {
-                            toastr.warning("You Date of Lose outside Of Insurance Period  ")
-                            $("#dateValidte").val(data)
-                            return false;
-                        }
-
-
+            $.ajax({
+                url: "/Claimant/GetPolicydate",
+                async: false,
+                data: { Datelose: $("#DateOfLoss").val(), StartDate: $("#CoverStartDate").val(), EndDate: $("#CoverEndDate").val() },
+                success: function (data) {
+                    if (data == true) {
+                        toastr.success("You Claim is Approved")
+                        $("#dateValidte").val(data)
+                        return true;
+                    }
+                    else {
+                        toastr.warning("You Date of Lose outside Of Insurance Period  ")
+                        $("#dateValidte").val(data)
+                        return false;
                     }
 
-                });
+
+                }
+
             });
+        });
 
         //validation focusout
         $("#ThirdPartyName").focusout(function () {
@@ -397,6 +384,17 @@
                 $("#spnthirdPartyEstimatedValueOfLoss").hide();
             }
         })
+        $("#ThirdPartyDamageValue").focusout(function () {
+            debugger;
+            if ($("#ThirdPartyDamageValue").val() == "") {
+                $("#spnthirdPartyDamageValue").text("This is Required Field").css("color", "#a94442");
+
+            }
+            else if ($("#ThirdPartyDamageValue").val() != "") {
+                $("#spnthirdPartyDamageValue").hide();
+            }
+        })
+
     });
 
 
@@ -440,6 +438,10 @@
             }
             if ($("#ThirdPartyEstimatedValueOfLoss").val() == "") {
                 $("#spnthirdPartyEstimatedValueOfLoss").text("This is Required Field").css("color", "#a94442");
+                return false;
+            }
+            if ($("#ThirdPartyDamageValue").val()=="") {
+                $("#spnthirdPartyDamageValue").text("This is Required Field").css("color", "#a94442");
                 return false;
             }
         }
@@ -497,7 +499,7 @@
                 $("#CustomerName").val(data.CustomerName);
                 $("#PolicyNumber").val(data.PolicyNumber);
                 $("#RegistrationNo").val(data.RegistrationNo);
-               
+
                 if (data.CustomerName != null && data.PolicyNumber != null && data.RegistrationNo != null) {
                     $("#CoverStartDate").val(ToJavaScriptDate(data.CoverStartDate));
                     $("#CoverEndDate").val(ToJavaScriptDate(data.CoverEndDate));
@@ -506,7 +508,7 @@
 
                 }
                 else {
-                    ($("fieldset").attr("disabled") )    ;
+                    ($("fieldset").attr("disabled"));
                     toastr.warning("You Policy No/VRN No/Customer Name Is Not Exist. Please Try Again")
                     return false;
                 }

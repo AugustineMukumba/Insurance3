@@ -332,7 +332,7 @@
         $("#TownlyProviderType").change(function () {
             debugger;
 
-            if ($("#LawyersProviderType").val() != "") {
+            if ($("#TownlyProviderType").val() != "") {
                 var townlytextvalue =$("#TownlyProviderType option:selected").text();
                 var townlyvalue = townlytextvalue.split(", ");
                 $("#TownlyProviderFees").val(townlyvalue[1]);
@@ -434,7 +434,7 @@
         if (getTownlyval!=null && getTownlyval !="") {
             Townlyvalue =getTownlyval;
         }
-        var getMedicalval= $("#TownlyProviderFees").val()
+        var getMedicalval= $("#MedicalProviderFees").val()
         if (getMedicalval!=null && getMedicalval !="") {
             Medicalvalue =getMedicalval;
         }
@@ -505,5 +505,6 @@
             event.preventDefault();
         }
     });
+
   
 </script>

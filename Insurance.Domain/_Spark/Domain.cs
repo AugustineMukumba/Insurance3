@@ -773,6 +773,7 @@ namespace Insurance.Domain
         public DateTime? CoverStartDate { get; set; }
         public DateTime? CoverEndDate { get; set; }
         public string CustomerName { get; set; }
+        public decimal? ThirdPartyDamageValue { get; set; }
     }
 
 
@@ -820,7 +821,7 @@ namespace Insurance.Domain
         public string PlaceOfLoss { get; set; }
         public string DescriptionOfLoss { get; set; }
         public decimal? EstimatedValueOfLoss { get; set; }
-        public string ThirdPartyDamageValue { get; set; }
+        public decimal? ThirdPartyDamageValue { get; set; }
         public bool Claimsatisfaction { get; set; }
         public int ClaimStatus { get; set; }
         public DateTime? CreatedOn { get; set; }
@@ -829,7 +830,10 @@ namespace Insurance.Domain
         public int VehicleDetailId { get; set; }
         public string RegistrationNo { get; set; }
         public DateTime? ModifyOn { get; set; }
-        
+        public string ClaimantName { get; set; }
+        public string MakeId { get; set; }
+        public string ModelId { get; set; }
+
         //public DateTime? ModifyOn { get; set; }   
     }
 

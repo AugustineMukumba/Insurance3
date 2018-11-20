@@ -76,6 +76,8 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please Cover Start Date")]
         [Display(Name = "Cover End Date")]
         public DateTime CoverEndDate { get; set; }
+        [Display(Name = "Third Party Damage Value")]
+        public decimal? ThirdPartyDamageValue { get; set; }
 
 
     }

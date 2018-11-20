@@ -19,7 +19,7 @@ namespace InsuranceClaim.Models
         public string PlaceOfLoss { get; set; }
         public string DescriptionOfLoss { get; set; }
         public decimal? EstimatedValueOfLoss { get; set; }
-        public string ThirdPartyDamageValue { get; set; }
+        public decimal? ThirdPartyDamageValue { get; set; }
         public bool Claimsatisfaction { get; set; }
         public string ClaimStatus { get; set; }
         public DateTime? CreatedOn { get; set; }
@@ -37,6 +37,9 @@ namespace InsuranceClaim.Models
 
         public string ClaimValue { get; set; }
         public DateTime? ModifyOn { get; set; }
+        public string ClaimantName { get; set; }
+        public string MakeId { get; set; }
+        public string ModelId { get; set; }
     }
 
     public class ClaimRegistrationModelNew

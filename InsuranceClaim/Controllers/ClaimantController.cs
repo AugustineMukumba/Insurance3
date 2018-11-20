@@ -53,11 +53,6 @@ namespace InsuranceClaim.Controllers
                     {
                         dbModel.VehicleId = vehicalDetails.Id;
                     }
-
-                    var startdate = Detailofpolicy.StartDate;
-                    var enddate = Detailofpolicy.EndDate;
-                    //if (model.DateOfLoss >= startdate && model.DateOfLoss <= enddate)
-                    //{
                     dbModel.PolicyId = Detailofpolicy.Id;
                     dbModel.CreatedBy = customer.Id;
                     dbModel.CreatedOn = DateTime.Now;
@@ -65,8 +60,6 @@ namespace InsuranceClaim.Controllers
                     dbModel.IsRegistered = false;
                     InsuranceContext.ClaimNotifications.Insert(dbModel);
                     return RedirectToAction("ClaimantList");
-                    //}
-                    //TempData["errorMsg"] = "Date of Loss Not Exist in Policy Period";
                 }
             }
 
@@ -111,6 +104,7 @@ namespace InsuranceClaim.Controllers
                            CoverEndDate = Convert.ToDateTime(j.CoverEndDate),
                            ThirdPartyEstimatedValueOfLoss = j.ThirdPartyEstimatedValueOfLoss,
                            CustomerName = j.CustomerName,
+                           ThirdPartyDamageValue = j.ThirdPartyDamageValue,
                            Id = j.Id,
                            IsExists = rt == null ? false : true,
                        }
@@ -181,7 +175,10 @@ namespace InsuranceClaim.Controllers
 
             var VehicleDetail = InsuranceContext.Query(query).Select(x => new VehicleDetail()
             {
-                Id = x.Id
+                Id = x.Id,
+                MakeId = x.MakeId,
+                ModelId = x.ModelId
+                
             }).FirstOrDefault();
 
 
@@ -197,10 +194,13 @@ namespace InsuranceClaim.Controllers
             model.EstimatedValueOfLoss = ClaimDetail.EstimatedValueOfLoss;
             model.VehicleDetailId = VehicleDetail.Id;
             model.RegistrationNo = ClaimDetail.RegistrationNo;
-            //model.ThirdPartyDamageValue = ClaimDetail.ThirdPartyInvolvement;
+            model.ThirdPartyDamageValue = ClaimDetail.ThirdPartyDamageValue;
+            model.MakeId = VehicleDetail.MakeId;
+            model.ModelId = VehicleDetail.ModelId;
             model.Claimsatisfaction = true;
             model.ClaimStatus = "1";
             model.CreatedOn = DateTime.Now;
+            model.ClaimantName = ClaimDetail.ClaimantName;
             var dbModel = Mapper.Map<ClaimRegistrationModel, ClaimRegistration>(model);
             InsuranceContext.ClaimRegistrations.Insert(dbModel);
 
@@ -293,7 +293,7 @@ namespace InsuranceClaim.Controllers
                         PlaceOfLoss = ClaimDetail == null ? null : ClaimDetail.PlaceOfLoss,
                         DescriptionOfLoss = ClaimDetail == null ? null : ClaimDetail.DescriptionOfLoss,
                         EstimatedValueOfLoss = ClaimDetail.EstimatedValueOfLoss,
-                        //ThirdPartyDamageValue = ClaimDetail.ThirdPartyInvolvement,
+                        ThirdPartyDamageValue = ClaimDetail.ThirdPartyDamageValue,
                         DateOfNotifications = ClaimDetail.CreatedOn.ToShortDateString(),
                         RiskViewModel = VehicleData,
                         chklist = ChecklistModel,
@@ -302,7 +302,7 @@ namespace InsuranceClaim.Controllers
 
                     };
                     var claimregistrationdetail = InsuranceContext.ClaimRegistrations.Single(where: $"Id = '{dbmodel}'");
-
+                    
                     VehicleDetailVM.ClaimId = dbmodel;
                     VehicleDetailVM.Claimnumber = claimregistrationdetail.ClaimNumber;
                     VehicleDetailVM.Claimsatisfaction = claimregistrationdetail.Claimsatisfaction;
@@ -538,11 +538,6 @@ namespace InsuranceClaim.Controllers
                 {
                     updateRecord.EstimatedValueOfLoss = model.EstimatedValueOfLoss;
                 }
-
-                if (model.ThirdPartyDamageValue != "")
-                {
-                    updateRecord.ThirdPartyDamageValue = model.ThirdPartyDamageValue;
-                }
                 if (model.RejectionStatus != "")
                 {
                     updateRecord.RejectionStatus = model.RejectionStatus;
@@ -551,6 +546,7 @@ namespace InsuranceClaim.Controllers
                 {
                     updateRecord.ClaimStatus = Convert.ToInt32(model.Status);
                 }
+                updateRecord.ThirdPartyDamageValue = model.ThirdPartyDamageValue;
                 updateRecord.Claimsatisfaction = claimStatis;
                 InsuranceContext.ClaimRegistrations.Update(updateRecord);
                 return RedirectToAction("ClaimRegistrationList");
@@ -576,7 +572,12 @@ namespace InsuranceClaim.Controllers
                         from date in data.DefaultIfEmpty()
                         join Claimstatusdata in InsuranceContext.ClaimStatuss.All().ToList()
                         on _claimRegistration.ClaimStatus equals Claimstatusdata.Id
-
+                        join make in InsuranceContext.VehicleMakes.All() 
+                        on _claimRegistration.MakeId equals make.MakeCode into makes
+                        from _make in makes.DefaultIfEmpty()
+                        join model in InsuranceContext.VehicleModels.All() 
+                        on _claimRegistration.ModelId equals model.ModelCode into models
+                        from mode in models.DefaultIfEmpty()
 
                         select new ClaimRegistrationModel
                         {
@@ -597,7 +598,13 @@ namespace InsuranceClaim.Controllers
                             TotalProviderFees = date == null ? 0 : date.TotalProviderFees,
                             Id = _claimRegistration.Id,
                             VehicleDetailId = _claimRegistration.VehicleDetailId,
+                            ClaimantName = _claimRegistration.ClaimantName,
+                            RegistrationNo = _claimRegistration.RegistrationNo,
                             ClaimValue = GetClaimValue(_claimRegistration.ClaimNumber, Adjustments),
+                            MakeId = _make == null ? "" : _make.MakeDescription,
+                            ModelId = mode == null ? "" :  mode.ModelDescription
+                            //ThirdPartyMakeId = m == null ? "" : m.MakeDescription,
+                            //ThirdPartyModelId = mod == null ? "" : mod.ModelDescription,
                             //ModifyOn = date = date.ModifiedOn
 
 
@@ -1240,11 +1247,6 @@ namespace InsuranceClaim.Controllers
             {
                 updateRecord.EstimatedValueOfLoss = model.EstimatedValueOfLoss;
             }
-
-            if (model.ThirdPartyDamageValue != "")
-            {
-                updateRecord.ThirdPartyDamageValue = model.ThirdPartyDamageValue;
-            }
             if (model.RejectionStatus != "")
             {
                 updateRecord.RejectionStatus = model.RejectionStatus;
@@ -1253,6 +1255,7 @@ namespace InsuranceClaim.Controllers
             {
                 updateRecord.ClaimStatus = Convert.ToInt32(model.Status);
             }
+            updateRecord.ThirdPartyDamageValue = model.ThirdPartyDamageValue;
             updateRecord.Claimsatisfaction = claimStatis;
             updateRecord.ModifyOn = DateTime.Now;
             InsuranceContext.ClaimRegistrations.Update(updateRecord);

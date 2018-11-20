@@ -24,7 +24,7 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please Enter Estimated Value Of Loss")]
         public decimal? EstimatedValueOfLoss { get; set; }
         [Required(ErrorMessage = "Please Enter Third Party Damage Value")]
-        public string ThirdPartyDamageValue { get; set; }
+        public decimal? ThirdPartyDamageValue { get; set; }
         public string Status { get; set; }
         public long Claimnumber { get; set; }
         //[Required(ErrorMessage = "Please Enter Rejected Reason")]
@@ -55,7 +55,8 @@ namespace InsuranceClaim.Models
         public List<ChecklistModel> chklist { get; set; }
         public List<RegisterClaimViewModel> chklistDetail { get; set; }
         public string names { get; set; }
-        public List<RiskViewModel> RiskViewModel { get; set; }        
+        public List<RiskViewModel> RiskViewModel { get; set; }
+        public string ServiceProviderType { get; set; }
 
     }
 

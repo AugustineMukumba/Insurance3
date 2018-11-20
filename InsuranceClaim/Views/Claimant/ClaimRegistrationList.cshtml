@@ -41,6 +41,7 @@
 
                         <tr class="policyheading-tr">
                             <th>Policy/Claim Details</th>
+                            <th>Make And Model Detail</th>
                             <th>Payment Detail</th>
                             @*<th>Claim Number </th>*@
                             <th>Place of Lose </th>
@@ -63,11 +64,25 @@
                                     <tr>
                                         <td><b>Claim Number:</b><br />@item.ClaimNumber<br /></td>
                                     </tr>
+                                    <tr>
+                                        <td><b>Claimant Name:</b><br />@item.ClaimantName<br /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Registration No:</b><br />@item.RegistrationNo<br /></td>
+                                    </tr>
                                 </table>
                             </td>
-                            @*<td>@item.PolicyNumber</td>*@
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td><b>Make:</b><br />@item.MakeId<br /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Model:</b><br />@item.ModelId<br /></td>
+                                    </tr>
+                                </table>
+                            </td>
                             <td>@item.PaymentDetails</td>
-                            @*<td>@item.ClaimNumber</td>*@
                             <td>@item.PlaceOfLoss</td>
                             <td>
                                 <table>

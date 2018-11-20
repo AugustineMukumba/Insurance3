@@ -44,6 +44,7 @@ namespace InsuranceClaim.Controllers
                     model.LastName = custmo.LastName;
                     model.TotalSuminsure = Convert.ToDecimal(summery.TotalPremium);
                     model.PolicyholderName = custmo.FirstName + " " + custmo.LastName;
+                    model.PayeeName = data.ClaimantName;
                     return View(model);
 
                 }
