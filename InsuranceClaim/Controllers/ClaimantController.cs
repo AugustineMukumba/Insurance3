@@ -205,6 +205,7 @@ namespace InsuranceClaim.Controllers
             model.ClaimStatus = "1";
             model.CreatedOn = DateTime.Now;
             model.ClaimantName = ClaimDetail.ClaimantName;
+            model.ThirdPartyInvolvement = ClaimDetail.ThirdPartyInvolvement;
             var dbModel = Mapper.Map<ClaimRegistrationModel, ClaimRegistration>(model);
             InsuranceContext.ClaimRegistrations.Insert(dbModel);
 
@@ -305,6 +306,7 @@ namespace InsuranceClaim.Controllers
                         LastName = InsuranceContext.Customers.All().Where(q => q.Id == CustomerId).FirstOrDefault().LastName,
 
                     };
+                    VehicleDetailVM.ThirdPartyInvolvement = ClaimDetail.ThirdPartyInvolvement;
                     var claimregistrationdetail = InsuranceContext.ClaimRegistrations.Single(where: $"Id = '{dbmodel}'");
                     
                     VehicleDetailVM.ClaimId = dbmodel;
@@ -570,49 +572,79 @@ namespace InsuranceClaim.Controllers
 
             var Adjustments = InsuranceContext.ClaimAdjustments.All(where: $"IsActive = 'True'").ToList();
 
-            var list = (from _claimRegistration in InsuranceContext.ClaimRegistrations.All().ToList()
-                        join _clamdetail in InsuranceContext.ClaimDetailsProviders.All().ToList()
-                        on _claimRegistration.ClaimNumber equals _clamdetail.ClaimNumber into data
-                        from date in data.DefaultIfEmpty()
-                        join Claimstatusdata in InsuranceContext.ClaimStatuss.All().ToList()
-                        on _claimRegistration.ClaimStatus equals Claimstatusdata.Id
-                        join make in InsuranceContext.VehicleMakes.All() 
-                        on _claimRegistration.MakeId equals make.MakeCode into makes
-                        from _make in makes.DefaultIfEmpty()
-                        join model in InsuranceContext.VehicleModels.All() 
-                        on _claimRegistration.ModelId equals model.ModelCode into models
-                        from mode in models.DefaultIfEmpty()
+            //var list = (from _claimRegistration in InsuranceContext.ClaimRegistrations.All().ToList()
+            //            join _clamdetail in InsuranceContext.ClaimDetailsProviders.All().ToList()
+            //            on _claimRegistration.ClaimNumber equals _clamdetail.ClaimNumber into data
+            //            from date in data.DefaultIfEmpty()
+            //            join Claimstatusdata in InsuranceContext.ClaimStatuss.All().ToList()
+            //            on _claimRegistration.ClaimStatus equals Claimstatusdata.Id
+            //            join make in InsuranceContext.VehicleMakes.All() 
+            //            on _claimRegistration.MakeId equals make.MakeCode into makes
+            //            from _make in makes.DefaultIfEmpty()
+            //            join model in InsuranceContext.VehicleModels.All() 
+            //            on _claimRegistration.ModelId equals model.ModelCode into models
+            //            from mode in models.DefaultIfEmpty()
 
-                        select new ClaimRegistrationModel
-                        {
-                            PolicyNumber = _claimRegistration.PolicyNumber,
-                            PaymentDetails = _claimRegistration.PaymentDetails,
-                            ClaimNumber = _claimRegistration.ClaimNumber,
-                            PlaceOfLoss = _claimRegistration.PlaceOfLoss,
-                            DescriptionOfLoss = _claimRegistration.DescriptionOfLoss,
-                            EstimatedValueOfLoss = _claimRegistration.EstimatedValueOfLoss,
-                            ThirdPartyDamageValue = _claimRegistration.ThirdPartyDamageValue,
-                            AssessProviderName = GetProvider(date == null ? 0 : date.AssessorsProviderType, service),
-                            LawyeProviderName = GetProvider(date == null ? 0 : date.LawyersProviderType, service),
-                            ValueProviderName = GetProvider(date == null ? 0 : date.ValuersProviderType, service),
-                            RepairProviderName = GetProvider(date == null ? 0 : date.RepairersProviderType, service),
-                            TownlyName = GetProvider(date == null ? 0 : date.TownlyProviderType, service),
-                            MeadicalName = GetProvider(date == null ? 0 : date.MedicalProviderType, service),
-                            ClaimStatus = Convert.ToString(Claimstatusdata.Status),
-                            TotalProviderFees = date == null ? 0 : date.TotalProviderFees,
-                            Id = _claimRegistration.Id,
-                            VehicleDetailId = _claimRegistration.VehicleDetailId,
-                            ClaimantName = _claimRegistration.ClaimantName,
-                            RegistrationNo = _claimRegistration.RegistrationNo,
-                            ClaimValue = GetClaimValue(_claimRegistration.ClaimNumber, Adjustments),
-                            MakeId = _make == null ? "" : _make.MakeDescription,
-                            ModelId = mode == null ? "" :  mode.ModelDescription
-                            //ThirdPartyMakeId = m == null ? "" : m.MakeDescription,
-                            //ThirdPartyModelId = mod == null ? "" : mod.ModelDescription,
-                            //ModifyOn = date = date.ModifiedOn
+            //            select new ClaimRegistrationModel
+            //            {
+            //                PolicyNumber = _claimRegistration.PolicyNumber,
+            //                PaymentDetails = _claimRegistration.PaymentDetails,
+            //                ClaimNumber = _claimRegistration.ClaimNumber,
+            //                PlaceOfLoss = _claimRegistration.PlaceOfLoss,
+            //                DescriptionOfLoss = _claimRegistration.DescriptionOfLoss,
+            //                EstimatedValueOfLoss = _claimRegistration.EstimatedValueOfLoss,
+            //                ThirdPartyDamageValue = _claimRegistration.ThirdPartyDamageValue,
+
+            //                //AssessProviderName = GetProvider(date == null ? 0 : date.AssessorsProviderType, service),
+            //                //LawyeProviderName = GetProvider(date == null ? 0 : date.LawyersProviderType, service),
+            //                //ValueProviderName = GetProvider(date == null ? 0 : date.ValuersProviderType, service),
+            //                //RepairProviderName = GetProvider(date == null ? 0 : date.RepairersProviderType, service),
+            //                //TownlyName = GetProvider(date == null ? 0 : date.TownlyProviderType, service),
+            //                //MeadicalName = GetProvider(date == null ? 0 : date.MedicalProviderType, service),
 
 
-                        }).ToList();
+
+            //                ClaimStatus = Convert.ToString(Claimstatusdata.Status),
+            //                TotalProviderFees = date == null ? 0 : date.TotalProviderFees,
+            //                Id = _claimRegistration.Id,
+            //                VehicleDetailId = _claimRegistration.VehicleDetailId,
+            //                ClaimantName = _claimRegistration.ClaimantName,
+            //                RegistrationNo = _claimRegistration.RegistrationNo,
+            //                ClaimValue = GetClaimValue(_claimRegistration.ClaimNumber, Adjustments),
+            //                MakeId = _make == null ? "" : _make.MakeDescription,
+            //                ModelId = mode == null ? "" :  mode.ModelDescription
+            //                //ThirdPartyMakeId = m == null ? "" : m.MakeDescription,
+            //                //ThirdPartyModelId = mod == null ? "" : mod.ModelDescription,
+            //                //ModifyOn = date = date.ModifiedOn
+
+
+            //            }).ToList();
+
+
+            string query = "select ClaimRegistration.Id, PolicyNumber,PaymentDetails, ClaimNumber, PlaceOfLoss, DescriptionOfLoss, ";
+            query += " EstimatedValueOfLoss, ThirdPartyDamageValue, ClaimStatus, VehicleDetailId, ClaimantName, ";
+            query += "RegistrationNo, MakeDescription, ModelDescription from ClaimRegistration join ClaimStatus";
+            query += " on ClaimRegistration.ClaimStatus = ClaimStatus.Id ";
+            query += " left join VehicleMake on ClaimRegistration.MakeId = VehicleMake.MakeCode";
+            query += " left join VehicleModel on ClaimRegistration.ModelId = VehicleModel.MakeCode";
+
+            var list = InsuranceContext.Query(query).Select(c => new ClaimRegistrationModel {
+                Id = c.Id,
+                PolicyNumber = c.PolicyNumber,
+                PaymentDetails = c.PaymentDetails,
+                ClaimNumber = c.ClaimNumber,
+                PlaceOfLoss = c.PlaceOfLoss,
+                DescriptionOfLoss = c.DescriptionOfLoss,
+                EstimatedValueOfLoss = c.EstimatedValueOfLoss,
+                ThirdPartyDamageValue = c.ThirdPartyDamageValue,
+                ClaimStatus = c.ClaimStatus,
+                VehicleDetailId = c.VehicleDetailId,
+                ClaimantName = c.ClaimantName,
+                RegistrationNo = c.RegistrationNo,
+                MakeDescription = c.MakeDescription,
+                ModelDescription = c.ModelDescription,
+            });
+
 
             return View(list.OrderByDescending(x => x.Id));
         }
@@ -1197,6 +1229,7 @@ namespace InsuranceClaim.Controllers
 
 
                     }
+                    VehicleDetailVM.ThirdPartyInvolvement = claimregistrationdetail.ThirdPartyInvolvement;
                     VehicleDetailVM.Claimnumber = claimregistrationdetail.ClaimNumber;
                     VehicleDetailVM.Claimsatisfaction = claimregistrationdetail.Claimsatisfaction;
                     VehicleDetailVM.Id = claimregistrationdetail.Id;

@@ -833,6 +833,8 @@ namespace Insurance.Domain
         public string ClaimantName { get; set; }
         public string MakeId { get; set; }
         public string ModelId { get; set; }
+        public bool? ThirdPartyInvolvement { get; set; }
+
 
         //public DateTime? ModifyOn { get; set; }   
     }

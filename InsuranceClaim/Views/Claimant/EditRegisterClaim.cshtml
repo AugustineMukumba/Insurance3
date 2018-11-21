@@ -63,7 +63,7 @@
                         @Html.HiddenFor(m => m.FirstName)
                         @Html.HiddenFor(m => m.DateOfLoss)
                         @Html.HiddenFor(m => m.DateOfNotifications)
-                        @*@Html.HiddenFor(m => m.LastName)*@
+                        @Html.HiddenFor(m => m.ThirdPartyInvolvement)
 
 
 
@@ -112,9 +112,18 @@
                                                 @Html.ValidationMessageFor(x => x.EstimatedValueOfLoss, "", new { @class = "text-danger" })
                                             </div>
                                             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                                                <label>Third Party Damage Value</label>
-                                                @Html.TextBoxFor(x => x.ThirdPartyDamageValue, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Third Party Damage Value", @id = "txtThirdPartyDamageValue", @Value = Model.ThirdPartyDamageValue, required = "required" })
-                                                @Html.ValidationMessageFor(x => x.ThirdPartyDamageValue, "", new { @class = "text-danger" })
+                                                @if (Model.ThirdPartyInvolvement == true)
+                                                {
+                                                    <label>Third Party Damage Value</label>
+                                                    @Html.TextBoxFor(x => x.ThirdPartyDamageValue, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Third Party Damage Value", @id = "txtThirdPartyDamageValue", @Value = Model.ThirdPartyDamageValue, required = "required" })
+                                                    <span id="spnthirdPartyDamageValue"></span>
+                                                }
+                                                else if (Model.ThirdPartyInvolvement == false)
+                                                {
+                                                    <label>Third Party Damage Value</label>
+                                                    @Html.TextBoxFor(x => x.ThirdPartyDamageValue, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Third Party Damage Value", @id = "txtThirdPartyDamageValue", @readonly = "readonly" })
+                                                    @*<span id="spnthirdPartyDamageValue"></span>*@
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -207,7 +216,7 @@
 
 
 
-                                  
+
 
 
                                     @*<div class="riskdetail-box">
@@ -441,7 +450,7 @@
             debugger;
 
             if ($("#LawyersProviderType").val() != "") {
-                var townlytextvalue =$("#TownlyProviderType option:selected").text();
+                var townlytextvalue = $("#TownlyProviderType option:selected").text();
                 var townlyvalue = townlytextvalue.split(", ");
                 $("#TownlyProviderFees").val(townlyvalue[1]);
             }
@@ -463,6 +472,13 @@
         })
     });
 
+
+    $("#txtThirdPartyDamageValue").focusout(function () {
+        debugger;
+        if ($("#txtThirdPartyDamageValue").val() != "") {
+            $("#spnthirdPartyDamageValue").hide();
+        }
+    })
     function DisplayServiceProvider(providerTypeId) {
         if ($("#chkProviderType_" + providerTypeId).is(":checked")) {
             $("#ddlProvider_" + providerTypeId).show();
@@ -479,12 +495,12 @@
         $.ajax({
             type: "POST",
             url: "@Url.Action("GetProviderFee", "Claimant")",
-            data: { providerId: providerId, claimRegistratoinId: claimRegistratoinId, providerTypeId:providerTypeId},
+            data: { providerId: providerId, claimRegistratoinId: claimRegistratoinId, providerTypeId: providerTypeId },
             success: function (data) {
                 $("#ProviderFee_" + providerTypeId).val(data);
                 var detials = providerTypeId + "_" + providerId + "_" + data;
-            
-                
+
+
             }
         })
     }
@@ -568,15 +584,23 @@
         if (getTownlyval != null && getTownlyval != "") {
             Townlyvalue = getTownlyval;
         }
-        var getMedicalval= $("#TownlyProviderFees").val()
-        if (getMedicalval!=null && getMedicalval !="") {
-            Medicalvalue =getMedicalval;
+        var getMedicalval = $("#TownlyProviderFees").val()
+        if (getMedicalval != null && getMedicalval != "") {
+            Medicalvalue = getMedicalval;
         }
 
         total = parseFloat(asservalue) + parseFloat(Valueersvalue) + parseFloat(Repairvalue) + parseFloat(Lawervalue) + parseFloat(Townlyvalue) + parseFloat(Medicalvalue);
         $('#TotalProviderFees').val(total);
-        //alert($('#TotalProviderFees').val(total));
-        //return false;
+
+        var getvalue = $("#ThirdPartyInvolvement").val();
+        if (getvalue == true) {
+            debugger;
+            $("#spnthirdPartyDamageValue").text("This is Required Field").css("color", "#a94442");
+            return false;
+        }
+        else {
+            $("#spnthirdPartyDamageValue").hide();
+        }
 
         var getVal = $("#txtClaimStatus").val();
         var getddlvalue = $("#ddlClaimStatus").val();
@@ -654,5 +678,5 @@
         }
     }
 
-  
+
 </script>

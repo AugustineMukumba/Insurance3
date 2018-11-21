@@ -40,6 +40,11 @@ namespace InsuranceClaim.Models
         public string ClaimantName { get; set; }
         public string MakeId { get; set; }
         public string ModelId { get; set; }
+        public bool? ThirdPartyInvolvement { get; set; }
+
+        public string ModelDescription { get; set; }
+
+        public string MakeDescription { get; set; }
     }
 
     public class ClaimRegistrationModelNew

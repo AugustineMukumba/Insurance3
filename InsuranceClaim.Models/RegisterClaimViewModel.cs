@@ -23,7 +23,7 @@ namespace InsuranceClaim.Models
         public string DescriptionOfLoss { get; set; }
         [Required(ErrorMessage = "Please Enter Estimated Value Of Loss")]
         public decimal? EstimatedValueOfLoss { get; set; }
-        [Required(ErrorMessage = "Please Enter Third Party Damage Value")]
+        //[Required(ErrorMessage = "Please Enter Third Party Damage Value")]
         public decimal? ThirdPartyDamageValue { get; set; }
         public string Status { get; set; }
         public long Claimnumber { get; set; }
@@ -64,6 +64,7 @@ namespace InsuranceClaim.Models
         public List<ServiceProviderModel> ProviderList { get; set; }
 
         public string ServiceProviderType { get; set; }
+        public bool? ThirdPartyInvolvement { get; set; }
     }
 
 
