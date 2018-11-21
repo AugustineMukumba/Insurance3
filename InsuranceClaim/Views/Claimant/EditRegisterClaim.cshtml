@@ -154,7 +154,6 @@
                                     <div class="riskdetail-box">
                                         <div class="row">
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 claim-status">
-
                                                 <div class="multiselect">
                                                     <div class="selectBox" onclick="showCheckboxes()">
                                                         <select class="form-control">
@@ -171,9 +170,6 @@
                                                         }
                                                     </div>
                                                 </div>
-
-
-
                                             </div>
 
 
@@ -372,6 +368,8 @@
 <script>
     $(document).ready(function () {
         debugger;
+
+
         $("#ddlClaimStatus").change(function () {
             debugger;
             var getddlValue = $("#ddlClaimStatus").val();
@@ -477,14 +475,15 @@
     function BindProviderFee(providerTypeId) {
 
         var providerId = $("#Provider_" + providerTypeId).val();
+        var claimRegistratoinId = $("#Id").val();
         $.ajax({
             type: "POST",
             url: "@Url.Action("GetProviderFee", "Claimant")",
-            data: { providerId: providerId},
+            data: { providerId: providerId, claimRegistratoinId: claimRegistratoinId, providerTypeId:providerTypeId},
             success: function (data) {
-
                 $("#ProviderFee_" + providerTypeId).val(data);
-
+                var detials = providerTypeId + "_" + providerId + "_" + data;
+            
                 
             }
         })

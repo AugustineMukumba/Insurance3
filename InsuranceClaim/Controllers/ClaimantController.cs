@@ -1221,14 +1221,37 @@ namespace InsuranceClaim.Controllers
 
 
         [HttpPost]
-        public JsonResult GetProviderFee(string ProviderId)
+        public JsonResult GetProviderFee(string ProviderId, string claimRegistratoinId, string providerTypeId)
         {
             decimal fee = 0;
             var providerDetils = InsuranceContext.ServiceProviders.Single(where: $"Id='{ProviderId}'");
 
+          
             if (providerDetils != null)
             {
                 fee = providerDetils.ServiceProviderFees;
+            }
+
+            var ClaimRegistrationProviderDetial = InsuranceContext.ClaimRegistrationProviderDetials.Single(where: $"ClaimRegistrationId='{claimRegistratoinId}' and ServiceProviderTypeId= " + providerTypeId);
+
+            if(ClaimRegistrationProviderDetial==null)
+            {
+                ClaimRegistrationProviderDetial detials = new ClaimRegistrationProviderDetial();
+                detials.ClaimRegistrationId = Convert.ToInt32(claimRegistratoinId);
+                detials.ServiceProviderId = ProviderId==null?0 : Convert.ToInt32(ProviderId);
+                detials.ServiceProviderTypeId = Convert.ToInt32(providerTypeId);
+                detials.ServiceProviderFee = fee;
+                detials.CreatedOn = DateTime.Now;
+                InsuranceContext.ClaimRegistrationProviderDetials.Insert(detials);
+            }
+            else
+            {
+                ClaimRegistrationProviderDetial.ClaimRegistrationId = Convert.ToInt32(claimRegistratoinId);
+                ClaimRegistrationProviderDetial.ServiceProviderId = ProviderId == null ? 0 : Convert.ToInt32(ProviderId);
+                ClaimRegistrationProviderDetial.ServiceProviderTypeId = Convert.ToInt32(providerTypeId);
+                ClaimRegistrationProviderDetial.ServiceProviderFee = fee;
+                ClaimRegistrationProviderDetial.CreatedOn = DateTime.Now;
+                InsuranceContext.ClaimRegistrationProviderDetials.Update(ClaimRegistrationProviderDetial);
             }
 
             return Json(fee, JsonRequestBehavior.AllowGet);

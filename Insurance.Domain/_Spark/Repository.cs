@@ -89,6 +89,8 @@ namespace Insurance.Domain
 
         public static SourceDetails SourceDetails { get { return new SourceDetails(); } }
 
+        public static ClaimRegistrationProviderDetials ClaimRegistrationProviderDetials { get { return new ClaimRegistrationProviderDetials(); } }
+
         // general purpose operations
 
         public static void Execute(string sql, params object[] parms) { db.Execute(sql, parms); }

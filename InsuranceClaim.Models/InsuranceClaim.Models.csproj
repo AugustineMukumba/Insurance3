@@ -162,5 +162,11 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Insurance.Domain\Insurance.Domain.csproj">
+      <Project>{91022542-0A04-430F-AFE0-D0172C5C866E}</Project>
+      <Name>Insurance.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

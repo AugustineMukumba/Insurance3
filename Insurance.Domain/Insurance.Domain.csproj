@@ -125,6 +125,7 @@
     <Compile Include="Domain\ClaimDocument.cs" />
     <Compile Include="Domain\ClaimNotification.cs" />
     <Compile Include="Domain\ClaimRegistration.cs" />
+    <Compile Include="Domain\ClaimRegistrationProviderDetial.cs" />
     <Compile Include="Domain\ClaimSetting.cs" />
     <Compile Include="Domain\ClaimStatus.cs" />
     <Compile Include="Domain\CoverType.cs" />
@@ -179,6 +180,7 @@
     <Compile Include="Repository\ClaimDetailsProviders.cs" />
     <Compile Include="Repository\ClaimDocuments.cs" />
     <Compile Include="Repository\ClaimNotifications.cs" />
+    <Compile Include="Repository\ClaimRegistrationProviderDetials.cs" />
     <Compile Include="Repository\ClaimRegistrations.cs" />
     <Compile Include="Repository\ClaimSettings.cs" />
     <Compile Include="Repository\ClaimStatuss.cs" />
