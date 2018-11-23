@@ -29,6 +29,7 @@ namespace InsuranceClaim.Controllers
             return RedirectToAction("CommissionList");
             
         }
+        [Authorize(Roles = "Staff,Administrator")]
         public ActionResult CommissionList()
         {
             var db = InsuranceContext.AgentCommissions.All(where:"IsActive='True' Or IsActive is null").ToList();

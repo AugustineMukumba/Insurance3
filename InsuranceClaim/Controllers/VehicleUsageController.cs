@@ -26,6 +26,7 @@ namespace InsuranceClaim.Controllers
             InsuranceContext.VehicleUsages.Insert(dbModel);
             return RedirectToAction("VehicleUsageList");
         }
+        [Authorize(Roles = "Staff,Administrator")]
         public ActionResult VehicleUsageList()
         {
             var UserList = InsuranceContext.VehicleUsages.All(where: "IsActive='True' or IsActive is null").ToList();

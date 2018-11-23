@@ -32,18 +32,23 @@
                     <div class="row">
                         <div class="col-sm-4 col-md-4">
                             <div class="text-left">
-                                @Html.TextBox("PolicyNumber", null, new { @class = "form-control", @placeholder = "Policy Number" })
+                                @Html.TextBox("searchText", null, new { @class = "form-control", @placeholder = "Policy Number / Customer Name" })
                             </div>
                         </div>
-                        <div class="col-sm-4 col-md-4">
+                        @*<div class="col-sm-4 col-md-4">
                             <div class="text-left">
                                 @Html.TextBox("Customer Name", null, new { @class = "form-control", @placeholder = "Customer Name" })
 
                             </div>
-                        </div>
+                        </div>*@
                         <div class="col-sm-3 col-md-3">
                             <div class="text-left search-btn">
                                 <button type="submit" class="btn btn-success">Search</button>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-md-3">
+                            <div class="text-left search-btn">
+                                <button type="button" onclick="removeSearchBoxText();" class="btn btn-danger">Clear Search</button>
                             </div>
                         </div>
                     </div>
@@ -69,6 +74,7 @@
                         <th>Payment Method</th>
                         <th>Total Sum Insured</th>
                         <th>Total Premium</th>
+
 
 
                     </tr>
@@ -161,5 +167,12 @@
         var url = '@Url.Action("DeleteRoleManagement", "Account", new {Id=1021 })';
         var newurl = url.replace("1021", CoverListId);
         window.location.href = newurl;
+    }
+
+
+    function removeSearchBoxText()
+    {
+        window.location.href = "/Account/PolicyList";
+
     }
 </script>

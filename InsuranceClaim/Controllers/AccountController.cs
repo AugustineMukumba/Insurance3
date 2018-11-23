@@ -96,7 +96,7 @@ namespace InsuranceClaim.Controllers
                     {
                         return RedirectToAction("index", "CustomerRegistration");
                     }
-                    
+
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -510,7 +510,7 @@ namespace InsuranceClaim.Controllers
         }
         #endregion
 
-       
+
         public ActionResult RoleManagement(string id = "0")
         {
 
@@ -521,7 +521,7 @@ namespace InsuranceClaim.Controllers
                 var roles = UserManager.GetRoles(userid).FirstOrDefault();
                 //if (roles != "SuperAdmin")
                 //{
-                   // return RedirectToAction("Index", "CustomerRegistration");
+                // return RedirectToAction("Index", "CustomerRegistration");
                 //}
             }
             else
@@ -546,7 +546,7 @@ namespace InsuranceClaim.Controllers
             }
         }
 
-       
+
         [HttpPost]
         public ActionResult AddRole(RoleViewModel model)
         {
@@ -592,7 +592,7 @@ namespace InsuranceClaim.Controllers
             return RedirectToAction("RoleManagementList");
         }
 
-     
+        [Authorize(Roles = "Staff,Administrator")]
         public ActionResult RoleManagementList()
         {
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
@@ -621,7 +621,7 @@ namespace InsuranceClaim.Controllers
             return View(_roles);
         }
 
-       
+
         public ActionResult DeleteRoleManagement(RoleViewModel model)
         {
 
@@ -636,7 +636,7 @@ namespace InsuranceClaim.Controllers
             return RedirectToAction("RoleManagementList");
         }
 
-       
+
         public ActionResult UserManagement(int id = 0)
         {
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
@@ -782,7 +782,7 @@ namespace InsuranceClaim.Controllers
                         cstmr.IsWelcomeNoteSent = model.IsWelcomeNoteSent;
                         cstmr.UserID = user.Id;
                         cstmr.PhoneNumber = model.PhoneNumber;
-                        
+
                         InsuranceContext.Customers.Insert(cstmr);
 
                     }
@@ -845,7 +845,7 @@ namespace InsuranceClaim.Controllers
             return RedirectToAction("UserManagementList");
         }
 
-        
+        [Authorize(Roles = "Staff,Administrator")]
         public ActionResult UserManagementList()
         {
 
@@ -925,7 +925,7 @@ namespace InsuranceClaim.Controllers
 
             return RedirectToAction("UserManagementList");
         }
-
+        [Authorize(Roles = "Staff,Administrator")]
         public ActionResult PolicyList()
         {
             ListPolicy policylist = new ListPolicy();
@@ -947,7 +947,7 @@ namespace InsuranceClaim.Controllers
                 var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
                 var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
                 var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
-                
+
                 policylistviewmodel.PolicyNumber = policy.PolicyNumber;
 
                 foreach (var _item in SummaryVehicleDetails)
@@ -969,8 +969,8 @@ namespace InsuranceClaim.Controllers
                         obj.ReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans.ReinsuranceAmount);
                         obj.ReinsurerBrokerId = _reinsurenaceTrans.ReinsuranceBrokerId;
                     }
-                   
-                    
+
+
                     policylistviewmodel.Vehicles.Add(obj);
                 }
 
@@ -981,23 +981,118 @@ namespace InsuranceClaim.Controllers
             return View(policylist);
         }
 
-  
+
         // GET: Dashboard
+        [Authorize(Roles = "Staff,Administrator")]
         public ActionResult Dashboard()
         {
             return View();
         }
-        public ActionResult SearchPolicy()
+        public ActionResult SearchPolicy(string searchText)
         {
+            ListPolicy policylist = new ListPolicy();
+            policylist.listpolicy = new List<PolicyListViewModel>();
+            if (searchText != null && searchText != "")
+            {
+                
+                var custom = searchText.Split(' ');
+                var SummaryList = new List<SummaryDetail>();
+                var customers = new List<Customer>();
+                if (custom.Length == 2)
+                {
+                    var searchtext1 = Convert.ToString(custom[0]);
+                    var searchtext2 = Convert.ToString(custom[1]);
+
+                    customers = InsuranceContext.Customers.All(where: $"FirstName like '%{searchtext1}%' and LastName like '%{searchtext2}%' ").ToList();
+                }
+                if (custom.Length == 1)
+                {
+                    customers = InsuranceContext.Customers.All(where: $"FirstName like '%{searchText}%' or LastName like '%{searchText}%' ").ToList();
+                }
+                if (customers != null && customers.Count > 0)
+                {
+                    var commaSeperatedCustomerIds = "";
+                    foreach (var item in customers)
+                    {
+                        if (commaSeperatedCustomerIds == "")
+                        {
+                            commaSeperatedCustomerIds = item.Id.ToString();
+                        }
+                        else
+                        {
+                            commaSeperatedCustomerIds += "," + item.Id.ToString();
+                        }
+                    }
+
+                    SummaryList = InsuranceContext.SummaryDetails.All(where: $"CustomerId in ({commaSeperatedCustomerIds})").ToList();
+                }
+                else
+                {
+                    var policye = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber = '"+ searchText +"'");
+
+                    var policyId = policye.Id;
+                    var vehicle = InsuranceContext.VehicleDetails.Single(where: $"PolicyId = '"+ policyId + "'");
+
+                    var vehiclesummaryid = vehicle.Id;
+
+                    var SummaryVehicleDetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId =" + vehiclesummaryid);
+
+                    SummaryList = InsuranceContext.SummaryDetails.All(Convert.ToString(SummaryVehicleDetail.SummaryDetailId)).ToList();
+                }
 
 
+                foreach (var item in SummaryList)
+                {
+                    PolicyListViewModel policylistviewmodel = new PolicyListViewModel();
 
-            return View();
+                    policylistviewmodel.Vehicles = new List<VehicleReinsuranceViewModel>();
+                    policylistviewmodel.TotalPremium = Convert.ToDecimal(item.TotalPremium);
+                    policylistviewmodel.TotalSumInsured = Convert.ToDecimal(item.TotalSumInsured);
+                    policylistviewmodel.PaymentMethodId = Convert.ToInt32(item.PaymentMethodId);
+                    policylistviewmodel.CustomerId = Convert.ToInt32(item.CustomerId);
+                    policylistviewmodel.SummaryId = item.Id;
+
+                    var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={item.Id}").ToList();
+                    var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+                    var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
+                    var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+
+                    policylistviewmodel.PolicyNumber = policy.PolicyNumber;
+
+                    foreach (var _item in SummaryVehicleDetails)
+                    {
+                        VehicleReinsuranceViewModel obj = new VehicleReinsuranceViewModel();
+                        var _vehicle = InsuranceContext.VehicleDetails.Single(_item.VehicleDetailsId);
+                        var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.Single(where: $"SummaryDetailId={item.Id} and VehicleId={_item.VehicleDetailsId}");
+
+                        obj.CoverType = Convert.ToInt32(_vehicle.CoverTypeId);
+                        obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
+                        obj.MakeId = _vehicle.MakeId;
+                        obj.ModelId = _vehicle.ModelId;
+                        obj.Premium = Convert.ToDecimal(_vehicle.Premium);
+                        obj.RegisterationNumber = _vehicle.RegistrationNo;
+                        obj.SumInsured = Convert.ToDecimal(_vehicle.SumInsured);
+                        obj.VehicleId = _vehicle.Id;
+                        if (_reinsurenaceTrans != null)
+                        {
+                            obj.ReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans.ReinsuranceAmount);
+                            obj.ReinsurerBrokerId = _reinsurenaceTrans.ReinsuranceBrokerId;
+                        }
+
+
+                        policylistviewmodel.Vehicles.Add(obj);
+                    }
+
+                    policylist.listpolicy.Add(policylistviewmodel);
+                }
+            }
+
+            return View("PolicyList", policylist);
         }
 
         // Setting Methods
 
-       // GET: Setting
+        // GET: Setting
         public ActionResult Index()
         {
             InsuranceClaim.Models.SettingModel obj = new InsuranceClaim.Models.SettingModel();
@@ -1020,10 +1115,10 @@ namespace InsuranceClaim.Controllers
 
             return RedirectToAction("SettingList");
         }
-
+        [Authorize(Roles = "Staff,Administrator")]
         public ActionResult SettingList()
         {
-            
+
             var db = InsuranceContext.Settings.All().ToList();
             return View(db);
         }
@@ -1035,7 +1130,7 @@ namespace InsuranceClaim.Controllers
             return View(model);
         }
         [HttpPost]
-        public ActionResult EditSetting(SettingModel model,int Id)
+        public ActionResult EditSetting(SettingModel model, int Id)
         {
 
             if (ModelState.IsValid)
@@ -1056,6 +1151,7 @@ namespace InsuranceClaim.Controllers
 
             return RedirectToAction("SettingList");
         }
+        [Authorize(Roles = "Staff,Administrator")]
         public ActionResult ListReinsuranceBroker()
         {
 
@@ -1063,18 +1159,18 @@ namespace InsuranceClaim.Controllers
             var list = InsuranceContext.ReinsuranceBrokers.All().ToList();
             return View(list);
         }
-        public ActionResult AddReinsuranceBroker( int? id = 0 )
+        public ActionResult AddReinsuranceBroker(int? id = 0)
         {
             InsuranceClaim.Models.ReinsuranceBrokerModel obj = new ReinsuranceBrokerModel();
             if (id > 0)
             {
 
                 var model = InsuranceContext.ReinsuranceBrokers.Single(id);
-                obj = Mapper.Map< ReinsuranceBroker, ReinsuranceBrokerModel>(model);
-                
+                obj = Mapper.Map<ReinsuranceBroker, ReinsuranceBrokerModel>(model);
+
 
             }
-          
+
             return View(obj);
 
 
@@ -1084,22 +1180,22 @@ namespace InsuranceClaim.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (model.Id ==0 ||model.Id==null)
-            {
+                if (model.Id == 0 || model.Id == null)
+                {
 
-                var dbModel = Mapper.Map<ReinsuranceBrokerModel, ReinsuranceBroker>(model);
-                InsuranceContext.ReinsuranceBrokers.Insert(dbModel);
-                return RedirectToAction("ListReinsuranceBroker");
-            }
-            else
-            {
-               
+                    var dbModel = Mapper.Map<ReinsuranceBrokerModel, ReinsuranceBroker>(model);
+                    InsuranceContext.ReinsuranceBrokers.Insert(dbModel);
+                    return RedirectToAction("ListReinsuranceBroker");
+                }
+                else
+                {
+
 
 
                     var data = Mapper.Map<ReinsuranceBrokerModel, ReinsuranceBroker>(model);
                     InsuranceContext.ReinsuranceBrokers.Update(data);
                 }
-              
+
             }
             return RedirectToAction("ListReinsuranceBroker");
 
