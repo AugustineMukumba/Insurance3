@@ -1181,6 +1181,8 @@ namespace InsuranceClaim.Controllers
                     obj.RegisterationNumber = _vehicle.RegistrationNo;
                     obj.SumInsured = Convert.ToDecimal(_vehicle.SumInsured);
                     obj.VehicleId = _vehicle.Id;
+                    obj.startdate = Convert.ToDateTime(_vehicle.CoverStartDate);
+                    obj.enddate = Convert.ToDateTime(_vehicle.CoverEndDate);
                     if (_reinsurenaceTrans != null)
                     {
                         obj.ReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans.ReinsuranceAmount);

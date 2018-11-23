@@ -360,8 +360,14 @@ namespace Insurance.Domain
         public int Id { get; set; }
         public string TreatyCode { get; set; }
         public string TreatyName { get; set; }
-        public Single? TreatyCapacity { get; set; }
-        public string OwnRetention { get; set; }
+        public decimal? MinTreatyCapacity { get; set; }
+        public decimal? MaxTreatyCapacity { get; set; }
+        public string Type { get; set; }
+        public string ReinsuranceBrokerCode { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public int?  CreatedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
 
     }
     public partial class ReinsuranceTransaction : Entity<ReinsuranceTransaction>

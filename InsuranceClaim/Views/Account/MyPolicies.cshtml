@@ -32,7 +32,7 @@
             <table class="table table-striped">
 
                 <tbody>
-                    
+
                     @foreach (var item in Model.listpolicy.ToList())
                     {
 
@@ -43,7 +43,7 @@
                             <th>Payment Method</th>
                             <th>Total Sum Insured</th>
                             <th>Total Premium</th>
-                            <th>Action(s)</th>
+
 
                         </tr>
                         <tr class="policynumber-tr">
@@ -53,7 +53,6 @@
                             <td>@MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId)</td>
                             <td>$@item.TotalSumInsured</td>
                             <td>$@item.TotalPremium</td>
-                            <td>@Html.ActionLink("btnRenewPolicy", "RenewPolicy", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</td>
 
                         </tr>
                         <tr>
@@ -68,7 +67,8 @@
                                         <th>Reinsurance Broker</th>
                                         <th>Sum Insured</th>
                                         <th>Premium</th>
-                                        <th>Vehicle registeration Number</th>
+                                        <th>Policy End Date</th>
+                                        <th>Actions(s)</th>
                                     </tr>
                                     @foreach (var _item in item.Vehicles)
                                     {
@@ -81,7 +81,12 @@
                                             <td>@MiscellaneousService.GetReinsuranceBrokerNamebybrokerid(_item.ReinsurerBrokerId)</td>
                                             <td>$@_item.SumInsured</td>
                                             <td>$@_item.Premium</td>
-                                            <td>@_item.RegisterationNumber</td>
+                                            <td>@_item.enddate.ToString("dd/MM/yyy")</td>
+                                            @if (_item.enddate < DateTime.Now)
+                                            {
+                                                <td>@Html.ActionLink("Renew Policy", "RenewPolicy", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</td>
+                                            }
+
                                         </tr>
                                     }
                                 </table>

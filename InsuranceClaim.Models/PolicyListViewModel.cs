@@ -36,6 +36,8 @@ namespace InsuranceClaim.Models
         public decimal Premium { get; set; }
         public string RegisterationNumber { get; set; }
         public int CoverType { get; set; }
+        public DateTime startdate { get; set; }
+        public DateTime enddate { get; set; }
 
 
     }

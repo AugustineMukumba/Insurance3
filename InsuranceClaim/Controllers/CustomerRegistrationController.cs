@@ -717,26 +717,39 @@ namespace InsuranceClaim.Controllers
                         vehicles[Convert.ToInt32(_item.NoOfCarsCovered) - 1] = _item;
                         Session["VehicleDetails"] = vehicles;
 
-                        if (item.SumInsured > 100000)
+                        ///Reinsurance                       
+
+                        var ReinsuranceCases = InsuranceContext.Reinsurances.All(where: $"Type='Reinsurance'").ToList();
+                        var ownRetention = ReinsuranceCases.Where(x => x.TreatyCode == "OR001").Select(x => x.MaxTreatyCapacity).SingleOrDefault();
+                        var ReinsuranceCase = new Reinsurance();
+
+                        foreach (var Reinsurance in ReinsuranceCases)
                         {
-                            var ReInsureanceBroker = InsuranceContext.ReinsuranceBrokers.All();
-                            var defaultReInsureanceBroker = ReInsureanceBroker.Where(x => x.ReinsuranceBrokerCode == ConfigurationManager.AppSettings["DefaultReinsuranceBrokerCode"].ToString()).FirstOrDefault();
+                            if (Reinsurance.MinTreatyCapacity <= item.SumInsured && Reinsurance.MaxTreatyCapacity >= item.SumInsured)
+                            {
+                                ReinsuranceCase = Reinsurance;
+                                break;
+                            }
+                        }
+
+                        if (ReinsuranceCase != null)
+                        {
+                            var ReinsuranceBroker = InsuranceContext.ReinsuranceBrokers.Single(where: $"ReinsuranceBrokerCode='{ReinsuranceCase.ReinsuranceBrokerCode}'");                                                        
 
                             var reinsurance = new ReinsuranceTransaction();
-                            reinsurance.ReinsuranceAmount = _item.SumInsured - 100000;
+                            reinsurance.ReinsuranceAmount = _item.SumInsured - ownRetention;
                             reinsurance.ReinsurancePremium = ((reinsurance.ReinsuranceAmount / item.SumInsured) * item.Premium);
-                            reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(defaultReInsureanceBroker.Commission);
-                            reinsurance.ReinsuranceCommission = ((reinsurance.ReinsurancePremium * reinsurance.ReinsuranceCommissionPercentage) / 100);//Convert.ToDecimal(defaultReInsureanceBroker.Commission);
+                            reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(ReinsuranceBroker.Commission);
+                            reinsurance.ReinsuranceCommission = ((reinsurance.ReinsurancePremium * reinsurance.ReinsuranceCommissionPercentage) / 100);
                             reinsurance.VehicleId = item.Id;
-                            reinsurance.ReinsuranceBrokerId = defaultReInsureanceBroker.Id;
+                            reinsurance.ReinsuranceBrokerId = ReinsuranceBroker.Id;
+                            reinsurance.TreatyName = ReinsuranceCase.TreatyName;
+                            reinsurance.TreatyCode = ReinsuranceCase.TreatyCode;
 
-                            InsuranceContext.ReinsuranceTransactions.Insert(reinsurance);
-                            //reinsurance.Id = InsuranceContext.ReinsuranceTransactions.Max()
+                            InsuranceContext.ReinsuranceTransactions.Insert(reinsurance);                            
 
                             listReinsuranceTransaction.Add(reinsurance);
                         }
-                        
-
 
                     }
                     else
@@ -775,35 +788,49 @@ namespace InsuranceClaim.Controllers
                         Vehicledata.MedicalExpenses = item.MedicalExpenses;
                         Vehicledata.NumberofPersons = item.NumberofPersons;
                         Vehicledata.IsLicenseDiskNeeded = item.IsLicenseDiskNeeded;
-                        
+
 
 
                         InsuranceContext.VehicleDetails.Update(Vehicledata);
                         var _summary = (SummaryDetailModel)Session["SummaryDetailed"];
-                        if (item.SumInsured > 100000)
+
+
+                        var ReinsuranceCases = InsuranceContext.Reinsurances.All(where: $"Type='Reinsurance'").ToList();
+                        var ownRetention = ReinsuranceCases.Where(x => x.TreatyCode == "OR001").Select(x => x.MaxTreatyCapacity).SingleOrDefault();
+                        var ReinsuranceCase = new Reinsurance();
+
+                        foreach (var Reinsurance in ReinsuranceCases)
                         {
-                            var ReInsureanceBroker = InsuranceContext.ReinsuranceBrokers.All();
-                            var defaultReInsureanceBroker = ReInsureanceBroker.Where(x => x.ReinsuranceBrokerCode == ConfigurationManager.AppSettings["DefaultReinsuranceBrokerCode"].ToString()).FirstOrDefault();
-                           
+                            if (Reinsurance.MinTreatyCapacity <= item.SumInsured && Reinsurance.MaxTreatyCapacity >= item.SumInsured)
+                            {
+                                ReinsuranceCase = Reinsurance;
+                                break;
+                            }
+                        }
+
+                        if (ReinsuranceCase != null)
+                        {
+                            var ReinsuranceBroker = InsuranceContext.ReinsuranceBrokers.Single(where: $"ReinsuranceBrokerCode='{ReinsuranceCase.ReinsuranceBrokerCode}'");
+
                             var summaryid = _summary.Id;
                             var vehicleid = item.Id;
-                            var ReinsuranceTransactions = InsuranceContext.ReinsuranceTransactions.All(where: $"col={_summary.Id} and col2={item.Id}");
-                            var _reinsurance = new ReinsuranceTransaction();
-                            _reinsurance.ReinsuranceAmount = _item.SumInsured - 100000;
-                            _reinsurance.ReinsurancePremium = ((_reinsurance.ReinsuranceAmount / item.SumInsured) * item.Premium);
-                            _reinsurance.ReinsuranceCommissionPercentage = Convert.ToDecimal(defaultReInsureanceBroker.Commission);
-                            _reinsurance.ReinsuranceCommission = ((_reinsurance.ReinsurancePremium * _reinsurance.ReinsuranceCommissionPercentage) / 100);//Convert.ToDecimal(defaultReInsureanceBroker.Commission);
-                            _reinsurance.ReinsuranceBrokerId = defaultReInsureanceBroker.Id;
-
-
-                            InsuranceContext.ReinsuranceTransactions.Update(_reinsurance);
+                            var ReinsuranceTransactions = InsuranceContext.ReinsuranceTransactions.Single(where: $"SummaryDetailId={_summary.Id} and VehicleId={item.Id}");
+                            //var _reinsurance = new ReinsuranceTransaction();
+                            ReinsuranceTransactions.ReinsuranceAmount = _item.SumInsured - ownRetention;
+                            ReinsuranceTransactions.ReinsurancePremium = ((ReinsuranceTransactions.ReinsuranceAmount / item.SumInsured) * item.Premium);
+                            ReinsuranceTransactions.ReinsuranceCommissionPercentage = Convert.ToDecimal(ReinsuranceBroker.Commission);
+                            ReinsuranceTransactions.ReinsuranceCommission = ((ReinsuranceTransactions.ReinsurancePremium * ReinsuranceTransactions.ReinsuranceCommissionPercentage) / 100);//Convert.ToDecimal(defaultReInsureanceBroker.Commission);
+                            ReinsuranceTransactions.ReinsuranceBrokerId = ReinsuranceBroker.Id;
+                            
+                            InsuranceContext.ReinsuranceTransactions.Update(ReinsuranceTransactions);
                         }
                         else
                         {
-                            var ReinsuranceTransactions = InsuranceContext.ReinsuranceTransactions.Single(where: $"col={_summary.Id} and col2={item.Id}");
-
-                            InsuranceContext.ReinsuranceTransactions.Delete(ReinsuranceTransactions);
-
+                            var ReinsuranceTransactions = InsuranceContext.ReinsuranceTransactions.Single(where: $"SummaryDetailId={_summary.Id} and VehicleId={item.Id}");
+                            if (ReinsuranceTransactions != null)
+                            {
+                                InsuranceContext.ReinsuranceTransactions.Delete(ReinsuranceTransactions);
+                            }
                         }
 
 
@@ -857,7 +884,7 @@ namespace InsuranceClaim.Controllers
             {
                 var SummaryDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={summary.Id}").ToList();
 
-                if (SummaryDetails != null && SummaryDetails.Count> 0)
+                if (SummaryDetails != null && SummaryDetails.Count > 0)
                 {
                     foreach (var item in SummaryDetails)
                     {
@@ -889,7 +916,7 @@ namespace InsuranceClaim.Controllers
         }
 
         [HttpPost]
-        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses , decimal? RadioLicenseCost,int? AgentCommissionId)
+        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, int? AgentCommissionId)
         {
             var policytermid = (int)Session["policytermid"];
             JsonResult json = new JsonResult();
