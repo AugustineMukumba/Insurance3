@@ -12,7 +12,7 @@ namespace InsuranceClaim.Models
         public int Id { get; set; }
         [Display(Name = "Amount To Pay")]
         [Required(ErrorMessage = "Please Enter Amount To Pay.")]
-        public int? AmountToPay { get; set; }
+        public decimal AmountToPay { get; set; }
         [Display(Name = "Estimated Loss Amount")]
         [Required(ErrorMessage = "Please Enter Estimated Loss Amount.")]
         public decimal? EstimatedLoss { get; set; }
@@ -76,6 +76,10 @@ namespace InsuranceClaim.Models
         [Display(Name = "Sound System")]
         [Required(ErrorMessage = "This is required field")]
         public bool? SoundSystem { get; set; }
+
+        [Display(Name = "Final Amount Paid")]
+        [Required(ErrorMessage = "This is required field")]
+        public decimal FinalAmountToPaid { get; set; }
 
     }
 }

@@ -182,7 +182,7 @@ namespace InsuranceClaim.Controllers
                 Id = x.Id,
                 MakeId = x.MakeId,
                 ModelId = x.ModelId
-                
+
             }).FirstOrDefault();
 
 
@@ -308,7 +308,7 @@ namespace InsuranceClaim.Controllers
                     };
                     VehicleDetailVM.ThirdPartyInvolvement = ClaimDetail.ThirdPartyInvolvement;
                     var claimregistrationdetail = InsuranceContext.ClaimRegistrations.Single(where: $"Id = '{dbmodel}'");
-                    
+
                     VehicleDetailVM.ClaimId = dbmodel;
                     VehicleDetailVM.Claimnumber = claimregistrationdetail.ClaimNumber;
                     VehicleDetailVM.Claimsatisfaction = claimregistrationdetail.Claimsatisfaction;
@@ -620,33 +620,67 @@ namespace InsuranceClaim.Controllers
 
             //            }).ToList();
 
+            var list = new List<ClaimRegistrationModel>();
+            try
+            {
 
-            string query = "select ClaimRegistration.Id, PolicyNumber,PaymentDetails, ClaimNumber, PlaceOfLoss, DescriptionOfLoss, ";
-            query += " EstimatedValueOfLoss, ThirdPartyDamageValue, ClaimStatus, VehicleDetailId, ClaimantName, ";
-            query += "RegistrationNo, MakeDescription, ModelDescription from ClaimRegistration join ClaimStatus";
-            query += " on ClaimRegistration.ClaimStatus = ClaimStatus.Id ";
-            query += " left join VehicleMake on ClaimRegistration.MakeId = VehicleMake.MakeCode";
-            query += " left join VehicleModel on ClaimRegistration.ModelId = VehicleModel.MakeCode";
+                string query = "select  ClaimRegistration.Id, PolicyNumber,PaymentDetails, ClaimNumber, PlaceOfLoss, DescriptionOfLoss, ";
+                query += " EstimatedValueOfLoss, ThirdPartyDamageValue, ClaimStatus, VehicleDetailId, ClaimantName, ";
+                query += "RegistrationNo, MakeDescription, ModelDescription, TotalProviderFees from ClaimRegistration join ClaimStatus";
+                query += " on ClaimRegistration.ClaimStatus = ClaimStatus.Id ";
+                query += " left join VehicleMake on ClaimRegistration.MakeId = VehicleMake.MakeCode";
+                query += " left join VehicleModel on ClaimRegistration.ModelId = VehicleModel.ModelCode";
 
-            var list = InsuranceContext.Query(query).Select(c => new ClaimRegistrationModel {
-                Id = c.Id,
-                PolicyNumber = c.PolicyNumber,
-                PaymentDetails = c.PaymentDetails,
-                ClaimNumber = c.ClaimNumber,
-                PlaceOfLoss = c.PlaceOfLoss,
-                DescriptionOfLoss = c.DescriptionOfLoss,
-                EstimatedValueOfLoss = c.EstimatedValueOfLoss,
-                ThirdPartyDamageValue = c.ThirdPartyDamageValue,
-                ClaimStatus = c.ClaimStatus,
-                VehicleDetailId = c.VehicleDetailId,
-                ClaimantName = c.ClaimantName,
-                RegistrationNo = c.RegistrationNo,
-                MakeDescription = c.MakeDescription,
-                ModelDescription = c.ModelDescription,
-            });
+
+
+                list = InsuranceContext.Query(query).Select(c => new ClaimRegistrationModel
+                {
+                    Id = c.Id,
+                    PolicyNumber = c.PolicyNumber,
+                    PaymentDetails = c.PaymentDetails,
+                    ClaimNumber = c.ClaimNumber,
+                    PlaceOfLoss = c.PlaceOfLoss,
+                    DescriptionOfLoss = c.DescriptionOfLoss,
+                    EstimatedValueOfLoss = c.EstimatedValueOfLoss,
+                    ThirdPartyDamageValue = c.ThirdPartyDamageValue,
+                    ClaimStatus = Convert.ToString(c.ClaimStatus),
+                    VehicleDetailId = c.VehicleDetailId,
+                    ClaimantName = c.ClaimantName,
+                    RegistrationNo = c.RegistrationNo,
+                    MakeDescription = c.MakeDescription,
+                    ModelDescription = c.ModelDescription,
+                    ServiceProviderList = GetServiceProvider(c.Id),
+                    TotalProviderFees = c.TotalProviderFees
+                }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+
+            }
 
 
             return View(list.OrderByDescending(x => x.Id));
+        }
+
+        public List<ServiceProviderModel> GetServiceProvider(int claimRegistrationId)
+        {
+
+            var query = "select ClaimRegistrationId, ProviderType,ServiceProviderName, ServiceProviderFee  from ClaimRegistrationProviderDetial ";
+            query += " join ServiceProviderType on ClaimRegistrationProviderDetial.ServiceProviderTypeId = ServiceProviderType.Id ";
+            query += " join ServiceProvider on ClaimRegistrationProviderDetial.ServiceProviderId = ServiceProvider.Id where ClaimRegistrationId =" + claimRegistrationId + "and IsSaved=1";
+
+            List<ServiceProviderModel> list = InsuranceContext.Query(query).Select(c => new ServiceProviderModel
+            {
+                ServiceProviderType = c.ProviderType,
+                ServiceProviderName = c.ServiceProviderName,
+                ServiceProviderFees = c.ServiceProviderFee,
+                ClaimRegistrationId = c.ClaimRegistrationId
+            }).ToList();
+
+
+
+            return list;
         }
 
 
@@ -1020,8 +1054,20 @@ namespace InsuranceClaim.Controllers
 
 
 
-        public ActionResult EditRegisterClaim(string PolicyNumber, int ClaimRegisterid, int VehicleDetailId, int ClaimNumer)
+        public ActionResult EditRegisterClaim(int id)
         {
+
+            //string PolicyNumber;
+            //int ClaimRegisterid;
+            //int VehicleDetailId;
+            //int ClaimNumer;
+
+        
+            var customerRegistration = InsuranceContext.ClaimRegistrations.Single(where: $"Id = '{id}'");
+            
+
+
+
             try
             {
 
@@ -1033,21 +1079,21 @@ namespace InsuranceClaim.Controllers
 
                 var Providertype = InsuranceContext.ServiceProviders.All(where: $"IsDeleted = 'True' or IsDeleted is null ").ToList();
 
-                ViewBag.AssessorsType = (from res in Providertype.Where(w => w.ServiceProviderType == 1)
-                                         select new ServiceProvider { ServiceProviderName = res.ServiceProviderName + ", " + res.ServiceProviderFees, Id = res.Id }).ToList();
+                //ViewBag.AssessorsType = (from res in Providertype.Where(w => w.ServiceProviderType == 1)
+                //                         select new ServiceProvider { ServiceProviderName = res.ServiceProviderName + ", " + res.ServiceProviderFees, Id = res.Id }).ToList();
 
-                ViewBag.ValuersType = (from prov in Providertype.Where(w => w.ServiceProviderType == 2)
-                                       select new ServiceProvider { ServiceProviderName = prov.ServiceProviderName + ", " + prov.ServiceProviderFees, Id = prov.Id }).ToList();
+                //ViewBag.ValuersType = (from prov in Providertype.Where(w => w.ServiceProviderType == 2)
+                //                       select new ServiceProvider { ServiceProviderName = prov.ServiceProviderName + ", " + prov.ServiceProviderFees, Id = prov.Id }).ToList();
 
-                ViewBag.LawyersType = (from lawe in Providertype.Where(w => w.ServiceProviderType == 3)
-                                       select new ServiceProvider { ServiceProviderName = lawe.ServiceProviderName + ", " + lawe.ServiceProviderFees, Id = lawe.Id }).ToList();
+                //ViewBag.LawyersType = (from lawe in Providertype.Where(w => w.ServiceProviderType == 3)
+                //                       select new ServiceProvider { ServiceProviderName = lawe.ServiceProviderName + ", " + lawe.ServiceProviderFees, Id = lawe.Id }).ToList();
 
-                ViewBag.RepairersType = (from repa in Providertype.Where(w => w.ServiceProviderType == 4)
-                                         select new ServiceProvider { ServiceProviderName = repa.ServiceProviderName + ", " + repa.ServiceProviderFees, Id = repa.Id }).ToList();
-                ViewBag.TownlyType = (from repa in Providertype.Where(w => w.ServiceProviderType == 5)
-                                      select new ServiceProvider { ServiceProviderName = repa.ServiceProviderName + ", " + repa.ServiceProviderFees, Id = repa.Id }).ToList();
-                ViewBag.MedicalType = (from repa in Providertype.Where(w => w.ServiceProviderType == 6)
-                                       select new ServiceProvider { ServiceProviderName = repa.ServiceProviderName + ", " + repa.ServiceProviderFees, Id = repa.Id }).ToList();
+                //ViewBag.RepairersType = (from repa in Providertype.Where(w => w.ServiceProviderType == 4)
+                //                         select new ServiceProvider { ServiceProviderName = repa.ServiceProviderName + ", " + repa.ServiceProviderFees, Id = repa.Id }).ToList();
+                //ViewBag.TownlyType = (from repa in Providertype.Where(w => w.ServiceProviderType == 5)
+                //                      select new ServiceProvider { ServiceProviderName = repa.ServiceProviderName + ", " + repa.ServiceProviderFees, Id = repa.Id }).ToList();
+                //ViewBag.MedicalType = (from repa in Providertype.Where(w => w.ServiceProviderType == 6)
+                //                       select new ServiceProvider { ServiceProviderName = repa.ServiceProviderName + ", " + repa.ServiceProviderFees, Id = repa.Id }).ToList();
 
 
 
@@ -1055,22 +1101,22 @@ namespace InsuranceClaim.Controllers
 
                 ViewBag.ClaimStatus = InsuranceContext.ClaimStatuss.All().ToList();
                 var service = new VehicleService();
-                if (PolicyNumber != "")
+                if (customerRegistration.PolicyNumber != "")
                 {
-                    var PolicyDetail = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber = '{PolicyNumber}'");
+                    var PolicyDetail = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber = '{customerRegistration.PolicyNumber}'");
 
-                    var ClaimDetail = InsuranceContext.ClaimNotifications.Single(where: $"VehicleId = '{VehicleDetailId}' and PolicyId=" + PolicyDetail.Id);
+                    var ClaimDetail = InsuranceContext.ClaimNotifications.Single(where: $"VehicleId = '{customerRegistration.VehicleDetailId}' and PolicyId=" + PolicyDetail.Id);
 
 
                     // var RegisterDetail = InsuranceContext.ClaimRegistrations.All().SingleOrDefault(p => p.Id == ClaimRegisterid);
 
-                    var claimregistrationdetail = InsuranceContext.ClaimRegistrations.Single(where: $"Id = '{ClaimRegisterid}'");
+                    var claimregistrationdetail = InsuranceContext.ClaimRegistrations.Single(where: $"Id = '{customerRegistration.Id}'");
 
                     var ClaimProvider = InsuranceContext.ClaimDetailsProviders.Single(where: $"ClaimNumber = '{claimregistrationdetail.ClaimNumber}'");
 
                     var CustomerId = PolicyDetail.CustomerId;
 
-                    var VehicleDetail = InsuranceContext.VehicleDetails.All(where: $"Id = '{VehicleDetailId}' and PolicyId=" + PolicyDetail.Id).ToList();
+                    var VehicleDetail = InsuranceContext.VehicleDetails.All(where: $"Id = '{customerRegistration.VehicleDetailId}' and PolicyId=" + PolicyDetail.Id).ToList();
 
 
                     RegisterClaimViewModel VehicleDetailVM = new RegisterClaimViewModel();
@@ -1207,7 +1253,7 @@ namespace InsuranceClaim.Controllers
 
                     //}
 
-                    VehicleDetailVM.ClaimId = ClaimRegisterid;
+                    VehicleDetailVM.ClaimId = customerRegistration.Id;
                     if (ClaimProvider != null && ClaimProvider.Count() > 0)
                     {
 
@@ -1241,6 +1287,19 @@ namespace InsuranceClaim.Controllers
                     VehicleDetailVM.ProviderList = InsuranceContext.Query(query).Select(c => new ServiceProviderModel { Id = c.Id, ServiceProviderName = c.ServiceProviderName, ServiceProviderType = c.ProviderType, ProviderTypeId = c.ProviderTypeId }).ToList();
 
 
+
+                    var claimRegistrationProviders = InsuranceContext.ClaimRegistrationProviderDetials.All(where: "ClaimRegistrationId=" + customerRegistration.Id + " and IsSaved=0");
+
+                    foreach (var item in claimRegistrationProviders)
+                    {
+                        InsuranceContext.ClaimRegistrationProviderDetials.Delete(item);
+                    }
+                   
+
+                    VehicleDetailVM.ClaimRegistrationProviderList = InsuranceContext.ClaimRegistrationProviderDetials.All(where: "ClaimRegistrationId=" + customerRegistration.Id + " and IsSaved=1").ToList();
+
+
+
                     return View(VehicleDetailVM);
                 }
                 return View();
@@ -1259,7 +1318,7 @@ namespace InsuranceClaim.Controllers
             decimal fee = 0;
             var providerDetils = InsuranceContext.ServiceProviders.Single(where: $"Id='{ProviderId}'");
 
-          
+
             if (providerDetils != null)
             {
                 fee = providerDetils.ServiceProviderFees;
@@ -1267,14 +1326,15 @@ namespace InsuranceClaim.Controllers
 
             var ClaimRegistrationProviderDetial = InsuranceContext.ClaimRegistrationProviderDetials.Single(where: $"ClaimRegistrationId='{claimRegistratoinId}' and ServiceProviderTypeId= " + providerTypeId);
 
-            if(ClaimRegistrationProviderDetial==null)
+            if (ClaimRegistrationProviderDetial == null)
             {
                 ClaimRegistrationProviderDetial detials = new ClaimRegistrationProviderDetial();
                 detials.ClaimRegistrationId = Convert.ToInt32(claimRegistratoinId);
-                detials.ServiceProviderId = ProviderId==null?0 : Convert.ToInt32(ProviderId);
+                detials.ServiceProviderId = ProviderId == null ? 0 : Convert.ToInt32(ProviderId);
                 detials.ServiceProviderTypeId = Convert.ToInt32(providerTypeId);
                 detials.ServiceProviderFee = fee;
                 detials.CreatedOn = DateTime.Now;
+                detials.IsActive = true;
                 InsuranceContext.ClaimRegistrationProviderDetials.Insert(detials);
             }
             else
@@ -1290,6 +1350,38 @@ namespace InsuranceClaim.Controllers
             return Json(fee, JsonRequestBehavior.AllowGet);
         }
 
+
+
+        [HttpPost]
+        public JsonResult DeleteClaimRegisterServiceProvider(string claimRegistratoinId, string providerTypeId)
+        {
+            var ClaimRegistrationProviderDetial = InsuranceContext.ClaimRegistrationProviderDetials.Single(where: $"ClaimRegistrationId='{claimRegistratoinId}' and ServiceProviderTypeId= " + providerTypeId);
+
+            if (ClaimRegistrationProviderDetial != null)
+            {
+                InsuranceContext.ClaimRegistrationProviderDetials.Delete(ClaimRegistrationProviderDetial);
+            }
+
+            return Json("");
+        }
+
+
+        [HttpPost]
+        public JsonResult UpdateProviderFee(string claimRegistratoinId, string providerTypeId, string fee)
+        {
+
+            var ClaimRegistrationProviderDetial = InsuranceContext.ClaimRegistrationProviderDetials.Single(where: $"ClaimRegistrationId='{claimRegistratoinId}' and ServiceProviderTypeId= " + providerTypeId);
+
+            if (ClaimRegistrationProviderDetial != null)
+            {
+                ClaimRegistrationProviderDetial.ServiceProviderFee = fee == "" ? 0 : Convert.ToDecimal(fee);
+                InsuranceContext.ClaimRegistrationProviderDetials.Update(ClaimRegistrationProviderDetial);
+            }
+
+
+
+            return Json("");
+        }
         public bool GetcheckdValue(string ChecklistDetail)
         {
             bool IsChecked = false;
@@ -1352,80 +1444,102 @@ namespace InsuranceClaim.Controllers
             updateRecord.ThirdPartyDamageValue = model.ThirdPartyDamageValue;
             updateRecord.Claimsatisfaction = claimStatis;
             updateRecord.ModifyOn = DateTime.Now;
+
+            var ClaimRegistrationProviderDetials = InsuranceContext.ClaimRegistrationProviderDetials.All(where: "ClaimRegistrationId=" + model.Id).ToList();
+            foreach (var item in ClaimRegistrationProviderDetials)
+            {
+                item.IsSaved = true;
+                InsuranceContext.ClaimRegistrationProviderDetials.Update(item);
+            }
+
+
+            if (ClaimRegistrationProviderDetials.Count() > 0)
+            {
+                updateRecord.TotalProviderFees = ClaimRegistrationProviderDetials.Select(c => c.ServiceProviderFee).Sum();
+            }
+
+
+
+
             InsuranceContext.ClaimRegistrations.Update(updateRecord);
+
+            return RedirectToAction("ClaimRegistrationList");
             /////Insert
 
-            string customId = "";
-            bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-            var claimdata = InsuranceContext.ClaimDetailsProviders.Single(where: $"PolicyNumber = '{model.PolicyNumber}' and ClaimNumber = '{model.Claimnumber}'");
-            if (claimdata == null || claimdata.Count() == 0)
-            {
-                if (userLoggedin)
-                {
-                    var _userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                    var customer = InsuranceContext.Customers.Single(where: $"UserId = '{_userid}'");
-                    customId = Convert.ToString(customer.Id);
-
-                    ClaimDetailsProvider obj = new ClaimDetailsProvider();
-                    obj.LawyersProviderType = model.LawyersProviderType;
-                    obj.AssessorsProviderType = model.AssessorsProviderType;
-                    obj.RepairersProviderType = model.RepairersProviderType;
-                    obj.ValuersProviderType = model.ValuersProviderType;
-                    obj.TotalProviderFees = model.TotalProviderFees;
-                    obj.PolicyNumber = model.PolicyNumber;
-                    obj.ClaimNumber = Convert.ToInt32(model.Claimnumber);
-                    obj.TownlyProviderType = model.TownlyProviderType;
-                    obj.MedicalProviderType = model.MedicalProviderType;
-                    obj.AssessorsProviderFees = model.AssessorsProviderFees;
-                    obj.ValuersProviderFees = model.ValuersProviderFees;
-                    obj.RepairersProviderFees = model.RepairersProviderFees;
-                    obj.LawyersProviderFees = model.LawyersProviderFees;
-                    obj.TownlyProviderFees = model.TownlyProviderFees;
-                    obj.MedicalProviderFees = model.MedicalProviderFees;
 
 
-                    obj.CreatedBy = Convert.ToInt32(customId);
-                    obj.CreatedOn = DateTime.Now;
-                    obj.IsActive = true;
-                    InsuranceContext.ClaimDetailsProviders.Insert(obj);
-                }
-                return RedirectToAction("ClaimRegistrationList");
-            }
 
-            else
-            {
-                if (userLoggedin)
-                {
-                    var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                    var customer = InsuranceContext.Customers.Single(where: $"UserId = '{userid}'");
-                    customId = Convert.ToString(customer.Id);
 
-                    //var claimDetailsdata = Mapper.Map<ClaimDetailsProviderModel, ClaimDetailsProvider>(model);
-                    claimdata.AssessorsProviderType = model.AssessorsProviderType;
-                    claimdata.ValuersProviderType = model.ValuersProviderType;
-                    claimdata.LawyersProviderType = model.LawyersProviderType;
-                    claimdata.RepairersProviderType = model.RepairersProviderType;
-                    claimdata.TownlyProviderType = model.TownlyProviderType;
-                    claimdata.MedicalProviderType = model.MedicalProviderType;
-                    claimdata.PolicyNumber = model.PolicyNumber;
-                    claimdata.AssessorsProviderFees = model.AssessorsProviderFees;
-                    claimdata.ValuersProviderFees = model.ValuersProviderFees;
-                    claimdata.RepairersProviderFees = model.RepairersProviderFees;
-                    claimdata.LawyersProviderFees = model.LawyersProviderFees;
-                    claimdata.TownlyProviderFees = model.TownlyProviderFees;
-                    claimdata.MedicalProviderFees = model.MedicalProviderFees;
-                    claimdata.TotalProviderFees = model.TotalProviderFees;
-                    claimdata.ClaimNumber = Convert.ToInt32(model.Claimnumber);
-                    claimdata.ModifiedBy = Convert.ToInt32(customId);
-                    claimdata.ModifiedOn = DateTime.Now;
-                    claimdata.IsActive = true;
-                    InsuranceContext.ClaimDetailsProviders.Update(claimdata);
-                }
-                return RedirectToAction("ClaimRegistrationList");
-                //}
 
-                return RedirectToAction("RegisterClaim");
-            }
+            //string customId = "";
+            //bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            //var claimdata = InsuranceContext.ClaimDetailsProviders.Single(where: $"PolicyNumber = '{model.PolicyNumber}' and ClaimNumber = '{model.Claimnumber}'");
+            //if (claimdata == null || claimdata.Count() == 0)
+            //{
+            //    if (userLoggedin)
+            //    {
+            //        var _userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            //        var customer = InsuranceContext.Customers.Single(where: $"UserId = '{_userid}'");
+            //        customId = Convert.ToString(customer.Id);
+
+            //        ClaimDetailsProvider obj = new ClaimDetailsProvider();
+            //        obj.LawyersProviderType = model.LawyersProviderType;
+            //        obj.AssessorsProviderType = model.AssessorsProviderType;
+            //        obj.RepairersProviderType = model.RepairersProviderType;
+            //        obj.ValuersProviderType = model.ValuersProviderType;
+            //        obj.TotalProviderFees = model.TotalProviderFees;
+            //        obj.PolicyNumber = model.PolicyNumber;
+            //        obj.ClaimNumber = Convert.ToInt32(model.Claimnumber);
+            //        obj.TownlyProviderType = model.TownlyProviderType;
+            //        obj.MedicalProviderType = model.MedicalProviderType;
+            //        obj.AssessorsProviderFees = model.AssessorsProviderFees;
+            //        obj.ValuersProviderFees = model.ValuersProviderFees;
+            //        obj.RepairersProviderFees = model.RepairersProviderFees;
+            //        obj.LawyersProviderFees = model.LawyersProviderFees;
+            //        obj.TownlyProviderFees = model.TownlyProviderFees;
+            //        obj.MedicalProviderFees = model.MedicalProviderFees;
+
+
+            //        obj.CreatedBy = Convert.ToInt32(customId);
+            //        obj.CreatedOn = DateTime.Now;
+            //        obj.IsActive = true;
+            //        InsuranceContext.ClaimDetailsProviders.Insert(obj);
+            //    }
+            //    return RedirectToAction("ClaimRegistrationList");
+            //}
+
+            //else
+            //{
+            //    if (userLoggedin)
+            //    {
+            //        var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            //        var customer = InsuranceContext.Customers.Single(where: $"UserId = '{userid}'");
+            //        customId = Convert.ToString(customer.Id);
+            //        claimdata.AssessorsProviderType = model.AssessorsProviderType;
+            //        claimdata.ValuersProviderType = model.ValuersProviderType;
+            //        claimdata.LawyersProviderType = model.LawyersProviderType;
+            //        claimdata.RepairersProviderType = model.RepairersProviderType;
+            //        claimdata.TownlyProviderType = model.TownlyProviderType;
+            //        claimdata.MedicalProviderType = model.MedicalProviderType;
+            //        claimdata.PolicyNumber = model.PolicyNumber;
+            //        claimdata.AssessorsProviderFees = model.AssessorsProviderFees;
+            //        claimdata.ValuersProviderFees = model.ValuersProviderFees;
+            //        claimdata.RepairersProviderFees = model.RepairersProviderFees;
+            //        claimdata.LawyersProviderFees = model.LawyersProviderFees;
+            //        claimdata.TownlyProviderFees = model.TownlyProviderFees;
+            //        claimdata.MedicalProviderFees = model.MedicalProviderFees;
+            //        claimdata.TotalProviderFees = model.TotalProviderFees;
+            //        claimdata.ClaimNumber = Convert.ToInt32(model.Claimnumber);
+            //        claimdata.ModifiedBy = Convert.ToInt32(customId);
+            //        claimdata.ModifiedOn = DateTime.Now;
+            //        claimdata.IsActive = true;
+            //        InsuranceContext.ClaimDetailsProviders.Update(claimdata);
+            //    }
+            //    return RedirectToAction("ClaimRegistrationList");
+
+
+            //    return RedirectToAction("RegisterClaim");
+            //}
 
             //public void RemoveValidation()
             //{

@@ -20,7 +20,12 @@ namespace Insurance.Domain
 
         public DateTime CreatedOn { get; set; }
 
-    
+        public bool IsActive { get; set; }
+
+        public bool IsSaved { get; set; }
+
+
+
 
 
 

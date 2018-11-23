@@ -835,6 +835,8 @@ namespace Insurance.Domain
         public string ModelId { get; set; }
         public bool? ThirdPartyInvolvement { get; set; }
 
+        public decimal TotalProviderFees { get; set; }
+
 
         //public DateTime? ModifyOn { get; set; }   
     }
@@ -890,7 +892,7 @@ namespace Insurance.Domain
         public ClaimAdjustment() { }
         public ClaimAdjustment(bool defaults) : base(defaults) { }
         public int Id { get; set; }
-        public int? AmountToPay { get; set; }
+        public decimal AmountToPay { get; set; }
         public decimal? EstimatedLoss { get; set; }
         public decimal ExcessesAmount { get; set; }
         public string PayeeBankDetails { get; set; }
@@ -915,6 +917,8 @@ namespace Insurance.Domain
         public int ClaimNumber { get; set; }
         public bool CommericalCar { get; set; }
         public bool PrivateCar { get; set; }
+
+        public decimal FinalAmountToPaid { get; set; }
     }
     public partial class ClaimDocument : Entity<ClaimDocument>
     {

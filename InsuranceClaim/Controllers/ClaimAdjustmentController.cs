@@ -14,8 +14,13 @@ namespace InsuranceClaim.Controllers
     public class ClaimAdjustmentController : Controller
     {
         // GET: ClaimAdjustment
-        public ActionResult Index(int? id, string PolicyNumber, int? claimnumber)
+        public ActionResult Index(int? id)
         {
+
+         //   string PolicyNumber, int? claimnumber
+
+       
+
 
             var ePaymentDetail = from ePayeeBankDetails e in Enum.GetValues(typeof(ePayeeBankDetails))
                                  select new
@@ -29,7 +34,7 @@ namespace InsuranceClaim.Controllers
             if (id != 0 && id != null)
             {
                 var model = new ClaimAdjustmentModel();
-                var data = InsuranceContext.ClaimRegistrations.Single(where: $"PolicyNumber= '{PolicyNumber}' and ClaimNumber ='{claimnumber}'");
+                var data = InsuranceContext.ClaimRegistrations.Single(where: $"Id= '{id}'");
                 if (data != null && data.Count() > 0)
                 {
                     
@@ -45,6 +50,8 @@ namespace InsuranceClaim.Controllers
                     model.TotalSuminsure = Convert.ToDecimal(summery.TotalPremium);
                     model.PolicyholderName = custmo.FirstName + " " + custmo.LastName;
                     model.PayeeName = data.ClaimantName;
+                    model.AmountToPay = data.TotalProviderFees;
+                    model.FinalAmountToPaid = data.TotalProviderFees;
                     return View(model);
 
                 }

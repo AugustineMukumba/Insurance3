@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Insurance.Domain;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -62,6 +63,8 @@ namespace InsuranceClaim.Models
         public List<RiskViewModel> RiskViewModel { get; set; }    
          
         public List<ServiceProviderModel> ProviderList { get; set; }
+
+        public List<ClaimRegistrationProviderDetial> ClaimRegistrationProviderList { get; set; }
 
         public string ServiceProviderType { get; set; }
         public bool? ThirdPartyInvolvement { get; set; }

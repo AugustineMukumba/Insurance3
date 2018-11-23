@@ -75,10 +75,10 @@
                             <td>
                                 <table>
                                     <tr>
-                                        <td><b>Make:</b><br />@item.MakeId<br /></td>
+                                        <td><b>Make:</b><br />@item.MakeDescription<br /></td>
                                     </tr>
                                     <tr>
-                                        <td><b>Model:</b><br />@item.ModelId<br /></td>
+                                        <td><b>Model:</b><br />@item.ModelDescription<br /></td>
                                     </tr>
                                 </table>
                             </td>
@@ -101,7 +101,26 @@
                             @*<td>@item.Claimsatisfaction</td>*@
                             <td>@item.ClaimStatus</td>
                             <td>
-                                <table>
+
+                                @foreach(var provider in item.ServiceProviderList)
+                                {
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                @provider.ServiceProviderType :
+                                                <br />
+                                                @provider.ServiceProviderName
+                                                <br />
+                                                 Fee: @provider.ServiceProviderFees                     
+                                            </td>                                                                            
+                                        </tr>
+                                    </table>
+                              
+                                }
+                              <span> Total Provider Fee: @item.TotalProviderFees </span> 
+
+
+                                @*<table>
                                     <tr>
                                         <td><b>Assessors :</b>@item.AssessProviderName</td>
                                     </tr>
@@ -123,7 +142,10 @@
                                         <td><b>Medical :</b>@item.MeadicalName</td>
                                     </tr>
                                     <tr><td><b>Provider Fees :</b>@item.TotalProviderFees</td></tr>
-                                </table>
+                                </table>*@
+
+
+
                             </td>
 
                             <td>
@@ -133,34 +155,29 @@
                                         {
                                             <li><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.ClaimNumber');">View/Upload Document</button></li>
 
-                                            @*if (item.AssessProviderName != null && item.ValueProviderName!=null && item.LawyeProviderName !=null && item.RepairProviderName!=null && item.ClaimValue != "")
-                                            {
-                                                <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id, PolicyNumber = item.PolicyNumber, claimnumber = item.ClaimNumber }, new { @class = "btn-sm btn-primary" })</li>
-                                            }
-                                            else if (item.AssessProviderName == null && item.ValueProviderName != null && item.LawyeProviderName != null && item.RepairProviderName != null && item.ClaimValue != "")
-                                            {
-                                                <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id, PolicyNumber = item.PolicyNumber, claimnumber = item.ClaimNumber }, new { @class = "btn-sm btn-primary" })</li>
-                                            }*@
-                                        if (item.TotalProviderFees > 0)
+                                            <li>@Html.ActionLink("Payments", "Index", "ClaimAdjustment", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
+
+
+
+
+
+                                        @*if (item.TotalProviderFees > 0)
                                         {
-                                            <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id, PolicyNumber = item.PolicyNumber, claimnumber = item.ClaimNumber }, new { @class = "btn-sm btn-primary" })</li>
+                                            <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id}, new { @class = "btn-sm btn-primary" })</li>
                                         }
                                         else
                                         {
-                                            <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id, PolicyNumber = item.PolicyNumber, claimnumber = item.ClaimNumber }, new { @class = "btn-sm btn-primary", @style = "display:none" })</li>
-                                        }
+                                            <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id}, new { @class = "btn-sm btn-primary", @style = "display:none" })</li>
+                                        }*@
 
 
-                                            @*if (item.AssessProviderName != null && item.AssessProviderName.Count() > 0)
-                                                {
-                                                    <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id,PolicyNumber = item.PolicyNumber,claimnumber = item.ClaimNumber }, new { @class = "btn-sm btn-primary" })</li>
-                                                }*@
+                                          
                                         }
 
 
                                         @if (item.VehicleDetailId != null && item.VehicleDetailId != 0)
                                         {
-                                            <li>@Html.ActionLink("Edit", "EditRegisterClaim", "Claimant", new { PolicyNumber = item.PolicyNumber, ClaimRegisterid = item.Id, VehicleDetailId = item.VehicleDetailId,ClaimNumer = item.ClaimNumber }, new { @class = "btn-sm btn-primary" })</li>
+                                            <li>@Html.ActionLink("Edit", "EditRegisterClaim", "Claimant", new { id=item.Id }, new { @class = "btn-sm btn-primary" })</li>
                                         }
 
                                     </ul>

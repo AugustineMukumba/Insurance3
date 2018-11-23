@@ -173,8 +173,17 @@
                                                     <div id="checkboxes">
                                                         @foreach (var item in ViewBag.ServiceProviderTypes)
                                                         {
+                                                            // VehicleDetailVM.ClaimRegistrationProviderList
+
+                                                            var Ischecked = "";
+                                                            var providerList = Model.ClaimRegistrationProviderList.FirstOrDefault(c => c.ServiceProviderTypeId == item.Id);
+                                                            if (providerList != null)
+                                                            {
+                                                                Ischecked = "checked";
+                                                            }
+
                                                             <label for="@item.Id" class="form-control">
-                                                                <input onclick="DisplayServiceProvider(@item.Id)" type="checkbox" id="chkProviderType_@item.Id" />@item.ProviderType
+                                                                <input class="chkProviderClass" onclick="DisplayServiceProvider(@item.Id)" type="checkbox" @Ischecked id="chkProviderType_@item.Id" />@item.ProviderType
                                                             </label>
                                                         }
                                                     </div>
@@ -185,31 +194,45 @@
                                             @foreach (var item in ViewBag.ServiceProviderTypes)
                                             {
 
+                                                var Isdisplay = "none";
+                                                var providerId = 0;
+                                                decimal providerFee = 0;
+                                                var providerdetials = Model.ClaimRegistrationProviderList.FirstOrDefault(c => c.ServiceProviderTypeId == item.Id);
+                                                if (providerdetials != null)
+                                                {
+                                                    Isdisplay = "block";
+                                                    providerId = providerdetials.ServiceProviderId;
+                                                    providerFee = providerdetials.ServiceProviderFee;
+                                                }
+
+
                                                 var list = Model.ProviderList.Where(c => c.ProviderTypeId == item.Id).ToList();
 
                                                 if (list.Count > 0)
                                                 {
-                                                    <div id="ddlProvider_@item.Id" style="display:none">
+                                                    <div id="ddlProvider_@item.Id" style="display:@Isdisplay">
                                                         <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
                                                             <div class="form-group ml-0">
+                                                           
                                                                 <label>Assign @list[0].ServiceProviderType</label>
-                                                                @Html.DropDownListFor(x => x.ProviderId, new SelectList(list, "Id", "ServiceProviderName"), "Select Provider", new { @class = "form-control", id = "Provider_" + @item.Id, onchange = "BindProviderFee(" + @item.Id + ");" })
+                                                                @*@Html.DropDownList("ProviderId"), new SelectList(list, "Id", "ServiceProviderName", providerId), "Select Provider", new { @class = "form-control", id = "Provider_" + @item.Id, onchange = "BindProviderFee(" + @item.Id + ");" })*@
+
+
+                                                                @Html.DropDownList("NotAModelProperty", new SelectList(list, "Id", "ServiceProviderName", providerId), "Select Provider", new { @class = "form-control", id = "Provider_" + @item.Id, onchange = "BindProviderFee(" + @item.Id + ");" })
+
+
                                                             </div>
                                                             <div class="">
                                                                 <label>Assign @list[0].ServiceProviderType Fees</label>
-                                                                @Html.TextBoxFor(x => x.ProviderFee, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Assessors Provider Fees", id = "ProviderFee_" + @item.Id })
+                                                                @Html.TextBoxFor(x => x.ProviderFee, new { @class = "form-control", @Value = providerFee, @autocomplete = "off", txtProviderId = "0", @placeholder = "Enter Assessors Provider Fees", id = "ProviderFee_" + @item.Id, onblur = "UpdateProviderFee(" + @item.Id + ", this);" })
                                                             </div>
                                                         </div>
                                                     </div>
                                                 }
 
+
+
                                             }
-
-
-
-
-
-
 
                                         </div>
                                     </div>
@@ -375,6 +398,8 @@
     </div>
 </div>
 <script>
+
+
     $(document).ready(function () {
         debugger;
 
@@ -470,6 +495,18 @@
                 $("#MedicalProviderFees").val("");
             }
         })
+
+
+
+
+        if ($(".chkProviderClass").is(":checked")) {
+
+            var checkboxes = document.getElementById("checkboxes");
+            checkboxes.style.display = "block";
+            expanded = true;
+        }
+
+
     });
 
 
@@ -480,17 +517,38 @@
         }
     })
     function DisplayServiceProvider(providerTypeId) {
+
         if ($("#chkProviderType_" + providerTypeId).is(":checked")) {
             $("#ddlProvider_" + providerTypeId).show();
         }
         else {
             $("#ddlProvider_" + providerTypeId).hide();
+
+
+            // delete
+            var claimRegistratoinId = $("#Id").val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("DeleteClaimRegisterServiceProvider", "Claimant")",
+                data: { claimRegistratoinId: claimRegistratoinId, providerTypeId: providerTypeId },
+                success: function (data) {
+
+                }
+            })
         }
     }
 
     function BindProviderFee(providerTypeId) {
 
+        debugger;
         var providerId = $("#Provider_" + providerTypeId).val();
+
+        if (providerId=="")
+        {
+            return false;
+             
+        }
+
         var claimRegistratoinId = $("#Id").val();
         $.ajax({
             type: "POST",
@@ -498,11 +556,30 @@
             data: { providerId: providerId, claimRegistratoinId: claimRegistratoinId, providerTypeId: providerTypeId },
             success: function (data) {
                 $("#ProviderFee_" + providerTypeId).val(data);
-                var detials = providerTypeId + "_" + providerId + "_" + data;
+
+                $("#ProviderFee_" + providerTypeId).attr('txtProviderId', providerId);
+
+                //var detials = providerTypeId + "_" + providerId + "_" + data;
+
+            }
+        })
+    }
+
+    function UpdateProviderFee(providerTypeId, current) {
+        var claimRegistratoinId = $("#Id").val();
+
+        var fee = $(current).val();
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("UpdateProviderFee", "Claimant")",
+            data: { claimRegistratoinId: claimRegistratoinId, providerTypeId: providerTypeId, fee: fee },
+            success: function (data) {
 
 
             }
         })
+
     }
 
 
@@ -665,8 +742,8 @@
     });
 
 
-    var expanded = false;
 
+    var expanded = false;
     function showCheckboxes() {
         var checkboxes = document.getElementById("checkboxes");
         if (!expanded) {
@@ -676,6 +753,7 @@
             checkboxes.style.display = "none";
             expanded = false;
         }
+
     }
 
 

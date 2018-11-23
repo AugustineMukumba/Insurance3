@@ -177,6 +177,20 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-12 form-group-text">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.FinalAmountToPaid, new { @class = "gender-label" })
+                                                @Html.TextBoxFor(x => x.FinalAmountToPaid, new { @class = "form-control", @name = "FinalAmountToPaid", @autocomplete = "off", @id = "FinalAmountToPaid", @placeholder = "Final Amount Paid" })
+                                                @Html.ValidationMessageFor(x => x.FinalAmountToPaid, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+
+
+
                                     <div class="row">
                                         <div class="col-sm-6 form-group-text">
                                             <div class="form-group">
@@ -566,8 +580,18 @@
                 debugger;
 
                 $("#ExcessesAmount").val((data.ExcessesAmount))
+
+              
+                var finalAmountToPaid = parseFloat($("#AmountToPay").val()) - parseFloat(data.ExcessesAmount);
+
+                $("#FinalAmountToPaid").val(finalAmountToPaid);
+
             }
         });
+
+
+
+
     }
 
 

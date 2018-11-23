@@ -32,5 +32,7 @@ namespace InsuranceClaim.Models
         public int? ModifiedBy { get; set; }
 
         public int ProviderTypeId { get; set; }
+
+        public int ClaimRegistrationId { get; set; }
     }
 }
