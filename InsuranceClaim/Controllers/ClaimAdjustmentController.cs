@@ -19,9 +19,7 @@ namespace InsuranceClaim.Controllers
 
          //   string PolicyNumber, int? claimnumber
 
-       
-
-
+      
             var ePaymentDetail = from ePayeeBankDetails e in Enum.GetValues(typeof(ePayeeBankDetails))
                                  select new
                                  {
@@ -52,15 +50,87 @@ namespace InsuranceClaim.Controllers
                     model.PayeeName = data.ClaimantName;
                     model.AmountToPay = data.TotalProviderFees;
                     model.FinalAmountToPaid = data.TotalProviderFees;
+                    model.ClaimRegisterationId = data.Id;
                     return View(model);
 
                 }
             }
             return View();
         }
+
+
+        [HttpGet]
+        public ActionResult ClaimPayment(int id)
+        {
+            ClaimAdjustmentModel model = new ClaimAdjustmentModel();
+            var claimAdjustment = InsuranceContext.ClaimAdjustments.Single(where: "Id=" + id);
+
+            if(claimAdjustment!=null)
+            {
+                     
+                model.PayeeName = claimAdjustment.PayeeName;
+                model.PolicyholderName = claimAdjustment.PolicyholderName;
+            }
+
+
+            var ePaymentDetail = from ePayeeBankDetails e in Enum.GetValues(typeof(ePayeeBankDetails))
+                                 select new
+                                 {
+                                     ID = (int)e,
+                                     Name = e.ToString()
+                                 };
+
+            ViewBag.ePaymentDetailData = new SelectList(ePaymentDetail, "ID", "Name");
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult ClaimPayment(ClaimAdjustmentModel model)
+        {
+
+            var claimAdjustment = InsuranceContext.ClaimAdjustments.Single(where: $"Id = '{model.Id}'");
+
+            if(claimAdjustment != null)
+            {
+                claimAdjustment.PayeeName = model.PayeeName;
+                claimAdjustment.PolicyholderName = model.PolicyholderName;
+                claimAdjustment.PayeeBankDetails = model.PayeeBankDetails;
+                InsuranceContext.ClaimAdjustments.Update(claimAdjustment);
+
+
+                var claimRegistrationDetials = InsuranceContext.ClaimRegistrations.Single(where: $"id = '{claimAdjustment.ClaimRegisterationId}'");
+
+                if(claimRegistrationDetials!=null)
+                {
+                    claimRegistrationDetials.ClaimStatus = (int)claimStatus.Approved;
+
+                    InsuranceContext.ClaimRegistrations.Update(claimRegistrationDetials);
+                }
+
+            }
+
+
+
+            var ePaymentDetail = from ePayeeBankDetails e in Enum.GetValues(typeof(ePayeeBankDetails))
+                                 select new
+                                 {
+                                     ID = (int)e,
+                                     Name = e.ToString()
+                                 };
+            ViewBag.ePaymentDetailData = new SelectList(ePaymentDetail, "ID", "Name");
+
+            return RedirectToAction("ClaimRegistrationList" , "Claimant");
+        }
+
+
         public ActionResult SaveClaimAdjustment(ClaimAdjustmentModel model)
         {
             ModelState.Remove("Id");
+            ModelState.Remove("PayeeBankDetails");
+            ModelState.Remove("PayeeName");
+            
+
             if (model.IsDriverUnder25==null)
             {
                 ModelState.Remove("IsDriverUnder25");
@@ -70,13 +140,14 @@ namespace InsuranceClaim.Controllers
                 ModelState.Remove("DriverIsUnder21");
             }
 
-            foreach (ModelState modelState in ViewData.ModelState.Values)
-            {
-                foreach (ModelError error in modelState.Errors)
-                {
-                    var s = error;
-                }
-            }
+
+            //foreach (ModelState modelState in ViewData.ModelState.Values)
+            //{
+            //    foreach (ModelError error in modelState.Errors)
+            //    {
+            //        var res = "";
+            //    }
+            //}
 
 
             if (ModelState.IsValid)
@@ -86,16 +157,34 @@ namespace InsuranceClaim.Controllers
 
                 if (userLoggedin)
                 {
-                    var claimadjust = InsuranceContext.ClaimAdjustments.Single(where: $"ClaimNumber = '{model.ClaimNumber}'");
-                    userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                    var customer = InsuranceContext.Customers.Single(where: $"UserId = '{userid}'");
-                    var data = Mapper.Map<ClaimAdjustmentModel, ClaimAdjustment>(model);
-                    data.CreatedOn = DateTime.Now;
-                    data.CreatedBy = customer.Id;
-                    data.IsActive = true;
-                    //insert
-                    InsuranceContext.ClaimAdjustments.Insert(data);
-                    return RedirectToAction("ListClaimAdjustment");
+                    // var claimadjust = InsuranceContext.ClaimAdjustments.Single(where: $"ClaimNumber = '{model.ClaimNumber}'");
+
+
+                    var claimadjust = InsuranceContext.ClaimAdjustments.Single(where: $"ClaimRegisterationId = '{model.ClaimRegisterationId}'");
+
+                    if(claimadjust==null)
+                    {
+                        userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                        var customer = InsuranceContext.Customers.Single(where: $"UserId = '{userid}'");
+                        var data = Mapper.Map<ClaimAdjustmentModel, ClaimAdjustment>(model);
+                        data.CreatedOn = DateTime.Now;
+                        data.CreatedBy = customer.Id;
+                        data.IsActive = true;
+                        InsuranceContext.ClaimAdjustments.Insert(data);
+                        return RedirectToAction("ClaimPayment", new { id = data.Id });
+                    }
+                    else
+                    {
+                        userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                        var customer = InsuranceContext.Customers.Single(where: $"UserId = '{userid}'");
+                        var data = Mapper.Map<ClaimAdjustmentModel, ClaimAdjustment>(model);
+                        data.Id = claimadjust.Id;
+                        data.CreatedOn = DateTime.Now;
+                        data.CreatedBy = customer.Id;
+                        data.IsActive = true;
+                        InsuranceContext.ClaimAdjustments.Update(data);
+                        return RedirectToAction("ClaimPayment", new { id = claimadjust.Id });
+                    }                 
                 }
             }
             return View("Index");

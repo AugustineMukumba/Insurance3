@@ -134,6 +134,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RadioLicenceReportModel.cs" />
     <Compile Include="RegisterClaimViewModel.cs" />
+    <Compile Include="RegistrationDocumentModel.cs" />
     <Compile Include="ReinsuranceBrokerModel.cs" />
     <Compile Include="ReinsuranceCommissionReportModel.cs" />
     <Compile Include="ReinsuranceReport.cs" />

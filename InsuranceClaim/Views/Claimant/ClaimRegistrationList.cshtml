@@ -155,20 +155,15 @@
                                         {
                                             <li><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.ClaimNumber');">View/Upload Document</button></li>
 
-                                            <li>@Html.ActionLink("Payments", "Index", "ClaimAdjustment", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
-
-
-
-
-
-                                        @*if (item.TotalProviderFees > 0)
+       
+                                        if (item.TotalProviderFees > 0)
                                         {
                                             <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id}, new { @class = "btn-sm btn-primary" })</li>
                                         }
                                         else
                                         {
                                             <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id}, new { @class = "btn-sm btn-primary", @style = "display:none" })</li>
-                                        }*@
+                                        }
 
 
                                           
@@ -442,7 +437,8 @@
 
 
 
-    function getServiceProviderName() {
+    function getServiceProviderName() 
+    {
         debugger;
         var $dropdown = $("#ServiceProviderName");
         var selectedTerm = $("#ServiceProvide option:selected").val();
@@ -473,5 +469,25 @@
         )
     }
 
+
+
+    //$(function () {
+    //    $(':file').change(function () {
+    //        debugger;
+
+    //        if (this.files.length > 0) {
+    //            debugger;
+    //            $('#upload-file-info').html("");
+    //            var real = $(this);
+    //            for (var i = 0; i < this.files.length; i++) {
+    //                $("#upload-file-info").append(this.files[i].name + '</br>');
+    //            }
+    //            //var cloned = real.clone(true);
+    //            //real.hide();
+    //            //cloned.insertAfter(real);
+    //            //real.appendTo('form');
+    //        }
+    //    });
+    //});
 
 </script>

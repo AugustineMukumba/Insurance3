@@ -23,9 +23,13 @@
                             @using (Html.BeginForm("SaveClaimAdjustment", "ClaimAdjustment", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
                             {
                                 @Html.HiddenFor(x => x.Id)
+                                @Html.HiddenFor(x => x.ClaimRegisterationId)
                                 @Html.HiddenFor(x => x.PolicyNumber)
                                 @Html.HiddenFor(x => x.ClaimNumber)
                                 @Html.HiddenFor(x => x.TotalSuminsure)
+                                @Html.HiddenFor(x => x.PolicyholderName)
+                                @Html.HiddenFor(x => x.PayeeName)
+
 
                                 <div class="row">
 
@@ -43,6 +47,52 @@
                                     </div>
 
                                 </div>
+
+
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group no-margin">
+                                            @Html.Label("Is Private Car", new { @class = "gender-label-nowidth" })
+                                            @Html.CheckBoxFor(x => x.PrivateCar)
+                                            @Html.ValidationMessageFor(x => x.PrivateCar, "", new { @class = "text-danger" })
+                                            <span id="spnprivatecar"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 form-group-text">
+                                        <div class="form-group no-margin" id="Under21driver">
+                                            <label class="radio-label">Driver is under 21 or not ?(Y/N)</label>
+                                            <div class="form-group-radio" id="Driver21">
+                                                <label>@Html.RadioButtonFor(x => x.DriverIsUnder21, true)Yes</label>
+                                                <label>@Html.RadioButtonFor(x => x.DriverIsUnder21, false)No</label>
+                                                @Html.ValidationMessageFor(x => x.DriverIsUnder21, "", new { @class = "text-danger valMessages" })
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+
+                                            <div class="form-group">
+                                                @Html.Label("Is Commerical Car", new { @class = "gender-label-nowidth" })
+                                                @Html.CheckBoxFor(x => x.CommericalCar)
+                                                @Html.ValidationMessageFor(x => x.CommericalCar, "", new { @class = "text-danger " })
+                                                <span id="spncommercialcar"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 form-group-text">
+                                            <div class="form-group" id="Under25driver">
+                                                <label class="radio-label">Is Driver Under25 ?(Y/N)</label>
+                                                <div class="form-group-radio" id="radiotest">
+                                                    <label>@Html.RadioButtonFor(x => x.IsDriverUnder25, true)Yes</label>
+                                                    <label>@Html.RadioButtonFor(x => x.IsDriverUnder25, false)No</label>
+                                                    @Html.ValidationMessageFor(x => x.IsDriverUnder25, "", new { @class = "text-danger valMessage" })
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
 
 
                                 <div class="row">
@@ -117,49 +167,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group no-margin">
-                                                @Html.Label("Is Private Car", new { @class = "gender-label-nowidth" })
-                                                @Html.CheckBoxFor(x => x.PrivateCar)
-                                                @Html.ValidationMessageFor(x => x.PrivateCar, "", new { @class = "text-danger" })
-                                                <span id="spnprivatecar"></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 form-group-text">
-                                            <div class="form-group no-margin" id="Under21driver">
-                                                <label class="radio-label">Driver is under 21 or not ?(Y/N)</label>
-                                                <div class="form-group-radio" id="Driver21">
-                                                    <label>@Html.RadioButtonFor(x => x.DriverIsUnder21, true)Yes</label>
-                                                    <label>@Html.RadioButtonFor(x => x.DriverIsUnder21, false)No</label>
-                                                    @Html.ValidationMessageFor(x => x.DriverIsUnder21, "", new { @class = "text-danger valMessages" })
-                                                </div>
-                                            </div>
+                                 
 
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-
-                                            <div class="form-group">
-                                                @Html.Label("Is Commerical Car", new { @class = "gender-label-nowidth" })
-                                                @Html.CheckBoxFor(x => x.CommericalCar)
-                                                @Html.ValidationMessageFor(x => x.CommericalCar, "", new { @class = "text-danger " })
-                                                <span id="spncommercialcar"></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 form-group-text">
-                                            <div class="form-group" id="Under25driver">
-                                                <label class="radio-label">Is Driver Under25 ?(Y/N)</label>
-                                                <div class="form-group-radio" id="radiotest">
-                                                    <label>@Html.RadioButtonFor(x => x.IsDriverUnder25, true)Yes</label>
-                                                    <label>@Html.RadioButtonFor(x => x.IsDriverUnder25, false)No</label>
-                                                    @Html.ValidationMessageFor(x => x.IsDriverUnder25, "", new { @class = "text-danger valMessage" })
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
 
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
@@ -224,42 +233,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.LabelFor(x => x.PolicyholderName, new { @class = "gender-label" })
-                                                @Html.TextBoxFor(x => x.PolicyholderName, new { @class = "form-control", @name = "PolicyholderName", @autocomplete = "off", @id = "PolicyholderName", @placeholder = "Enter Policy Holder Name" })
-                                                @Html.ValidationMessageFor(x => x.PolicyholderName, "", new { @class = "text-danger" })
-                                            </div>
-
-                                        </div>
-                                        <div class="col-sm-6 form-group-text">
-                                            <div class="form-group">
-                                                @Html.LabelFor(x => x.PayeeName, new { @class = "gender-label" })
-                                                @Html.TextBoxFor(x => x.PayeeName, new { @class = "form-control", @name = "PayeeName", @autocomplete = "off", @id = "PayeeName", @placeholder = "Enter Payee Name" })
-                                                @Html.ValidationMessageFor(x => x.PayeeName, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-select">
-                                            <div class="form-group">
-                                                @Html.LabelFor(x => x.PayeeBankDetails, new { @class = "gender-label" })
-                                                @Html.DropDownListFor(x => x.PayeeBankDetails, ViewBag.ePaymentDetailData as SelectList, "Select Payment Type", new { @class = "form-control" })
-                                                @Html.ValidationMessageFor(x => x.PayeeBankDetails, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 form-group-text " id="test" style="display:none">
-                                            <div class="form-group">
-                                                <div class="number-block">
-                                                    @Html.LabelFor(x => x.PhoneNumber, new { @class = "gender-label" })
-                                                    <small> In The Format: 0123456789</small>
-                                                    @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control", @name = "PhoneNumber", @autocomplete = "off", @id = "PhoneNumber", @placeholder = "Enter Phone Number" })
-                                                    @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   
+                                   
 
 
                                     <br />
@@ -272,7 +247,7 @@
                                             </div>
                                             <div class="col-sm-6 col-md-6">
                                                 <div class="text-right">
-                                                    <button type="submit" class="btn" onclick="return ValidateCheckBox()">Add</button>
+                                                    <button type="submit" class="btn" onclick="return ValidateCheckBox()">Next</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -310,6 +285,7 @@
         else if ($("#PrivateCar").prop('checked') == false && $("#CommericalCar").prop('checked') == false) {
             $("#spnprivatecar").text("This is Required Field").css("color", "#a94442");
             $("#spncommercialcar").text("This is Required Field").css("color", "#a94442");
+            $("#spnprivatecar").focus();
             return false;
         }
 
@@ -363,7 +339,7 @@
                 $("#Under21driver").show();
                 SetAccess.isDriverunder25 = null;
                 if (SetAccess.isDriverunder25 == null) {
-                    $(IsDriverUnder25).rules('remove', 'required')
+                    $("#IsDriverUnder25").rules('remove', 'required')
                 }
                 else {
 
@@ -396,7 +372,7 @@
                 if (SetAccess.isdriver == null) {
                     //$(".valMessages").text('');
 
-                    $(DriverIsUnder21).rules('remove', 'required')
+                    $("#DriverIsUnder21").rules('remove', 'required')
 
                 }
                 else {

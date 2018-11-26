@@ -36,6 +36,17 @@ tfoot {
     background-color: #eee !important;
 }
 
+.upload-file-area {
+    margin: 10px 0 0;
+}
+.upload-file-area span {
+    display: inline-block;
+    line-height: 18px;
+    text-align: left;
+    font-weight: 600;
+    letter-spacing: 0.7px;
+}
+
 
 .backbtnview {
     background: #16909d;

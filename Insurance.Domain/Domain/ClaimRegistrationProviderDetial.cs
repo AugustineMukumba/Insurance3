@@ -24,10 +24,5 @@ namespace Insurance.Domain
 
         public bool IsSaved { get; set; }
 
-
-
-
-
-
     }
 }

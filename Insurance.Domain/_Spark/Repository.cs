@@ -89,6 +89,8 @@ namespace Insurance.Domain
 
         public static SourceDetails SourceDetails { get { return new SourceDetails(); } }
 
+
+       public static RegistrationDocuments RegistrationDocuments { get { return new RegistrationDocuments(); } }
         public static ClaimRegistrationProviderDetials ClaimRegistrationProviderDetials { get { return new ClaimRegistrationProviderDetials(); } }
 
         // general purpose operations

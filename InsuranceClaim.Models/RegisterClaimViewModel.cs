@@ -5,14 +5,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace InsuranceClaim.Models
 
 {
     public class RegisterClaimViewModel
     {
-
-      
+    
         public int ClaimId { get; set; }
         public int Id { get; set; }
         public string PolicyNumber { get; set; }
@@ -68,6 +68,11 @@ namespace InsuranceClaim.Models
 
         public string ServiceProviderType { get; set; }
         public bool? ThirdPartyInvolvement { get; set; }
+        public IEnumerable<HttpPostedFileBase> Files { get; set; }
+
+        public List<RegistrationDocument> RegistrationDocumentList { get; set; }
+
+
     }
 
 

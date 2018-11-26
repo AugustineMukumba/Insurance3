@@ -1,4 +1,5 @@
-﻿@model InsuranceClaim.Models.RegisterClaimViewModel
+﻿@using System.Web.Configuration;
+@model InsuranceClaim.Models.RegisterClaimViewModel
 @{
     ViewBag.Title = "EditRegisterClaim";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
@@ -52,7 +53,7 @@
                     <h4>Claim Registration</h4>
                 </div>
                 <div class="form-group-input">
-                    @using (Html.BeginForm("updateRegisterDetail", "Claimant", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    @using (Html.BeginForm("updateRegisterDetail", "Claimant", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
                     {
                         @Html.HiddenFor(model => Model.Id)
                         @Html.HiddenFor(model => Model.ClaimId)
@@ -65,7 +66,7 @@
                         @Html.HiddenFor(m => m.DateOfNotifications)
                         @Html.HiddenFor(m => m.ThirdPartyInvolvement)
 
-
+                       
 
                         //---------------------Changes--------------------------------------------
 
@@ -142,6 +143,7 @@
                                                     <label>@Html.RadioButtonFor(model => model.Claimsatisfaction, false)No</label>
                                                 </span>
                                             </div>
+
                                             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                                 <label class="list-label">Check list</label>
                                                 <span>
@@ -154,7 +156,25 @@
                                                         @Html.HiddenFor(x => Model.chklistDetail[i].CheckBoxName)
                                                     }
                                                 </span>
+
+                                                @Html.TextBoxFor(x => x.Files, new { type = "file", multiple = "multiple", value = "", id = (string)null })
+                                                <div class="upload-file-area">
+                                                    <span class='label label-info' id="upload-file-info"></span>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                                        @foreach (var item in Model.RegistrationDocumentList)
+                                                        {
+                                                            <span> <a target="_blank" href="@WebConfigurationManager.AppSettings["urlPath"]/@item.FilePath">@item.Name </a>  </span>
+                                                        }
+                                                    </div>                                                
+                                                </div>
+
                                             </div>
+
+
+
                                         </div>
                                     </div>
 
@@ -188,6 +208,11 @@
                                                         }
                                                     </div>
                                                 </div>
+
+                                              
+
+
+
                                             </div>
 
 

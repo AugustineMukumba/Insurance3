@@ -68,4 +68,13 @@ namespace InsuranceClaim.Models
         Private = 1,
         Commercial = 2
     }
+
+    public enum claimStatus
+    {
+        New = 1,
+        Approved = 2,
+        Rejected = 3
+    }
+
+
 }

@@ -6,7 +6,13 @@
     //var a = ViewBag.Checklists;
 }
 
-
+@{
+    var getregisterId = "";
+    if (Request.QueryString["dbmodel"] != null)
+    {
+        getregisterId = Request.QueryString["dbmodel"];
+    }
+}  
 
 <div class="body-content-section">
     <div class="form-section-top-riskdetail">
@@ -20,12 +26,13 @@
                     <h4>Claim Registration</h4>
                 </div>
                 <div class="form-group-input">
-                    @using (Html.BeginForm("SaveRegisterClaim", "Claimant", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+
+                    @using (Html.BeginForm("SaveRegisterClaim", "Claimant", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
                     {
                         @Html.HiddenFor(model => Model.ClaimId)
                         @Html.HiddenFor(model => Model.Claimnumber)
                         @Html.HiddenFor(model => model.ThirdPartyInvolvement)
-
+                        <input type="hidden" value=@getregisterId name="RegisterId" />
                         //---------------------Changes--------------------------------------------
 
                         if (Model.RiskViewModel.Count > 0)
@@ -127,6 +134,24 @@
                                                         @Html.HiddenFor(x => Model.chklist[i].ChecklistDetail)
                                                     }
                                                 </span>
+
+                                                @*@Html.TextBoxFor(x => x.Files, new { type = "file", multiple = "multiple", value = "", id = (string)null })
+
+
+
+                                                <div class="upload-file-area">
+                                                    <span class='label label-info' id="upload-file-info"></span>
+
+                                                </div>*@
+
+
+                                                @Html.TextBoxFor(x => x.Files, new { type = "file", multiple = "multiple", value = "", id = (string)null })
+                                                <div class="upload-file-area">
+                                                    <span class='label label-info' id="upload-file-info"></span>
+                                                </div>
+
+
+
                                             </div>
 
                                         </div>
@@ -418,6 +443,27 @@
         }
 
     }
+
+
+
+    $(function () {
+        $(':file').change(function () {
+            debugger;
+
+            if (this.files.length > 0) {
+                debugger;
+                $('#upload-file-info').html("");
+                var real = $(this);
+                for (var i = 0; i < this.files.length; i++) {
+                    $("#upload-file-info").append(this.files[i].name + '</br>');
+                }
+                //var cloned = real.clone(true);
+                //real.hide();
+                //cloned.insertAfter(real);
+                //real.appendTo('form');
+            }
+        });
+    });
 
 </script>
 

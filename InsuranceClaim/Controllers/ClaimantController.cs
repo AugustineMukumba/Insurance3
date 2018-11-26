@@ -410,39 +410,61 @@ namespace InsuranceClaim.Controllers
         public ActionResult ClaimDetailsList()
         {
 
-            var claimList = InsuranceContext.ClaimDetailsProviders.All(where: $"IsActive = 'True' or IsActive is null").ToList();
-            var ServiceProvidersList = InsuranceContext.ServiceProviders.All(where: $"IsDeleted = 'True' or IsDeleted is null ").ToList();
-            var ClaimDetailsProviderList = new List<ClaimDetailsProviderModel>();
-            if (claimList != null && claimList.Count > 0)
+            var query = "select PolicyNumber, ClaimNumber, ClaimRegistration.Id as ClaimRegistrationId, ServiceProvider.ServiceProviderName, ";
+            query += " ServiceProviderType.ProviderType, ClaimRegistrationProviderDetial.CreatedOn, ClaimRegistrationProviderDetial.Id from ClaimRegistrationProviderDetial ";
+            query += " join ClaimRegistration on ClaimRegistrationProviderDetial.ClaimRegistrationId = ClaimRegistration.id ";
+            query += " join ServiceProvider on ClaimRegistrationProviderDetial.ServiceProviderId = ServiceProvider.Id ";
+            query += " join ServiceProviderType on ClaimRegistrationProviderDetial.ServiceProviderTypeId = ServiceProviderType.Id ";
+            query += " order by ClaimRegistrationProviderDetial.Id desc";
+
+            var ClaimDetailsProviderList = InsuranceContext.Query(query).Select(c => new ClaimDetailsProviderModel
             {
-                foreach (var item in claimList)
-                {
-                    ClaimDetailsProviderModel model = new ClaimDetailsProviderModel();
-                    var asserorType = ServiceProvidersList.FirstOrDefault(c => c.Id == item.AssessorsProviderType);
-                    var valuerTypes = ServiceProvidersList.FirstOrDefault(c => c.Id == item.ValuersProviderType);
-                    var lawerType = ServiceProvidersList.FirstOrDefault(c => c.Id == item.LawyersProviderType);
-                    var repaireType = ServiceProvidersList.FirstOrDefault(c => c.Id == item.RepairersProviderType);
-                    var towingtype = ServiceProvidersList.FirstOrDefault(c => c.Id == item.TownlyProviderType);
-                    var medicaltype = ServiceProvidersList.FirstOrDefault(c => c.Id == item.MedicalProviderType);
+                PolicyNumber = c.PolicyNumber,
+                ClaimNumber = c.ClaimNumber,
+                ClaimRegistrationId = c.ClaimRegistrationId,
+                ServiceProviderName = c.ServiceProviderName,
+                ProviderType = c.ProviderType,
+                CreatedOn = c.CreatedOn == null ? DateTime.MinValue.ToShortDateString() : Convert.ToString(c.CreatedOn.ToShortDateString()),
+                Id = c.Id,
+            }).ToList();
 
 
-                    model.Assessors_Type = asserorType == null ? "" : asserorType.ServiceProviderName;
-                    model.Valuers_Type = valuerTypes == null ? "" : valuerTypes.ServiceProviderName;
-                    model.Lawyers_Type = lawerType == null ? "" : lawerType.ServiceProviderName;
-                    model.Repairers_Type = repaireType == null ? "" : repaireType.ServiceProviderName;
-                    model.Towing_Type = towingtype == null ? "" : towingtype.ServiceProviderName;
-                    model.Medical_Type = medicaltype == null ? "" : medicaltype.ServiceProviderName;
-                    model.PolicyNumber = item.PolicyNumber;
-                    model.ClaimNumber = item.ClaimNumber;
-                    model.CreatedOn = Convert.ToDateTime(item.CreatedOn).ToShortDateString();
-                    model.Id = item.Id;
-                    model.CreatedBy = item.CreatedBy;
+            //var claimList = InsuranceContext.ClaimDetailsProviders.All(where: $"IsActive = 'True' or IsActive is null").ToList();
+            //var ServiceProvidersList = InsuranceContext.ServiceProviders.All(where: $"IsDeleted = 'True' or IsDeleted is null ").ToList();
+            //var ClaimDetailsProviderList = new List<ClaimDetailsProviderModel>();
+            //if (claimList != null && claimList.Count > 0)
+            //{
+            //    foreach (var item in claimList)
+            //    {
+            //        ClaimDetailsProviderModel model = new ClaimDetailsProviderModel();
+            //        var asserorType = ServiceProvidersList.FirstOrDefault(c => c.Id == item.AssessorsProviderType);
+            //        var valuerTypes = ServiceProvidersList.FirstOrDefault(c => c.Id == item.ValuersProviderType);
+            //        var lawerType = ServiceProvidersList.FirstOrDefault(c => c.Id == item.LawyersProviderType);
+            //        var repaireType = ServiceProvidersList.FirstOrDefault(c => c.Id == item.RepairersProviderType);
+            //        var towingtype = ServiceProvidersList.FirstOrDefault(c => c.Id == item.TownlyProviderType);
+            //        var medicaltype = ServiceProvidersList.FirstOrDefault(c => c.Id == item.MedicalProviderType);
 
 
-                    ClaimDetailsProviderList.Add(model);
-                }
-            }
-            return View(ClaimDetailsProviderList.OrderByDescending(x => x.Id));
+            //        model.Assessors_Type = asserorType == null ? "" : asserorType.ServiceProviderName;
+            //        model.Valuers_Type = valuerTypes == null ? "" : valuerTypes.ServiceProviderName;
+            //        model.Lawyers_Type = lawerType == null ? "" : lawerType.ServiceProviderName;
+            //        model.Repairers_Type = repaireType == null ? "" : repaireType.ServiceProviderName;
+            //        model.Towing_Type = towingtype == null ? "" : towingtype.ServiceProviderName;
+            //        model.Medical_Type = medicaltype == null ? "" : medicaltype.ServiceProviderName;
+            //        model.PolicyNumber = item.PolicyNumber;
+            //        model.ClaimNumber = item.ClaimNumber;
+            //        model.CreatedOn = Convert.ToDateTime(item.CreatedOn).ToShortDateString();
+            //        model.Id = item.Id;
+            //        model.CreatedBy = item.CreatedBy;
+
+
+            //        ClaimDetailsProviderList.Add(model);
+            //    }
+            //}
+
+
+
+            return View(ClaimDetailsProviderList);
         }
 
         public ActionResult EditClaimDetailsProvider(int Id)
@@ -520,11 +542,14 @@ namespace InsuranceClaim.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveRegisterClaim(RegisterClaimViewModel model)
+        public ActionResult SaveRegisterClaim(RegisterClaimViewModel model, HttpPostedFileBase[] files)
         {
 
             if (ModelState.IsValid)
             {
+                SaveCheckListDocument(files, model.Id);
+
+
                 var caimNumber = model.Claimnumber;
                 var claimStatis = model.Claimsatisfaction;
                 var status = model.Status;
@@ -561,7 +586,55 @@ namespace InsuranceClaim.Controllers
         }
 
 
+        public void SaveCheckListDocument(HttpPostedFileBase[] files, int RegisteredId)
+        {
+            var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            var customer = InsuranceContext.Customers.Single(where: $"UserId = '{userid}'");
+            // var RegisteredId = Request.Form["RegisterId"];
+            foreach (HttpPostedFileBase file in files)
+            {
+                string fname;
+                //Checking file is available to save.  
+                if (file != null)
+                {
+                    //Get Guid 
+                    Guid id = Guid.NewGuid();
+                    var FileName = Path.GetFileName(file.FileName);
+                    if (Request.Browser.Browser.ToUpper() == "IE" || Request.Browser.Browser.ToUpper() == "INTERNETEXPLORER")
+                    {
+                        string[] testfiles = file.FileName.Split(new char[] { '\\' });
+                        fname = id + "." + testfiles[testfiles.Length - 1].Split('.')[1];
+                    }
+                    else
+                    {
+                        fname = id + "." + file.FileName.Split('.')[1];
+                    }
+                    if (RegisteredId != 0)
+                    {
+                        string folderpath = @Server.MapPath("~/RegistrationDocument/" + RegisteredId + "/");
+                        if (!Directory.Exists(folderpath))
+                        {
+                            Directory.CreateDirectory(folderpath);
+                        }
+                        fname = "/RegistrationDocument/" + RegisteredId + "/" + fname;
+                        file.SaveAs(Server.MapPath(fname));
 
+                      
+
+                        RegistrationDocument doc = new RegistrationDocument();
+                        doc.Name = FileName;
+                        doc.FilePath = fname;
+                        doc.CreatedBy = customer.Id;
+                        doc.ClaimRegistrationId = RegisteredId.ToString();
+                        doc.CreatedOn = DateTime.Now;
+                        InsuranceContext.RegistrationDocuments.Insert(doc);
+
+
+
+                    }
+                }
+            }
+        }
 
         public ActionResult ClaimRegistrationList()
         {
@@ -624,7 +697,7 @@ namespace InsuranceClaim.Controllers
             try
             {
 
-                string query = "select  ClaimRegistration.Id, PolicyNumber,PaymentDetails, ClaimNumber, PlaceOfLoss, DescriptionOfLoss, ";
+                string query = "select  ClaimRegistration.Id, ClaimStatus.[Status], PolicyNumber,PaymentDetails, ClaimNumber, PlaceOfLoss, DescriptionOfLoss, ";
                 query += " EstimatedValueOfLoss, ThirdPartyDamageValue, ClaimStatus, VehicleDetailId, ClaimantName, ";
                 query += "RegistrationNo, MakeDescription, ModelDescription, TotalProviderFees from ClaimRegistration join ClaimStatus";
                 query += " on ClaimRegistration.ClaimStatus = ClaimStatus.Id ";
@@ -643,7 +716,7 @@ namespace InsuranceClaim.Controllers
                     DescriptionOfLoss = c.DescriptionOfLoss,
                     EstimatedValueOfLoss = c.EstimatedValueOfLoss,
                     ThirdPartyDamageValue = c.ThirdPartyDamageValue,
-                    ClaimStatus = Convert.ToString(c.ClaimStatus),
+                    ClaimStatus = c.Status,
                     VehicleDetailId = c.VehicleDetailId,
                     ClaimantName = c.ClaimantName,
                     RegistrationNo = c.RegistrationNo,
@@ -1062,20 +1135,12 @@ namespace InsuranceClaim.Controllers
             //int VehicleDetailId;
             //int ClaimNumer;
 
-        
             var customerRegistration = InsuranceContext.ClaimRegistrations.Single(where: $"Id = '{id}'");
-            
-
-
 
             try
             {
 
                 ViewBag.ServiceProviderTypes = InsuranceContext.ServiceProviderTypes.All().ToList();
-
-
-
-
 
                 var Providertype = InsuranceContext.ServiceProviders.All(where: $"IsDeleted = 'True' or IsDeleted is null ").ToList();
 
@@ -1120,6 +1185,7 @@ namespace InsuranceClaim.Controllers
 
 
                     RegisterClaimViewModel VehicleDetailVM = new RegisterClaimViewModel();
+                    
 
                     List<RiskViewModel> VehicleData = new List<RiskViewModel>();
                     List<ChecklistModel> ChecklistModel = new List<ChecklistModel>();
@@ -1294,9 +1360,13 @@ namespace InsuranceClaim.Controllers
                     {
                         InsuranceContext.ClaimRegistrationProviderDetials.Delete(item);
                     }
-                   
+
 
                     VehicleDetailVM.ClaimRegistrationProviderList = InsuranceContext.ClaimRegistrationProviderDetials.All(where: "ClaimRegistrationId=" + customerRegistration.Id + " and IsSaved=1").ToList();
+
+                    VehicleDetailVM.RegistrationDocumentList = InsuranceContext.RegistrationDocuments.All(where: "ClaimRegistrationId=" + id).ToList();
+
+
 
 
 
@@ -1406,13 +1476,17 @@ namespace InsuranceClaim.Controllers
             return IsChecked;
         }
 
-        public ActionResult updateRegisterDetail(RegisterClaimViewModel model)
+        public ActionResult updateRegisterDetail(RegisterClaimViewModel model, HttpPostedFileBase[] files)
         {
 
             //RemoveValidation();
 
             //if (ModelState.IsValid)
             //{
+
+            SaveCheckListDocument(files, model.Id);
+
+
             var caimNumber = model.Claimnumber;
             var claimStatis = model.Claimsatisfaction;
             var status = model.Status;

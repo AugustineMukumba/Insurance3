@@ -55,5 +55,11 @@ namespace InsuranceClaim.Models
         public decimal? TownlyProviderFees { get; set; }
         public decimal? MedicalProviderFees { get; set; }
 
+        public int ClaimRegistrationId { get; set; }
+
+        public string ServiceProviderName { get; set; }
+
+        public string ProviderType { get; set; }
+
     }
 }

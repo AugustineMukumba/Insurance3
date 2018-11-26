@@ -29,7 +29,7 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please Enter Last Name.")]
         public string LastName { get; set; }
         [Display(Name = "Payee/Claimant Name ")]
-        [Required(ErrorMessage = "Please Enter Last Name.")]
+        [Required(ErrorMessage = "Please Enter Payee Name.")]
         public string PayeeName { get; set; }
         [Display(Name = "Policy Holder Name")]
         [Required(ErrorMessage = "Please Enter Policy Holder Name.")]
@@ -80,6 +80,8 @@ namespace InsuranceClaim.Models
         [Display(Name = "Final Amount Paid")]
         [Required(ErrorMessage = "This is required field")]
         public decimal FinalAmountToPaid { get; set; }
+
+        public int ClaimRegisterationId { get; set; }
 
     }
 }

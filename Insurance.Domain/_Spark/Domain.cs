@@ -919,6 +919,8 @@ namespace Insurance.Domain
         public bool PrivateCar { get; set; }
 
         public decimal FinalAmountToPaid { get; set; }
+
+        public int ClaimRegisterationId { get; set; }
     }
     public partial class ClaimDocument : Entity<ClaimDocument>
     {
@@ -1115,5 +1117,18 @@ namespace Insurance.Domain
 
         public bool IsDeleted { get; set; }
 
+    }
+
+    public partial class RegistrationDocument : Entity<RegistrationDocument>
+    {
+        public RegistrationDocument() { }
+        public RegistrationDocument(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string FilePath { get; set; }
+        public string ClaimRegistrationId { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public int CreatedBy { get; set; }
     }
 }

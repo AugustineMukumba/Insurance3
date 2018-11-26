@@ -47,9 +47,6 @@
                                 <th>Payee Bank Details </th>
                                 <th>Phone Number</th>
                                 <th>Action(s)</th>
-
-
-
                             </tr>
                                 <tr class="policynumber-tr">
                                     <td>
@@ -149,11 +146,11 @@
                                                 <td>
                                                     @if (item.IsPartialLoss == true)
                                                     {
-                                                        <b>Weather its a Partial or full loss: Yes</b>
+                                                        <b>Partial  loss: Yes</b>
                                                     }
                                                     else
                                                     {
-                                                        <b>Weather its a Partial or full loss: No</b>
+                                                        <b>Full loss: No</b>
                                                     }
 
                                                 </td>
@@ -162,15 +159,15 @@
                                                 <td>
                                                     @if (item.IsDriverUnder25 == true)
                                                     {
-                                                        <b>Is Driver Under 25 ? : Yes</b>
+                                                        <b> Driver Under 25  : Yes</b>
                                                     }
-                                                    else if(item.IsDriverUnder25 == false)
+                                                    else if(item.DriverIsUnder21 == true)
                                                     {
-                                                        <b>Is Driver Under 25 ? : No</b>
+                                                        <b>Driver Under 21 ? : Yes</b>
                                                     }
                                                     else
                                                     {
-                                                        <b>Is Driver Under 25 ? : </b>
+                                                        <b> Driver Under 25  : Yes </b>
                                                     }
                                                 </td>
                                             </tr>
