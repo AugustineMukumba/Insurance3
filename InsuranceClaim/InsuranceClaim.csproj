@@ -490,6 +490,7 @@
     <Content Include="Views\SourceDetail\EditSourceDetail.cshtml" />
     <Content Include="Views\SourceDetail\SourceDetailsList.cshtml" />
     <Content Include="Views\ClaimAdjustment\ClaimPayment.cshtml" />
+    <Content Include="Views\ClaimAdjustment\ProviderPayment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

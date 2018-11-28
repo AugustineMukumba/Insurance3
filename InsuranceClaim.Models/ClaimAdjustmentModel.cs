@@ -83,5 +83,11 @@ namespace InsuranceClaim.Models
 
         public int ClaimRegisterationId { get; set; }
 
+        public List<ClaimRegistrationProviderModel> ServiceProviderList { get; set; }
+
+        public string TotalAmountLeftToPayed { get; set; }
+
+        public int RegistrationProviderId { get; set; }
+
     }
 }

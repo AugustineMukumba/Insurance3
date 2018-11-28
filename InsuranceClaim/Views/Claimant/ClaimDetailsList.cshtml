@@ -42,13 +42,27 @@
                         <th>Created On</th>
                         <th>Action(s)</th>
                     </tr>
-             
-                    @foreach (InsuranceClaim.Models.ClaimDetailsProviderModel item in Model)
-                    {
 
+                   @{
+
+                           var policyNumber = "";
+
+                           foreach (InsuranceClaim.Models.ClaimDetailsProviderModel item in Model)
+                           {
+
+
+                           
                         <tr class="policynumber-tr">
-                            <td>@item.PolicyNumber</td>
-                            <td>@item.ClaimNumber</td>
+                            @if (policyNumber != item.PolicyNumber)
+                            {
+                                <td>@item.PolicyNumber</td>
+                                <td>@item.ClaimNumber</td>
+                            }
+                            else
+                            {
+                                <td> </td>
+                                <td></td>
+                            }
                             <td>@item.ProviderType</td>
                             <td>@item.ServiceProviderName</td>
                             <td>@item.CreatedOn</td>
@@ -62,9 +76,13 @@
                             </td>
                         </tr>
 
-                  
+                           policyNumber = item.PolicyNumber;
 
-                    }
+                       }
+
+
+
+                }
                
                 </tbody>
 

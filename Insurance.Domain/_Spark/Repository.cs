@@ -93,6 +93,9 @@ namespace Insurance.Domain
        public static RegistrationDocuments RegistrationDocuments { get { return new RegistrationDocuments(); } }
         public static ClaimRegistrationProviderDetials ClaimRegistrationProviderDetials { get { return new ClaimRegistrationProviderDetials(); } }
 
+        public static ServiceProviderPaymentHistories ServiceProviderPaymentHistories { get { return new ServiceProviderPaymentHistories(); } }
+
+
         // general purpose operations
 
         public static void Execute(string sql, params object[] parms) { db.Execute(sql, parms); }

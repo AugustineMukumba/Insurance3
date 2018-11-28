@@ -1126,6 +1126,18 @@
             }
 
             GetRadioLicenseCost();
+
+            if ($("#PaymentTermId").val() != "" && $("#ProductId").val() != "" && $("#RegistrationNo").val() != "" && $("#CoverTypeId").val()!="") {
+                QuoteCalculation();
+            }
+
+
+
+
+
+
+
+
         });
 
         $("#MakeId").change(function () {

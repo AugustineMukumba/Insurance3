@@ -131,9 +131,6 @@ namespace InsuranceClaim.Controllers
         }
 
 
-
-
-
         [HttpPost]
         public ActionResult EditClaimant(ClaimNotificationModel model)
         {
@@ -1211,10 +1208,6 @@ namespace InsuranceClaim.Controllers
                         getCheckList = claimregistrationdetail.Checklist.Split(',');
                     }
 
-
-
-
-
                     for (var i = 0; i < ChecklistModel.Count(); i++)
                     {
                         RegisterClaimViewModel VehicleVM = new RegisterClaimViewModel();
@@ -1323,7 +1316,6 @@ namespace InsuranceClaim.Controllers
                     if (ClaimProvider != null && ClaimProvider.Count() > 0)
                     {
 
-
                         VehicleDetailVM.AssessorsProviderType = ClaimProvider.AssessorsProviderType;
                         VehicleDetailVM.ValuersProviderType = ClaimProvider.ValuersProviderType;
                         VehicleDetailVM.RepairersProviderType = ClaimProvider.RepairersProviderType;
@@ -1351,7 +1343,6 @@ namespace InsuranceClaim.Controllers
 
 
                     VehicleDetailVM.ProviderList = InsuranceContext.Query(query).Select(c => new ServiceProviderModel { Id = c.Id, ServiceProviderName = c.ServiceProviderName, ServiceProviderType = c.ProviderType, ProviderTypeId = c.ProviderTypeId }).ToList();
-
 
 
                     var claimRegistrationProviders = InsuranceContext.ClaimRegistrationProviderDetials.All(where: "ClaimRegistrationId=" + customerRegistration.Id + " and IsSaved=0");

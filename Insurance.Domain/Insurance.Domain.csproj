@@ -156,6 +156,7 @@
     <Compile Include="Domain\ReinsurerDetail.cs" />
     <Compile Include="Domain\ReminderFailed.cs" />
     <Compile Include="Domain\ServiceProvider.cs" />
+    <Compile Include="Domain\ServiceProviderPaymentHistory.cs" />
     <Compile Include="Domain\ServiceProviderType.cs" />
     <Compile Include="Domain\Setting.cs" />
     <Compile Include="Domain\SmsLog.cs" />
@@ -212,6 +213,7 @@
     <Compile Include="Repository\ReinsurerDetails.cs" />
     <Compile Include="Repository\ReminderFaileds.cs" />
     <Compile Include="Repository\Repository.partial.cs" />
+    <Compile Include="Repository\ServiceProviderPaymentHistories.cs" />
     <Compile Include="Repository\ServiceProviders.cs" />
     <Compile Include="Repository\ServiceProviderTypes.cs" />
     <Compile Include="Repository\Settings.cs" />

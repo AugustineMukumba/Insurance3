@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Insurance.Domain;
+using Insurance.Domain.Domain;
 using Insurance.Service;
 using InsuranceClaim.Models;
 using Microsoft.AspNet.Identity;
@@ -63,16 +64,37 @@ namespace InsuranceClaim.Controllers
         public ActionResult ClaimPayment(int id)
         {
             ClaimAdjustmentModel model = new ClaimAdjustmentModel();
+            model.Id = id;
             var claimAdjustment = InsuranceContext.ClaimAdjustments.Single(where: "Id=" + id);
 
             if(claimAdjustment!=null)
-            {
-                     
+            {               
                 model.PayeeName = claimAdjustment.PayeeName;
                 model.PolicyholderName = claimAdjustment.PolicyholderName;
             }
 
+            
+            var query = "select ClaimRegistrationProviderDetial.Id, ProviderType, ServiceProviderName, ServiceProviderFee from ClaimRegistrationProviderDetial ";
+            query += " join ServiceProvider on ClaimRegistrationProviderDetial.ServiceProviderId = ServiceProvider.Id ";
+            query += "join ServiceProviderType on ClaimRegistrationProviderDetial.ServiceProviderTypeId = ServiceProviderType.id ";
+            query += " where ClaimRegistrationProviderDetial.ClaimRegistrationId =" + claimAdjustment.ClaimRegisterationId;
 
+
+            model.ServiceProviderList = InsuranceContext.Query(query).Select(c => new ClaimRegistrationProviderModel { Id = c.Id, ServiceProviderName = c.ServiceProviderName, ServiceProviderType = c.ProviderType, ServiceProviderFee=c.ServiceProviderFee }).ToList();
+
+            var claimRegistrationProvider = InsuranceContext.ClaimRegistrationProviderDetials.All(where: "ClaimRegistrationId=" + claimAdjustment.ClaimRegisterationId).Select(c=>c.ServiceProviderFee).Sum();
+
+            model.TotalAmountLeftToPayed =  Convert.ToString(claimRegistrationProvider);
+
+            // var providerList = InsuranceContext.ClaimRegistrationProviderDetials.All(where : "ClaimRegistrationId=" + claimAdjustment).ToList();
+
+            return View(model);
+        }
+
+
+        public ActionResult ProviderPayment(int RegistrationProviderId, int ClaimAdjustmentId)
+        {
+            ClaimAdjustmentModel model = new ClaimAdjustmentModel();
             var ePaymentDetail = from ePayeeBankDetails e in Enum.GetValues(typeof(ePayeeBankDetails))
                                  select new
                                  {
@@ -81,6 +103,9 @@ namespace InsuranceClaim.Controllers
                                  };
 
             ViewBag.ePaymentDetailData = new SelectList(ePaymentDetail, "ID", "Name");
+
+            model.RegistrationProviderId = RegistrationProviderId;
+            model.Id = ClaimAdjustmentId;
 
             return View(model);
         }
@@ -96,19 +121,67 @@ namespace InsuranceClaim.Controllers
                 claimAdjustment.PayeeName = model.PayeeName;
                 claimAdjustment.PolicyholderName = model.PolicyholderName;
                 claimAdjustment.PayeeBankDetails = model.PayeeBankDetails;
+                claimAdjustment.PhoneNumber = model.PhoneNumber;
                 InsuranceContext.ClaimAdjustments.Update(claimAdjustment);
 
+            }
 
-                var claimRegistrationDetials = InsuranceContext.ClaimRegistrations.Single(where: $"id = '{claimAdjustment.ClaimRegisterationId}'");
+            var ePaymentDetail = from ePayeeBankDetails e in Enum.GetValues(typeof(ePayeeBankDetails))
+                                 select new
+                                 {
+                                     ID = (int)e,
+                                     Name = e.ToString()
+                                 };
+            ViewBag.ePaymentDetailData = new SelectList(ePaymentDetail, "ID", "Name");
 
-                if(claimRegistrationDetials!=null)
-                {
-                    claimRegistrationDetials.ClaimStatus = (int)claimStatus.Approved;
+            //  return RedirectToAction("ClaimRegistrationList" , "Claimant");
 
-                    InsuranceContext.ClaimRegistrations.Update(claimRegistrationDetials);
-                }
+            return RedirectToAction("ProviderPayment", "Claimant", new { RegistrationProviderId= model.RegistrationProviderId, ClaimAdjustmentId=model.Id });
+
+        }
+
+        [HttpPost]
+        public ActionResult ProviderPayment(ClaimAdjustmentModel model)
+        {
+
+            var claimAdjustment = InsuranceContext.ClaimAdjustments.Single(where: $"id = '{model.Id}'");
+
+            var ClaimRegistrationProviderDetial = InsuranceContext.ClaimRegistrationProviderDetials.Single(where: "Id=" + model.RegistrationProviderId);
+
+
+            decimal serviceProviderFee = 0;
+
+            var claimRegistrationDetials = InsuranceContext.ClaimRegistrations.Single(where: $"id = '{claimAdjustment.ClaimRegisterationId}'");
+
+            if (claimRegistrationDetials != null)
+            {
+                 serviceProviderFee = ClaimRegistrationProviderDetial.ServiceProviderFee;
+
+                claimRegistrationDetials.ClaimStatus = (int)claimStatus.Approved;
+
+                decimal calCulationFee = claimRegistrationDetials.TotalProviderFees - ClaimRegistrationProviderDetial.ServiceProviderFee;
+
+                claimRegistrationDetials.TotalProviderFees = calCulationFee;
+
+                InsuranceContext.ClaimRegistrations.Update(claimRegistrationDetials);
+            }
+
+
+            if(ClaimRegistrationProviderDetial!=null)
+            {
+                ClaimRegistrationProviderDetial.ServiceProviderFee = 0;
+                InsuranceContext.ClaimRegistrationProviderDetials.Update(ClaimRegistrationProviderDetial);
+
+                ServiceProviderPaymentHistory providerPaymentHistory = new ServiceProviderPaymentHistory { ClaimRegistrationId = claimAdjustment.ClaimRegisterationId, RegistrationDetialProviderId = model.RegistrationProviderId, PaidAmount = serviceProviderFee, CreatedOn = DateTime.Now };
+                InsuranceContext.ServiceProviderPaymentHistories.Insert(providerPaymentHistory);
+
 
             }
+
+
+            
+
+
 
 
 
@@ -120,7 +193,8 @@ namespace InsuranceClaim.Controllers
                                  };
             ViewBag.ePaymentDetailData = new SelectList(ePaymentDetail, "ID", "Name");
 
-            return RedirectToAction("ClaimRegistrationList" , "Claimant");
+            return RedirectToAction("ClaimRegistrationList", "Claimant");
+            //return View(model);
         }
 
 

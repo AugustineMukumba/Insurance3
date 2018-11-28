@@ -58,7 +58,7 @@ namespace InsuranceClaim.Controllers
 
 
 
-          
+
 
             if (id != -1) // -1 use for getting session value when click on back button
             {
@@ -1261,10 +1261,7 @@ namespace InsuranceClaim.Controllers
                         {
                             count = dr["MaxCustomerId"] == null ? 0 : Convert.ToInt32(dr["MaxCustomerId"]);
                         }
-
                     }
-
-
                 }
                 catch (Exception ex)
                 {
@@ -1343,8 +1340,8 @@ namespace InsuranceClaim.Controllers
                                 {
                                     TempData["PaymentMethodId"] = model.PaymentMethodId;
                                     return RedirectToAction("makepayment", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
-                                }             
-                                    //return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policyNum, Email = customerEmail });
+                                }
+                                //return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policyNum, Email = customerEmail });
                                 else
                                     return RedirectToAction("PaymentDetail", new { id = model.CustomSumarryDetilId });
                             }
@@ -1606,7 +1603,7 @@ namespace InsuranceClaim.Controllers
                                 policy.CreatedBy = customer.Id;
                                 policy.CreatedOn = DateTime.Now;
                                 InsuranceContext.PolicyDetails.Insert(policy);
-                                
+
                                 Session["PolicyData"] = policy;
                             }
                             else
@@ -1661,7 +1658,7 @@ namespace InsuranceClaim.Controllers
 
                                 var vehicelDetails = InsuranceContext.VehicleDetails.Single(where: $"policyid= '{policy.Id}' and RegistrationNo= '{_item.RegistrationNo}'");
 
-                                if(vehicelDetails!=null)
+                                if (vehicelDetails != null)
                                 {
                                     item.Id = vehicelDetails.Id;
                                 }
@@ -2104,13 +2101,21 @@ namespace InsuranceClaim.Controllers
                             foreach (var item in vehicle.ToList())
                             {
 
-                                var summarydetails = new SummaryVehicleDetail();
-                                summarydetails.SummaryDetailId = summary.Id;
-                                summarydetails.VehicleDetailsId = item.Id;
-                                summarydetails.CreatedBy = customer.Id;
-                                summarydetails.CreatedOn = DateTime.Now;
-                                InsuranceContext.SummaryVehicleDetails.Insert(summarydetails);
+                                try
+                                {
+                                    var summarydetails = new SummaryVehicleDetail();
+                                    summarydetails.SummaryDetailId = summary.Id;
+                                    summarydetails.VehicleDetailsId = item.Id;
+                                    summarydetails.CreatedBy = customer.Id;
+                                    summarydetails.CreatedOn = DateTime.Now;
+                                    InsuranceContext.SummaryVehicleDetails.Insert(summarydetails);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Insurance.Service.EmailService log = new Insurance.Service.EmailService();
+                                    log.WriteLog("exception during insert vehicel :" + ex.Message);
 
+                                }
 
                             }
 
@@ -2356,9 +2361,9 @@ namespace InsuranceClaim.Controllers
 
                             InsuranceContext.SmsLogs.Insert(objRecieptsmslog);
                             #endregion
-                          
 
-                         
+
+
 
                             Session.Remove("CustomerDataModal");
                             Session.Remove("PolicyData");
@@ -2370,12 +2375,12 @@ namespace InsuranceClaim.Controllers
                             Session.Remove("InvoiceId");
 
 
-                              TempData["SucessMsg"] = "Quotation has been sent email sucessfully.";
+                            TempData["SucessMsg"] = "Quotation has been sent email sucessfully.";
 
 
                             bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
 
-                            if(_userLoggedin)
+                            if (_userLoggedin)
                             {
                                 return RedirectToAction("QuotationList", "Account");
                             }
@@ -2383,8 +2388,8 @@ namespace InsuranceClaim.Controllers
                             {
                                 return Redirect("/CustomerRegistration/index");
                             }
-                          
-                           // return RedirectToAction("SummaryDetail");
+
+                            // return RedirectToAction("SummaryDetail");
                         }
                         #endregion
 
@@ -2889,13 +2894,13 @@ namespace InsuranceClaim.Controllers
         }
 
 
-        public ActionResult makepayment(Int32 id,decimal TotalPremiumPaid)
+        public ActionResult makepayment(Int32 id, decimal TotalPremiumPaid)
         {
             Dictionary<string, dynamic> responseData;
             string data = "authentication.userId=8a8294175698883c01569ce4c4212119" +
                 "&authentication.password=Mc2NMzf8jM" +
                 "&authentication.entityId=8a8294175698883c01569ce4c3972115" +
-                "&amount="+TotalPremiumPaid+"" +
+                "&amount=" + TotalPremiumPaid + "" +
                 "&currency=USD" +
                 "&paymentType=DB";
 
@@ -3034,7 +3039,7 @@ namespace InsuranceClaim.Controllers
         {
             public int result { get; set; }
             public string message { get; set; }
-            public ResultRootObject Data { get; set; }      
+            public ResultRootObject Data { get; set; }
         }
 
         public async Task<JsonResult> UpdateCustomerData(CustomerModel model, string buttonUpdate)
@@ -3070,7 +3075,7 @@ namespace InsuranceClaim.Controllers
                     }
 
                     return Json(new { IsError = false, error = "Sucessfully update" }, JsonRequestBehavior.AllowGet);
-                       
+
                 }
             }
             return Json(new { IsError = false, error = TempData["ErrorMessage"].ToString() }, JsonRequestBehavior.AllowGet);

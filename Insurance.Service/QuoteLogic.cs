@@ -465,7 +465,7 @@ namespace Insurance.Service
 
 
             double maxZTSC = 10.80; // default ProductId=1;
-            if (ProductId == 3)
+            if (ProductId == 3 || ProductId==11) // Commercial Commuter Omnibus and Commercial Vehicle
             {
                 maxZTSC = 22.00;
             }

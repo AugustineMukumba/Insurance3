@@ -68,6 +68,10 @@ namespace Insurance.Domain
 
     }
 
+  
+
+
+
     public partial class CoverType : Entity<CoverType>
     {
         public CoverType() { }
@@ -1131,4 +1135,8 @@ namespace Insurance.Domain
         public DateTime CreatedOn { get; set; }
         public int CreatedBy { get; set; }
     }
+
+
+    
+
 }
