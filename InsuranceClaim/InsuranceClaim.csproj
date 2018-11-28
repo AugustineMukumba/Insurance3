@@ -218,6 +218,7 @@
     <Compile Include="Controllers\CovertypeController.cs" />
     <Compile Include="Controllers\CurrencyController.cs" />
     <Compile Include="Controllers\CustomerRegistrationController.cs" />
+    <Compile Include="Controllers\EndorsementController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InsuranceHomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -491,6 +492,13 @@
     <Content Include="Views\SourceDetail\SourceDetailsList.cshtml" />
     <Content Include="Views\ClaimAdjustment\ClaimPayment.cshtml" />
     <Content Include="Views\ClaimAdjustment\ProviderPayment.cshtml" />
+    <Content Include="Views\Endorsement\EndorsementDetail.cshtml" />
+    <Content Include="Views\Endorsement\EndorsementDetials.cshtml" />
+    <Content Include="Views\Endorsement\EndorsementRiskDetail.cshtml" />
+    <Content Include="Views\Endorsement\EndorsementRiskDetails.cshtml" />
+    <Content Include="Views\Endorsement\EndorsementSummaryDetail.cshtml" />
+    <Content Include="Views\Endorsement\EndorsementSummaryDetails.cshtml" />
+    <Content Include="Views\Endorsement\ViewEndorsementCustomer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

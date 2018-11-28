@@ -20,6 +20,24 @@ function GoToProductDetail(json) {
     }
 }
 
+
+
+function GoProNextDetails(json) {
+    debugger;
+    var errorMessage = json.error;
+    if (json.IsError == true) {
+        if (errorMessage != null && errorMessage != '') {
+            toastr.error(errorMessage)
+        }
+    }
+
+    if (errorMessage == "Sucessfully update") {
+        debugger;
+        toastr.error(errorMessage)
+        window.location.href = '/Endorsement/EndorsementInsertRiskDetails';
+    }
+}
+
 function GoToNextDetail(json) {
     debugger;
     var errorMessage = json.error;

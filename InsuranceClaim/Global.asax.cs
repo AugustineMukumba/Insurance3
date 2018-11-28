@@ -45,7 +45,16 @@ namespace InsuranceClaim
                 cfg.CreateMap<SummaryVehicleDetail, SummaryVehicleDetailsModel>().ReverseMap();
                 cfg.CreateMap<ReinsuranceBroker, ReinsuranceBrokerModel>().ReverseMap();
                 cfg.CreateMap<VehicleMake, VehiclesMakeModel>().ReverseMap();
-                
+                cfg.CreateMap<EndorsementRiskDetailModel, EndorsementVehicleDetail>().ReverseMap();
+
+                //Endorsement mapper//
+
+                cfg.CreateMap<EndorsementPolicyDetail, PolicyDetail>().ReverseMap();
+                cfg.CreateMap<EndorsementSummaryDetail, SummaryDetail>().ReverseMap();
+                cfg.CreateMap<EndorsementPolicyDetailModel, PolicyDetail>().ReverseMap();
+                cfg.CreateMap<EndorsementPolicyDetail, EndorsementPolicyDetailModel>().ReverseMap();
+                cfg.CreateMap<Customer, EndorsementCustomerModel>().ReverseMap();
+                cfg.CreateMap<EndorsementCustomer, EndorsementCustomerModel>().ReverseMap();
 
                 //Second Phase Work 
                 cfg.CreateMap<ClaimNotification, ClaimNotificationModel>().ReverseMap();

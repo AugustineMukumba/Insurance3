@@ -109,6 +109,15 @@ namespace InsuranceClaim.Models
         public int BusinessSourceId { get; set; }
 
         public int CurrencyId { get; set; }
+        public int? PrimaryVehicleId { get; set; }
+        public int? EndorsementCustomerId { get; set; }
+        public int? EndorsementPolicyId { get; set; }
+        public int? EndorsementSummaryId { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public bool? IsActive { get; set; }
+        public bool? isLapsed { get; set; }
+        public bool? IsCompleted { get; set; }
 
     }
 }

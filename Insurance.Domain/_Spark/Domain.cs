@@ -68,7 +68,7 @@ namespace Insurance.Domain
 
     }
 
-  
+
 
 
 
@@ -229,7 +229,7 @@ namespace Insurance.Domain
         public SummaryDetail(bool defaults) : base(defaults) { }
 
         public int Id { get; set; }
-      
+
         public int? VehicleDetailId { get; set; }
         public int? CustomerId { get; set; }
         public int? PaymentTermId { get; set; }
@@ -457,7 +457,7 @@ namespace Insurance.Domain
         public string Type { get; set; }
         public string ReinsuranceBrokerCode { get; set; }
         public DateTime CreatedOn { get; set; }
-        public int?  CreatedBy { get; set; }
+        public int? CreatedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
 
@@ -626,7 +626,7 @@ namespace Insurance.Domain
         public int Id { get; set; }
         public int SummaryDetailId { get; set; }
         public int VehicleDetailsId { get; set; }
-       public DateTime? CreatedOn { get; set; }
+        public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
@@ -970,7 +970,7 @@ namespace Insurance.Domain
         public EndorsementVehicleDetail(bool defaults) : base(defaults) { }
 
         public int Id { get; set; }
-        public int VehicleId { get; set; }
+        public int? VehicleId { get; set; }
         public int PolicyId { get; set; }
         public int? NoOfCarsCovered { get; set; }
         public string RegistrationNo { get; set; }
@@ -1036,6 +1036,10 @@ namespace Insurance.Domain
         public int BusinessSourceId { get; set; }
 
         public int CurrencyId { get; set; }
+        public bool? IsCompleted { get; set; }
+        public int? PrimaryVehicleId { get; set; }
+        public int? EndorsementCustomerId { get; set; }
+        public int? EndorsementPolicyId { get; set; }
     }
 
 
@@ -1081,6 +1085,11 @@ namespace Insurance.Domain
         public DateTime? BalancePaidDate { get; set; }
         public string Notes { get; set; }
         public bool isQuotation { get; set; }
+        public bool? IsCompleted { get; set; }
+        public int? PrimarySummaryId { get; set; }
+        public int? EndorsementCustomerId { get; set; }
+        public int? EndorsementVehicleId { get; set; }
+        public int? EndorsementPolicyId { get; set; }
 
     }
 
@@ -1096,8 +1105,104 @@ namespace Insurance.Domain
         public int? CreatedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
+        public bool? IsCompleted { get; set; }
+        public int? PrimarySummaryVehicleDetail { get; set; }
+        public int? EndorsementSummaryId { get; set; }
+        public int? EndorsementVehicleId { get; set; }
 
     }
+
+
+    public partial class EndorsementCustomer : Entity<EndorsementCustomer>
+    {
+        public EndorsementCustomer() { }
+        public EndorsementCustomer(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public decimal? CustomerId { get; set; }
+        public string UserID { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
+        public string City { get; set; }
+        public string NationalIdentificationNumber { get; set; }
+        public string ZipCode { get; set; }
+        public string Country { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public string Gender { get; set; }
+        public bool? IsWelcomeNoteSent { get; set; }
+        public bool? IsPolicyDocSent { get; set; }
+        public bool? IsLicenseDiskNeeded { get; set; }
+        public bool? IsOTPConfirmed { get; set; }
+        public string PhoneNumber { get; set; }
+
+        public bool? IsActive { get; set; }
+        public string Countrycode { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
+
+        public bool IsCustomEmail { get; set; }
+        public bool? IsCompleted { get; set; }
+        public int? PrimeryCustomerId { get; set; }
+    }
+
+    public partial class EndorsementPolicyDetail : Entity<EndorsementPolicyDetail>
+    {
+        public EndorsementPolicyDetail() { }
+        public EndorsementPolicyDetail(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public int? CustomerId { get; set; }
+        public string PolicyName { get; set; }
+        public string PolicyNumber { get; set; }
+        public int? InsurerId { get; set; }
+        public int PolicyStatusId { get; set; }
+        public int CurrencyId { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public DateTime? RenewalDate { get; set; }
+        public DateTime? TransactionDate { get; set; }
+        public int BusinessSourceId { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
+
+        public int? PolicyTerm { get; set; }
+        public int? EndorsementCustomerId { get; set; }
+        public int? PrimaryPolicyId { get; set; }
+
+    }
+    public partial class EndorsementPaymentInformation : Entity<EndorsementPaymentInformation>
+    {
+        public EndorsementPaymentInformation() { }
+        public EndorsementPaymentInformation(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public int? PrimarySummaryDetailId { get; set; }
+        public int? PrimaryVehicleDetailId { get; set; }
+        public int? PrimaryPolicyId { get; set; }
+        public int? PrimaryCustomerId { get; set; }
+        public int? ProductId { get; set; }
+        public int? CurrencyId { get; set; }
+        public string DebitNote { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public int? ModifiedBy { get; set; }
+        public int? EndorsementSummaryId { get; set; }
+        public int? EndorsementVehicleId { get; set; }
+        public int? EndorsementCustomerId { get; set; }
+        public int? EndorsementPolicyId { get; set; }
+        public bool? DeleverLicence { get; set; }
+        public string PaymentId { get; set; }
+        public string InvoiceId { get; set; }
+        public string InvoiceNumber { get; set; }
+    }
+
 
     public partial class SourceDetail : Entity<SourceDetail>
     {
@@ -1137,6 +1242,6 @@ namespace Insurance.Domain
     }
 
 
-    
+
 
 }

@@ -71,8 +71,10 @@ namespace Insurance.Domain
         public static EndorsementVehicleDetails EndorsementVehicleDetails { get { return new EndorsementVehicleDetails(); } }
         public static EndorsementSummaryDetails EndorsementSummaryDetails { get { return new EndorsementSummaryDetails(); } }
         public static EndorsementSummaryVehicleDetails EndorsementSummaryVehicleDetails { get { return new EndorsementSummaryVehicleDetails(); } }
-        
 
+        public static EndorsementCustomers EndorsementCustomers { get { return new EndorsementCustomers(); } }
+        public static EndorsementPolicyDetails EndorsementPolicyDetails { get { return new EndorsementPolicyDetails(); } }
+        public static EndorsementPaymentInformations EndorsementPaymentInformations { get { return new EndorsementPaymentInformations(); } }
         //Second Phase Work
 
         public static ClaimNotifications ClaimNotifications { get { return new ClaimNotifications(); } }

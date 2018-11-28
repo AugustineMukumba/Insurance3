@@ -110,6 +110,10 @@
     <Compile Include="CustomerListingReportModel.cs" />
     <Compile Include="CustomerModel.cs" />
     <Compile Include="DailyReceiptsReportModel.cs" />
+    <Compile Include="EndorsementCustomerModel.cs" />
+    <Compile Include="EndorsementPaymentInformationModel.cs" />
+    <Compile Include="EndorsementPolicyDetailModel.cs" />
+    <Compile Include="EndorsementPolicyListViewModel.cs" />
     <Compile Include="EndorsementRiskDetailModel.cs" />
     <Compile Include="EndorsementSummaryDetailModel.cs" />
     <Compile Include="EndorsementSummaryVehicleDetailModel.cs" />

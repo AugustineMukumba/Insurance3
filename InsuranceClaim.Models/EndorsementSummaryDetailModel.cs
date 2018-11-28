@@ -44,7 +44,15 @@ namespace InsuranceClaim.Models
 
         public string InsuranceId { get; set; }
 
-
+        public bool? IsCompleted { get; set; }
         public string InvoiceNumber { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public int? ModifiedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
+        public int? EndorsementPolicyId { get; set; }
+        public int? EndorsementCustomerId { get; set; }
+        public int? PrimarySummaryId { get; set; }
+        public int? CustomerId { get; set; }
     }
 }
