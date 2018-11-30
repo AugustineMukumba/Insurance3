@@ -690,6 +690,7 @@ namespace InsuranceClaim.Controllers
             if (summaryDetail != null && summaryDetail.isQuotation)
             {
                 summaryDetail.isQuotation = false;
+                InsuranceContext.SummaryDetails.Update(summaryDetail);
             }
 
             var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={id}").ToList();

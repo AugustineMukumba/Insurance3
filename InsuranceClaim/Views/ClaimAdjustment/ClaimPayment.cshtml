@@ -21,6 +21,25 @@
                         <div class="form-title">
                             <h4>Payment</h4>
                         </div>
+
+                        @if (TempData["Sucessmessage"] != null && TempData["Sucessmessage"] != "")
+                        {
+                            <a class="btn btn-primary" href="/Claimant/ClaimRegistrationList"> Back to Claim Registration</a>
+
+                            <br />
+                            <br />
+
+
+                            <div class="alert alert-success">
+                                <strong>Success Payment has done!</strong> Make payment for another provider.
+
+                               
+                            </div>
+
+                         
+                        }
+
+
                         <div class="form-group-input">
 
                             @using (Html.BeginForm("ClaimPayment", "ClaimAdjustment", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))

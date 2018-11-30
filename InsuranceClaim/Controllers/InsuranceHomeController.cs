@@ -1,4 +1,5 @@
-﻿using Insurance.Service;
+﻿using Insurance.Domain;
+using Insurance.Service;
 using InsuranceClaim.Models;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,11 @@ namespace InsuranceClaim.Controllers
          //   ICEcashService obj = new ICEcashService();
             //obj.getToken();
             //obj.RequestQuote(objVehicles);
-            //test
-
-
-         
+            //test    
             return View();
         }
+
+
+
     }
 }

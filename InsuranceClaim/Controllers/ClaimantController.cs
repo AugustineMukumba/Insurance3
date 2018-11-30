@@ -696,7 +696,7 @@ namespace InsuranceClaim.Controllers
 
                 string query = "select  ClaimRegistration.Id, ClaimStatus.[Status], PolicyNumber,PaymentDetails, ClaimNumber, PlaceOfLoss, DescriptionOfLoss, ";
                 query += " EstimatedValueOfLoss, ThirdPartyDamageValue, ClaimStatus, VehicleDetailId, ClaimantName, ";
-                query += "RegistrationNo, MakeDescription, ModelDescription, TotalProviderFees from ClaimRegistration join ClaimStatus";
+                query += "RegistrationNo, MakeDescription, ModelDescription, TotalProviderFees, ClaimRegistration.CreatedOn from ClaimRegistration join ClaimStatus";
                 query += " on ClaimRegistration.ClaimStatus = ClaimStatus.Id ";
                 query += " left join VehicleMake on ClaimRegistration.MakeId = VehicleMake.MakeCode";
                 query += " left join VehicleModel on ClaimRegistration.ModelId = VehicleModel.ModelCode";
@@ -720,7 +720,8 @@ namespace InsuranceClaim.Controllers
                     MakeDescription = c.MakeDescription,
                     ModelDescription = c.ModelDescription,
                     ServiceProviderList = GetServiceProvider(c.Id),
-                    TotalProviderFees = c.TotalProviderFees
+                    TotalProviderFees = c.TotalProviderFees,
+                    CreatedOn = c.CreatedOn
                 }).ToList();
 
             }
@@ -730,7 +731,7 @@ namespace InsuranceClaim.Controllers
             }
 
 
-            return View(list.OrderByDescending(x => x.Id));
+            return View(list.OrderByDescending(x => x.CreatedOn));
         }
 
         public List<ServiceProviderModel> GetServiceProvider(int claimRegistrationId)

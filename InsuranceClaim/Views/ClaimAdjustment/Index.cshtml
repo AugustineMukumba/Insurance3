@@ -18,6 +18,8 @@
                         <div class="form-title">
                             <h4>Claim Adjustment</h4>
                         </div>
+
+
                         <div class="form-group-input">
                             @*@using (Ajax.BeginForm("SaveCustomerData", "CustomerRegistration", new AjaxOptions { UpdateTargetId = "CustomerResult", OnSuccess = "GoToProductDetail" }))*@
                             @using (Html.BeginForm("SaveClaimAdjustment", "ClaimAdjustment", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))

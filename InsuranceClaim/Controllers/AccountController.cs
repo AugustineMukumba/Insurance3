@@ -1643,8 +1643,6 @@ namespace InsuranceClaim.Controllers
                                 obj.FacReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans[1].ReinsuranceAmount);
                             }
 
-
-
                             policylistviewmodel.Vehicles.Add(obj);
                         }
 

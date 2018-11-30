@@ -18,15 +18,17 @@ namespace InsuranceClaim.Controllers
         public ActionResult Index(int? id)
         {
 
-         //   string PolicyNumber, int? claimnumber
+            //   string PolicyNumber, int? claimnumber
 
-      
+
             var ePaymentDetail = from ePayeeBankDetails e in Enum.GetValues(typeof(ePayeeBankDetails))
                                  select new
                                  {
                                      ID = (int)e,
                                      Name = e.ToString()
                                  };
+
+
 
             ViewBag.ePaymentDetailData = new SelectList(ePaymentDetail, "ID", "Name");
 
@@ -36,12 +38,12 @@ namespace InsuranceClaim.Controllers
                 var data = InsuranceContext.ClaimRegistrations.Single(where: $"Id= '{id}'");
                 if (data != null && data.Count() > 0)
                 {
-                    
+
                     var policy = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{data.PolicyNumber}'");
                     var summery = InsuranceContext.SummaryDetails.Single(where: $"CustomerId = '{policy.CustomerId}'");
-                    
+
                     var custmo = InsuranceContext.Customers.Single(where: $"Id = '{policy.CustomerId}'");
-                    model.EstimatedLoss =data.EstimatedValueOfLoss;
+                    model.EstimatedLoss = data.EstimatedValueOfLoss;
                     model.ClaimNumber = Convert.ToInt32(data.ClaimNumber);
                     model.PolicyNumber = data.PolicyNumber;
                     model.FirstName = custmo.FirstName;
@@ -56,35 +58,47 @@ namespace InsuranceClaim.Controllers
 
                 }
             }
+
+
+
+
             return View();
         }
 
 
         [HttpGet]
-        public ActionResult ClaimPayment(int id)
+        public ActionResult ClaimPayment(int id, string successMsg = "")
         {
             ClaimAdjustmentModel model = new ClaimAdjustmentModel();
             model.Id = id;
             var claimAdjustment = InsuranceContext.ClaimAdjustments.Single(where: "Id=" + id);
 
-            if(claimAdjustment!=null)
-            {               
+
+
+            TempData["Sucessmessage"] = successMsg;
+
+
+            if (claimAdjustment != null)
+            {
                 model.PayeeName = claimAdjustment.PayeeName;
                 model.PolicyholderName = claimAdjustment.PolicyholderName;
             }
 
-            
+
+
+
+
             var query = "select ClaimRegistrationProviderDetial.Id, ProviderType, ServiceProviderName, ServiceProviderFee from ClaimRegistrationProviderDetial ";
             query += " join ServiceProvider on ClaimRegistrationProviderDetial.ServiceProviderId = ServiceProvider.Id ";
             query += "join ServiceProviderType on ClaimRegistrationProviderDetial.ServiceProviderTypeId = ServiceProviderType.id ";
             query += " where ClaimRegistrationProviderDetial.ClaimRegistrationId =" + claimAdjustment.ClaimRegisterationId;
 
 
-            model.ServiceProviderList = InsuranceContext.Query(query).Select(c => new ClaimRegistrationProviderModel { Id = c.Id, ServiceProviderName = c.ServiceProviderName, ServiceProviderType = c.ProviderType, ServiceProviderFee=c.ServiceProviderFee }).ToList();
+            model.ServiceProviderList = InsuranceContext.Query(query).Select(c => new ClaimRegistrationProviderModel { Id = c.Id, ServiceProviderName = c.ServiceProviderName, ServiceProviderType = c.ProviderType, ServiceProviderFee = c.ServiceProviderFee }).ToList();
 
-            var claimRegistrationProvider = InsuranceContext.ClaimRegistrationProviderDetials.All(where: "ClaimRegistrationId=" + claimAdjustment.ClaimRegisterationId).Select(c=>c.ServiceProviderFee).Sum();
+            var claimRegistrationProvider = InsuranceContext.ClaimRegistrationProviderDetials.All(where: "ClaimRegistrationId=" + claimAdjustment.ClaimRegisterationId).Select(c => c.ServiceProviderFee).Sum();
 
-            model.TotalAmountLeftToPayed =  Convert.ToString(claimRegistrationProvider);
+            model.TotalAmountLeftToPayed = Convert.ToString(claimRegistrationProvider);
 
             // var providerList = InsuranceContext.ClaimRegistrationProviderDetials.All(where : "ClaimRegistrationId=" + claimAdjustment).ToList();
 
@@ -116,7 +130,7 @@ namespace InsuranceClaim.Controllers
 
             var claimAdjustment = InsuranceContext.ClaimAdjustments.Single(where: $"Id = '{model.Id}'");
 
-            if(claimAdjustment != null)
+            if (claimAdjustment != null)
             {
                 claimAdjustment.PayeeName = model.PayeeName;
                 claimAdjustment.PolicyholderName = model.PolicyholderName;
@@ -136,7 +150,7 @@ namespace InsuranceClaim.Controllers
 
             //  return RedirectToAction("ClaimRegistrationList" , "Claimant");
 
-            return RedirectToAction("ProviderPayment", "Claimant", new { RegistrationProviderId= model.RegistrationProviderId, ClaimAdjustmentId=model.Id });
+            return RedirectToAction("ProviderPayment", "Claimant", new { RegistrationProviderId = model.RegistrationProviderId, ClaimAdjustmentId = model.Id });
 
         }
 
@@ -155,19 +169,23 @@ namespace InsuranceClaim.Controllers
 
             if (claimRegistrationDetials != null)
             {
-                 serviceProviderFee = ClaimRegistrationProviderDetial.ServiceProviderFee;
-
-                claimRegistrationDetials.ClaimStatus = (int)claimStatus.Approved;
+                serviceProviderFee = ClaimRegistrationProviderDetial.ServiceProviderFee;
 
                 decimal calCulationFee = claimRegistrationDetials.TotalProviderFees - ClaimRegistrationProviderDetial.ServiceProviderFee;
 
                 claimRegistrationDetials.TotalProviderFees = calCulationFee;
 
+
+                if (calCulationFee <= 0)
+                    claimRegistrationDetials.ClaimStatus = (int)claimStatus.Approved;
+
+                claimRegistrationDetials.CreatedOn = DateTime.Now;
+
                 InsuranceContext.ClaimRegistrations.Update(claimRegistrationDetials);
             }
 
 
-            if(ClaimRegistrationProviderDetial!=null)
+            if (ClaimRegistrationProviderDetial != null)
             {
                 ClaimRegistrationProviderDetial.ServiceProviderFee = 0;
                 InsuranceContext.ClaimRegistrationProviderDetials.Update(ClaimRegistrationProviderDetial);
@@ -179,7 +197,7 @@ namespace InsuranceClaim.Controllers
             }
 
 
-            
+
 
 
 
@@ -193,7 +211,9 @@ namespace InsuranceClaim.Controllers
                                  };
             ViewBag.ePaymentDetailData = new SelectList(ePaymentDetail, "ID", "Name");
 
-            return RedirectToAction("ClaimRegistrationList", "Claimant");
+            return RedirectToAction("ClaimPayment", "ClaimAdjustment", new { id = claimAdjustment.Id, successMsg = "Make another provider payment." });
+
+            // return RedirectToAction("ClaimRegistrationList", "Claimant");
             //return View(model);
         }
 
@@ -203,9 +223,9 @@ namespace InsuranceClaim.Controllers
             ModelState.Remove("Id");
             ModelState.Remove("PayeeBankDetails");
             ModelState.Remove("PayeeName");
-            
 
-            if (model.IsDriverUnder25==null)
+
+            if (model.IsDriverUnder25 == null)
             {
                 ModelState.Remove("IsDriverUnder25");
             }
@@ -236,7 +256,7 @@ namespace InsuranceClaim.Controllers
 
                     var claimadjust = InsuranceContext.ClaimAdjustments.Single(where: $"ClaimRegisterationId = '{model.ClaimRegisterationId}'");
 
-                    if(claimadjust==null)
+                    if (claimadjust == null)
                     {
                         userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
                         var customer = InsuranceContext.Customers.Single(where: $"UserId = '{userid}'");
@@ -258,7 +278,7 @@ namespace InsuranceClaim.Controllers
                         data.IsActive = true;
                         InsuranceContext.ClaimAdjustments.Update(data);
                         return RedirectToAction("ClaimPayment", new { id = claimadjust.Id });
-                    }                 
+                    }
                 }
             }
             return View("Index");
@@ -308,7 +328,7 @@ namespace InsuranceClaim.Controllers
             return RedirectToAction("ListClaimAdjustment");
         }
         [HttpPost]
-        public JsonResult CalculateClaimPremium(decimal sumInsured,int? IsPartialLoss,int? IsLossInZimbabwe,int? IsStolen,int? Islicensedless60months,int? DriverIsUnder21,Boolean PrivateCar,Boolean CommercialCar,int? IsDriver25,int? IsSoundSystem)
+        public JsonResult CalculateClaimPremium(decimal sumInsured, int? IsPartialLoss, int? IsLossInZimbabwe, int? IsStolen, int? Islicensedless60months, int? DriverIsUnder21, Boolean PrivateCar, Boolean CommercialCar, int? IsDriver25, int? IsSoundSystem)
         {
             JsonResult json = new JsonResult();
             var ClaimQuoteL = new ClaimQuoteLogic();

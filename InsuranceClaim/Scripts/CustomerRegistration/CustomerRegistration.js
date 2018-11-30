@@ -33,7 +33,7 @@ function GoProNextDetails(json) {
 
     if (errorMessage == "Sucessfully update") {
         debugger;
-        toastr.error(errorMessage)
+        toastr.success(errorMessage)
         window.location.href = '/Endorsement/EndorsementInsertRiskDetails';
     }
 }

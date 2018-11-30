@@ -1013,7 +1013,7 @@ namespace InsuranceClaim.Controllers
             Endorpolicylist.listendorsementpolicy = new List<EndorsementPolicyListViewModel>();
 
             var endorsementsummary = new List<EndorsementSummaryDetail>();
-            endorsementsummary = InsuranceContext.EndorsementSummaryDetails.All().ToList();
+            endorsementsummary = InsuranceContext.EndorsementSummaryDetails.All().OrderByDescending(c=>c.CreatedOn).ToList();
 
             foreach (var item in endorsementsummary)
             {

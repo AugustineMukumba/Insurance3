@@ -294,6 +294,11 @@
     <Content Include="Images\visa.png" />
     <Content Include="Images\visa_images.jpg" />
     <Content Include="LogFile.txt" />
+    <Content Include="RegistrationDocument\22\3676218c-b5e5-4154-a2e3-17c1cf7605a0.png" />
+    <Content Include="RegistrationDocument\22\4564d0c8-8378-47c1-8d38-a9d4f38e3c5b.png" />
+    <Content Include="RegistrationDocument\22\bd5ae03b-f115-405a-a290-4532cfa94774.png" />
+    <Content Include="RegistrationDocument\22\d39be22b-7bb9-41e7-b670-4b7764238803.png" />
+    <Content Include="RegistrationDocument\22\f4233502-f4f0-4465-83ef-09b042dbb19a.png" />
     <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap.js" />
