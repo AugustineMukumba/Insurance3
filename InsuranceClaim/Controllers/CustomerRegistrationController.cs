@@ -2571,7 +2571,7 @@ namespace InsuranceClaim.Controllers
                 }
 
                 json.Data = response;
-
+            
             }
             catch (Exception ex)
             {
@@ -2766,6 +2766,9 @@ namespace InsuranceClaim.Controllers
                     }
                 }
 
+
+
+             //  ICEcashService.LICQuote(regNo, tokenObject.Response.PartnerToken);
 
 
 

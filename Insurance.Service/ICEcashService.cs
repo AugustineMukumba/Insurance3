@@ -413,6 +413,8 @@ namespace Insurance.Service
             return json;
         }
 
+      
+
 
         public static ResultRootObject TPIPolicy(VehicleDetail vehicleDetail, string PartnerToken)
         {
@@ -488,6 +490,88 @@ namespace Insurance.Service
 
             return json;
         }
+
+
+
+        public static ResultRootObject LICQuote(string registrationNum, string PartnerToken)
+        {
+
+            //string PSK = "127782435202916376850511";
+            string _json = "";
+
+            List<VehicleLicObject> obj = new List<VehicleLicObject>();
+
+            var CustomerInfo = (CustomerModel)HttpContext.Current.Session["CustomerDataModal"];
+
+            //foreach (var item in listofvehicles)
+            //{
+                obj.Add(new VehicleLicObject {
+                    VRN = registrationNum,
+                    IDNumber = CustomerInfo.NationalIdentificationNumber,
+                    ClientIDType = "1",
+                    FirstName = CustomerInfo.FirstName,
+                    LastName = CustomerInfo.LastName,
+                    Address1 = CustomerInfo.AddressLine1,
+                    Address2 = CustomerInfo.AddressLine2,
+                    SuburbID = "2",
+                    LicFrequency = "3",
+                    RadioTVUsage = "",
+                    RadioTVFrequency = "" } );
+            //}
+
+            LICQuoteArguments objArg = new LICQuoteArguments();
+            objArg.PartnerReference = Guid.NewGuid().ToString();
+            objArg.Date = DateTime.Now.ToString("yyyyMMddhhmmss");
+            objArg.Version = "2.0";
+            objArg.PartnerToken = PartnerToken;
+            objArg.Request = new LICQuoteFunctionObject { Function = "LICQuote", Vehicles = obj };
+
+            _json = Newtonsoft.Json.JsonConvert.SerializeObject(objArg);
+
+            //string  = json.Reverse()
+            string reversejsonString = new string(_json.Reverse().ToArray());
+            string reversepartneridString = new string(PSK.Reverse().ToArray());
+
+            string concatinatedString = reversejsonString + reversepartneridString;
+
+            byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(concatinatedString);
+
+            string returnValue = System.Convert.ToBase64String(toEncodeAsBytes);
+
+            string GetSHA512encrypted = SHA512(returnValue);
+
+            string MAC = "";
+
+            for (int i = 0; i < 16; i++)
+            {
+                MAC += GetSHA512encrypted.Substring((i * 8), 1);
+            }
+
+            MAC = MAC.ToUpper();
+
+            LICQuoteRequest objroot = new LICQuoteRequest();
+            objroot.Arguments = objArg;
+            objroot.MAC = MAC;
+            objroot.Mode = "SH";
+
+            var data = Newtonsoft.Json.JsonConvert.SerializeObject(objroot);
+
+            JObject jsonobject = JObject.Parse(data);
+
+            //  var client = new RestClient("http://api-test.icecash.com/request/20523588");
+            var client = new RestClient(LiveIceCashApi);
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("cache-control", "no-cache");
+            request.AddHeader("content-type", "application/x-www-form-urlencoded");
+            request.AddParameter("application/x-www-form-urlencoded", jsonobject, ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+
+            ResultRootObject json = JsonConvert.DeserializeObject<ResultRootObject>(response.Content);
+
+            return json;
+
+        }
+
 
 
 
@@ -729,6 +813,47 @@ namespace Insurance.Service
         public string MAC { get; set; }
         public string Mode { get; set; }
     }
+
+
+    public class VehicleLicObject
+    {
+        public string VRN { get; set; }
+        public string IDNumber { get; set; }
+        public string ClientIDType { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string SuburbID { get; set; }
+        public string LicFrequency { get; set; }
+        public string RadioTVUsage { get; set; }
+        public string RadioTVFrequency { get; set; }
+     
+    }
+
+    public class LICQuoteArguments
+    {
+        public string PartnerReference { get; set; }
+        public string Date { get; set; }
+        public string Version { get; set; }
+        public string PartnerToken { get; set; }
+        public LICQuoteFunctionObject Request { get; set; }
+    }
+
+
+    public class LICQuoteFunctionObject
+    {
+        public string Function { get; set; }
+        public List<VehicleLicObject> Vehicles { get; set; }
+    }
+
+    public class LICQuoteRequest
+    {
+        public LICQuoteArguments Arguments { get; set; }
+        public string MAC { get; set; }
+        public string Mode { get; set; }
+    }
+
 
 
 }
