@@ -243,8 +243,6 @@
                                         </div>
                                     </div>
 
-
-
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-select">
                                             <div class="form-group">
@@ -273,9 +271,6 @@
                                         </div>
                                     </div>
 
-
-
-
                                     <div class="row">
                                         <div class="col-md-12 next-btn">
                                             <div class="row">
@@ -303,9 +298,6 @@
             </div>
         </div>
     </div>
-
-
-
 </div>
 
 
@@ -424,24 +416,16 @@
     }
     function GoToExists(){
         debugger;
-        alert("Please Select Payment Type");
-        return false;
-    }
-
-
-
-    @*function gotoExits(){
-        debugger;
         $.ajax({
             url: "@Url.Action("gotoEndorsementExit", "Endorsement")",
             type: "Post",
-            data: { id: @ViewBag.Endorsementid },
-            success: function (data) {
+            data: { id: @ViewBag.SummaryDetailId },
+            success : function(data){
                 debugger;
-                window.location.href = '/CustomerRegistration/Index';
+                window.location.href = '/Account/MyPolicies';
             }
         })
-    }*@
-
+        // return false;
+    }
 
 </script>

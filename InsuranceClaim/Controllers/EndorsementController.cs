@@ -291,7 +291,7 @@ namespace InsuranceClaim.Controllers
                 endorsementSummaryDetail.DebitNote = summaryDetail.DebitNote;
                 endorsementSummaryDetail.ReceiptNumber = summaryDetail.ReceiptNumber;
                 endorsementSummaryDetail.SMSConfirmation = summaryDetail.SMSConfirmation;
-                endorsementSummaryDetail.CreatedOn = summaryDetail.CreatedOn;
+                endorsementSummaryDetail.CreatedOn = DateTime.Now;
                 if (_userLoggedin)
                 {
                     var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
@@ -348,43 +348,6 @@ namespace InsuranceClaim.Controllers
                 Session["EnsummaryId"] = EnSummarydetail;
 
 
-
-                //var _Endorsmentpolicy = (EndorsementPolicyDetail)Session["PolicyDataView"];
-                //EndorsementSummaryDetail endorsementSummaryDetail = new EndorsementSummaryDetail();
-                //endorsementSummaryDetail.PrimarySummaryId = summaryDetail.Id;
-                //endorsementSummaryDetail.EndorsementPolicyId = _Endorsmentpolicy.Id;
-                //endorsementSummaryDetail.VehicleDetailId = summaryDetail.VehicleDetailId;
-                //endorsementSummaryDetail.EndorsementCustomerId = Endorsmentcutom.Id;
-                ////
-                //endorsementSummaryDetail.CustomerId = summaryDetail.CustomerId;
-                //endorsementSummaryDetail.PaymentTermId = summaryDetail.PaymentTermId;
-                //endorsementSummaryDetail.PaymentMethodId = summaryDetail.PaymentMethodId;
-                //endorsementSummaryDetail.TotalSumInsured = summaryDetail.TotalSumInsured;
-                //endorsementSummaryDetail.TotalPremium = summaryDetail.TotalPremium;
-                //endorsementSummaryDetail.TotalStampDuty = summaryDetail.TotalStampDuty;
-                //endorsementSummaryDetail.TotalZTSCLevies = summaryDetail.TotalZTSCLevies;
-                //endorsementSummaryDetail.TotalRadioLicenseCost = summaryDetail.TotalRadioLicenseCost;
-                //endorsementSummaryDetail.AmountPaid = summaryDetail.AmountPaid;
-                //endorsementSummaryDetail.DebitNote = summaryDetail.DebitNote;
-                //endorsementSummaryDetail.ReceiptNumber = summaryDetail.ReceiptNumber;
-                //endorsementSummaryDetail.SMSConfirmation = summaryDetail.SMSConfirmation;
-                //endorsementSummaryDetail.CreatedOn = summaryDetail.CreatedOn;
-                //if (_userLoggedin)
-                //{
-                //    var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
-                //    _customerData = InsuranceContext.Customers.All(where: $"UserId ='{_User.Id}'").FirstOrDefault();
-                //    endorsementSummaryDetail.CreatedBy = _customerData.Id;
-                //}
-                //endorsementSummaryDetail.ModifiedOn = summaryDetail.ModifiedOn;
-                //endorsementSummaryDetail.ModifiedBy = summaryDetail.ModifiedBy;
-                //endorsementSummaryDetail.IsActive = summaryDetail.IsActive;
-                //endorsementSummaryDetail.BalancePaidDate = summaryDetail.BalancePaidDate;
-
-                //endorsementSummaryDetail.Notes = summaryDetail.Notes;
-                //endorsementSummaryDetail.isQuotation = summaryDetail.isQuotation;
-                //endorsementSummaryDetail.IsCompleted = false;
-                //InsuranceContext.EndorsementSummaryDetails.Insert(endorsementSummaryDetail);
-                //Session["EnsummaryId"] = endorsementSummaryDetail;
 
             }
 
