@@ -19,5 +19,6 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage ="Please Enter CVC")]
         public string CVC { get; set; }
         public int SummaryDetailId { get; set; }
+        public int? EndorsementSummaryId { get; set; }
     }
 }

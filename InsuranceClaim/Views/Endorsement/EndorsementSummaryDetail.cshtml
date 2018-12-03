@@ -133,7 +133,7 @@
                                 <div id="contact-form" class="contact-form">
                                     @Html.HiddenFor(m => m.PaymentTermId)
                                     @Html.HiddenFor(m => m.Id)
-                                    @Html.HiddenFor(m=>m.isQuotation)
+                                    @Html.HiddenFor(m => m.isQuotation)
                                     @Html.HiddenFor(m => m.IsCompleted)
                                     @Html.HiddenFor(m => m.CreatedBy)
                                     @Html.HiddenFor(m => m.CreatedOn)
@@ -141,7 +141,7 @@
                                     @Html.HiddenFor(m => m.EndorsementCustomerId)
                                     @Html.HiddenFor(m => m.EndorsementPolicyId)
                                     @Html.HiddenFor(m => m.PaymentMethodId)
-                                    @Html.HiddenFor(x=>x.CustomerId)
+                                    @Html.HiddenFor(x => x.CustomerId)
 
                                     <div class="row">
 
@@ -246,32 +246,32 @@
 
 
                                     <div class="row">
-                                            <div class="col-sm-6 col-md-6 form-group-select">
-                                                <div class="form-group">
-                                                    @Html.Label("Payment Type", new { @class = "gender-label" })
-                                                    @Html.HiddenFor(m => m.PaymentMethodId)
-                                                    @Html.HiddenFor(m => m.Id)
-                                                    @Html.HiddenFor(m => m.CustomSumarryDetilId)
+                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                            <div class="form-group">
+                                                @Html.Label("Payment Type", new { @class = "gender-label" })
+                                                @Html.HiddenFor(m => m.PaymentMethodId)
+                                                @Html.HiddenFor(m => m.Id)
+                                                @Html.HiddenFor(m => m.CustomSumarryDetilId)
 
-                                                    <div class="payment-card">
-                                                        <ul class="list-inline">
+                                                <div class="payment-card">
+                                                    <ul class="list-inline">
 
-                                                            <li id="payment_1" class="payment_type active" onclick="PaymentMethod(1)">  Cash   </li>
-                                                            <li id="payment_2" class="payment_type" onclick="PaymentMethod(2)"><img src="~/Images/master-card.png" /></li>
-                                                            <li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"><img src="~/Images/Paynow-logo.png" /></li>
+                                                        <li id="payment_1" class="payment_type active" onclick="PaymentMethod(1)">  Cash   </li>
+                                                        <li id="payment_2" class="payment_type" onclick="PaymentMethod(2)"><img src="~/Images/master-card.png" /></li>
+                                                        <li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"><img src="~/Images/Paynow-logo.png" /></li>
 
-                                                        </ul>
-                                                    </div>
-
+                                                    </ul>
                                                 </div>
+
                                             </div>
+                                        </div>
                                         <div id="invoiceNumberDiv" class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.TextBoxFor(c => c.InvoiceNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Invoice number" })
                                             </div>
 
                                         </div>
-                                        </div>
+                                    </div>
 
 
 
@@ -281,12 +281,14 @@
                                             <div class="row">
                                                 <div class="col-sm-6 col-md-6">
                                                     <div class="text-left">
-
+                                                        <div class="back-left"><button type="button" onclick="gotoPeriviouse();" class="btn">Back</button></div>
+                                                        @*<a style="display:none" id="previouselink" href="/CustomerRegistration/RiskDetail" class="back"></a>*@
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6 col-md-6">
                                                     <div class="text-right">
-                                                        <div><button type="submit" class="btn">Submit</button></div>
+                                                        @*<div><button type="submit" class="btn">Next</button></div>*@
+                                                        <button type="submit" id="btnNext" onclick="return checkAmountPaid();" class="btn">Next</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -322,14 +324,14 @@
 
         getVehicleList();
 
-
-
-
-
     })
 
+    function gotoPeriviouse(){
 
-    
+        window.location.href  = '@Url.Action("EndorsementRiskDetails", "Endorsement", new { id= 1 })';
+    }
+
+
     function PaymentMethod(paymentMethod)
     {
         debugger;
@@ -349,7 +351,7 @@
 
     function checkAmountPaid() {
         debugger;
-      
+
         var Amount = $("#AmountPaid").val();
         var paymentMethod = $("#PaymentMethodId").val();
 
@@ -363,7 +365,7 @@
                 return true;
             }
             else {
-                gotoExit();
+                GoToExists();
             }
         }
         else {
@@ -372,7 +374,6 @@
 
         return false;
     }
-
 
     function EditVehicleDetails(index){
         debugger;
@@ -391,34 +392,56 @@
         $.ajax({
             url: "@Url.Action("getEndorsementVehicleList", "Endorsement")",
             type: "GET",
-        data: { summaryDetailId: @ViewBag.SummaryDetailId },
-        dataType: "json",
-        success: function (result) {
-            var list = result;
+            data: { summaryDetailId: @ViewBag.SummaryDetailId },
+            dataType: "json",
+            success: function (result) {
+                var list = result;
 
-            var bodyHTML = "";
-            var count = 0;
-            var totalpremium = 0.00;
-            $.each(list, function (index, value) {
+                var bodyHTML = "";
+                var count = 0;
+                var totalpremium = 0.00;
+                $.each(list, function (index, value) {
 
 
 
-                count++;
-                bodyHTML += "<tr><td>" + value.make + " "+ value.model+"(" + value.RegistrationNo+" )" + "</td><td>" + value.suminsured + "</td><td>" + value.premium + "</td><td>$" + value.radio_license_fee + "</td><td>$" + value.ZTSCLevy + "</td><td>$" + value.vehicle_license_fee+ "</td> <td>$" + value.stampDuty+ "</td><td>$" + value.total+ "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >Edit</button></li><li><button type='button' onclick='DeleteVehicleDetails(" + count + ")' class='btn-sm btn-danger' >Delete</button></li></ul></div></td></tr>"
-                totalpremium += parseFloat(value.premium);
-            });
+                    count++;
+                    bodyHTML += "<tr><td>" + value.make + " "+ value.model+"(" + value.RegistrationNo+" )" + "</td><td>" + value.suminsured + "</td><td>" + value.premium + "</td><td>$" + value.radio_license_fee + "</td><td>$" + value.ZTSCLevy + "</td><td>$" + value.vehicle_license_fee+ "</td> <td>$" + value.stampDuty+ "</td><td>$" + value.total+ "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >Edit</button></li><li><button type='button' onclick='DeleteVehicleDetails(" + count + ")' class='btn-sm btn-danger' >Delete</button></li></ul></div></td></tr>"
+                    totalpremium += parseFloat(value.premium);
+                });
 
-            $("#tdTotalPremium").text("$" + totalpremium);
+                $("#tdTotalPremium").text("$" + totalpremium);
 
-            $("#tblVehicleList tbody").append(bodyHTML);
+                $("#tblVehicleList tbody").append(bodyHTML);
 
-            if (bodyHTML != "") {
-                $("#divVehicleList").css("display", "block");
+                if (bodyHTML != "") {
+                    $("#divVehicleList").css("display", "block");
+                }
+                else {
+                    $("#divVehicleList").css("display", "none");
+                }
             }
-            else {
-                $("#divVehicleList").css("display", "none");
-            }
-        }
-    });
+        });
     }
+    function GoToExists(){
+        debugger;
+        alert("Please Select Payment Type");
+        return false;
+    }
+
+
+
+    @*function gotoExits(){
+        debugger;
+        $.ajax({
+            url: "@Url.Action("gotoEndorsementExit", "Endorsement")",
+            type: "Post",
+            data: { id: @ViewBag.Endorsementid },
+            success: function (data) {
+                debugger;
+                window.location.href = '/CustomerRegistration/Index';
+            }
+        })
+    }*@
+
+
 </script>

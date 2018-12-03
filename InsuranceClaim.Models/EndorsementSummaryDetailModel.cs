@@ -54,5 +54,7 @@ namespace InsuranceClaim.Models
         public int? EndorsementCustomerId { get; set; }
         public int? PrimarySummaryId { get; set; }
         public int? CustomerId { get; set; }
+        public int? VehicleDetailId { get; set; }
+        public int? EndorsementVehicleId { get; set; }
     }
 }

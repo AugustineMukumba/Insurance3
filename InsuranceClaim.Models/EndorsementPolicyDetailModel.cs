@@ -41,6 +41,7 @@ namespace InsuranceClaim.Models
         public int? EndorsementCustomerId { get; set; }
         public int? PrimaryPolicyId { get; set; }
         public int? CustomerId { get; set; }
+        public string PolicyName { get; set; }
     }
 
 }
