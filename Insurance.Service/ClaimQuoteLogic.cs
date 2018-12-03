@@ -52,83 +52,98 @@ namespace Insurance.Service
             if (PrivateCar)
             {
 
-                if (DriverIsUnder21 == 1)
+                if (IsPartialLoss==null && IsLossInZimbabwe== null && IsStolen==null && Islicensedless60months==null && DriverIsUnder21==null && PrivateCar== true && CommercialCar == false && IsDriver25==null && IsSoundSystem==null)
                 {
-                    DriverIsUnder = (sumInsured * PDriverunder21amount) / 100;
-                }
-                if (Islicensedless60months == 1)
-                {
-                    licensedless = (sumInsured * PLicensedless60monthsamount) / 100;
-                }
-                if (IsPartialLoss == 1)
-                {
-                    PartialLoss = (sumInsured * PPartialLossamount) / 100;
-                }
-                else if (IsPartialLoss == 0)
-                {
-                    totalloss = (sumInsured * PCarTotalLoss) / 100;
-                }
-                if (IsStolen == 1)
-                {
-                    Isstolen = (sumInsured * PStolenamount) / 100;
-                }
-                else if (IsStolen == 0)
-                {
-                    Isstolen = (sumInsured * 1) / 100;
-                }
-                if (IsLossInZimbabwe == 1)
-                {
-                    IslossInzimbabwe = (sumInsured * POutSideOfZimba) / 100;
-                }
-                if (IsSoundSystem ==1)
-                {
-                    IsSoundsystem = (sumInsured * PSoundSystem) / 100;
-                }
-                else if (IsSoundSystem == 0)
-                {
-                    IsSoundsystem = (sumInsured * 1) / 100;
-                }
 
-
+                    sumInsured= 0.0m;
+                }
+                else
+                {
+                    if (DriverIsUnder21 == 1)
+                    {
+                        DriverIsUnder = (sumInsured * PDriverunder21amount) / 100;
+                    }
+                    if (Islicensedless60months == 1)
+                    {
+                        licensedless = (sumInsured * PLicensedless60monthsamount) / 100;
+                    }
+                    if (IsPartialLoss == 1)
+                    {
+                        PartialLoss = (sumInsured * PPartialLossamount) / 100;
+                    }
+                    else if (IsPartialLoss == 0)
+                    {
+                        totalloss = (sumInsured * PCarTotalLoss) / 100;
+                    }
+                    if (IsStolen == 1)
+                    {
+                        Isstolen = (sumInsured * PStolenamount) / 100;
+                    }
+                    else if (IsStolen == 0)
+                    {
+                        Isstolen = (sumInsured * 1) / 100;
+                    }
+                    if (IsLossInZimbabwe == 1)
+                    {
+                        IslossInzimbabwe = (sumInsured * POutSideOfZimba) / 100;
+                    }
+                    if (IsSoundSystem == 1)
+                    {
+                        IsSoundsystem = (sumInsured * PSoundSystem) / 100;
+                    }
+                    else if (IsSoundSystem == 0)
+                    {
+                        IsSoundsystem = (sumInsured * 1) / 100;
+                    }
+                }
             }
             else if (CommercialCar)
             {
-                if (IsDriver25 == 1)
-                {
-                    IsDriverunder25 = (sumInsured * CDriver25) / 100;
-                }
 
-                if (Islicensedless60months == 1)
+                if (IsPartialLoss == null && IsLossInZimbabwe == null && IsStolen == null && Islicensedless60months == null && DriverIsUnder21 == null && PrivateCar == false && CommercialCar == true && IsDriver25 == null && IsSoundSystem == null)
                 {
-                    licensedless = (sumInsured * CLicenceLess60Month) / 100;
+
+                    sumInsured = 0.0m;
                 }
-                if (IsPartialLoss == 1)
+                else
                 {
-                    PartialLoss = (sumInsured * CPartialLoss) / 100;
-                }
-                else if (IsPartialLoss == 0)
-                {
-                    totalloss = (sumInsured * CTotalLoss) / 100;
-                }
-                if (IsStolen == 1)
-                {
-                    Isstolen = (sumInsured * CStolenAccessories) / 100;
-                }
-                else if (IsStolen == 0)
-                {
-                    Isstolen = (sumInsured * 1) / 100;
-                }
-                if (IsLossInZimbabwe == 1)
-                {
-                    IslossInzimbabwe = (sumInsured * COutSideZimba) / 100;
-                }
-                if (IsSoundSystem == 1)
-                {
-                    IsSoundsystem = (sumInsured * CSpundSystem) / 100;
-                }
-                else if (IsSoundSystem == 0)
-                {
-                    IsSoundsystem = (sumInsured * 1) / 100;
+                    if (IsDriver25 == 1)
+                    {
+                        IsDriverunder25 = (sumInsured * CDriver25) / 100;
+                    }
+
+                    if (Islicensedless60months == 1)
+                    {
+                        licensedless = (sumInsured * CLicenceLess60Month) / 100;
+                    }
+                    if (IsPartialLoss == 1)
+                    {
+                        PartialLoss = (sumInsured * CPartialLoss) / 100;
+                    }
+                    else if (IsPartialLoss == 0)
+                    {
+                        totalloss = (sumInsured * CTotalLoss) / 100;
+                    }
+                    if (IsStolen == 1)
+                    {
+                        Isstolen = (sumInsured * CStolenAccessories) / 100;
+                    }
+                    else if (IsStolen == 0)
+                    {
+                        Isstolen = (sumInsured * 1) / 100;
+                    }
+                    if (IsLossInZimbabwe == 1)
+                    {
+                        IslossInzimbabwe = (sumInsured * COutSideZimba) / 100;
+                    }
+                    if (IsSoundSystem == 1)
+                    {
+                        IsSoundsystem = (sumInsured * CSpundSystem) / 100;
+                    }
+                    else if (IsSoundSystem == 0)
+                    {
+                        IsSoundsystem = (sumInsured * 1) / 100;
+                    }
                 }
 
                 // this.ExcessesAmount = sumInsured + DriverIsUnder + licensedless + PartialLoss + totalloss + Isstolen;
