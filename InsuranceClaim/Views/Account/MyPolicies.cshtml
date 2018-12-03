@@ -120,7 +120,8 @@
 
                                         @if (User.IsInRole("Administrator"))
                                         {
-                                            <li>@Html.ActionLink("Endorsement", "EndorsementDetials", "Endorsement", new { sumaryid = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>
+                                            @*<li>@Html.ActionLink("Endorsement", "EndorsementDetials", "Endorsement", new { sumaryid = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>*@
+                                            <li>@Html.ActionLink("Endorsement", "EndorsementDetials", "Endorsement", new { summaryId = item.SummaryId, endorback = "0" }, new { @class = "btn-sm btn-primary" })</li>
 
                                         }
 

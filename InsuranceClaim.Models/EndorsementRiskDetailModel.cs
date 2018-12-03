@@ -118,6 +118,8 @@ namespace InsuranceClaim.Models
         public bool? IsActive { get; set; }
         public bool? isLapsed { get; set; }
         public bool? IsCompleted { get; set; }
+        public int? ModifiedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
 
     }
 }
