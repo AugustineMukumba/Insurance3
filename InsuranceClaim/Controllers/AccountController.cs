@@ -1553,8 +1553,6 @@ namespace InsuranceClaim.Controllers
 
             var SummaryList = new List<SummaryDetail>();
 
-
-
             if (role == "Staff")
             {
                 SummaryList = InsuranceContext.SummaryDetails.All(where: $"CreatedBy={customerID} and isQuotation = '0'  ").OrderByDescending(x => x.Id).ToList();
@@ -2216,6 +2214,12 @@ namespace InsuranceClaim.Controllers
 
                 viewModel.SummaryId = Convert.ToInt32(Session["SummaryDetailIdView"]);
                 // Session["SummaryDetailIdView"] = null;
+            }
+            else if (Session["SummaryDetailIdView"] == null)
+            {
+                Session["SummaryDetailIdView"] = id;
+                SetValueIntoSession(Convert.ToInt32(Session["SummaryDetailIdView"]));
+                viewModel.SummaryId = Convert.ToInt32(Session["SummaryDetailIdView"]);
             }
 
 

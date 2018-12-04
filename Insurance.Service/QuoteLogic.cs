@@ -547,20 +547,6 @@ namespace Insurance.Service
                         }
                         break;
                 }
-
-
-
-
-
-
-
-                
-         
-
-            
-
-
-
             return this;
         }
 

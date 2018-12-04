@@ -15,9 +15,19 @@ namespace Insurance.Service
         public decimal IsLossInZimba { get; set; }
         public decimal IsStolen { get; set; }
         public decimal Islicensedless { get; set; }
+        public decimal? FinalAmount { get; set; }
+        public decimal CheckPartialloss { get; set; }
+        public decimal CheckLossInZimbabwe { get; set; }
+        public decimal CheckDriverIsUnder21 { get; set; }
+        public decimal CheckIsStolen { get; set; }
 
+        public decimal CheckIslicensedless60months { get; set; }
 
-        public ClaimQuoteLogic CalculateClaimPremium(decimal sumInsured, int? IsPartialLoss, int? IsLossInZimbabwe, int? IsStolen, int? Islicensedless60months, int? DriverIsUnder21, Boolean PrivateCar, Boolean CommercialCar, int? IsDriver25, int? IsSoundSystem)
+        public decimal CheckIsDriver25 { get; set; }
+
+        public decimal CheckIsSoundSystem { get; set; }
+
+        public ClaimQuoteLogic CalculateClaimPremium(decimal sumInsured, int? IsPartialLoss, int? IsLossInZimbabwe, int? IsStolen, int? Islicensedless60months, int? DriverIsUnder21, Boolean PrivateCar, Boolean CommercialCar, int? IsDriver25, int? IsSoundSystem, decimal? TotalAmount, decimal? FinalAmountToPaid)
         {
 
             var ClaimSettingdetail = InsuranceContext.ClaimSettings.All(where: $"IsActive = 'True' or IsActive is Null ");
@@ -31,6 +41,7 @@ namespace Insurance.Service
             decimal IsDriverunder25 = 0.0m;
             decimal IsSoundsystem = 0.0m;
             this.ExcessesAmount = 0.0m;
+            // Boolean Parameter = false;
             decimal PDriverunder21amount = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "PrivateDriverUnder21").Select(x => x.Value).FirstOrDefault());
             decimal PLicensedless60monthsamount = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "PrivateLicenceLess60Month").Select(x => x.Value).FirstOrDefault());
             decimal PPartialLossamount = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "PrivatePartialLoss").Select(x => x.Value).FirstOrDefault());
@@ -46,110 +57,263 @@ namespace Insurance.Service
             decimal CLicenceLess60Month = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "CommercialLicenceLess60Month").Select(x => x.Value).FirstOrDefault());
             decimal CStolenAccessories = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "CommercialStolen/Accessories").Select(x => x.Value).FirstOrDefault());
             decimal CSpundSystem = Convert.ToInt32(ClaimSettingdetail.Where(x => x.KeyName == "CommercialSoundSystem").Select(x => x.Value).FirstOrDefault());
-            this.ExcessesAmount = sumInsured;
+            //this.ExcessesAmount = sumInsured;
 
-
-            if (PrivateCar)
+            if (PrivateCar || CommercialCar)
             {
 
-                if (IsPartialLoss==null && IsLossInZimbabwe== null && IsStolen==null && Islicensedless60months==null && DriverIsUnder21==null && PrivateCar== true && CommercialCar == false && IsDriver25==null && IsSoundSystem==null)
+
+                if (PrivateCar)
                 {
 
-                    sumInsured= 0.0m;
+                    if (IsPartialLoss == null && IsLossInZimbabwe == null && IsStolen == null && Islicensedless60months == null && DriverIsUnder21 == null && PrivateCar == true && CommercialCar == false && IsDriver25 == null && IsSoundSystem == null)
+                    {
+
+                        sumInsured = 0.0m;
+                    }
+
+                    else
+                    {
+                        if (DriverIsUnder21 == 1)
+                        {
+                            DriverIsUnder = (sumInsured * PDriverunder21amount) / 100;
+                            this.CheckDriverIsUnder21 = sumInsured + DriverIsUnder;
+                        }
+                        if (Islicensedless60months == 1)
+                        {
+                            licensedless = (sumInsured * PLicensedless60monthsamount) / 100;
+                            this.CheckIslicensedless60months = sumInsured + licensedless;
+
+                        }
+
+                        if (IsPartialLoss == 1)
+                        {
+                            PartialLoss = (sumInsured * PPartialLossamount) / 100;
+                            this.CheckPartialloss = sumInsured + PartialLoss;
+                        }
+                        else if (IsPartialLoss == 0)
+                        {
+                            totalloss = (sumInsured * PCarTotalLoss) / 100;
+                            this.CheckPartialloss = sumInsured + totalloss;
+                        }
+                        if (IsStolen == 1)
+                        {
+                            Isstolen = (sumInsured * PStolenamount) / 100;
+                            this.CheckIsStolen = sumInsured + Isstolen;
+                        }
+                        else if (IsStolen == 0)
+                        {
+                            Isstolen = (sumInsured * 1) / 100;
+                            this.CheckIsStolen = sumInsured + Isstolen;
+                        }
+                        if (IsLossInZimbabwe == 1)
+                        {
+                            IslossInzimbabwe = (sumInsured * POutSideOfZimba) / 100;
+                            this.CheckLossInZimbabwe = sumInsured + IslossInzimbabwe;
+                        }
+                       
+                        if (IsSoundSystem == 1)
+                        {
+                            IsSoundsystem = (sumInsured * PSoundSystem) / 100;
+                            this.CheckIsSoundSystem = sumInsured + IsSoundsystem;
+                        }
+                        else if (IsSoundSystem == 0)
+                        {
+                            IsSoundsystem = (sumInsured * 1) / 100;
+                            this.CheckIsSoundSystem = sumInsured + IsSoundsystem;
+                        }
+                    }
+                    if (DriverIsUnder21 == 1 || IsPartialLoss == 1 || IsLossInZimbabwe == 1|| IsPartialLoss == 0 || Islicensedless60months==1 || IsStolen==1 || IsStolen==0 || IsSoundSystem==0 || IsSoundSystem==1)
+                    {
+
+                        this.ExcessesAmount = this.CheckPartialloss + this.CheckLossInZimbabwe + this.CheckDriverIsUnder21 + this.CheckIslicensedless60months + this.CheckIsStolen+ this.CheckIsSoundSystem ;
+
+                        this.FinalAmount = TotalAmount - this.ExcessesAmount;
+                    }
+                    else
+                    {
+                        this.ExcessesAmount = sumInsured;
+                        this.FinalAmount = TotalAmount;
+                    }
+
+
                 }
-                else
+                else if (CommercialCar)
                 {
-                    if (DriverIsUnder21 == 1)
+
+                    if (IsPartialLoss == null && IsLossInZimbabwe == null && IsStolen == null && Islicensedless60months == null && DriverIsUnder21 == null && PrivateCar == false && CommercialCar == true && IsDriver25 == null && IsSoundSystem == null)
                     {
-                        DriverIsUnder = (sumInsured * PDriverunder21amount) / 100;
+
+                        sumInsured = 0.0m;
                     }
-                    if (Islicensedless60months == 1)
+                    else
                     {
-                        licensedless = (sumInsured * PLicensedless60monthsamount) / 100;
+                        if (IsDriver25 == 1)
+                        {
+                            IsDriverunder25 = (sumInsured * CDriver25) / 100;
+                            this.CheckIsDriver25 = sumInsured + IsDriverunder25;
+                        }
+
+                        if (Islicensedless60months == 1)
+                        {
+                            licensedless = (sumInsured * CLicenceLess60Month) / 100;
+                            this.CheckIslicensedless60months = sumInsured + licensedless;
+                        }
+
+                        if (IsPartialLoss == 1)
+                        {
+                            PartialLoss = (sumInsured * CPartialLoss) / 100;
+                            this.CheckPartialloss = sumInsured + PartialLoss;
+                        }
+                        else if (IsPartialLoss == 0)
+                        {
+                            totalloss = (sumInsured * CTotalLoss) / 100;
+                            this.CheckPartialloss = sumInsured + totalloss;
+                        }
+                        if (IsStolen == 1)
+                        {
+                            Isstolen = (sumInsured * CStolenAccessories) / 100;
+                            this.CheckIsStolen = sumInsured + Isstolen;
+                        }
+                        else if (IsStolen == 0)
+                        {
+                            Isstolen = (sumInsured * 1) / 100;
+                            this.CheckIsStolen = sumInsured + Isstolen;
+                        }
+                        if (IsLossInZimbabwe == 1)
+                        {
+                            IslossInzimbabwe = (sumInsured * COutSideZimba) / 100;
+                            this.CheckLossInZimbabwe =Convert.ToDecimal(sumInsured + IsLossInZimbabwe);
+                        }
+                        if (IsSoundSystem == 1)
+                        {
+                            IsSoundsystem = (sumInsured * CSpundSystem) / 100;
+                            this.CheckIsSoundSystem = (sumInsured + IsSoundsystem);
+                        }
+                        else if (IsSoundSystem == 0)
+                        {
+                            IsSoundsystem = (sumInsured * 1) / 100;
+                            this.CheckIsSoundSystem = (sumInsured + IsSoundsystem);
+                        }
                     }
-                    if (IsPartialLoss == 1)
+
+
+                    if (IsDriver25 == 1 || IsPartialLoss == 1 || IsLossInZimbabwe == 1 || IsPartialLoss == 0 || Islicensedless60months == 1 || IsStolen == 1 || IsStolen == 0 || IsSoundSystem == 0 || IsSoundSystem == 1)
                     {
-                        PartialLoss = (sumInsured * PPartialLossamount) / 100;
+
+                        this.ExcessesAmount = this.CheckPartialloss + this.CheckLossInZimbabwe + this.CheckIsDriver25 + this.CheckIslicensedless60months + this.CheckIsStolen + this.CheckIsSoundSystem;
+                        this.FinalAmount = TotalAmount - this.ExcessesAmount;
                     }
-                    else if (IsPartialLoss == 0)
+                    else
                     {
-                        totalloss = (sumInsured * PCarTotalLoss) / 100;
-                    }
-                    if (IsStolen == 1)
-                    {
-                        Isstolen = (sumInsured * PStolenamount) / 100;
-                    }
-                    else if (IsStolen == 0)
-                    {
-                        Isstolen = (sumInsured * 1) / 100;
-                    }
-                    if (IsLossInZimbabwe == 1)
-                    {
-                        IslossInzimbabwe = (sumInsured * POutSideOfZimba) / 100;
-                    }
-                    if (IsSoundSystem == 1)
-                    {
-                        IsSoundsystem = (sumInsured * PSoundSystem) / 100;
-                    }
-                    else if (IsSoundSystem == 0)
-                    {
-                        IsSoundsystem = (sumInsured * 1) / 100;
+                        this.ExcessesAmount = sumInsured;
+                        this.FinalAmount = TotalAmount;
                     }
                 }
+
             }
-            else if (CommercialCar)
+            else
             {
-
-                if (IsPartialLoss == null && IsLossInZimbabwe == null && IsStolen == null && Islicensedless60months == null && DriverIsUnder21 == null && PrivateCar == false && CommercialCar == true && IsDriver25 == null && IsSoundSystem == null)
-                {
-
-                    sumInsured = 0.0m;
-                }
-                else
-                {
-                    if (IsDriver25 == 1)
-                    {
-                        IsDriverunder25 = (sumInsured * CDriver25) / 100;
-                    }
-
-                    if (Islicensedless60months == 1)
-                    {
-                        licensedless = (sumInsured * CLicenceLess60Month) / 100;
-                    }
-                    if (IsPartialLoss == 1)
-                    {
-                        PartialLoss = (sumInsured * CPartialLoss) / 100;
-                    }
-                    else if (IsPartialLoss == 0)
-                    {
-                        totalloss = (sumInsured * CTotalLoss) / 100;
-                    }
-                    if (IsStolen == 1)
-                    {
-                        Isstolen = (sumInsured * CStolenAccessories) / 100;
-                    }
-                    else if (IsStolen == 0)
-                    {
-                        Isstolen = (sumInsured * 1) / 100;
-                    }
-                    if (IsLossInZimbabwe == 1)
-                    {
-                        IslossInzimbabwe = (sumInsured * COutSideZimba) / 100;
-                    }
-                    if (IsSoundSystem == 1)
-                    {
-                        IsSoundsystem = (sumInsured * CSpundSystem) / 100;
-                    }
-                    else if (IsSoundSystem == 0)
-                    {
-                        IsSoundsystem = (sumInsured * 1) / 100;
-                    }
-                }
-
-                // this.ExcessesAmount = sumInsured + DriverIsUnder + licensedless + PartialLoss + totalloss + Isstolen;
+                this.ExcessesAmount = 0.0m;
+                this.FinalAmount = TotalAmount;
             }
+          
+            //if (PrivateCar || CommercialCar)
+            //{
+            //    if (PrivateCar)
+            //    {
+            //        if (DriverIsUnder21 == 1)
+            //        {
+            //            this.FinalAmount = TotalAmount - ExcessesAmount;
 
-            this.ExcessesAmount = sumInsured + DriverIsUnder + licensedless + PartialLoss + totalloss + Isstolen + IslossInzimbabwe + IsSoundsystem + IsDriverunder25;
+            //        }
+            //        else if (DriverIsUnder21 == 0)
+            //        {
+            //            this.FinalAmount = TotalAmount;
+            //        }
+
+            //        else
+            //        {
+            //            this.FinalAmount = TotalAmount;
+            //        }
+
+            //        if (Islicensedless60months == 1)
+            //        {
+            //            this.FinalAmount = TotalAmount - ExcessesAmount;
+            //        }
+            //        else if (Islicensedless60months == 0)
+            //        {
+            //            this.FinalAmount = TotalAmount;
+            //        }
+
+            //        if (IsSoundSystem == 1)
+            //        {
+            //            this.FinalAmount = TotalAmount - ExcessesAmount;
+            //        }
+            //        else if (IsSoundSystem == 0)
+            //        {
+            //            this.FinalAmount = TotalAmount - ExcessesAmount;
+
+            //        }
+            //        if (IsPartialLoss == 1)
+            //        {
+            //            this.FinalAmount = TotalAmount - ExcessesAmount;
+            //        }
+            //        else if(IsPartialLoss == 0)
+            //        {
+            //            this.FinalAmount = TotalAmount - ExcessesAmount;
+            //        }
+            //        if (IsStolen==1)
+            //        {
+            //            this.FinalAmount = TotalAmount - ExcessesAmount;
+            //        }
+            //        else if (IsStolen==0)
+            //        {
+            //            this.FinalAmount = TotalAmount - ExcessesAmount;
+            //        }
+            //        if (true)
+            //        {
+
+            //        }
+            //    }
+            //    if (CommercialCar)
+            //    {
+            //        if (IsDriver25 == 1)
+            //        {
+            //            this.FinalAmount = TotalAmount - ExcessesAmount;
+            //        }
+            //        else if (IsDriver25 == 0)
+            //        {
+            //            this.FinalAmount = TotalAmount;
+            //        }
+            //        else
+            //        {
+            //            this.FinalAmount = TotalAmount;
+            //        }
+            //        if (Islicensedless60months == 1)
+            //        {
+            //            this.FinalAmount = TotalAmount - ExcessesAmount;
+            //        }
+            //        else if (Islicensedless60months == 0)
+            //        {
+            //            this.FinalAmount = TotalAmount;
+            //        }
+
+            //        if (IsSoundSystem == 1)
+            //        {
+            //            this.FinalAmount = TotalAmount - ExcessesAmount;
+            //        }
+            //        else if (IsSoundSystem == 0)
+            //        {
+            //            this.FinalAmount = TotalAmount - ExcessesAmount;
+
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    this.FinalAmount = TotalAmount;
+            //}
             return this;
         }
 

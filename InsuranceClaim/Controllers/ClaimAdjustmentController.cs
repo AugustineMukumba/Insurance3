@@ -328,11 +328,11 @@ namespace InsuranceClaim.Controllers
             return RedirectToAction("ListClaimAdjustment");
         }
         [HttpPost]
-        public JsonResult CalculateClaimPremium(decimal sumInsured, int? IsPartialLoss, int? IsLossInZimbabwe, int? IsStolen, int? Islicensedless60months, int? DriverIsUnder21, Boolean PrivateCar, Boolean CommercialCar, int? IsDriver25, int? IsSoundSystem)
+        public JsonResult CalculateClaimPremium(decimal sumInsured, int? IsPartialLoss, int? IsLossInZimbabwe, int? IsStolen, int? Islicensedless60months, int? DriverIsUnder21, Boolean PrivateCar, Boolean CommercialCar, int? IsDriver25, int? IsSoundSystem,decimal? TotalAmount, decimal? FinalAmountToPaid)
         {
             JsonResult json = new JsonResult();
             var ClaimQuoteL = new ClaimQuoteLogic();
-            var excess = ClaimQuoteL.CalculateClaimPremium(sumInsured, IsPartialLoss, IsLossInZimbabwe, IsStolen, Islicensedless60months, DriverIsUnder21, PrivateCar, CommercialCar, IsDriver25, IsSoundSystem);
+            var excess = ClaimQuoteL.CalculateClaimPremium(sumInsured, IsPartialLoss, IsLossInZimbabwe, IsStolen, Islicensedless60months, DriverIsUnder21, PrivateCar, CommercialCar, IsDriver25, IsSoundSystem, TotalAmount, FinalAmountToPaid);
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             json.Data = excess;
             return json;

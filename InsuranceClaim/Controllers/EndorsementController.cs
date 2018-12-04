@@ -74,7 +74,7 @@ namespace InsuranceClaim.Controllers
                     endorcustom.Id = 0; // for endersoment customer
                     endorcustom.PrimeryCustomerId = Cusotmer.Id;
 
-                    Session["SummaryDetailIdView"] = summaryId;
+                    Session["EnSummaryDetailIdView"] = summaryId;
 
                 }
                 return View(endorcustom);
@@ -106,7 +106,7 @@ namespace InsuranceClaim.Controllers
                     obj.PrimeryCustomerId = customer.PrimeryCustomerId;
                     obj.UserID = customer.UserID;
 
-                    var summaryidDeailId = Session["SummaryDetailIdView"];
+                    var summaryidDeailId = Session["EnSummaryDetailIdView"];
                     if (summaryidDeailId != null)
                     {
                         obj.SummaryId = Convert.ToInt32(summaryidDeailId);
@@ -174,10 +174,10 @@ namespace InsuranceClaim.Controllers
         {
             var viewModel = new EndorsementRiskDetailModel();
 
-            if (Session["SummaryDetailIdView"] != null)
+            if (Session["EnSummaryDetailIdView"] != null)
             {
 
-                InsertEndersoment(Convert.ToInt32(Session["SummaryDetailIdView"]));
+                InsertEndersoment(Convert.ToInt32(Session["EnSummaryDetailIdView"]));
 
                 var Endorsesummartid = (EndorsementSummaryDetail)Session["EnsummaryId"];
 
@@ -352,7 +352,7 @@ namespace InsuranceClaim.Controllers
             }
 
 
-            if (Session["ViewlistVehicles"] == null)
+            if (Session["EnViewlistVehicles"] == null)
             {
                 /// Insert into EndorsementVehicleDetail///
                 List<EndorsementVehicleDetail> listriskdetailmodel = new List<EndorsementVehicleDetail>();
@@ -448,11 +448,11 @@ namespace InsuranceClaim.Controllers
                     //var vehicleId = vehicleInsert;
                     //Session["vehicleId"] = vehicleInsert;
                     listriskdetailmodel.Add(vehicleInsert);
-                    Session["ViewlistVehicles"] = listriskdetailmodel;
+                    Session["EnViewlistVehicles"] = listriskdetailmodel;
                 }
 
                 //// insert into EndorsementSummaryVehicleDetails///
-                var _Endorsmentvehicle = (List<EndorsementVehicleDetail>)Session["ViewlistVehicles"];
+                var _Endorsmentvehicle = (List<EndorsementVehicleDetail>)Session["EnViewlistVehicles"];
                 List<EndorsementSummaryVehicleDetail> listsummaryvehiclemodel = new List<EndorsementSummaryVehicleDetail>();
                 if (_Endorsmentvehicle != null)
                 {
@@ -482,7 +482,7 @@ namespace InsuranceClaim.Controllers
             }
             else
             {
-                var summarysessionvalue = (List<EndorsementRiskDetailModel>)Session["ViewlistVehicles"];
+                var summarysessionvalue = (List<EndorsementRiskDetailModel>)Session["EnViewlistVehicles"];
                 List<EndorsementVehicleDetail> _listriskdetailmodel = new List<EndorsementVehicleDetail>();
                 foreach (var item in summarysessionvalue)
                 {
@@ -557,11 +557,11 @@ namespace InsuranceClaim.Controllers
                     _vehicleInsert.PrimaryVehicleId = item.PrimaryVehicleId;
                     InsuranceContext.EndorsementVehicleDetails.Update(_vehicleInsert);
                     _listriskdetailmodel.Add(_vehicleInsert);
-                    Session["ViewlistVehicles"] = _listriskdetailmodel;
+                    Session["EnViewlistVehicles"] = _listriskdetailmodel;
 
                 }
                 //// Update into EndorsementSummaryVehicleDetails///
-                var Endorsmentvehicle = (List<EndorsementVehicleDetail>)Session["ViewlistVehicles"];
+                var Endorsmentvehicle = (List<EndorsementVehicleDetail>)Session["EnViewlistVehicles"];
                 List<EndorsementSummaryVehicleDetail> _listsummaryvehiclemodel = new List<EndorsementSummaryVehicleDetail>();
                 if (Endorsmentvehicle != null)
                 {
@@ -612,7 +612,7 @@ namespace InsuranceClaim.Controllers
                 riskDetail.PrimaryVehicleId = Convert.ToInt32(_vehicle.PrimaryVehicleId);
                 listRiskDetail.Add(riskDetail);
             }
-            Session["ViewlistVehicles"] = listRiskDetail;
+            Session["EnViewlistVehicles"] = listRiskDetail;
 
             EndorsementSummaryDetailModel summarymodel = Mapper.Map<EndorsementSummaryDetail, EndorsementSummaryDetailModel>(endorsesummaryDetail);
             summarymodel.Id = endorsesummaryDetail.Id;
@@ -671,9 +671,9 @@ namespace InsuranceClaim.Controllers
 
             viewModel.NoOfCarsCovered = 1;
 
-            if (Session["ViewlistVehicles"] != null)
+            if (Session["EnViewlistVehicles"] != null)
             {
-                var list = (List<EndorsementRiskDetailModel>)Session["ViewlistVehicles"];
+                var list = (List<EndorsementRiskDetailModel>)Session["EnViewlistVehicles"];
                 if (list.Count > 0)
                 {
                     viewModel.NoOfCarsCovered = list.Count + 1;
@@ -681,7 +681,7 @@ namespace InsuranceClaim.Controllers
             }
             if (id > 0)
             {
-                var list = (List<EndorsementRiskDetailModel>)Session["ViewlistVehicles"];
+                var list = (List<EndorsementRiskDetailModel>)Session["EnViewlistVehicles"];
                 if (list != null && list.Count > 0 && (list.Count >= id))
                 {
                     var data = (EndorsementRiskDetailModel)list[Convert.ToInt32(id - 1)];
@@ -766,9 +766,9 @@ namespace InsuranceClaim.Controllers
             {
                 if (EndorsementsummaryDetailId != 0)
                 {
-                    if (Session["ViewlistVehicles"] != null)
+                    if (Session["EnViewlistVehicles"] != null)
                     {
-                        var list = (List<EndorsementRiskDetailModel>)Session["ViewlistVehicles"];
+                        var list = (List<EndorsementRiskDetailModel>)Session["EnViewlistVehicles"];
                         List<VehicleListModel> vehiclelist = new List<VehicleListModel>();
 
                         foreach (var item in list)
@@ -786,9 +786,9 @@ namespace InsuranceClaim.Controllers
                         return Json(vehiclelist, JsonRequestBehavior.AllowGet);
                     }
                 }
-                else if (Session["ViewlistVehicles"] != null)
+                else if (Session["EnViewlistVehicles"] != null)
                 {
-                    var _list = (List<EndorsementRiskDetailModel>)Session["ViewlistVehicles"];
+                    var _list = (List<EndorsementRiskDetailModel>)Session["EnViewlistVehicles"];
                     List<VehicleListModel> _vehiclelist = new List<VehicleListModel>();
                     foreach (var item in _list)
                     {
@@ -932,7 +932,7 @@ namespace InsuranceClaim.Controllers
             EnderSomentVehical.CreatedOn = model.CreatedOn;
             EnderSomentVehical.CreatedBy = model.CreatedBy;
             InsuranceContext.EndorsementVehicleDetails.Update(EnderSomentVehical);
-            Session.Remove("ViewlistVehicles");
+            Session.Remove("EnViewlistVehicles");
             return RedirectToAction("EndorsementSummaryDetail", "Endorsement");
 
         }
@@ -1045,12 +1045,12 @@ namespace InsuranceClaim.Controllers
                     //var vehicleId = vehicleInsert;
                     //Session["vehicleId"] = vehicleInsert;
                     RiskDetalModel.Add(obj);
-                    Session["ViewlistVehicles"] = RiskDetalModel;
+                    Session["EnViewlistVehicles"] = RiskDetalModel;
                 }
 
             }
 
-            var smrydetail = (List<EndorsementRiskDetailModel>)Session["ViewlistVehicles"];
+            var smrydetail = (List<EndorsementRiskDetailModel>)Session["EnViewlistVehicles"];
 
             EndorsementSummaryDetailService endorsementService = new EndorsementSummaryDetailService();
 
@@ -1612,7 +1612,7 @@ namespace InsuranceClaim.Controllers
             try
             {
                 Session.Remove("PolicyDataView");
-                Session.Remove("ViewlistVehicles");
+                Session.Remove("EnViewlistVehicles");
                 Session.Remove("ENViewSummaryDetail");
                 Session.Remove("EndoesementitemData");
                 Session.Remove("EndorsementPaymentId");
@@ -1631,7 +1631,7 @@ namespace InsuranceClaim.Controllers
                 Session.Remove("EndorsementPaymentId");
                 Session.Remove("EndoesementitemData");
                 Session.Remove("ENViewSummaryDetail");
-                Session.Remove("ViewlistVehicles");
+                Session.Remove("EnViewlistVehicles");
                 Session.Remove("PolicyDataView");
             }
 
@@ -2197,7 +2197,7 @@ namespace InsuranceClaim.Controllers
             JsonResult jsonResult = new JsonResult();
 
             Session.Remove("PolicyDataView");
-            Session.Remove("ViewlistVehicles");
+            Session.Remove("EnViewlistVehicles");
             Session.Remove("ENViewSummaryDetail");
             Session.Remove("EndoesementitemData");
             Session.Remove("EndorsementPaymentId");
@@ -2212,7 +2212,7 @@ namespace InsuranceClaim.Controllers
         private void RemoveEndorsementSession()
         {
             Session.Remove("PolicyDataView");
-            Session.Remove("ViewlistVehicles");
+            Session.Remove("EnViewlistVehicles");
             Session.Remove("ENViewSummaryDetail");
             Session.Remove("EndoesementitemData");
             Session.Remove("EndorsementPaymentId");

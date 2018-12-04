@@ -532,6 +532,8 @@
         CCommericalCar = $("#CommericalCar").is(":checked");
 
         sumInsured = parseFloat($("#suminsure").val());
+        Totalamount = parseFloat($("#AmountToPay").val());
+        FinalAmount =parseFloat($("#FinalAmountToPaid").val());
 
         var insurevalue = {
             DriverIsUnder21: SetAccess.isdriver,
@@ -544,6 +546,8 @@
             CommercialCar: CCommericalCar,
             IsSoundSystem: IsSoundSystem,
             IsDriver25: IsDriver25,
+            TotalAmount: Totalamount,
+            FinalAmountToPaid: FinalAmount,
 
         }
 
@@ -559,10 +563,9 @@
 
                 $("#ExcessesAmount").val((data.ExcessesAmount))
 
-              
-                var finalAmountToPaid = parseFloat($("#AmountToPay").val()) - parseFloat(data.ExcessesAmount);
+                //var finalAmountToPaid = parseFloat($("#AmountToPay").val()) - parseFloat(data.ExcessesAmount);
 
-                $("#FinalAmountToPaid").val(finalAmountToPaid);
+                $("#FinalAmountToPaid").val(data.FinalAmount);
 
             }
         });
