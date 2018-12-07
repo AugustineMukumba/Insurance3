@@ -88,8 +88,8 @@ namespace Insurance.Service
 
                         if (IsPartialLoss == 1)
                         {
-                            PartialLoss = (sumInsured * PPartialLossamount) / 100;
-                            this.CheckPartialloss = sumInsured + PartialLoss;
+                            PartialLoss =Convert.ToDecimal((TotalAmount * PPartialLossamount)) / 100;
+                            this.CheckPartialloss =Convert.ToDecimal(PartialLoss);
                         }
                         else if (IsPartialLoss == 0)
                         {
@@ -162,8 +162,8 @@ namespace Insurance.Service
 
                         if (IsPartialLoss == 1)
                         {
-                            PartialLoss = (sumInsured * CPartialLoss) / 100;
-                            this.CheckPartialloss = sumInsured + PartialLoss;
+                            PartialLoss =Convert.ToDecimal((TotalAmount * CPartialLoss)) / 100;
+                            this.CheckPartialloss =Convert.ToDecimal(PartialLoss);
                         }
                         else if (IsPartialLoss == 0)
                         {
