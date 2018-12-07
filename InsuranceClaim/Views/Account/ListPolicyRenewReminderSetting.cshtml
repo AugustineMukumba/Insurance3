@@ -76,7 +76,10 @@
 
                             </td>
                             @{
-                                    var username = InsuranceContext.Customers.Single(item.CreatedBy);
+
+                                var username = InsuranceContext.Customers.Single(where: $"Id = {item.CreatedBy}");
+
+                                //var username = InsuranceContext.Customers.Single(item.CreatedBy);
                                     <td>@username.FirstName @username.LastName</td>
                                 }
 

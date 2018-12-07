@@ -266,28 +266,33 @@ namespace InsuranceClaim.Controllers
             _ListVehicleRiskAboutExpire.ListVehicleRiskAboutExpiredata = new List<VehicleRiskAboutExpireModels>();
             VehicleRiskAboutSearchExpireModels Model = new VehicleRiskAboutSearchExpireModels();
             List<VehicleDetail> vehicledetail = new List<VehicleDetail>();
-            VehicleRiskAboutExpireModels obj = new VehicleRiskAboutExpireModels();
+
 
             //if (Date == null)
             vehicledetail = InsuranceContext.VehicleDetails.All().ToList();
             //else
             //vehicledetail = InsuranceContext.VehicleDetails.All().Where(p => p.CoverEndDate.Value.ToShortDateString() == (Date == null ? DateTime.Now.ToShortDateString() : Date.Value.ToShortDateString())).ToList();
+            var policyDetails = InsuranceContext.PolicyDetails.All();
+            var customerDetails = InsuranceContext.Customers.All();
             foreach (var item in vehicledetail)
             {
-
-                var Vehicle = InsuranceContext.VehicleDetails.Single(item.Id);
-                var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
-                var customer = InsuranceContext.Customers.Single(item.CustomerId);
+                var obj = new VehicleRiskAboutExpireModels();
+                var Vehicle = vehicledetail.Where(m => m.Id == item.Id).First();
+                var policy = policyDetails.Where(m => m.Id == item.PolicyId).First();
+                var customer = customerDetails.Where(m => m.Id == item.CustomerId).First();
                 var make = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'");
                 var model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
                 obj.Customer_Name = customer.FirstName + " " + customer.LastName;
                 obj.Policy_Number = policy.PolicyNumber;
                 obj.phone_number = customer.PhoneNumber;
                 obj.Vehicle_makeandmodel = make.MakeDescription + "/" + model.ModelDescription;
-                obj.Vehicle_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("dd/MM/yyy");
-                obj.Vehicle_enddate = Convert.ToDateTime(item.CoverEndDate).ToString("dd/MM/yyy");
+                //obj.Vehicle_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("dd/MM/yyy");
+                //obj.Vehicle_enddate = Convert.ToDateTime(item.CoverEndDate).ToString("dd/MM/yyy");
+                obj.Vehicle_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("MM/dd/yyyy");
+                obj.Vehicle_enddate = Convert.ToDateTime(item.CoverEndDate).ToString("MM/dd/yyyy");
                 obj.Premium_due = Convert.ToDecimal(item.Premium);
-                obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("dd/MM/yyy");
+                //obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("dd/MM/yyy");
+                obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("MM/dd/yyyy");
                 obj.Sum_Insured = Convert.ToDecimal(item.SumInsured);
                 ListVehicleRiskAboutExpire.Add(obj);
             }
@@ -302,7 +307,7 @@ namespace InsuranceClaim.Controllers
             _ListVehicleRiskAboutExpire.ListVehicleRiskAboutExpiredata = new List<VehicleRiskAboutExpireModels>();
             VehicleRiskAboutSearchExpireModels Model = new VehicleRiskAboutSearchExpireModels();
             List<VehicleDetail> vehicledetail = new List<VehicleDetail>();
-            VehicleRiskAboutExpireModels obj = new VehicleRiskAboutExpireModels();
+            //VehicleRiskAboutExpireModels obj = new VehicleRiskAboutExpireModels();
 
             //if (Date == null)
             vehicledetail = InsuranceContext.VehicleDetails.All().ToList();
@@ -316,29 +321,42 @@ namespace InsuranceClaim.Controllers
                 endDate = Convert.ToDateTime(_Model.EndDate);
             }
 
+            //vehicledetail = vehicledetail.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
+            //vehicledetail = vehicledetail.Where(c => c.CoverStartDate >= fromDate && c.CoverEndDate <= endDate).ToList();
+
+            //vehicledetail = vehicledetail.Where(c => c.CoverStartDate >= fromDate && c.CoverEndDate <= endDate).ToList();
+
+            //vehicledetail = vehicledetail.Where(c => c.CoverEndDate >= endDate).ToList();
+
+            vehicledetail = vehicledetail.Where(c => c.CoverEndDate >= fromDate &&  c.CoverEndDate <= endDate).ToList();
+
+            //var VehicleDetails = InsuranceContext.VehicleDetails.All().ToList();
+            var policyDetails = InsuranceContext.PolicyDetails.All().ToList();
+            var customerDetails = InsuranceContext.Customers.All().ToList();
 
 
-
-            vehicledetail = vehicledetail.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
 
             //else
             //vehicledetail = InsuranceContext.VehicleDetails.All().Where(p => p.CoverEndDate.Value.ToShortDateString() == (Date == null ? DateTime.Now.ToShortDateString() : Date.Value.ToShortDateString())).ToList();
             foreach (var item in vehicledetail)
             {
-
-                var Vehicle = InsuranceContext.VehicleDetails.Single(item.Id);
-                var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
-                var customer = InsuranceContext.Customers.Single(item.CustomerId);
+                var obj = new VehicleRiskAboutExpireModels();
+                var Vehicle = vehicledetail.Where(m=>m.Id==item.Id).First();
+                var policy = policyDetails.Where(m => m.Id==item.PolicyId).First();
+                var customer= customerDetails.Where(m => m.Id==item.CustomerId).First();
                 var make = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'");
                 var model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
                 obj.Customer_Name = customer.FirstName + " " + customer.LastName;
                 obj.Policy_Number = policy.PolicyNumber;
                 obj.phone_number = customer.PhoneNumber;
                 obj.Vehicle_makeandmodel = make.MakeDescription + "/" + model.ModelDescription;
-                obj.Vehicle_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("dd/MM/yyy");
-                obj.Vehicle_enddate = Convert.ToDateTime(item.CoverEndDate).ToString("dd/MM/yyy");
+                //obj.Vehicle_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("dd/MM/yyy");
+                //obj.Vehicle_enddate = Convert.ToDateTime(item.CoverEndDate).ToString("dd/MM/yyy");
+                obj.Vehicle_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("MM/dd/yyyy");
+                obj.Vehicle_enddate = Convert.ToDateTime(item.CoverEndDate).ToString("MM/dd/yyyy");
                 obj.Premium_due = Convert.ToDecimal(item.Premium);
-                obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("dd/MM/yyy");
+                //obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("dd/MM/yyy");
+                obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("MM/dd/yyyy");
                 obj.Sum_Insured = Convert.ToDecimal(item.SumInsured);
                 ListVehicleRiskAboutExpire.Add(obj);
             }
@@ -1375,7 +1393,7 @@ namespace InsuranceClaim.Controllers
 
                                     var ListDailyReceiptsDetails = ListDailyReceiptsReport.FirstOrDefault(c => c.PolicyId == item.PolicyId);
 
-                                    if (ListDailyReceiptsDetails==null)
+                                    if (ListDailyReceiptsDetails == null)
                                     {
                                         ListDailyReceiptsReport.Add(new LoyaltyPointsModel()
                                         {
@@ -1387,11 +1405,11 @@ namespace InsuranceClaim.Controllers
                                             EmailAddress = User.Email,
                                             LoyaltyPoints = Convert.ToString(loyalityDetail),
                                             PolicyId = item.PolicyId,
-                                           
+
                                         });
                                     }
 
-                                    
+
                                 }
                                 else
                                 {

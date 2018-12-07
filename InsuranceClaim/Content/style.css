@@ -1753,7 +1753,7 @@ div#invoiceNumberDiv .form-group {
     margin-top: 26px;
 }
 div#content {
-    width: 1252px;
+    width: 100%;
 }
 /**15 june css end**/
 
@@ -1904,6 +1904,32 @@ ul#ui-id-1 li:hover{background:#09f; color:#fff;}
 }
 
 .form-group.ml-0{margin:0 0 15px;}
+th.th-width-340 { width:340px;}
+
+div#content .product-table-grid table tr td {  vertical-align: middle; padding:10px 8px; 
+    overflow: hidden;}
+
+div#content .product-table-grid table tr td ul li, div#content .product-table-grid table tr td ul li label {
+    margin: 0;
+    padding: 0;
+}
+span.customer_title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 140px;
+    display: inline-block;
+    cursor:pointer;
+}
+
+
+
+
+
+
+
+
+
 
 
 @media(max-width:767px) {

@@ -87,11 +87,12 @@
             <table class="table table-striped tablesorter" id="report2excel">
                 <thead>
                     <tr>
-                        <th style="width:170px;">Customer Name</th>
+                        <th style="width:140px;">Customer Name</th>
                         <th>Customer Phone</th>
                         <th>Policy Number</th>
                         <th>vehicle make and model</th>
-                        <th style="width:170px;">Policy Dates</th>
+                        <th>Start Dates</th>
+                        <th>End Dates</th>
                         @*<th>vehicle/risk end date</th>
                             <th>Transaction Date</th>*@
                         <th>Sum Insured</th>
@@ -114,27 +115,14 @@
                        
 
                         <tr>
-                            <td>@item.Customer_Name</td>
+                            <td><span class="customer_title" data-toggle="tooltip" data-placement="bottom" title="@item.Customer_Name">@item.Customer_Name</span></td>
                             <td>@item.phone_number</td>
                             <td>@item.Policy_Number</td>
                             <td>@item.Vehicle_makeandmodel</td>
-                            <td>
-                                <table class="sub-table">
-                                    <tr>
-                                        <td><b>Policy Start Date :</b><br />@item.Vehicle_startdate<br /></td>
 
-                                    </tr>
-                                    <tr>
-                                        <td><b>Policy End Date : </b><br />@item.Vehicle_enddate<br /></td>
-
-                                    </tr>
-                                    <tr>
-                                        <td><b>Transaction Date :</b><br />@item.Transaction_date<br /></td>
-                                    </tr>
-                                </table>
-                            </td>
-                            @*<td>@item.Vehicle_enddate</td>
-                                <td>@item.Transaction_date</td>*@
+                            <td>@item.Vehicle_startdate</td>
+                            <td>@item.Vehicle_enddate</td>
+                           
                             <td>$ @item.Sum_Insured</td>
                             <td>$ @item.Premium_due</td>
 
