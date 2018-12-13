@@ -1824,10 +1824,13 @@ namespace InsuranceClaim.Controllers
                 if (role == "Staff")
                 {
                     var endorsementssummryinfo = InsuranceContext.EndorsementSummaryDetails.Single(where: $"CreatedBy ='{custome}'and IsCompleted = 'true'and EndorsementPolicyId = '{item.Id}'");
-
-                    endorsementsummary.Add(endorsementssummryinfo);
+                    if (endorsementssummryinfo != null)
+                    {
+                        endorsementsummary.Add(endorsementssummryinfo);
+                    }
                 }
             }
+            
             foreach (var item in endorsementsummary)
             {
                 var Endorsementsummaryvehicledetail = InsuranceContext.EndorsementSummaryVehicleDetails.All(where: $"EndorsementSummaryId = '{item.Id}'").ToList();
