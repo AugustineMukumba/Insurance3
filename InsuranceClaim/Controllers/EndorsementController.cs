@@ -1811,149 +1811,71 @@ namespace InsuranceClaim.Controllers
         {
             ListEndorsementPolicy Endorpolicylist = new ListEndorsementPolicy();
             Endorpolicylist.listendorsementpolicy = new List<EndorsementPolicyListViewModel>();
-
-
-
             var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
             var role = UserManager.GetRoles(_User.Id.ToString()).FirstOrDefault();
             var custome = InsuranceContext.Customers.Single(where: $"UserId='{User.Identity.GetUserId().ToString()}'").Id;
-
             var EndorsementcustomerID = InsuranceContext.EndorsementCustomers.Single(where: $"PrimeryCustomerId='{custome}'");
+            var policyinfo = InsuranceContext.EndorsementPolicyDetails.All(where: $"PolicyNumber = '{Policynumber}'");
 
-            var Endorpolcy = InsuranceContext.EndorsementPolicyDetails.All(where: $"PolicyNumber = '{Policynumber}'").ToList();
             var endorsementsummary = new List<EndorsementSummaryDetail>();
-            foreach (var item in Endorpolcy)
+
+            foreach (var item in policyinfo)
             {
-                var EndorsementId = InsuranceContext.EndorsementPaymentInformations.Single(where: $"EndorsementPolicyId = '{item.Id}'");
-                if (EndorsementId != null)
+                if (role == "Staff")
                 {
-                    var _EndorsementcustomerID = InsuranceContext.EndorsementCustomers.Single(where: $"PrimeryCustomerId='{EndorsementId.EndorsementCustomerId}'");
-                    if (role == "Staff")
-                    {
-                        endorsementsummary = InsuranceContext.EndorsementSummaryDetails.All(where: $"CreatedBy ='{custome}'and IsCompleted = 'true'").OrderByDescending(x => x.Id).ToList();
-                    }
-                    //else if (role == "Administrator")
-                    //{
-                    //    endorsementsummary = InsuranceContext.EndorsementSummaryDetails.All(where: $"IsCompleted = 'true'").ToList();
-                    //}
-                    //else
-                    //{
-                    //    endorsementsummary = InsuranceContext.EndorsementSummaryDetails.All(where: $"EndorsementCustomerId ='{EndorsementcustomerID.Id}'and IsCompleted = 'true'").OrderByDescending(x => x.Id).ToList();
-                    //}
+                    var endorsementssummryinfo = InsuranceContext.EndorsementSummaryDetails.Single(where: $"CreatedBy ='{custome}'and IsCompleted = 'true'and EndorsementPolicyId = '{item.Id}'");
 
-
-
-                    //endorsementsummary = InsuranceContext.EndorsementSummaryDetails.All(where: $"IsCompleted = 'true'").ToList();
-                }
-
-                foreach (var _item in endorsementsummary)
-                {
-                    EndorsementPolicyListViewModel ListEndorsmentDetail = new EndorsementPolicyListViewModel();
-                    ListEndorsmentDetail.TotalPremium = Convert.ToDecimal(_item.TotalPremium);
-                    ListEndorsmentDetail.TotalSumInsured = Convert.ToDecimal(_item.TotalSumInsured);
-                    ListEndorsmentDetail.PaymentMethodId = Convert.ToInt32(_item.PaymentMethodId);
-                    ListEndorsmentDetail.CustomerId = Convert.ToInt32(item.CustomerId);
-                    ListEndorsmentDetail.CustomerEmail = GetCustomerEmailbyCustomerID(item.CustomerId);
-                    ListEndorsmentDetail.SummaryId = _item.SummaryId;
-                    ListEndorsmentDetail.createdOn = Convert.ToDateTime(item.CreatedOn);
-                    ListEndorsmentDetail.EndorsementSummaryId = item.Id;
-                    ListEndorsmentDetail.PolicyNumber = item.PolicyNumber;
-
-
-                    var Endorsementsummaryvehicledetail = InsuranceContext.EndorsementSummaryVehicleDetails.All(where: $"EndorsementSummaryId = '{item.Id}'").ToList();
-                    //var Endorsementvehicle = InsuranceContext.EndorsementVehicleDetails.Single(Endorsementsummaryvehicledetail[0].EndorsementVehicleId);
-                    EndorsementVehicleReinsurance obj = new EndorsementVehicleReinsurance();
-                    var _Endorsementvehicle = InsuranceContext.EndorsementVehicleDetails.Single(Endorsementsummaryvehicledetail[0].EndorsementVehicleId);
-                    if (_Endorsementvehicle!=null)
-                    {
-
-                        obj.CoverType = Convert.ToInt32(_Endorsementvehicle.CoverTypeId);
-                        obj.isReinsurance = (_Endorsementvehicle.SumInsured > 100000 ? true : false);
-                        obj.MakeId = _Endorsementvehicle.MakeId;
-                        obj.ModelId = _Endorsementvehicle.ModelId;
-                        obj.RegisterationNumber = _Endorsementvehicle.RegistrationNo;
-                        obj.SumInsured = Convert.ToDecimal(_Endorsementvehicle.SumInsured);
-                        obj.VehicleId = _Endorsementvehicle.Id;
-                        obj.startdate = Convert.ToDateTime(_Endorsementvehicle.CoverStartDate);
-                        obj.enddate = Convert.ToDateTime(_Endorsementvehicle.CoverEndDate);
-                        obj.RenewalDate = Convert.ToDateTime(_Endorsementvehicle.RenewalDate);
-                        obj.isLapsed = _Endorsementvehicle.isLapsed;
-                        obj.BalanceAmount = Convert.ToDecimal(_Endorsementvehicle.BalanceAmount);
-                        obj.isActive = Convert.ToBoolean(_Endorsementvehicle.IsActive);
-                        obj.Premium = Convert.ToDecimal(_Endorsementvehicle.Premium + _Endorsementvehicle.StampDuty + _Endorsementvehicle.ZTSCLevy + (Convert.ToBoolean(_Endorsementvehicle.IncludeRadioLicenseCost) ? Convert.ToDecimal(_Endorsementvehicle.RadioLicenseCost) : 0.00m));
-
-                        //if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
-                        //{
-                        //    obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
-                        //    obj.AutoFacPremium = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsurancePremium);
-                        //    obj.AutoFacReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceAmount);
-
-                        //    if (_reinsurenaceTrans.Count > 1)
-                        //    {
-                        //        obj.FacultativeCommission = Convert.ToDecimal(_reinsurenaceTrans[1].ReinsuranceCommission);
-                        //        obj.FacPremium = Convert.ToDecimal(_reinsurenaceTrans[1].ReinsurancePremium);
-                        //        obj.FacReinsuranceAmount = Convert.ToDecimal(_reinsurenaceTrans[1].ReinsuranceAmount);
-                        //    }
-
-
-
-                        //    policylistviewmodel.Vehicles.Add(obj);
-                        //}
-                        Endorpolicylist.listendorsementpolicy.Add(ListEndorsmentDetail);
-                    }
+                    endorsementsummary.Add(endorsementssummryinfo);
                 }
             }
+            foreach (var item in endorsementsummary)
+            {
+                var Endorsementsummaryvehicledetail = InsuranceContext.EndorsementSummaryVehicleDetails.All(where: $"EndorsementSummaryId = '{item.Id}'").ToList();
+                var Endorsementvehicle = InsuranceContext.EndorsementVehicleDetails.Single(Endorsementsummaryvehicledetail[0].EndorsementVehicleId);
+                EndorsementPolicyListViewModel ListEndorsmentDetail = new EndorsementPolicyListViewModel();
 
-            //foreach (var item in endorsementsummary)
-            //{
+                ListEndorsmentDetail.TotalPremium = Convert.ToDecimal(item.TotalPremium);
+                ListEndorsmentDetail.TotalSumInsured = Convert.ToDecimal(item.TotalSumInsured);
+                ListEndorsmentDetail.PaymentMethodId = Convert.ToInt32(item.PaymentMethodId);
+                ListEndorsmentDetail.CustomerId = Convert.ToInt32(item.CustomerId);
+                ListEndorsmentDetail.CustomerEmail = GetCustomerEmailbyCustomerID(item.CustomerId);
+                ListEndorsmentDetail.SummaryId = item.SummaryId;
+                ListEndorsmentDetail.createdOn = Convert.ToDateTime(item.CreatedOn);
+                ListEndorsmentDetail.EndorsementSummaryId = item.Id;
 
-            //    EndorsementPolicyListViewModel ListEndorsmentDetail = new EndorsementPolicyListViewModel();
+                if (Endorsementvehicle != null)
+                {
+                    var Endorsepolicy = InsuranceContext.EndorsementPolicyDetails.Single(Endorsementvehicle.EndorsementPolicyId);
+                    var product = InsuranceContext.Products.Single(Convert.ToInt32(Endorsementvehicle.ProductId));
 
-            //    ListEndorsmentDetail.TotalPremium = Convert.ToDecimal(item.TotalPremium);
-            //    ListEndorsmentDetail.TotalSumInsured = Convert.ToDecimal(item.TotalSumInsured);
-            //    ListEndorsmentDetail.PaymentMethodId = Convert.ToInt32(item.PaymentMethodId);
-            //    ListEndorsmentDetail.CustomerId = Convert.ToInt32(item.CustomerId);
-            //    ListEndorsmentDetail.CustomerEmail = GetCustomerEmailbyCustomerID(item.CustomerId);
-            //    ListEndorsmentDetail.SummaryId = item.SummaryId;
-            //    ListEndorsmentDetail.createdOn = Convert.ToDateTime(item.CreatedOn);
-            //    ListEndorsmentDetail.EndorsementSummaryId = item.Id;
+                    ListEndorsmentDetail.PolicyNumber = Endorsepolicy.PolicyNumber;
 
-            //    var Endorsementsummaryvehicledetail = InsuranceContext.EndorsementSummaryVehicleDetails.All(where: $"EndorsementSummaryId = '{item.Id}'").ToList();
-            //    var Endorsementvehicle = InsuranceContext.EndorsementVehicleDetails.Single(Endorsementsummaryvehicledetail[0].EndorsementVehicleId);
+                    int i = 0;
 
-            //    if (Endorsementvehicle != null)
-            //    {
-            //        var Endorsepolicy = InsuranceContext.EndorsementPolicyDetails.Single(Endorsementvehicle.EndorsementPolicyId);
-            //        var product = InsuranceContext.Products.Single(Convert.ToInt32(Endorsementvehicle.ProductId));
+                }
+                EndorsementVehicleReinsurance obj = new EndorsementVehicleReinsurance();
+                var _Endorsementvehicle = InsuranceContext.EndorsementVehicleDetails.Single(Endorsementsummaryvehicledetail[0].EndorsementVehicleId);
+                if (_Endorsementvehicle != null)
+                {
 
-            //        ListEndorsmentDetail.PolicyNumber = Endorsepolicy.PolicyNumber;
-
-            //        int i = 0;
-
-            //    }
-            //    EndorsementVehicleReinsurance obj = new EndorsementVehicleReinsurance();
-            //    var _Endorsementvehicle = InsuranceContext.EndorsementVehicleDetails.Single(Endorsementsummaryvehicledetail[0].EndorsementVehicleId);
-            //    if (_Endorsementvehicle != null)
-            //    {
-
-            //        //var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.All(where: $"SummaryDetailId={item.Id} and VehicleId={SummaryVehicleDetails[0].VehicleDetailsId}").ToList();
+                    //var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.All(where: $"SummaryDetailId={item.Id} and VehicleId={SummaryVehicleDetails[0].VehicleDetailsId}").ToList();
 
 
 
-            //        obj.CoverType = Convert.ToInt32(_Endorsementvehicle.CoverTypeId);
-            //        obj.isReinsurance = (_Endorsementvehicle.SumInsured > 100000 ? true : false);
-            //        obj.MakeId = _Endorsementvehicle.MakeId;
-            //        obj.ModelId = _Endorsementvehicle.ModelId;
-            //        obj.RegisterationNumber = _Endorsementvehicle.RegistrationNo;
-            //        obj.SumInsured = Convert.ToDecimal(_Endorsementvehicle.SumInsured);
-            //        obj.VehicleId = _Endorsementvehicle.Id;
-            //        obj.startdate = Convert.ToDateTime(_Endorsementvehicle.CoverStartDate);
-            //        obj.enddate = Convert.ToDateTime(_Endorsementvehicle.CoverEndDate);
-            //        obj.RenewalDate = Convert.ToDateTime(_Endorsementvehicle.RenewalDate);
-            //        obj.isLapsed = _Endorsementvehicle.isLapsed;
-            //        obj.BalanceAmount = Convert.ToDecimal(_Endorsementvehicle.BalanceAmount);
-            //        obj.isActive = Convert.ToBoolean(_Endorsementvehicle.IsActive);
-            //        obj.Premium = Convert.ToDecimal(_Endorsementvehicle.Premium + _Endorsementvehicle.StampDuty + _Endorsementvehicle.ZTSCLevy + (Convert.ToBoolean(_Endorsementvehicle.IncludeRadioLicenseCost) ? Convert.ToDecimal(_Endorsementvehicle.RadioLicenseCost) : 0.00m));
+                    obj.CoverType = Convert.ToInt32(_Endorsementvehicle.CoverTypeId);
+                    obj.isReinsurance = (_Endorsementvehicle.SumInsured > 100000 ? true : false);
+                    obj.MakeId = _Endorsementvehicle.MakeId;
+                    obj.ModelId = _Endorsementvehicle.ModelId;
+                    obj.RegisterationNumber = _Endorsementvehicle.RegistrationNo;
+                    obj.SumInsured = Convert.ToDecimal(_Endorsementvehicle.SumInsured);
+                    obj.VehicleId = _Endorsementvehicle.Id;
+                    obj.startdate = Convert.ToDateTime(_Endorsementvehicle.CoverStartDate);
+                    obj.enddate = Convert.ToDateTime(_Endorsementvehicle.CoverEndDate);
+                    obj.RenewalDate = Convert.ToDateTime(_Endorsementvehicle.RenewalDate);
+                    obj.isLapsed = _Endorsementvehicle.isLapsed;
+                    obj.BalanceAmount = Convert.ToDecimal(_Endorsementvehicle.BalanceAmount);
+                    obj.isActive = Convert.ToBoolean(_Endorsementvehicle.IsActive);
+                    obj.Premium = Convert.ToDecimal(_Endorsementvehicle.Premium + _Endorsementvehicle.StampDuty + _Endorsementvehicle.ZTSCLevy + (Convert.ToBoolean(_Endorsementvehicle.IncludeRadioLicenseCost) ? Convert.ToDecimal(_Endorsementvehicle.RadioLicenseCost) : 0.00m));
 
                     //if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
                     //{
@@ -1972,9 +1894,9 @@ namespace InsuranceClaim.Controllers
 
                     //    policylistviewmodel.Vehicles.Add(obj);
                     //}
-            //        Endorpolicylist.listendorsementpolicy.Add(ListEndorsmentDetail);
-            //    }
-            //}
+                    Endorpolicylist.listendorsementpolicy.Add(ListEndorsmentDetail);
+                }
+            }
 
             return View(Endorpolicylist);
         }
