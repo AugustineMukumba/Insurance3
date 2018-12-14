@@ -1197,7 +1197,7 @@ namespace InsuranceClaim.Controllers
                             var _vehicle = InsuranceContext.VehicleDetails.Single(_item.VehicleDetailsId);
                             var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.All(where: $"SummaryDetailId={item.Id} and VehicleId={_item.VehicleDetailsId}").ToList();
 
-
+                            obj.RegistrationNo = _vehicle.RegistrationNo;
                             obj.CoverType = Convert.ToInt32(_vehicle.CoverTypeId);
                             obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
                             obj.MakeId = _vehicle.MakeId;

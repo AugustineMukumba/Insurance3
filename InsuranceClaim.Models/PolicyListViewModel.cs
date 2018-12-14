@@ -51,6 +51,7 @@ namespace InsuranceClaim.Models
         public decimal BalanceAmount { get; set; }
         public decimal Premium { get; set; }
         public bool isActive { get; set; }
+        public string RegistrationNo { get; set; }
 
 
 

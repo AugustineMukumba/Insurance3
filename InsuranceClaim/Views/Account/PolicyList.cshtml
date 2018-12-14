@@ -118,6 +118,7 @@
                             <td colspan="7">
                                 <table class="policy-table-grid policyList" style="width:100%">
                                     <tr>
+                                        <th>Registration No</th>
                                         <th>Vehicle</th>
                                         <th>Sum Insured</th>
                                         <th>Auto-Fac Sum Insured</th>
@@ -133,6 +134,7 @@
                                     @foreach (var _item in item.Vehicles)
                                     {
                                         <tr>
+                                            <td>@_item.RegistrationNo</td>
                                             <td>@MiscellaneousService.GetMakeNamebyMakeCode(_item.MakeId)/@MiscellaneousService.GetModelNamebyModelCode(_item.ModelId)</td>
                                             <td>$@_item.SumInsured</td>
                                             <td>$@_item.AutoFacReinsuranceAmount</td>
