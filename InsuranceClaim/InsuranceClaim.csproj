@@ -504,6 +504,8 @@
     <Content Include="Views\Endorsement\EndorsementSummaryDetail.cshtml" />
     <Content Include="Views\Endorsement\EndorsementSummaryDetails.cshtml" />
     <Content Include="Views\Endorsement\ViewEndorsementCustomer.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\EndorsementUserPayment.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\EndorsementSehduleMotor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

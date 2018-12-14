@@ -1590,9 +1590,9 @@ namespace InsuranceClaim.Controllers
             endorsementsummay.IsCompleted = true;
             InsuranceContext.EndorsementSummaryDetails.Update(endorsementsummay);
             //ApproveVRNToIceCash(id);
-            string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentEmail.cshtml";
+            string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/EndorsementUserPayment.cshtml";
             string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
-            var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("##path##", filepath).Replace("#FirstName#", endorsementCustomer.FirstName).Replace("#LastName#", endorsementCustomer.LastName).Replace("#AccountName#", endorsementCustomer.FirstName + ", " + endorsementCustomer.LastName).Replace("#Address1#", endorsementCustomer.AddressLine1).Replace("#Address2#", endorsementCustomer.AddressLine2).Replace("#Amount#", Convert.ToString(endorsementsummay.AmountPaid)).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", endorsepolicy.PolicyNumber).Replace("#PaymentType#", (endorsementsummay.PaymentMethodId == 1 ? "Cash" : (endorsementsummay.PaymentMethodId == 2 ? "PayPal" : "PayNow")));
+            var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("##path##", filepath).Replace("#FirstName#", endorsementCustomer.FirstName).Replace("#LastName#", endorsementCustomer.LastName).Replace("#AccountName#", endorsementCustomer.FirstName + ", " + endorsementCustomer.LastName).Replace("#Address1#", endorsementCustomer.AddressLine1).Replace("#Address2#", endorsementCustomer.AddressLine2).Replace("#Amount#", Convert.ToString(endorsementsummay.AmountPaid)).Replace("#PaymentDetails#", "Endorsement Premium").Replace("#ReceiptNumber#", endorsepolicy.PolicyNumber).Replace("#PaymentType#", (endorsementsummay.PaymentMethodId == 1 ? "Cash" : (endorsementsummay.PaymentMethodId == 2 ? "PayPal" : "PayNow")));
             var attachementFile = MiscellaneousService.EmailPdf(Body2, Convert.ToInt32(endorsepolicy.EndorsementCustomerId), endorsepolicy.PolicyNumber, "Reciept Payment");
             List<string> attachements = new List<string>();
             attachements.Add(attachementFile);
@@ -1606,6 +1606,84 @@ namespace InsuranceClaim.Controllers
             {
                 objEmailService.SendEmail(user.Email, "", "", "Payment", Body2, attachements);
             }
+
+            foreach (var item in EndorsementSummaryVehicleDetails)
+            {
+
+                var itemVehicle = InsuranceContext.EndorsementVehicleDetails.Single(item.EndorsementVehicleId);
+                ListOfVehicles.Add(itemVehicle);
+
+            }
+
+
+            string Summeryofcover = "";
+            var RoadsideAssistanceAmount = 0.00m;
+            var MedicalExpensesAmount = 0.00m;
+            var ExcessBuyBackAmount = 0.00m;
+            var PassengerAccidentCoverAmount = 0.00m;
+            var ExcessAmount = 0.00m;
+            var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
+
+            foreach (var item in ListOfVehicles)
+            {
+                VehicleModel model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
+                VehicleMake make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{item.MakeId}'");
+                string vehicledescription = model.ModelDescription + " / " + make.MakeDescription;
+
+                RoadsideAssistanceAmount = RoadsideAssistanceAmount + Convert.ToDecimal(item.RoadsideAssistanceAmount);
+                MedicalExpensesAmount = MedicalExpensesAmount + Convert.ToDecimal(item.MedicalExpensesAmount);
+                ExcessBuyBackAmount = ExcessBuyBackAmount + Convert.ToDecimal(item.ExcessBuyBackAmount);
+                PassengerAccidentCoverAmount = PassengerAccidentCoverAmount + Convert.ToDecimal(item.PassengerAccidentCoverAmount);
+                ExcessAmount = ExcessAmount + Convert.ToDecimal(item.ExcessAmount);
+
+                var paymentTermVehicel = ePaymentTermData.FirstOrDefault(p => p.ID == item.PaymentTermId);
+
+
+
+                decimal totalpaymentdue = 0.00m;
+                string paymentTermsName = "";
+                if (item.PaymentTermId == 1)
+                    paymentTermsName = "Annual";
+                else if (item.PaymentTermId == 4)
+                    paymentTermsName = "Termly";
+                else
+                    paymentTermsName = paymentTermVehicel.Name + " Months";
+
+
+                string policyPeriod = item.CoverStartDate.Value.ToString("dd/MM/yyyy") + " - " + item.CoverEndDate.Value.ToString("dd/MM/yyyy");
+
+
+
+                Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td> <td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + vehicledescription + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>$" + item.SumInsured + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + (item.CoverTypeId == 4 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + policyPeriod + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>$" + paymentTermsName + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>$" + Convert.ToString(item.Premium) + "</font></td></tr>";
+
+            }
+            var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == endorsevehicle.PaymentTermId);
+            string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/EndorsementSehduleMotor.cshtml";
+            string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
+
+
+
+
+            var Bodyy = MotorBody.Replace("##PolicyNo##", endorsepolicy.PolicyNumber).Replace("##paht##", filepath).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", endorsementCustomer.FirstName).Replace("##LastName##", endorsementCustomer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", endorsementCustomer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", endorsementCustomer.AddressLine1).Replace("##Address2##", endorsementCustomer.AddressLine2).Replace("##Renewal##", endorsevehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", endorsevehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (endorsevehicle.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + endorsevehicle.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(endorsementsummay.TotalPremium)).Replace("##StampDuty##", Convert.ToString(endorsementsummay.TotalStampDuty)).Replace("##MotorLevy##", Convert.ToString(endorsementsummay.TotalZTSCLevies)).Replace("##PremiumDue##", Convert.ToString(endorsementsummay.TotalPremium - endorsementsummay.TotalStampDuty - endorsementsummay.TotalZTSCLevies - endorsementsummay.TotalRadioLicenseCost - ListOfVehicles.Sum(x => x.VehicleLicenceFee) + ListOfVehicles.Sum(x => x.Discount))).Replace("##PostalAddress##", endorsementCustomer.ZipCode).Replace("##ExcessBuyBackAmount##", Convert.ToString(ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount)).Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount)).Replace("##RadioLicence##", Convert.ToString(endorsementsummay.TotalRadioLicenseCost)).Replace("##Discount##", Convert.ToString(ListOfVehicles.Sum(x => x.Discount))).Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).Replace("##NINumber##", endorsementCustomer.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(ListOfVehicles.Sum(x => x.VehicleLicenceFee)));
+
+            var attacehmetnFile = MiscellaneousService.EmailPdf(Bodyy, Convert.ToInt32(endorsepolicy.EndorsementCustomerId), endorsepolicy.PolicyNumber, "Endorsement Schedule-motor");
+            var Atter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
+            List<string> __attachements = new List<string>();
+            __attachements.Add(attacehmetnFile);
+            __attachements.Add(Atter);
+            #region
+
+            if (endorsementCustomer.IsCustomEmail) // if customer has custom email
+            {
+                objEmailService.SendEmail(LoggedUserEmail(), "", "", "Endorsement Schedule-motor", Bodyy, __attachements);
+            }
+            else
+            {
+                objEmailService.SendEmail(user.Email, "", "", "Endorsement Schedule-motor", Bodyy, __attachements);
+            }
+
+
+            #endregion
 
             #region  Remove All Sessions
 
@@ -1830,7 +1908,7 @@ namespace InsuranceClaim.Controllers
                     }
                 }
             }
-            
+
             foreach (var item in endorsementsummary)
             {
                 var Endorsementsummaryvehicledetail = InsuranceContext.EndorsementSummaryVehicleDetails.All(where: $"EndorsementSummaryId = '{item.Id}'").ToList();
