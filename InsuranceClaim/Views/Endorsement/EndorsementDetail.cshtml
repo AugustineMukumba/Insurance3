@@ -4,10 +4,6 @@
     ViewBag.Title = "EndorsementDetail";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
-
-
-
-
 <div class="productsave-section">
     <div class="container-fluid">
         <div class="row">
@@ -24,8 +20,19 @@
                 </div>
                 </div*@
         </div>
-        <br />
-        <br />
+       
+        <div class="row">
+            <div class="col-sm-4 col-md-4">
+                <div class="text-left">
+                    @Html.TextBox("searchText", null, new { @class = "form-control", @placeholder = "Endorsement Search" })
+                </div>
+            </div>
+
+            <div class="col-sm-3 col-md-3">
+
+            </div>
+
+        </div>
 
         @*@using (Html.BeginForm("SearchMyPolicy", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
                 {
@@ -200,3 +207,16 @@
     </div>
 
 </div>
+<script>
+
+    $(document).ready(function () {
+        $("#searchText").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $(".table>tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+
+
+</script>
