@@ -925,6 +925,9 @@ namespace Insurance.Domain
         public decimal FinalAmountToPaid { get; set; }
 
         public int ClaimRegisterationId { get; set; }
+        public decimal RepairCost { get; set; }
+        public decimal ServiceProviderCost { get; set; }
+
     }
     public partial class ClaimDocument : Entity<ClaimDocument>
     {

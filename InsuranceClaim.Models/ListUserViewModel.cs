@@ -12,4 +12,9 @@ namespace InsuranceClaim.Models
         public List<CustomerModel> ListUsers { get; set; }
 
     }
+    public class DataClass
+    {
+        public List<ListUserViewModel> Listuser { get; set; }
+
+    }
 }

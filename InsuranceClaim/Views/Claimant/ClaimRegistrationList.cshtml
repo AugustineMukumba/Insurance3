@@ -102,7 +102,7 @@
                             <td>@item.ClaimStatus</td>
                             <td>
 
-                                @foreach(var provider in item.ServiceProviderList)
+                                @foreach (var provider in item.ServiceProviderList)
                                 {
                                     <table>
                                         <tr>
@@ -111,38 +111,38 @@
                                                 <br />
                                                 @provider.ServiceProviderName
                                                 <br />
-                                                 Fee: @provider.ServiceProviderFees                     
-                                            </td>                                                                            
+                                                Fee: @provider.ServiceProviderFees
+                                            </td>
                                         </tr>
                                     </table>
-                              
+
                                 }
-                              <span> Total Provider Fee: @item.TotalProviderFees </span> 
+                                <span> Total Provider Fee: @item.TotalProviderFees </span>
 
 
                                 @*<table>
-                                    <tr>
-                                        <td><b>Assessors :</b>@item.AssessProviderName</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <b>Valuers :</b>@item.ValueProviderName
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Lawyers :</b>@item.LawyeProviderName</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Repairers :</b>@item.RepairProviderName</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Towing :</b>@item.TownlyName</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Medical :</b>@item.MeadicalName</td>
-                                    </tr>
-                                    <tr><td><b>Provider Fees :</b>@item.TotalProviderFees</td></tr>
-                                </table>*@
+                                        <tr>
+                                            <td><b>Assessors :</b>@item.AssessProviderName</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b>Valuers :</b>@item.ValueProviderName
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Lawyers :</b>@item.LawyeProviderName</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Repairers :</b>@item.RepairProviderName</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Towing :</b>@item.TownlyName</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Medical :</b>@item.MeadicalName</td>
+                                        </tr>
+                                        <tr><td><b>Provider Fees :</b>@item.TotalProviderFees</td></tr>
+                                    </table>*@
 
 
 
@@ -155,24 +155,24 @@
                                         {
                                             <li><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.ClaimNumber');">View/Upload Document</button></li>
 
-       
-                                        if (item.TotalProviderFees > 0)
-                                        {
-                                            <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id}, new { @class = "btn-sm btn-primary" })</li>
-                                        }
-                                        else
-                                        {
-                                            <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id}, new { @class = "btn-sm btn-primary", @style = "display:none" })</li>
-                                        }
+
+                                            if (item.TotalProviderFees > 0)
+                                            {
+                                                <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
+                                            }
+                                            else
+                                            {
+                                                <li>@Html.ActionLink("Claim Adjustment", "Index", "ClaimAdjustment", new { id = item.Id }, new { @class = "btn-sm btn-primary", @style = "display:none" })</li>
+                                            }
 
 
-                                          
+
                                         }
 
 
                                         @if (item.VehicleDetailId != null && item.VehicleDetailId != 0)
                                         {
-                                            <li>@Html.ActionLink("Edit", "EditRegisterClaim", "Claimant", new { id=item.Id }, new { @class = "btn-sm btn-primary" })</li>
+                                            <li>@Html.ActionLink("Edit", "EditRegisterClaim", "Claimant", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
                                         }
 
                                     </ul>
@@ -437,7 +437,7 @@
 
 
 
-    function getServiceProviderName() 
+    function getServiceProviderName()
     {
         debugger;
         var $dropdown = $("#ServiceProviderName");

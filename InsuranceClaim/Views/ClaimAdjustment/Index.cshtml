@@ -2,6 +2,11 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+
+    //if (ViewBag.servicefees!=null)
+    //{
+    //    var value = ViewBag.servicefees;
+    //}
 }
 
 
@@ -21,7 +26,6 @@
 
 
                         <div class="form-group-input">
-                            @*@using (Ajax.BeginForm("SaveCustomerData", "CustomerRegistration", new AjaxOptions { UpdateTargetId = "CustomerResult", OnSuccess = "GoToProductDetail" }))*@
                             @using (Html.BeginForm("SaveClaimAdjustment", "ClaimAdjustment", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
                             {
                                 @Html.HiddenFor(x => x.Id)
@@ -31,7 +35,6 @@
                                 @Html.HiddenFor(x => x.TotalSuminsure)
                                 @Html.HiddenFor(x => x.PolicyholderName)
                                 @Html.HiddenFor(x => x.PayeeName)
-
 
                                 <div class="row">
 
@@ -72,45 +75,39 @@
 
                                     </div>
                                 </div>
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-6 form-group-text">
 
-                                            <div class="form-group">
-                                                @Html.Label("Is Commerical Car", new { @class = "gender-label-nowidth" })
-                                                @Html.CheckBoxFor(x => x.CommericalCar)
-                                                @Html.ValidationMessageFor(x => x.CommericalCar, "", new { @class = "text-danger " })
-                                                <span id="spncommercialcar"></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 form-group-text">
-                                            <div class="form-group" id="Under25driver">
-                                                <label class="radio-label">Is Driver Under25 ?(Y/N)</label>
-                                                <div class="form-group-radio" id="radiotest">
-                                                    <label>@Html.RadioButtonFor(x => x.IsDriverUnder25, true)Yes</label>
-                                                    <label>@Html.RadioButtonFor(x => x.IsDriverUnder25, false)No</label>
-                                                    @Html.ValidationMessageFor(x => x.IsDriverUnder25, "", new { @class = "text-danger valMessage" })
-                                                </div>
-
-                                            </div>
+                                        <div class="form-group">
+                                            @Html.Label("Is Commerical Car", new { @class = "gender-label-nowidth" })
+                                            @Html.CheckBoxFor(x => x.CommericalCar)
+                                            @Html.ValidationMessageFor(x => x.CommericalCar, "", new { @class = "text-danger " })
+                                            <span id="spncommercialcar"></span>
                                         </div>
                                     </div>
+                                    <div class="col-sm-6 form-group-text">
+                                        <div class="form-group" id="Under25driver">
+                                            <label class="radio-label">Is Driver Under25 ?(Y/N)</label>
+                                            <div class="form-group-radio" id="radiotest">
+                                                <label>@Html.RadioButtonFor(x => x.IsDriverUnder25, true)Yes</label>
+                                                <label>@Html.RadioButtonFor(x => x.IsDriverUnder25, false)No</label>
+                                                @Html.ValidationMessageFor(x => x.IsDriverUnder25, "", new { @class = "text-danger valMessage" })
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
 
 
 
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
-                                        @*<div class="form-group">
-                                                <div class="form-group">
-                                                    <label>Sum Insured: </label>
-                                                    <label id="suminsure">@Model.TotalSuminsure </label>
-                                                </div>
-                                            </div>*@
                                         <div class="form-group">
-                                            <label class="radio-label">Sound System ?</label>
+                                            <label class="radio-label">Partial Loss ?</label>
                                             <div class="form-group-radio">
-                                                <label>@Html.RadioButtonFor(x => x.SoundSystem, true)Yes</label>
-                                                <label>@Html.RadioButtonFor(x => x.SoundSystem, false)No</label>
-                                                @Html.ValidationMessageFor(x => x.SoundSystem, "", new { @class = "text-danger" })
+                                                <label>@Html.RadioButtonFor(x => x.IsPartialLoss, true)Yes</label>
+                                                <label>@Html.RadioButtonFor(x => x.IsPartialLoss, false)No</label>
+                                                @Html.ValidationMessageFor(x => x.IsPartialLoss, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
@@ -149,37 +146,82 @@
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                                <label class="radio-label">Partial Loss ?</label>
+                                                <label class="radio-label">Sound System ?</label>
                                                 <div class="form-group-radio">
-                                                    <label>@Html.RadioButtonFor(x => x.IsPartialLoss, true)Yes</label>
-                                                    <label>@Html.RadioButtonFor(x => x.IsPartialLoss, false)No</label>
-                                                    @Html.ValidationMessageFor(x => x.IsPartialLoss, "", new { @class = "text-danger" })
+                                                    <label>@Html.RadioButtonFor(x => x.SoundSystem, true)Yes</label>
+                                                    <label>@Html.RadioButtonFor(x => x.SoundSystem, false)No</label>
+                                                    @Html.ValidationMessageFor(x => x.SoundSystem, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
-                                            @*<div class="form-group">
-                                                    <label class="radio-label">Sound System ?</label>
-                                                    <div class="form-group-radio">
-                                                        <label>@Html.RadioButtonFor(x => x.SoundSystem, true)Yes</label>
-                                                        <label>@Html.RadioButtonFor(x => x.SoundSystem, false)No</label>
-                                                        @Html.ValidationMessageFor(x => x.SoundSystem, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>*@
                                         </div>
                                     </div>
 
-                                 
+
 
 
                                     <div class="row">
+
+
+                                        @*@if (ViewBag.Providerslist != null)
+                                            {
+                                                var otherserviceprovider = 0.00m;
+                                                var Assessorsprovider = 0.00m;
+                                                var Towingprovider = 0.00m;
+                                                var Valuersprovider = 0.00m;
+                                                var Repairersprovider = 0.00m;
+
+                                                foreach (var Providers in ViewBag.Providerslist)
+                                                {
+                                                    if (Providers.ServiceProviderType == "Repairers")
+                                                    {
+                                                        Repairersprovider = Providers.ServiceProviderFees;
+                                                    }
+
+                                                    if (Providers.ServiceProviderType == "Assessors")
+                                                    {
+                                                        Assessorsprovider = Providers.ServiceProviderFees;
+                                                    }
+
+                                                    if (Providers.ServiceProviderType == "Towing")
+                                                    {
+                                                        Towingprovider = Providers.ServiceProviderFees;
+                                                    }
+
+                                                    if (Providers.ServiceProviderType == "Valuers")
+                                                    {
+                                                        Valuersprovider = Providers.ServiceProviderFees;
+                                                    }
+                                                }
+
+                                                otherserviceprovider = Assessorsprovider + Towingprovider + Valuersprovider;
+                                            }*@
+
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                                @Html.LabelFor(x => x.AmountToPay, new { @class = "gender-label" })
-                                                @Html.TextBoxFor(x => x.AmountToPay, new { @class = "form-control", @name = "AmountToPay", @autocomplete = "off", @id = "AmountToPay", @placeholder = "Enter Amount" })
-                                                @Html.ValidationMessageFor(x => x.AmountToPay, "", new { @class = "text-danger" })
+
+
+                                                @Html.LabelFor(x => x.RepairCost, new { @class = "gender-label" })
+                                                @Html.TextBoxFor(x => x.RepairCost, new { @class = "form-control", @name = "RepairCost", @autocomplete = "off", @id = "RepairCost", @placeholder = "Repair Cost" })
+                                                @Html.ValidationMessageFor(x => x.RepairCost, "", new { @class = "text-danger" })
+
                                             </div>
                                         </div>
+
+
+                                        <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.ServiceProviderCost, new { @class = "gender-label" })
+                                                @Html.TextBoxFor(x => x.ServiceProviderCost, new { @class = "form-control", @name = "ServiceProviderCost", @autocomplete = "off", @id = "ServiceProviderCost", @placeholder = "Service Provider Cost" })
+                                                @Html.ValidationMessageFor(x => x.ServiceProviderCost, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.LabelFor(x => x.EstimatedLoss, new { @class = "gender-label" })
@@ -187,17 +229,15 @@
                                                 @Html.ValidationMessageFor(x => x.EstimatedLoss, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="row">
-                                        <div class="col-sm-12 col-md-12 form-group-text">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.LabelFor(x => x.FinalAmountToPaid, new { @class = "gender-label" })
-                                                @Html.TextBoxFor(x => x.FinalAmountToPaid, new { @class = "form-control", @name = "FinalAmountToPaid", @autocomplete = "off", @id = "FinalAmountToPaid", @placeholder = "Final Amount Paid" })
+                                                @Html.TextBoxFor(x => x.FinalAmountToPaid, new { @class = "form-control", @name = "FinalAmountToPaid", @autocomplete = "off", @id = "TotalClaimCost", @placeholder = "Total Claim Cost" })
                                                 @Html.ValidationMessageFor(x => x.FinalAmountToPaid, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
-                                        
+
                                     </div>
 
 
@@ -235,8 +275,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                   
-                                   
+
+
 
 
                                     <br />
@@ -533,7 +573,11 @@
 
         sumInsured = parseFloat($("#suminsure").val());
         Totalamount = parseFloat($("#AmountToPay").val());
-        FinalAmount =parseFloat($("#FinalAmountToPaid").val());
+        FinalAmount = parseFloat($("#FinalAmountToPaid").val());
+
+        var repairercost = $("#RepairCost").val();
+        var otherServiceProCost = $("#ServiceProviderCost").val();
+        var TotalClaimCost = $("#TotalClaimCost").val();
 
         var insurevalue = {
             DriverIsUnder21: SetAccess.isdriver,
@@ -548,6 +592,9 @@
             IsDriver25: IsDriver25,
             TotalAmount: Totalamount,
             FinalAmountToPaid: FinalAmount,
+            repairercost: repairercost,
+            otherServiceProCost: otherServiceProCost,
+            TotalClaimCost: TotalClaimCost
 
         }
 
@@ -565,14 +612,17 @@
 
                 //var finalAmountToPaid = parseFloat($("#AmountToPay").val()) - parseFloat(data.ExcessesAmount);
 
-                $("#FinalAmountToPaid").val(data.FinalAmount);
+                if (data.FinalAmount == null) {
+                    var FinalAmount = parseFloat(0.00);
+                    $("#TotalClaimCost").val(FinalAmount);
+                }
+                else {
+                    $("#TotalClaimCost").val(data.FinalAmount);
+                }
+
 
             }
         });
-
-
-
-
     }
 
 

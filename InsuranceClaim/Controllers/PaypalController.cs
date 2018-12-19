@@ -1174,9 +1174,6 @@ namespace InsuranceClaim.Controllers
 
             List<Item> itms = new List<Item>();
 
-
-
-
             foreach (var vehicledetail in SummaryVehicleDetails.ToList())
             {
                 var _vehicle = InsuranceContext.VehicleDetails.Single(vehicledetail.VehicleDetailsId);

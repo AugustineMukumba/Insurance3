@@ -21,12 +21,79 @@ namespace InsuranceClaim.Controllers
             //   string PolicyNumber, int? claimnumber
 
 
+            var otherserviceprovider = 0.00m;
+            var Assessorsprovider = 0.00m;
+            var Towingprovider = 0.00m;
+            var Valuersprovider = 0.00m;
+            var Repairersprovider = 0.00m;
+
+            var Lawyersprovider = 0.00m;
+            var Medicalprovider = 0.00m;
+
             var ePaymentDetail = from ePayeeBankDetails e in Enum.GetValues(typeof(ePayeeBankDetails))
                                  select new
                                  {
                                      ID = (int)e,
                                      Name = e.ToString()
                                  };
+
+
+            //for getting repairs providers value
+
+            var query = "select ClaimRegistrationId, ProviderType,ServiceProviderName, ServiceProviderFee  from ClaimRegistrationProviderDetial ";
+            query += " join ServiceProviderType on ClaimRegistrationProviderDetial.ServiceProviderTypeId = ServiceProviderType.Id ";
+            query += " join ServiceProvider on ClaimRegistrationProviderDetial.ServiceProviderId = ServiceProvider.Id where ClaimRegistrationId =" + id + "and IsSaved=1";
+
+            List<ServiceProviderModel> list = InsuranceContext.Query(query).Select(c => new ServiceProviderModel
+            {
+                ServiceProviderType = c.ProviderType,
+                ServiceProviderName = c.ServiceProviderName,
+                ServiceProviderFees = c.ServiceProviderFee,
+                ClaimRegistrationId = c.ClaimRegistrationId
+            }).ToList();
+
+            //ViewBag.Providerslist = list;
+
+
+            //for (int i=0; i< list.Count;i++)
+            //{
+            foreach (var Providers in list)
+            {
+                if (Providers.ServiceProviderType == "Repairers")
+                {
+                    Repairersprovider = Providers.ServiceProviderFees;
+                }
+                if (Providers.ServiceProviderType == "Assessors")
+                {
+                    Assessorsprovider = Providers.ServiceProviderFees;
+                }
+
+                if (Providers.ServiceProviderType == "Towing")
+                {
+                    Towingprovider = Providers.ServiceProviderFees;
+                }
+
+                if (Providers.ServiceProviderType == "Valuers")
+                {
+                    Valuersprovider = Providers.ServiceProviderFees;
+                }
+                if (Providers.ServiceProviderType == "Lawyers")
+                {
+                    Lawyersprovider = Providers.ServiceProviderFees;
+                }
+                if (Providers.ServiceProviderType == "Medical")
+                {
+                    Medicalprovider = Providers.ServiceProviderFees;
+                }
+
+            }
+
+            otherserviceprovider = Assessorsprovider + Towingprovider + Valuersprovider + Lawyersprovider + Medicalprovider;
+
+
+            //}
+
+
 
 
 
@@ -51,17 +118,17 @@ namespace InsuranceClaim.Controllers
                     model.TotalSuminsure = Convert.ToDecimal(summery.TotalPremium);
                     model.PolicyholderName = custmo.FirstName + " " + custmo.LastName;
                     model.PayeeName = data.ClaimantName;
-                    model.AmountToPay = data.TotalProviderFees;
-                    model.FinalAmountToPaid = data.TotalProviderFees;
+                    //model.AmountToPay = data.TotalProviderFees;
+                    //model.FinalAmountToPaid = data.TotalProviderFees;
+                    //model.FinalAmountToPaid = Repairersprovider+otherserviceprovider;
+                    model.FinalAmountToPaid = 0.00m;
+                    model.RepairCost = Repairersprovider;
+                    model.ServiceProviderCost = otherserviceprovider;
                     model.ClaimRegisterationId = data.Id;
                     return View(model);
 
                 }
             }
-
-
-
-
             return View();
         }
 
@@ -82,6 +149,7 @@ namespace InsuranceClaim.Controllers
             {
                 model.PayeeName = claimAdjustment.PayeeName;
                 model.PolicyholderName = claimAdjustment.PolicyholderName;
+                model.FinalAmountToPaid = claimAdjustment.FinalAmountToPaid;
             }
 
 
@@ -196,13 +264,6 @@ namespace InsuranceClaim.Controllers
 
             }
 
-
-
-
-
-
-
-
             var ePaymentDetail = from ePayeeBankDetails e in Enum.GetValues(typeof(ePayeeBankDetails))
                                  select new
                                  {
@@ -251,8 +312,6 @@ namespace InsuranceClaim.Controllers
 
                 if (userLoggedin)
                 {
-                    // var claimadjust = InsuranceContext.ClaimAdjustments.Single(where: $"ClaimNumber = '{model.ClaimNumber}'");
-
 
                     var claimadjust = InsuranceContext.ClaimAdjustments.Single(where: $"ClaimRegisterationId = '{model.ClaimRegisterationId}'");
 
@@ -328,11 +387,11 @@ namespace InsuranceClaim.Controllers
             return RedirectToAction("ListClaimAdjustment");
         }
         [HttpPost]
-        public JsonResult CalculateClaimPremium(decimal sumInsured, int? IsPartialLoss, int? IsLossInZimbabwe, int? IsStolen, int? Islicensedless60months, int? DriverIsUnder21, Boolean PrivateCar, Boolean CommercialCar, int? IsDriver25, int? IsSoundSystem,decimal? TotalAmount, decimal? FinalAmountToPaid)
+        public JsonResult CalculateClaimPremium(decimal sumInsured, int? IsPartialLoss, int? IsLossInZimbabwe, int? IsStolen, int? Islicensedless60months, int? DriverIsUnder21, Boolean PrivateCar, Boolean CommercialCar, int? IsDriver25, int? IsSoundSystem, decimal? TotalAmount, decimal? FinalAmountToPaid, decimal repairercost, decimal? otherServiceProCost, decimal? TotalClaimCost)
         {
             JsonResult json = new JsonResult();
             var ClaimQuoteL = new ClaimQuoteLogic();
-            var excess = ClaimQuoteL.CalculateClaimPremium(sumInsured, IsPartialLoss, IsLossInZimbabwe, IsStolen, Islicensedless60months, DriverIsUnder21, PrivateCar, CommercialCar, IsDriver25, IsSoundSystem, TotalAmount, FinalAmountToPaid);
+            var excess = ClaimQuoteL.CalculateClaimPremium(sumInsured, IsPartialLoss, IsLossInZimbabwe, IsStolen, Islicensedless60months, DriverIsUnder21, PrivateCar, CommercialCar, IsDriver25, IsSoundSystem, TotalAmount, FinalAmountToPaid, repairercost, otherServiceProCost, TotalClaimCost);
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             json.Data = excess;
             return json;

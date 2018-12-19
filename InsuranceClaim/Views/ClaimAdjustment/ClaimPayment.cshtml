@@ -33,10 +33,10 @@
                             <div class="alert alert-success">
                                 <strong>Success Payment has done!</strong> Make payment for another provider.
 
-                               
+
                             </div>
 
-                         
+
                         }
 
 
@@ -71,65 +71,66 @@
 
                                 foreach (var item in Model.ServiceProviderList)
                                 {
-                                        <div class="row">
-                                            <div class="col-sm-4 col-md-4 form-group-text">
-                                                <div class="form-group">
-                                                    <label class="gender-label">
-                                                        @item.ServiceProviderType [@item.ServiceProviderName]
-                                                    </label>
-                                               
-                                                </div>
-
-                                              
-                                            
-                                             </div>
-
-
-
-                                            <div class="col-sm-4 col-md-4 form-group-text">
-                                                <div class="form-group">
-                                                    <label class="gender-label">Amount:</label>
-                                                    
-                                                    <input type="text" class="form-control" value="@item.ServiceProviderFee" />
-
-                                                </div>
+                                    <div class="row">
+                                        <div class="col-sm-4 col-md-4 form-group-text">
+                                            <div class="form-group">
+                                                <label class="gender-label">
+                                                    @item.ServiceProviderType [@item.ServiceProviderName]
+                                                </label>
 
                                             </div>
-
-
-                                            <div class="col-sm-4 col-md-4 form-group-text">
-                                                <div class="form-group">
-                                                   <br />
-                                                    <br />
-                                                    @Html.ActionLink("Pay", "ProviderPayment", new { RegistrationProviderId = item.Id, ClaimAdjustmentId = Model.Id}, new { @class = "btn btn-primary" })
-
-
-                                                </div>
-                                             
-                                               
-
-                                            </div>
-
-
-
 
 
 
                                         </div>
-                                   
+
+
+
+                                        <div class="col-sm-4 col-md-4 form-group-text">
+                                            <div class="form-group">
+                                                <label class="gender-label">Amount:</label>
+
+                                                <input type="text" class="form-control" value="@item.ServiceProviderFee" />
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="col-sm-4 col-md-4 form-group-text">
+                                            <div class="form-group">
+                                                <br />
+                                                <br />
+                                                @Html.ActionLink("Pay", "ProviderPayment", new { RegistrationProviderId = item.Id, ClaimAdjustmentId = Model.Id }, new { @class = "btn btn-primary" })
+
+
+                                            </div>
+
+
+
+                                        </div>
+
+
+
+
+
+
+                                    </div>
+
                                 }
 
                                 <div class="row">
                                     <div class="col-sm-4 col-md-4 form-group-text">
                                         <div class="form-group">
-                                            Total Amount left to Paid:  <b>@Model.TotalAmountLeftToPayed </b>   
-
+                                            Total Amount left to Paid:  <b>@Model.TotalAmountLeftToPayed </b>
                                         </div>
-
-
-
                                     </div>
-                             
+                                    @*<div class="col-sm-4 col-md-4 form-group-text">
+                                        <div class="form-group">
+                                            Total Claim Cost:  <b>@Model.FinalAmountToPaid </b>
+                                        </div>
+                                    </div>*@
+
                                 </div>
 
 

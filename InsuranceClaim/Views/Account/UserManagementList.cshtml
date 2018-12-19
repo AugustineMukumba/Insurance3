@@ -7,7 +7,30 @@
 
     
 }
+@using (Html.BeginForm("SearchUserManagementList", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <div class="row">
+        <div class="col-md-12 next-btn">
+            <div class="row">
+                <div class="col-sm-4 col-md-4">
+                    <div class="text-left">
+                        @Html.TextBox("searchText", null, new { @class = "form-control", @placeholder = "Customer Email / Customer Name" })
+                    </div>
+                </div>
+                <div class="col-sm-3 col-md-3">
 
+                </div>
+                <div class="col-sm-5 col-md-5">
+                    <div class="text-left search-btn">
+                        <button type="submit" class="btn btn-success">Search</button>
+                        <button type="button" onclick="removeSearchBoxText();" class="btn btn-danger">Clear Search</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @using (Html.BeginForm("UserManagement", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
@@ -47,6 +70,17 @@
                         </tr>
                     </thead>
                     <tbody>
+
+                        @if (Model != null)
+                        {
+                            if (Model.ListUsers.Count == 0)
+                            {
+                                <label>No User Found</label>
+                            }
+                        }
+
+
+
                         @foreach (var item in Model.ListUsers)
                         {
                             <tr>
@@ -116,4 +150,11 @@
         var newurl = url.replace("1021", CoverListId);
         window.location.href = newurl;
     }
+
+
+    function removeSearchBoxText() {
+        window.location.href = "/Account/UserManagementList";
+
+    }
+
 </script>

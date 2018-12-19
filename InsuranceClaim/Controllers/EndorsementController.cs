@@ -141,9 +141,17 @@ namespace InsuranceClaim.Controllers
                                 customerdata.ZipCode = model.ZipCode;
                                 customerdata.CreatedOn = DateTime.Now;
                                 customerdata.IsCompleted = false;
+                                customerdata.DateOfBirth = model.DateOfBirth;
                                 InsuranceContext.EndorsementCustomers.Insert(customerdata);
                                 var user = UserManager.FindById(model.UserID);
-                                Session["EnCustomerDetail"] = customerdata;
+                                //var dbUser = UserManager.Users.FirstOrDefault(c => c.Id == model.UserID);
+                                //dbUser.Email = model.EmailAddress;
+                                //dbUser.UserName = model.EmailAddress;
+                                //UserManager.Update(dbUser);
+                                //Session["Enuser"] = dbUser.Email;
+                                 //var user = new ApplicationUser { UserName = customer.EmailAddress, Email = customer.EmailAddress, PhoneNumber = customer.PhoneNumber };
+                                 Session["EnCustomerDetail"] = customerdata;
+
                             }
                             else
                             {
@@ -153,8 +161,15 @@ namespace InsuranceClaim.Controllers
                                 _customerdata.UserID = model.UserID;
                                 _customerdata.ZipCode = model.ZipCode;
                                 _customerdata.CreatedOn = _customerdata.CreatedOn;
+                                _customerdata.DateOfBirth = model.DateOfBirth;
                                 _customerdata.IsCompleted = false;
                                 InsuranceContext.EndorsementCustomers.Update(_customerdata);
+                                var _user = UserManager.FindById(model.UserID);
+                                //var _dbUser = UserManager.Users.FirstOrDefault(c => c.Id == model.UserID);
+                                //_dbUser.Email = model.EmailAddress;
+                                //_dbUser.UserName = model.EmailAddress;
+                                //UserManager.Update(_dbUser);
+                                //Session["Enuser"] = _dbUser.Email;
                                 Session["EnCustomerDetail"] = _customerdata;
                             }
                         }
@@ -1115,7 +1130,9 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult SaveEndorsementSummaryDetails(EndorsementSummaryDetailModel model)
         {
-
+            var _Endorsepolicy =(EndorsementPolicyDetail) Session["PolicyDataView"];
+            var Endorcustomer = (EndorsementCustomer)Session["EnCustomerDetail"];
+            //var enduser = Session["Enuser"];
             var ensummerydetail = InsuranceContext.EndorsementSummaryDetails.Single(where: $"Id = '{model.Id}'");
             if (ensummerydetail != null)
             {
@@ -1167,6 +1184,7 @@ namespace InsuranceClaim.Controllers
                 {
                     TempData["PaymentMethodId"] = model.PaymentMethodId;
                     return RedirectToAction("makepayment", "Endorsement", new { id = model.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
+                    //return RedirectToAction("InitiatePaynowTransaction", "Endorsement", new { id = model.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = _Endorsepolicy.PolicyNumber, Email = enduser });
                 }
             }
 
@@ -1422,6 +1440,72 @@ namespace InsuranceClaim.Controllers
             return RedirectToAction("SaveEndorsementDetailList", "Endorsement", new { id = model.EndorsementSummaryId });
 
         }
+
+
+
+        //public async Task<ActionResult> InitiatePaynowTransaction(Int32 id, string TotalPremiumPaid, string PolicyNumber, string Email)
+        //{
+        //    var summaryDetail = InsuranceContext.SummaryDetails.Single(id);
+        //    var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={id}").ToList();
+        //    //var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+        //    var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+        //    var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
+        //    var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
+
+        //    List<Item> itms = new List<Item>();
+
+
+
+
+        //    foreach (var vehicledetail in SummaryVehicleDetails.ToList())
+        //    {
+        //        var _vehicle = InsuranceContext.VehicleDetails.Single(vehicledetail.VehicleDetailsId);
+        //        Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
+        //        VehicleModel _model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{_vehicle.ModelId}'");
+        //        VehicleMake make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{_vehicle.MakeId}'");
+
+        //        Item item = new Item();
+        //        item.name = make.MakeDescription + "/" + _model.ModelDescription;
+        //        item.currency = "USD";
+        //        item.price = Convert.ToString(_vehicle.Premium);
+        //        item.quantity = "1";
+        //        item.sku = _vehicle.RegistrationNo;
+
+        //        itms.Add(item);
+        //    }
+
+        //    //Item item = new Item();
+        //    //item.name = product.ProductName;
+        //    //item.currency = "USD";
+        //    //item.price = vehicle.Premium.ToString();
+        //    //item.quantity = "1";
+        //    //item.sku = "sku";
+        //    //item.currency = "USD";
+
+
+
+        //    Session["itemData"] = itms;
+
+        //    Insurance.Service.PaynowService paynowservice = new Insurance.Service.PaynowService();
+        //    PaynowResponse paynowresponse = new PaynowResponse();
+
+        //    paynowresponse = await paynowservice.initiateTransaction(Convert.ToString(id), TotalPremiumPaid, PolicyNumber, Email);
+
+        //    if (paynowresponse.status == "Ok")
+        //    {
+        //        string strScript = "location.href = '" + paynowresponse.browserurl + "';";
+        //        ViewBag.strScript = "<script type='text/javascript'>$(document).ready(function(){" + strScript + "});</script>";
+        //    }
+        //    else
+        //    {
+        //        ViewBag.strScript = "<script type='text/javascript'>$(document).ready(function(){$('#errormsg').text('" + paynowresponse.error + "');});</script>";
+        //    }
+
+
+
+        //    return View();
+        //}
+
 
 
 
@@ -2315,7 +2399,6 @@ namespace InsuranceClaim.Controllers
             Session.Remove("EnCustomerDetail");
 
         }
-
 
     }
 

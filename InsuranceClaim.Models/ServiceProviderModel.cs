@@ -34,5 +34,7 @@ namespace InsuranceClaim.Models
         public int ProviderTypeId { get; set; }
 
         public int ClaimRegistrationId { get; set; }
+        public decimal? OtherServiceProvider { get; set; }
+        public decimal RepairersProviderFees { get; set; }
     }
 }

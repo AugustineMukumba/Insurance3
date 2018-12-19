@@ -1338,10 +1338,11 @@ namespace InsuranceClaim.Controllers
                                     return RedirectToAction("SaveDetailList", "Paypal", new { id = model.CustomSumarryDetilId, invoiceNumber = model.InvoiceNumber });
                                 if (model.PaymentMethodId == 3)
                                 {
+                                    //return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policyNum, Email = customerEmail });
+
                                     TempData["PaymentMethodId"] = model.PaymentMethodId;
                                     return RedirectToAction("makepayment", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
                                 }
-                                //return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policyNum, Email = customerEmail });
                                 else
                                     return RedirectToAction("PaymentDetail", new { id = model.CustomSumarryDetilId });
                             }
@@ -2399,10 +2400,12 @@ namespace InsuranceClaim.Controllers
                             return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id, invoiceNumer = model.InvoiceNumber });
                         if (model.PaymentMethodId == 3)
                         {
+
+                            //return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
                             TempData["PaymentMethodId"] = model.PaymentMethodId;
                             return RedirectToAction("makepayment", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
                         }
-                        //return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
+
                         else
                             return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
                     }

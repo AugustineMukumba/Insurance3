@@ -1075,7 +1075,7 @@ namespace InsuranceClaim.Controllers
 
 
             List<CustomerModel> ListUserViewModel = new List<CustomerModel>();
-            var user = InsuranceContext.Customers.All(where: "IsActive = 'True' or IsActive is null").OrderByDescending(x => x.Id).ToList();
+            var user = InsuranceContext.Customers.All(where: "IsActive = 'True' or IsActive is null").OrderByDescending(x => x.Id).ToList().Take(50);
 
 
             foreach (var item in user)
@@ -1115,6 +1115,70 @@ namespace InsuranceClaim.Controllers
 
         }
 
+        public ActionResult SearchUserManagementList(string searchText)
+        {
+            ListUserViewModel lstUserModel = new ListUserViewModel();
+            lstUserModel.ListUsers = new List<CustomerModel>();
+            List<CustomerModel> ListUserViewModel = new List<CustomerModel>();
+            //ListPolicy policylist = new ListPolicy();
+            //policylist.listpolicy = new List<PolicyListViewModel>();
+            if (searchText != null && searchText != "")
+            {
+                var custom = searchText.Split(' ');
+                var customers = new List<Customer>();
+
+                if (custom.Length == 2)
+                {
+                    var searchtext1 = Convert.ToString(custom[0]);
+                    var searchtext2 = Convert.ToString(custom[1]);
+
+                    customers = InsuranceContext.Customers.All(where: $"FirstName like '%{searchtext1}%' and LastName like '%{searchtext2}%' ").ToList();
+                }
+                if (custom.Length == 1)
+                {
+                    customers = InsuranceContext.Customers.All(where: $"FirstName like '%{searchText}%' or LastName like '%{searchText}%' ").ToList();
+                }
+               
+                if (customers != null && customers.Count > 0)
+                {
+
+                    foreach (var item in customers)
+                    {
+                        CustomerModel cstmrModel = new CustomerModel();
+                        cstmrModel.Id = item.Id;
+                        cstmrModel.UserID = item.UserID;
+                        cstmrModel.CustomerId = item.CustomerId;
+                        cstmrModel.FirstName = item.FirstName;
+                        cstmrModel.LastName = item.LastName;
+                        cstmrModel.Gender = item.Gender;
+                        cstmrModel.DateOfBirth = item.DateOfBirth;
+                        cstmrModel.CountryCode = item.Countrycode;
+                        cstmrModel.City = item.City;
+                        cstmrModel.Country = item.Country;
+                        cstmrModel.IsActive = item.IsActive;
+                        cstmrModel.IsLicenseDiskNeeded = item.IsLicenseDiskNeeded;
+                        cstmrModel.IsPolicyDocSent = item.IsPolicyDocSent;
+                        cstmrModel.AddressLine1 = item.AddressLine1;
+                        cstmrModel.AddressLine1 = item.AddressLine2;
+                        cstmrModel.NationalIdentificationNumber = item.NationalIdentificationNumber;
+                        cstmrModel.IsOTPConfirmed = item.IsOTPConfirmed;
+                        cstmrModel.IsWelcomeNoteSent = item.IsWelcomeNoteSent;
+
+                        cstmrModel.PhoneNumber = UserManager.GetPhoneNumber(item.UserID);
+                        cstmrModel.EmailAddress = UserManager.GetEmail(item.UserID);
+                        cstmrModel.role = Convert.ToString(UserManager.GetRoles(item.UserID).Count > 0 ? Convert.ToString(UserManager.GetRoles(item.UserID)[0]) : "");
+
+                        ListUserViewModel.Add(cstmrModel);
+
+                    }
+                    lstUserModel.ListUsers = ListUserViewModel;
+                    return View("UserManagementList", lstUserModel);
+                }
+               
+            }
+
+            return View("UserManagementList", lstUserModel);
+        }
         public ActionResult DeleteUserManagement(int id)
         {
             var data = InsuranceContext.Customers.Single(id);

@@ -27,7 +27,8 @@ namespace Insurance.Service
 
         public decimal CheckIsSoundSystem { get; set; }
 
-        public ClaimQuoteLogic CalculateClaimPremium(decimal sumInsured, int? IsPartialLoss, int? IsLossInZimbabwe, int? IsStolen, int? Islicensedless60months, int? DriverIsUnder21, Boolean PrivateCar, Boolean CommercialCar, int? IsDriver25, int? IsSoundSystem, decimal? TotalAmount, decimal? FinalAmountToPaid)
+        //public ClaimQuoteLogic CalculateClaimPremium(decimal sumInsured, int? IsPartialLoss, int? IsLossInZimbabwe, int? IsStolen, int? Islicensedless60months, int? DriverIsUnder21, Boolean PrivateCar, Boolean CommercialCar, int? IsDriver25, int? IsSoundSystem, decimal? TotalAmount, decimal? FinalAmountToPaid)
+        public ClaimQuoteLogic CalculateClaimPremium(decimal sumInsured, int? IsPartialLoss, int? IsLossInZimbabwe, int? IsStolen, int? Islicensedless60months, int? DriverIsUnder21, Boolean PrivateCar, Boolean CommercialCar, int? IsDriver25, int? IsSoundSystem, decimal? TotalAmount, decimal? FinalAmountToPaid, decimal repairercost, decimal? otherServiceProCost, decimal? TotalClaimCost)
         {
 
             var ClaimSettingdetail = InsuranceContext.ClaimSettings.All(where: $"IsActive = 'True' or IsActive is Null ");
@@ -74,69 +75,107 @@ namespace Insurance.Service
 
                     else
                     {
-                        if (DriverIsUnder21 == 1)
-                        {
-                            DriverIsUnder = (sumInsured * PDriverunder21amount) / 100;
-                            this.CheckDriverIsUnder21 = sumInsured + DriverIsUnder;
-                        }
-                        if (Islicensedless60months == 1)
-                        {
-                            licensedless = (sumInsured * PLicensedless60monthsamount) / 100;
-                            this.CheckIslicensedless60months = sumInsured + licensedless;
-
-                        }
 
                         if (IsPartialLoss == 1)
                         {
-                            PartialLoss =Convert.ToDecimal((TotalAmount * PPartialLossamount)) / 100;
-                            this.CheckPartialloss =Convert.ToDecimal(PartialLoss);
+                            PartialLoss = Convert.ToDecimal(repairercost * PPartialLossamount) / 100;
+                            this.CheckPartialloss = Convert.ToDecimal(PartialLoss);
+
+                            if (IsLossInZimbabwe == 1)
+                            {
+                                IslossInzimbabwe = (sumInsured * POutSideOfZimba) / 100;
+                                this.CheckLossInZimbabwe = IslossInzimbabwe;
+                            }
+                            if (DriverIsUnder21 == 1)
+                            {
+                                DriverIsUnder = (sumInsured * PDriverunder21amount) / 100;
+                                this.CheckDriverIsUnder21 = DriverIsUnder;
+                            }
+                            if (Islicensedless60months == 1)
+                            {
+                                licensedless = (sumInsured * PLicensedless60monthsamount) / 100;
+                                this.CheckIslicensedless60months = licensedless;
+                            }
+                            if (IsSoundSystem == 1)
+                            {
+                                IsSoundsystem = (repairercost * PSoundSystem) / 100;
+                                this.CheckIsSoundSystem = IsSoundsystem;
+                            }
+                            if (IsSoundSystem == 0)
+                            {
+                                IsSoundsystem = (sumInsured * 1) / 100;
+                                this.CheckIsSoundSystem = IsSoundsystem;
+                            }
+
+                            if (IsStolen == 1)
+                            {
+                                Isstolen = (repairercost * PStolenamount) / 100;
+                                this.CheckIsStolen = Isstolen;
+                            }
+                            if (IsStolen == 0)
+                            {
+                                Isstolen = (sumInsured * 1) / 100;
+                                this.CheckIsStolen = Isstolen;
+                            }
+                            if (IsPartialLoss == 1 || IsLossInZimbabwe == 1 || Islicensedless60months == 1 || IsSoundSystem == 1 || DriverIsUnder21 == 1 || IsStolen == 1 || IsSoundSystem == 0 || IsStolen == 0)
+                            {
+                                this.ExcessesAmount = this.CheckPartialloss + this.CheckLossInZimbabwe + this.CheckDriverIsUnder21 + this.CheckIslicensedless60months + this.CheckIsSoundSystem + this.CheckIsStolen;
+                                this.FinalAmount = (repairercost - this.ExcessesAmount) + otherServiceProCost;
+                            }
+
                         }
                         else if (IsPartialLoss == 0)
                         {
                             totalloss = (sumInsured * PCarTotalLoss) / 100;
-                            this.CheckPartialloss = sumInsured + totalloss;
-                        }
-                        if (IsStolen == 1)
-                        {
-                            Isstolen = (sumInsured * PStolenamount) / 100;
-                            this.CheckIsStolen = sumInsured + Isstolen;
-                        }
-                        else if (IsStolen == 0)
-                        {
-                            Isstolen = (sumInsured * 1) / 100;
-                            this.CheckIsStolen = sumInsured + Isstolen;
-                        }
-                        if (IsLossInZimbabwe == 1)
-                        {
-                            IslossInzimbabwe = (sumInsured * POutSideOfZimba) / 100;
-                            this.CheckLossInZimbabwe = sumInsured + IslossInzimbabwe;
-                        }
-                       
-                        if (IsSoundSystem == 1)
-                        {
-                            IsSoundsystem = (sumInsured * PSoundSystem) / 100;
-                            this.CheckIsSoundSystem = sumInsured + IsSoundsystem;
-                        }
-                        else if (IsSoundSystem == 0)
-                        {
-                            IsSoundsystem = (sumInsured * 1) / 100;
-                            this.CheckIsSoundSystem = sumInsured + IsSoundsystem;
+                            this.CheckPartialloss = totalloss;
+
+                            if (IsLossInZimbabwe == 1)
+                            {
+                                IslossInzimbabwe = (sumInsured * POutSideOfZimba) / 100;
+                                this.CheckLossInZimbabwe = IslossInzimbabwe;
+                            }
+                            if (DriverIsUnder21 == 1)
+                            {
+                                DriverIsUnder = (sumInsured * PDriverunder21amount) / 100;
+                                this.CheckDriverIsUnder21 = DriverIsUnder;
+                            }
+
+                            if (Islicensedless60months == 1)
+                            {
+                                licensedless = (sumInsured * PLicensedless60monthsamount) / 100;
+                                this.CheckIslicensedless60months = licensedless;
+                            }
+                            if (IsSoundSystem == 1)
+                            {
+                                IsSoundsystem = (repairercost * PSoundSystem) / 100;
+                                this.CheckIsSoundSystem = IsSoundsystem;
+                            }
+                            if (IsSoundSystem == 0)
+                            {
+                                IsSoundsystem = (sumInsured * 1) / 100;
+                                this.CheckIsSoundSystem = IsSoundsystem;
+                            }
+
+                            if (IsStolen == 1)
+                            {
+                                Isstolen = (repairercost * PStolenamount) / 100;
+                                this.CheckIsStolen = Isstolen;
+                            }
+                            if (IsStolen == 0)
+                            {
+                                Isstolen = (sumInsured * 1) / 100;
+                                this.CheckIsStolen = Isstolen;
+                            }
+
+
+                            if (IsPartialLoss == 0 || IsLossInZimbabwe == 1 || Islicensedless60months == 1 || IsStolen == 0 || DriverIsUnder21 == 1 || IsSoundSystem == 1 || IsSoundSystem == 0 || IsStolen == 1)
+                            {
+                                this.ExcessesAmount = this.CheckPartialloss + this.CheckLossInZimbabwe + this.CheckDriverIsUnder21 + this.CheckIslicensedless60months + this.CheckIsStolen + this.CheckIsSoundSystem;
+                                this.FinalAmount = (sumInsured - this.ExcessesAmount) + otherServiceProCost;
+                            }
+
                         }
                     }
-                    if (DriverIsUnder21 == 1 || IsPartialLoss == 1 || IsLossInZimbabwe == 1|| IsPartialLoss == 0 || Islicensedless60months==1 || IsStolen==1 || IsStolen==0 || IsSoundSystem==0 || IsSoundSystem==1)
-                    {
-
-                        this.ExcessesAmount = this.CheckPartialloss + this.CheckLossInZimbabwe + this.CheckDriverIsUnder21 + this.CheckIslicensedless60months + this.CheckIsStolen+ this.CheckIsSoundSystem ;
-
-                        this.FinalAmount = TotalAmount - this.ExcessesAmount;
-                    }
-                    else
-                    {
-                        this.ExcessesAmount = sumInsured;
-                        this.FinalAmount = TotalAmount;
-                    }
-
-
                 }
                 else if (CommercialCar)
                 {
@@ -148,172 +187,110 @@ namespace Insurance.Service
                     }
                     else
                     {
-                        if (IsDriver25 == 1)
-                        {
-                            IsDriverunder25 = (sumInsured * CDriver25) / 100;
-                            this.CheckIsDriver25 = sumInsured + IsDriverunder25;
-                        }
-
-                        if (Islicensedless60months == 1)
-                        {
-                            licensedless = (sumInsured * CLicenceLess60Month) / 100;
-                            this.CheckIslicensedless60months = sumInsured + licensedless;
-                        }
-
                         if (IsPartialLoss == 1)
                         {
-                            PartialLoss =Convert.ToDecimal((TotalAmount * CPartialLoss)) / 100;
-                            this.CheckPartialloss =Convert.ToDecimal(PartialLoss);
+                            PartialLoss = Convert.ToDecimal(repairercost * CPartialLoss) / 100;
+                            this.CheckPartialloss = Convert.ToDecimal(PartialLoss);
+
+                            if (IslossInzimbabwe == 1)
+                            {
+                                IslossInzimbabwe = (sumInsured * COutSideZimba) / 100;
+                                this.CheckLossInZimbabwe = IslossInzimbabwe;
+                            }
+                            if (IsDriver25 == 1)
+                            {
+                                IsDriverunder25 = (sumInsured * CDriver25) / 100;
+                                this.CheckIsDriver25 = IsDriverunder25;
+                            }
+                            if (Islicensedless60months == 1)
+                            {
+                                licensedless = (sumInsured * CLicenceLess60Month) / 100;
+                                this.CheckIslicensedless60months = licensedless;
+                            }
+                            if (IsSoundSystem == 1)
+                            {
+                                IsSoundsystem = (repairercost * CSpundSystem) / 100;
+                                this.CheckIsSoundSystem = IsSoundsystem;
+                            }
+                            if (IsSoundSystem == 0)
+                            {
+                                IsSoundsystem = (sumInsured * 1) / 100;
+                                this.CheckIsSoundSystem = IsSoundsystem;
+                            }
+
+                            if (IsStolen == 1)
+                            {
+                                Isstolen = (repairercost * CStolenAccessories) / 100;
+                                this.CheckIsStolen = Isstolen;
+                            }
+                            if (IsStolen == 0)
+                            {
+                                Isstolen = (sumInsured * 1) / 100;
+                                this.CheckIsStolen = Isstolen;
+                            }
+                            if (IsPartialLoss == 1 || IslossInzimbabwe == 1 || Islicensedless60months == 1 || IsSoundSystem == 1 || IsDriver25 == 1 || IsStolen == 1 || IsSoundSystem == 0 || IsStolen == 0)
+                            {
+                                this.ExcessesAmount = this.CheckPartialloss + this.CheckLossInZimbabwe + this.CheckIsDriver25 + this.CheckIslicensedless60months + this.CheckIsSoundSystem + this.CheckIsStolen;
+                                this.FinalAmount = (repairercost - this.ExcessesAmount) + otherServiceProCost;
+                            }
+
                         }
                         else if (IsPartialLoss == 0)
                         {
                             totalloss = (sumInsured * CTotalLoss) / 100;
-                            this.CheckPartialloss = sumInsured + totalloss;
-                        }
-                        if (IsStolen == 1)
-                        {
-                            Isstolen = (sumInsured * CStolenAccessories) / 100;
-                            this.CheckIsStolen = sumInsured + Isstolen;
-                        }
-                        else if (IsStolen == 0)
-                        {
-                            Isstolen = (sumInsured * 1) / 100;
-                            this.CheckIsStolen = sumInsured + Isstolen;
-                        }
-                        if (IsLossInZimbabwe == 1)
-                        {
-                            IslossInzimbabwe = (sumInsured * COutSideZimba) / 100;
-                            this.CheckLossInZimbabwe =Convert.ToDecimal(sumInsured + IsLossInZimbabwe);
-                        }
-                        if (IsSoundSystem == 1)
-                        {
-                            IsSoundsystem = (sumInsured * CSpundSystem) / 100;
-                            this.CheckIsSoundSystem = (sumInsured + IsSoundsystem);
-                        }
-                        else if (IsSoundSystem == 0)
-                        {
-                            IsSoundsystem = (sumInsured * 1) / 100;
-                            this.CheckIsSoundSystem = (sumInsured + IsSoundsystem);
-                        }
-                    }
+                            this.CheckPartialloss = totalloss;
 
+                            if (IslossInzimbabwe == 1)
+                            {
+                                IslossInzimbabwe = (sumInsured * COutSideZimba) / 100;
+                                this.CheckLossInZimbabwe = IslossInzimbabwe;
+                            }
+                            if (IsDriver25 == 1)
+                            {
+                                IsDriverunder25 = (sumInsured * CDriver25) / 100;
+                                this.CheckIsDriver25 = IsDriverunder25;
+                            }
+                            if (Islicensedless60months == 1)
+                            {
+                                licensedless = (sumInsured * CLicenceLess60Month) / 100;
+                                this.CheckIslicensedless60months = licensedless;
+                            }
+                            if (IsSoundSystem == 1)
+                            {
+                                IsSoundsystem = (repairercost * CSpundSystem) / 100;
+                                this.CheckIsSoundSystem = IsSoundsystem;
+                            }
+                            if (IsSoundSystem == 0)
+                            {
+                                IsSoundsystem = (sumInsured * 1) / 100;
+                                this.CheckIsSoundSystem = IsSoundsystem;
+                            }
 
-                    if (IsDriver25 == 1 || IsPartialLoss == 1 || IsLossInZimbabwe == 1 || IsPartialLoss == 0 || Islicensedless60months == 1 || IsStolen == 1 || IsStolen == 0 || IsSoundSystem == 0 || IsSoundSystem == 1)
-                    {
-
-                        this.ExcessesAmount = this.CheckPartialloss + this.CheckLossInZimbabwe + this.CheckIsDriver25 + this.CheckIslicensedless60months + this.CheckIsStolen + this.CheckIsSoundSystem;
-                        this.FinalAmount = TotalAmount - this.ExcessesAmount;
-                    }
-                    else
-                    {
-                        this.ExcessesAmount = sumInsured;
-                        this.FinalAmount = TotalAmount;
+                            if (IsStolen == 1)
+                            {
+                                Isstolen = (repairercost * CStolenAccessories) / 100;
+                                this.CheckIsStolen = Isstolen;
+                            }
+                            if (IsStolen == 0)
+                            {
+                                Isstolen = (sumInsured * 1) / 100;
+                                this.CheckIsStolen = Isstolen;
+                            }
+                            if (IsPartialLoss == 0 || IslossInzimbabwe == 1 || Islicensedless60months == 1 || IsSoundSystem == 1 || IsDriver25 == 1 || IsStolen == 1 || IsSoundSystem == 0 || IsStolen == 0)
+                            {
+                                this.ExcessesAmount = this.CheckPartialloss + this.CheckLossInZimbabwe + this.CheckIsDriver25 + this.CheckIslicensedless60months + this.CheckIsSoundSystem + this.CheckIsStolen;
+                                this.FinalAmount = (sumInsured - this.ExcessesAmount) + otherServiceProCost;
+                            }
+                        }
                     }
                 }
-
             }
             else
             {
                 this.ExcessesAmount = 0.0m;
-                this.FinalAmount = TotalAmount;
+                this.FinalAmount = TotalClaimCost;
             }
-          
-            //if (PrivateCar || CommercialCar)
-            //{
-            //    if (PrivateCar)
-            //    {
-            //        if (DriverIsUnder21 == 1)
-            //        {
-            //            this.FinalAmount = TotalAmount - ExcessesAmount;
 
-            //        }
-            //        else if (DriverIsUnder21 == 0)
-            //        {
-            //            this.FinalAmount = TotalAmount;
-            //        }
-
-            //        else
-            //        {
-            //            this.FinalAmount = TotalAmount;
-            //        }
-
-            //        if (Islicensedless60months == 1)
-            //        {
-            //            this.FinalAmount = TotalAmount - ExcessesAmount;
-            //        }
-            //        else if (Islicensedless60months == 0)
-            //        {
-            //            this.FinalAmount = TotalAmount;
-            //        }
-
-            //        if (IsSoundSystem == 1)
-            //        {
-            //            this.FinalAmount = TotalAmount - ExcessesAmount;
-            //        }
-            //        else if (IsSoundSystem == 0)
-            //        {
-            //            this.FinalAmount = TotalAmount - ExcessesAmount;
-
-            //        }
-            //        if (IsPartialLoss == 1)
-            //        {
-            //            this.FinalAmount = TotalAmount - ExcessesAmount;
-            //        }
-            //        else if(IsPartialLoss == 0)
-            //        {
-            //            this.FinalAmount = TotalAmount - ExcessesAmount;
-            //        }
-            //        if (IsStolen==1)
-            //        {
-            //            this.FinalAmount = TotalAmount - ExcessesAmount;
-            //        }
-            //        else if (IsStolen==0)
-            //        {
-            //            this.FinalAmount = TotalAmount - ExcessesAmount;
-            //        }
-            //        if (true)
-            //        {
-
-            //        }
-            //    }
-            //    if (CommercialCar)
-            //    {
-            //        if (IsDriver25 == 1)
-            //        {
-            //            this.FinalAmount = TotalAmount - ExcessesAmount;
-            //        }
-            //        else if (IsDriver25 == 0)
-            //        {
-            //            this.FinalAmount = TotalAmount;
-            //        }
-            //        else
-            //        {
-            //            this.FinalAmount = TotalAmount;
-            //        }
-            //        if (Islicensedless60months == 1)
-            //        {
-            //            this.FinalAmount = TotalAmount - ExcessesAmount;
-            //        }
-            //        else if (Islicensedless60months == 0)
-            //        {
-            //            this.FinalAmount = TotalAmount;
-            //        }
-
-            //        if (IsSoundSystem == 1)
-            //        {
-            //            this.FinalAmount = TotalAmount - ExcessesAmount;
-            //        }
-            //        else if (IsSoundSystem == 0)
-            //        {
-            //            this.FinalAmount = TotalAmount - ExcessesAmount;
-
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    this.FinalAmount = TotalAmount;
-            //}
             return this;
         }
 

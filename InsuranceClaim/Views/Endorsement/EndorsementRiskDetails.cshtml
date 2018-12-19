@@ -311,10 +311,10 @@
                                                     @Html.DropDownListFor(x => x.ExcessType, ViewBag.eExcessTypeData as SelectList, new { @class = "form-control" })
 
                                                     @*@Html.Label("Excess Type", new { @class = "gender-label" })
-                        <select name="ExcessType" class="form-control" id="ExcessType">
-                            <option value="1">Percentage</option>
-                            <option value="2">Fixed Amount</option>
-                        </select>*@
+                                                        <select name="ExcessType" class="form-control" id="ExcessType">
+                                                            <option value="1">Percentage</option>
+                                                            <option value="2">Fixed Amount</option>
+                                                        </select>*@
                                                 </div>
                                             </div>
 
@@ -399,72 +399,73 @@
                                             </div>
                                         </div>
 
-                                        <hr class="higlighter" />
-                                        <div class="row">
-                                            <div class="col-sm-6 col-md-6 form-group-text">
-                                                <div class="form-group">
-                                                    @Html.Label("Basic Premium", new { @class = "gender-label" })
-                                                    @Html.TextBoxFor(m => m.Premium, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Basic Premium" })
+                                      
+                                        <div style="display:none">
+                                            <hr class="higlighter" />
+                                            <div class="row">
+                                                <div class="col-sm-6 col-md-6 form-group-text">
+                                                    <div class="form-group">
+                                                        @Html.Label("Basic Premium", new { @class = "gender-label" })
+                                                        @Html.TextBoxFor(m => m.Premium, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Basic Premium" })
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="col-sm-6 col-md-6 form-group-select" style="display:none;">
+                                                    <div class="form-group">
+                                                        @Html.Label("Agent Commission", new { @class = "gender-label" })
+                                                        @Html.DropDownListFor(x => x.AgentCommissionId, new SelectList(ViewBag.AgentCommission, "Id", "CommissionName"), new { @class = "form-control" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 form-group-text">
+                                                    <div class="form-group">
+                                                        @Html.Label("Stamp Duty", new { @class = "gender-label" })
+                                                        @Html.TextBoxFor(m => m.StampDuty, new { @class = "form-control", @autocomplete = "off", @placeholder = "Stamp Duty" })
+                                                        @Html.ValidationMessageFor(m => m.StampDuty, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+
+                                                <div class="col-sm-6 col-md-6 form-group-text">
+                                                    <div class="form-group">
+                                                        @Html.Label("ZTSC Levy", new { @class = "gender-label" })
+                                                        @Html.TextBoxFor(m => m.ZTSCLevy, new { @class = "form-control", @autocomplete = "off", @placeholder = "ZTSC Levy" })
+                                                        @Html.ValidationMessageFor(m => m.ZTSCLevy, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 form-group-text">
+                                                    <div class="form-group">
+                                                        @Html.Label("Discount", new { @class = "gender-label" })
+                                                        @Html.TextBoxFor(m => m.Discount, new { @class = "form-control ", @autocomplete = "off", @placeholder = "Discount" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="thridparty" class="row">
+                                                <div class="col-sm-6 col-md-6 form-group-select">
+                                                    <div id="thirdpartycheck" class="form-group">
+                                                        @Html.Label("Include Radio License Cost", new { @class = "gender-label" })
+                                                        @Html.CheckBoxFor(x => x.IncludeRadioLicenseCost, new { @style = "width: 40px;height: 36px;" })
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col-sm-6 col-md-6 form-group-text">
+                                                    <div class="form-group">
+                                                        @Html.Label("Radio License Cost", new { @class = "gender-label" })
+                                                        @Html.TextBoxFor(m => m.RadioLicenseCost, new { @class = "form-control inputDisabled", @autocomplete = "off", @placeholder = "Vehicle Radio Licence Cost", @maxlength = "5" })
+                                                        @Html.ValidationMessageFor(m => m.RadioLicenseCost, "", new { @class = "text-danger" })
+                                                    </div>
                                                 </div>
                                             </div>
 
-
-
-                                            <div class="col-sm-6 col-md-6 form-group-select" style="display:none;">
-                                                <div class="form-group">
-                                                    @Html.Label("Agent Commission", new { @class = "gender-label" })
-                                                    @Html.DropDownListFor(x => x.AgentCommissionId, new SelectList(ViewBag.AgentCommission, "Id", "CommissionName"), new { @class = "form-control" })
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6 col-md-6 form-group-text">
-                                                <div class="form-group">
-                                                    @Html.Label("Stamp Duty", new { @class = "gender-label" })
-                                                    @Html.TextBoxFor(m => m.StampDuty, new { @class = "form-control", @autocomplete = "off", @placeholder = "Stamp Duty" })
-                                                    @Html.ValidationMessageFor(m => m.StampDuty, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-
-                                            <div class="col-sm-6 col-md-6 form-group-text">
-                                                <div class="form-group">
-                                                    @Html.Label("ZTSC Levy", new { @class = "gender-label" })
-                                                    @Html.TextBoxFor(m => m.ZTSCLevy, new { @class = "form-control", @autocomplete = "off", @placeholder = "ZTSC Levy" })
-                                                    @Html.ValidationMessageFor(m => m.ZTSCLevy, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6 col-md-6 form-group-text">
-                                                <div class="form-group">
-                                                    @Html.Label("Discount", new { @class = "gender-label" })
-                                                    @Html.TextBoxFor(m => m.Discount, new { @class = "form-control ", @autocomplete = "off", @placeholder = "Discount" })
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="thridparty" class="row">
-                                            <div class="col-sm-6 col-md-6 form-group-select">
-                                                <div id="thirdpartycheck" class="form-group">
-                                                    @Html.Label("Include Radio License Cost", new { @class = "gender-label" })
-                                                    @Html.CheckBoxFor(x => x.IncludeRadioLicenseCost, new { @style = "width: 40px;height: 36px;" })
-                                                </div>
-
-                                            </div>
-
-                                            <div class="col-sm-6 col-md-6 form-group-text">
-                                                <div class="form-group">
-                                                    @Html.Label("Radio License Cost", new { @class = "gender-label" })
-                                                    @Html.TextBoxFor(m => m.RadioLicenseCost, new { @class = "form-control inputDisabled", @autocomplete = "off", @placeholder = "Vehicle Radio Licence Cost", @maxlength = "5" })
-                                                    @Html.ValidationMessageFor(m => m.RadioLicenseCost, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-
-
-                                            <div class="col-sm-6 col-md-6 form-group-text">
-                                                <div class="form-group">
-                                                    @Html.Label("Vehicle Licence Fee", new { @class = "gender-label" })
-                                                    @Html.TextBoxFor(x => x.VehicleLicenceFee, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Licence Fee" })
+                                            <div class="row">
+                                                <div class="col-sm-6 col-md-6 form-group-text">
+                                                    <div class="form-group">
+                                                        @Html.Label("Vehicle Licence Fee", new { @class = "gender-label" })
+                                                        @Html.TextBoxFor(x => x.VehicleLicenceFee, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Licence Fee" })
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -497,15 +498,15 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <hr />
-                                    @if (true)
+                                    @*<hr />*@
+                                    @*@if (true)
                                     {
                                         /**/
                                     }
                                     else
                                     {
                                         <hr class="higlighter" />
-                                    }
+                                    }*@
                                     @*<div class="row">
                                             <div class="next-btn">
                                                 <div class="col-sm-6 col-md-6">
@@ -526,7 +527,7 @@
                                             </div>
                                         </div>*@
 
-                                    <hr />
+                                    @*<hr />*@
                                     <div class="row">
                                         <div class="col-md-12 next-btn">
                                             <div class="row">
