@@ -1174,7 +1174,48 @@ namespace InsuranceClaim.Controllers
                     lstUserModel.ListUsers = ListUserViewModel;
                     return View("UserManagementList", lstUserModel);
                 }
-               
+                else
+                {
+                    var user = UserManager.Users.Where(m => m.Email.Contains(searchText)).ToList();
+                    if (user != null)
+                    {
+                        foreach (var item in user)
+                        {
+                            var customer = InsuranceContext.Customers.Single(where: $"UserId = '{item.Id}'");
+                            if (customer != null)
+                            {
+
+                                CustomerModel cstmrModel = new CustomerModel();
+                                cstmrModel.Id = customer.Id;
+                                cstmrModel.UserID = customer.UserID;
+                                cstmrModel.CustomerId = customer.CustomerId;
+                                cstmrModel.FirstName = customer.FirstName;
+                                cstmrModel.LastName = customer.LastName;
+                                cstmrModel.Gender = customer.Gender;
+                                cstmrModel.DateOfBirth = customer.DateOfBirth;
+                                cstmrModel.CountryCode = customer.Countrycode;
+                                cstmrModel.City = customer.City;
+                                cstmrModel.Country = customer.Country;
+                                cstmrModel.IsActive = customer.IsActive;
+                                cstmrModel.IsLicenseDiskNeeded = customer.IsLicenseDiskNeeded;
+                                cstmrModel.IsPolicyDocSent = customer.IsPolicyDocSent;
+                                cstmrModel.AddressLine1 = customer.AddressLine1;
+                                cstmrModel.AddressLine1 = customer.AddressLine2;
+                                cstmrModel.NationalIdentificationNumber = customer.NationalIdentificationNumber;
+                                cstmrModel.IsOTPConfirmed = customer.IsOTPConfirmed;
+                                cstmrModel.IsWelcomeNoteSent = customer.IsWelcomeNoteSent;
+
+                                cstmrModel.PhoneNumber = (item.PhoneNumber);
+                                cstmrModel.EmailAddress = item.Email;
+                                cstmrModel.role = Convert.ToString(UserManager.GetRoles(item.Id).Count > 0 ? Convert.ToString(UserManager.GetRoles(item.Id)[0]) : "");
+                                ListUserViewModel.Add(cstmrModel);
+                            }
+                        }
+                        lstUserModel.ListUsers = ListUserViewModel;
+                        return View("UserManagementList", lstUserModel);
+                    }
+                }
+
             }
 
             return View("UserManagementList", lstUserModel);

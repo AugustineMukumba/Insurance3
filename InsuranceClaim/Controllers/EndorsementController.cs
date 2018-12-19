@@ -2400,8 +2400,7 @@ namespace InsuranceClaim.Controllers
 
         }
 
+
     }
-
-
 
 }
