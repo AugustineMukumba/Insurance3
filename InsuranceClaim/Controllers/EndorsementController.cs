@@ -68,6 +68,7 @@ namespace InsuranceClaim.Controllers
                             endorcustom.EmailAddress = dbUser.Email; ;
                             endorcustom.PrimeryCustomerId = Cusotmer.Id;
                             endorcustom.SummaryId = summaryId;
+                            endorcustom.UserEmail = dbUser.Email;
 
                         }
                     }
@@ -83,6 +84,9 @@ namespace InsuranceClaim.Controllers
             else
             {
                 var customer = (EndorsementCustomer)Session["EnCustomerDetail"];
+                var endorsuser = Session["Enuser"];
+
+
                 EndorsementCustomerModel obj = new EndorsementCustomerModel();
                 obj.ZipCode = "00263";
                 if (customer != null)
@@ -99,11 +103,12 @@ namespace InsuranceClaim.Controllers
                     obj.Gender = customer.Gender;
                     obj.NationalIdentificationNumber = customer.NationalIdentificationNumber;
                     obj.CountryCode = customer.Countrycode;
-                    obj.DateOfBirth = customer.DateOfBirth;
+                    obj.DateOfBirth = Convert.ToString(customer.DateOfBirth);
                     obj.EmailAddress = User.Email;
                     obj.IsCustomEmail = customer.IsCustomEmail;
                     obj.PhoneNumber = customer.PhoneNumber;
                     obj.PrimeryCustomerId = customer.PrimeryCustomerId;
+                    obj.UserEmail = User.Email;
                     obj.UserID = customer.UserID;
 
                     var summaryidDeailId = Session["EnSummaryDetailIdView"];
@@ -124,6 +129,24 @@ namespace InsuranceClaim.Controllers
 
                 if (userLoggedin)
                 {
+
+                    if (model.IsEmailUpdated)
+                    {
+                        var isAssigned = UserManager.Users.Any(x => x.Email == model.EmailAddress);
+                        if (isAssigned)
+                        {
+                            return Json(new { IsError = true, error = "Email already exist. Please Enter new Email" }, JsonRequestBehavior.AllowGet);
+                        }
+                        else
+                        {
+                            var dbUser = UserManager.Users.FirstOrDefault(c => c.Id == model.UserID);
+                            dbUser.Id = model.UserID;
+                            dbUser.Email = model.EmailAddress;
+                            dbUser.UserName = model.EmailAddress;
+                            UserManager.Update(dbUser);
+                        }
+                    }
+
                     var summaryDetails = InsuranceContext.SummaryDetails.Single(model.SummaryId);
 
                     if (summaryDetails != null)
@@ -141,41 +164,85 @@ namespace InsuranceClaim.Controllers
                                 customerdata.ZipCode = model.ZipCode;
                                 customerdata.CreatedOn = DateTime.Now;
                                 customerdata.IsCompleted = false;
-                                customerdata.DateOfBirth = model.DateOfBirth;
+                                customerdata.DateOfBirth = Convert.ToDateTime(model.DateOfBirth);
                                 InsuranceContext.EndorsementCustomers.Insert(customerdata);
+                                Session["EnCustomerDetail"] = customerdata;
                                 var user = UserManager.FindById(model.UserID);
-                                //var dbUser = UserManager.Users.FirstOrDefault(c => c.Id == model.UserID);
-                                //dbUser.Email = model.EmailAddress;
-                                //dbUser.UserName = model.EmailAddress;
-                                //UserManager.Update(dbUser);
-                                //Session["Enuser"] = dbUser.Email;
-                                 //var user = new ApplicationUser { UserName = customer.EmailAddress, Email = customer.EmailAddress, PhoneNumber = customer.PhoneNumber };
-                                 Session["EnCustomerDetail"] = customerdata;
+                                //if (user.Email != model.EmailAddress)
+                                //{
+                                AspNetUsersUpdate obj = new AspNetUsersUpdate();
+                                obj.Email = user.Email;
+                                obj.UserName = user.UserName;
+                                obj.CreatedOn = DateTime.Now;
+                                obj.UpdatedEmail = model.EmailAddress;
+                                obj.PhoneNumber = user.PhoneNumber;
+                                obj.UserId = user.Id;
+                                InsuranceContext.AspNetUsersUpdates.Insert(obj);
+                                //}
+
+
+                                //Session["Enuser"] = dbUser.Id;
 
                             }
                             else
                             {
+                                //if (model.IsEmailUpdated)
+                                //{
+                                //    var isAssigned = UserManager.Users.Any(x => x.Email == model.EmailAddress);
+                                //    if (isAssigned)
+                                //    {
+                                //        return Json(new { IsError = false, error = "Email already exist" }, JsonRequestBehavior.AllowGet);
+                                //    }
+                                //    else
+                                //    {
+                                //        var dbUser = UserManager.Users.FirstOrDefault(c => c.Id == model.UserID);
+                                //        dbUser.Id = model.UserID;
+                                //        dbUser.Email = model.EmailAddress;
+                                //        dbUser.UserName = model.EmailAddress;
+                                //        UserManager.Update(dbUser);
+                                //    }
+
+                                //}
+
+
                                 var _customerdata = Mapper.Map<EndorsementCustomerModel, EndorsementCustomer>(model);
                                 _customerdata.CustomerId = summaryDetails.CustomerId.Value;
                                 _customerdata.PrimeryCustomerId = model.PrimeryCustomerId;
                                 _customerdata.UserID = model.UserID;
                                 _customerdata.ZipCode = model.ZipCode;
                                 _customerdata.CreatedOn = _customerdata.CreatedOn;
-                                _customerdata.DateOfBirth = model.DateOfBirth;
+                                _customerdata.DateOfBirth = Convert.ToDateTime(model.DateOfBirth);
                                 _customerdata.IsCompleted = false;
                                 InsuranceContext.EndorsementCustomers.Update(_customerdata);
-                                var _user = UserManager.FindById(model.UserID);
-                                //var _dbUser = UserManager.Users.FirstOrDefault(c => c.Id == model.UserID);
-                                //_dbUser.Email = model.EmailAddress;
-                                //_dbUser.UserName = model.EmailAddress;
-                                //UserManager.Update(_dbUser);
-                                //Session["Enuser"] = _dbUser.Email;
                                 Session["EnCustomerDetail"] = _customerdata;
+                                var _user = UserManager.FindById(model.UserID);
+                                var aspupdate = InsuranceContext.AspNetUsersUpdates.All(where: $"UserId = '{_user.Id}'", orderBy: "Id desc", top: 1).FirstOrDefault();
+
+
+                                if (aspupdate != null)
+                                {
+                                    AspNetUsersUpdate _obj = new AspNetUsersUpdate();
+                                    aspupdate.Id = aspupdate.Id;
+                                    aspupdate.Email = _user.Email;
+                                    aspupdate.UserName = _user.UserName;
+                                    aspupdate.CreatedOn = aspupdate.CreatedOn;
+                                    aspupdate.UpdatedEmail = model.EmailAddress;
+                                    aspupdate.PhoneNumber = _user.PhoneNumber;
+                                    aspupdate.ModifiedOn = DateTime.Now;
+                                    InsuranceContext.AspNetUsersUpdates.Update(aspupdate);
+
+                                }
+                                //var dbUser = UserManager.Users.FirstOrDefault(c => c.Id == model.UserID);
+                                //dbUser.Email = model.EmailAddress;
+                                //dbUser.UserName = model.EmailAddress;
+                                //UserManager.Update(dbUser);
                             }
                         }
                     }
 
-                    return Json(new { IsError = false, error = "Sucessfully update" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { IsError = false, error = "Your email have been updated sucessfully" }, JsonRequestBehavior.AllowGet);
+
+
 
                 }
             }
@@ -1130,7 +1197,7 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult SaveEndorsementSummaryDetails(EndorsementSummaryDetailModel model)
         {
-            var _Endorsepolicy =(EndorsementPolicyDetail) Session["PolicyDataView"];
+            var _Endorsepolicy = (EndorsementPolicyDetail)Session["PolicyDataView"];
             var Endorcustomer = (EndorsementCustomer)Session["EnCustomerDetail"];
             //var enduser = Session["Enuser"];
             var ensummerydetail = InsuranceContext.EndorsementSummaryDetails.Single(where: $"Id = '{model.Id}'");
@@ -1673,6 +1740,15 @@ namespace InsuranceClaim.Controllers
             }
             endorsementsummay.IsCompleted = true;
             InsuranceContext.EndorsementSummaryDetails.Update(endorsementsummay);
+
+            //Update New Email
+
+
+            // var data =  Session["Enuser"];
+
+
+
+
             //ApproveVRNToIceCash(id);
             string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/EndorsementUserPayment.cshtml";
             string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
@@ -1783,6 +1859,8 @@ namespace InsuranceClaim.Controllers
                 Session.Remove("EndorsementCardDetail");
                 Session.Remove("EnsummaryId");
                 Session.Remove("EnCustomerDetail");
+                Session.Remove("Enuser");
+
             }
             catch (Exception ex)
             {
@@ -1796,6 +1874,7 @@ namespace InsuranceClaim.Controllers
                 Session.Remove("ENViewSummaryDetail");
                 Session.Remove("EnViewlistVehicles");
                 Session.Remove("PolicyDataView");
+                Session.Remove("Enuser");
             }
 
             #endregion
@@ -2081,9 +2160,13 @@ namespace InsuranceClaim.Controllers
                     var dbUser = UserManager.Users.FirstOrDefault(c => c.Id == endorcustom.UserID);
                     if (dbUser != null)
                     {
+
                         endorcustom.EmailAddress = dbUser.Email; ;
                         endorcustom.PrimeryCustomerId = endorcustom.Id;
                         endorcustom.SummaryId = id;
+                        endorcustom.DateOfBirth = Convert.ToDateTime(endorcustom.DateOfBirth).ToShortDateString();
+
+
                     }
                 }
 

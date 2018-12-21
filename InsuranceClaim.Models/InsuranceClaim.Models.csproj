@@ -89,6 +89,7 @@
   <ItemGroup>
     <Compile Include="AccountViewModels.cs" />
     <Compile Include="AgentCommissionModel.cs" />
+    <Compile Include="AspNetUsersUpdateModel.cs" />
     <Compile Include="BasicCommissionReportModel.cs" />
     <Compile Include="BirthdayMessageModel.cs" />
     <Compile Include="BusinessSourceModel.cs" />

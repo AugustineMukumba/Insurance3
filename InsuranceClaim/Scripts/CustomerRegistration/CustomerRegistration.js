@@ -31,7 +31,7 @@ function GoProNextDetails(json) {
         }
     }
 
-    if (errorMessage == "Sucessfully update") {
+    if (errorMessage == "Your email have been updated sucessfully") {
         debugger;
         toastr.success(errorMessage)
         window.location.href = '/Endorsement/EndorsementInsertRiskDetails';

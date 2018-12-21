@@ -54,7 +54,7 @@ namespace InsuranceClaim.Models
         public string Country { get; set; }
         [Display(Name = "Date Of Birth")]
         [Required(ErrorMessage = "Please Enter Date Of Birth.")]
-        public DateTime? DateOfBirth { get; set; }
+        public string DateOfBirth { get; set; }
         [Required(ErrorMessage = "Please Select Gender.")]
         public string Gender { get; set; }
         public bool? IsWelcomeNoteSent { get; set; }
@@ -75,5 +75,7 @@ namespace InsuranceClaim.Models
         public int SummaryId { get; set; }
         public bool? IsCompleted { get; set; }
         public int? PrimeryCustomerId { get; set; } 
+        public bool IsEmailUpdated { get; set; }
+        public string UserEmail { get; set; }
     }
 }

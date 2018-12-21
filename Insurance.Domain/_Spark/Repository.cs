@@ -90,9 +90,11 @@ namespace Insurance.Domain
         public static ClaimSettings ClaimSettings { get { return new ClaimSettings(); } }
 
         public static SourceDetails SourceDetails { get { return new SourceDetails(); } }
+        public static AspNetUsersUpdates AspNetUsersUpdates { get { return new AspNetUsersUpdates(); } }
 
 
-       public static RegistrationDocuments RegistrationDocuments { get { return new RegistrationDocuments(); } }
+
+        public static RegistrationDocuments RegistrationDocuments { get { return new RegistrationDocuments(); } }
         public static ClaimRegistrationProviderDetials ClaimRegistrationProviderDetials { get { return new ClaimRegistrationProviderDetials(); } }
 
         public static ServiceProviderPaymentHistories ServiceProviderPaymentHistories { get { return new ServiceProviderPaymentHistories(); } }

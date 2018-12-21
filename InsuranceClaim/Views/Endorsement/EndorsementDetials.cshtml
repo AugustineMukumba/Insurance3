@@ -98,7 +98,8 @@
                                 @Html.HiddenFor(x => x.SummaryId);
                                 @Html.HiddenFor(x => x.CustomerId);
                                 @Html.HiddenFor(x => x.PrimeryCustomerId);
-
+                                @Html.HiddenFor(x => x.IsEmailUpdated);
+                                @Html.HiddenFor(x => x.UserEmail);
                                 <div class="row">
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
@@ -127,7 +128,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-7">
-                                                    <label>@Html.CheckBoxFor(m => m.IsCustomEmail, new { @onclick = "SetCustomerEmail();",@disabled = "disabled" }) No email address</label>
+                                                    <label>@Html.CheckBoxFor(m => m.IsCustomEmail, new { @onclick = "SetCustomerEmail();" }) No email address</label>
                                                 </div>
                                                 <div class="col-md-12">
                                                     @*@if (email != "")
@@ -139,7 +140,7 @@
                                                             @Html.TextBoxFor(x => x.EmailAddress, new { @class = "form-control", @name = "EmailAddress", @autocomplete = "off", @id = "EmailAddress", @placeholder = "Email Address" });
                                                         }*@
 
-                                                    @Html.TextBoxFor(x => x.EmailAddress, new { @class = "form-control", @name = "EmailAddress", @autocomplete = "off", @id = "EmailAddress", @placeholder = "Email Address", @readonly = "readonly" })
+                                                    @Html.TextBoxFor(x => x.EmailAddress, new { @class = "form-control", @name = "EmailAddress", @autocomplete = "off", @id = "EmailAddress", @placeholder = "Email Address" })
 
 
                                                     @Html.ValidationMessageFor(x => x.EmailAddress, "", new { @class = "text-danger" })
@@ -206,37 +207,37 @@
                                         </div>
                                     </div>
                                 </div>
-                                    @*<div class="row">
-                                            <div class="col-sm-6 col-md-6 form-group-text">
-                                                <div class="form-group">
-                                                    @Html.TextBoxFor(x => x.City, new { @class = "form-control", @name = "State", @autocomplete = "off", @placeholder = "Enter City Name" })
-                                                    @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6 col-md-6 form-group-text">
-                                                <div class="form-group">
-                                                    @Html.TextBoxFor(x => x.State, new { @class = "form-control", @name = "State", @autocomplete = "off", @placeholder = "Enter State Name" })
-                                                    @Html.ValidationMessageFor(x => x.State, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                        </div>*@
-
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                @*<div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                                @Html.LabelFor(x => x.City, new { @class = "gender-label" })
-                                                @Html.DropDownListFor(x => x.City, new SelectList(ViewBag.Cities, "CityName", "CityName"), "----Select City----", new { @class = "form-control ", @onchange = "removeValidation(this)" })
-                                                @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger valMessage" })
+                                                @Html.TextBoxFor(x => x.City, new { @class = "form-control", @name = "State", @autocomplete = "off", @placeholder = "Enter City Name" })
+                                                @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
-                                                @Html.LabelFor(x => x.NationalIdentificationNumber, new { @class = "gender-label" })
-                                                @Html.TextBoxFor(x => x.NationalIdentificationNumber, new { @class = "form-control", @name = "State", @autocomplete = "off", @id = "State", @placeholder = "National Identification Number" })
-                                                @Html.ValidationMessageFor(x => x.NationalIdentificationNumber, "", new { @class = "text-danger" })
+                                                @Html.TextBoxFor(x => x.State, new { @class = "form-control", @name = "State", @autocomplete = "off", @placeholder = "Enter State Name" })
+                                                @Html.ValidationMessageFor(x => x.State, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
+                                    </div>*@
+
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-6 form-group-select">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.City, new { @class = "gender-label" })
+                                            @Html.DropDownListFor(x => x.City, new SelectList(ViewBag.Cities, "CityName", "CityName"), "----Select City----", new { @class = "form-control ", @onchange = "removeValidation(this)" })
+                                            @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger valMessage" })
+                                        </div>
                                     </div>
+                                    <div class="col-sm-6 col-md-6 form-group-text">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.NationalIdentificationNumber, new { @class = "gender-label" })
+                                            @Html.TextBoxFor(x => x.NationalIdentificationNumber, new { @class = "form-control", @name = "State", @autocomplete = "off", @id = "State", @placeholder = "National Identification Number" })
+                                            @Html.ValidationMessageFor(x => x.NationalIdentificationNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
@@ -269,7 +270,7 @@
                                             </div>
                                             <div class="col-sm-6 col-md-6">
                                                 <div class="text-right">
-                                                    <button type="submit" id="buttonNext" class="btn">Next</button>
+                                                    <button type="submit" id="buttonNext" onclick="checkemail()" class="btn">Next</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -323,6 +324,19 @@
         return true;
     }
 
+    function checkemail() {
+        debugger;
+        var func = $("#EmailAddress").val();
+     var data = $("#UserEmail").val();
+     if (func == data) {
+         $("#IsEmailUpdated").val(false);
+     }
+     else {
+         $("#IsEmailUpdated").val(true);
+     }
+
+    }
+
 
     $(document).ready(function () { // will trigger when the document is ready
 
@@ -340,7 +354,7 @@
             toastr.success(errorMessage)
         }
 
-        
+
     });
 
     $(document).ready(function () { // will trigger when the document is ready
@@ -365,6 +379,31 @@
             $("#DateOfBirth").val(today);
         }
     });
+
+
+
+    function SetCustomerEmail() {
+
+
+        if ($("#IsCustomEmail").prop("checked") == true) {
+            $.ajax({
+                url: "@Url.Action("GetCustomerId", "CustomerRegistration")",
+                type: "POST",
+                dataType: "json",
+                success: function (result) {
+                    $("#EmailAddress").val(result);
+                }
+            });
+        }
+        else {
+            $("#EmailAddress").val('');
+        }
+
+
+
+    }
+
+
 
 
 
@@ -408,4 +447,3 @@
     }
 
 </script>
-

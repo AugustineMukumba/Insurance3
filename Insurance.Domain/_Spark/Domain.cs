@@ -1244,6 +1244,23 @@ namespace Insurance.Domain
         public int CreatedBy { get; set; }
     }
 
+    public partial class AspNetUsersUpdate : Entity<AspNetUsersUpdate>
+    {
+        public AspNetUsersUpdate() { }
+        public AspNetUsersUpdate(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public string UserId { get; set; }
+        public string Email { get; set; }
+        public string UpdatedEmail { get; set; }
+        public string PhoneNumber { get; set; }
+        public string UserName { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+
+
+    }
+
 
 
 

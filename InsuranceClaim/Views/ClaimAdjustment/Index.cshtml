@@ -134,7 +134,7 @@
                                         </div>
                                         <div class="col-sm-6 form-group-text">
                                             <div class="form-group">
-                                                <label class="radio-label">Loss is in Zimbabwe (Y/N)</label>
+                                                <label class="radio-label">Loss Outside Zimbabwe (Y/N)</label>
                                                 <div class="form-group-radio">
                                                     <label>@Html.RadioButtonFor(x => x.IsLossInZimbabwe, true)Yes</label>
                                                     <label>@Html.RadioButtonFor(x => x.IsLossInZimbabwe, false)No</label>
@@ -607,8 +607,8 @@
             data: insurevalue,
             success: function (data) {
                 debugger;
-
-                $("#ExcessesAmount").val((data.ExcessesAmount))
+                var excess = parseFloat(data.ExcessesAmount).toFixed(2);
+                $("#ExcessesAmount").val(excess)
 
                 //var finalAmountToPaid = parseFloat($("#AmountToPay").val()) - parseFloat(data.ExcessesAmount);
 
@@ -617,7 +617,8 @@
                     $("#TotalClaimCost").val(FinalAmount);
                 }
                 else {
-                    $("#TotalClaimCost").val(data.FinalAmount);
+                    var amount = parseFloat(data.FinalAmount).toFixed(2);
+                    $("#TotalClaimCost").val(amount);
                 }
 
 
