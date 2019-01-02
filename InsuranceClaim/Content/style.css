@@ -24,28 +24,29 @@ ol, ul {
 tfoot {
     background: #ccc;
 }
-.higlighter
-{
-        border-top: 1px solid #57c3cf !important;
-        /*border-top: 1px solid #3cb878 !important;*/
-            padding-bottom: 30px;
-                margin-top: 0px;
+
+.higlighter {
+    border-top: 1px solid #57c3cf !important;
+    /*border-top: 1px solid #3cb878 !important;*/
+    padding-bottom: 30px;
+    margin-top: 0px;
 }
 
-.disableTxtbox{
+.disableTxtbox {
     background-color: #eee !important;
 }
 
 .upload-file-area {
     margin: 10px 0 0;
 }
-.upload-file-area span {
-    display: inline-block;
-    line-height: 18px;
-    text-align: left;
-    font-weight: 600;
-    letter-spacing: 0.7px;
-}
+
+    .upload-file-area span {
+        display: inline-block;
+        line-height: 18px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.7px;
+    }
 
 
 .backbtnview {
@@ -58,32 +59,35 @@ tfoot {
     font-weight: 600;
 }
 
-.container-2-checkbox .gender-label
-{
-    width:25%;
+.container-2-checkbox .gender-label {
+    width: 25%;
 }
 
 th.action-th {
     width: 150px;
 }
 
-.thwidth150{
-    width:150px;
-    text-align:center;
-}
-.thwidth200{width:200px;}
-.thwidth250{
-    width:150px;
-    text-align:center;
-}
-.thwidth100{
-    min-width:100px;
-    text-align:center;
+.thwidth150 {
+    width: 150px;
+    text-align: center;
 }
 
-.fontSize18px
-{
-    font-size:19px !important;
+.thwidth200 {
+    width: 200px;
+}
+
+.thwidth250 {
+    width: 150px;
+    text-align: center;
+}
+
+.thwidth100 {
+    min-width: 100px;
+    text-align: center;
+}
+
+.fontSize18px {
+    font-size: 19px !important;
 }
 
 .inputDisabled {
@@ -102,10 +106,10 @@ th.action-th {
 .logo-img a {
     display: inline-block;
     /*background: #fff;
-    padding: 5px;*/ margin:-35px 0 0;
+    padding: 5px;*/ margin: -35px 0 0;
 }
 
-.logo-img  {
+.logo-img {
     display: inline-block;
     /*background: #fff;
     padding: 5px;*/
@@ -151,8 +155,8 @@ th.action-th {
     width: 1314px;
 }
 
-.HideSummary{
-    display:none;
+.HideSummary {
+    display: none;
 }
 
 .sub-table tr {
@@ -160,6 +164,7 @@ th.action-th {
     float: left;
     width: 100%;
 }
+
 .dropdown-top .dropdown-menu {
     border-radius: 0;
     border: 0;
@@ -169,12 +174,17 @@ th.action-th {
     right: 0;
     width: 160px;
     left: auto;
-    min-width: inherit; padding: 0;     top:100%;
-} 
-.dropdown-top .dropdown-menu .list-inline li {
-      display: inline-block;
-    width: 100%;     padding: 0;
+    min-width: inherit;
+    padding: 0;
+    top: 100%;
 }
+
+    .dropdown-top .dropdown-menu .list-inline li {
+        display: inline-block;
+        width: 100%;
+        padding: 0;
+    }
+
 .menu-navigation .dropdown-top .dropdown-menu .list-inline li a {
     color: #000;
     display: inline-block;
@@ -183,6 +193,7 @@ th.action-th {
     padding: 7px 10px;
     border-bottom: 1px solid #eee;
 }
+
 .dropdown-top .dropdown-menu:before {
     content: "";
     border-bottom: 8px solid #fff;
@@ -193,6 +204,7 @@ th.action-th {
     right: 1px;
     margin: auto;
 }
+
 .dropdown-top .dropdown-menu .list-inline {
     margin: 0;
 }
@@ -209,13 +221,15 @@ th.action-th {
     padding: 10px 0;
     /*box-shadow: 0 2px 1px rgba(0, 0, 0, 0.2);*/
 }
+
 .menu-navigation {
     margin-top: 11px;
 }
+
 .renew-btn a.wallet-btn {
     font-weight: 500;
     font-size: 16px;
-    background:none;
+    background: none;
     color: #333;
     display: inline-block;
     padding: 1px 10px;
@@ -225,54 +239,71 @@ th.action-th {
     text-align: center;
 }
 
-.renew-btn{margin:0 0 10px}
-.renew-btn a {
-    display: inline-block;
-    text-transform: uppercase;
-    text-decoration: none;
-    margin:0 0px 0 0;
-    color: #fff;
-    font-size: 14px;
-    text-align: left;
-    padding: 0 0 0px;
+.renew-btn {
+    margin: 0 0 10px;
 }
-.skype-details{margin:15px 0 0px; text-align:right}
-.skype-details ul li span {
-    font-weight: 500;
-    font-size: 14px;
-    background: none;
-    color:#000;
-    display: inline-block;
-    padding: 1px 10px;
-    border-radius: 13px;
-    margin:0 10px 0px 0;
-     /* width: 145px; */
-    text-align: center;
+
+    .renew-btn a {
+        display: inline-block;
+        text-transform: uppercase;
+        text-decoration: none;
+        margin: 0 0px 0 0;
+        color: #fff;
+        font-size: 14px;
+        text-align: left;
+        padding: 0 0 0px;
+    }
+
+.skype-details {
+    margin: 15px 0 0px;
+    text-align: right;
 }
-.skype-details ul li span:last-child{margin:0}
+
+    .skype-details ul li span {
+        font-weight: 500;
+        font-size: 14px;
+        background: none;
+        color: #000;
+        display: inline-block;
+        padding: 1px 10px;
+        border-radius: 13px;
+        margin: 0 10px 0px 0;
+        /* width: 145px; */
+        text-align: center;
+    }
+
+        .skype-details ul li span:last-child {
+            margin: 0;
+        }
+
 .login-btn {
-    margin:0px 0 0; 
+    margin: 0px 0 0;
 }
+
 .skype-details ul li a {
     font-size: 15px;
     color: #333;
 }
-.skype-details ul li a img {
-    width: 40px; margin:-2px 5px 0 0
-}
-.skype-details ul li a i {
-    font-size: 26px;
-    float: left;
-    margin: -2px 10px 0 0;
-}
+
+    .skype-details ul li a img {
+        width: 40px;
+        margin: -2px 5px 0 0;
+    }
+
+    .skype-details ul li a i {
+        font-size: 26px;
+        float: left;
+        margin: -2px 10px 0 0;
+    }
+
 .skype-details ul li {
     margin: 0 30px 0 0;
     padding: 0;
 }
 
-.skype-details ul li:last-child {
-    margin: 0 0px 0 0;
-}
+    .skype-details ul li:last-child {
+        margin: 0 0px 0 0;
+    }
 
 .payment-card ul li.active {
     background: #73cdda;
@@ -281,60 +312,70 @@ th.action-th {
     font-weight: bold;
 }
 
-    .login-btn ul li a {
-        text-transform: uppercase;
-         color:#fff;  
-        text-decoration: none;  font-size:14px;
-    }
-    .login-btn ul li {
+.login-btn ul li a {
+    text-transform: uppercase;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.login-btn ul li {
     margin: 0;
     font-size: 14px;
     color: #fff;
 }
+
 .menu-navigation .navbar.navbar-default {
-   background: #9db753;
+    background: #9db753;
     margin: 0;
     border: none;
     border-top: 0px solid #e0e0e0;
-    border-radius: 0;     min-height: inherit; padding:15px 0
+    border-radius: 0;
+    min-height: inherit;
+    padding: 15px 0;
 }
+
 .gray-top-header {
     background: #9db753;
-    padding:0px 0;
+    padding: 0px 0;
     display: inline-block;
     width: 100%;
 }
+
 .renew-btn a strong {
     font-weight: 500;
     font-size: 14px;
     background: none;
-    color:#fff;
+    color: #fff;
     display: inline-block;
     padding: 1px 10px;
     border-radius: 13px;
-     /* width: 145px; */
+    /* width: 145px; */
     text-align: center;
 }
 
 
 
-    .menu-navigation .navbar-nav li {
-        display: inline-block;
-        float: left;
+.menu-navigation .navbar-nav li {
+    display: inline-block;
+    float: left;
+}
+
+    .menu-navigation .navbar-nav li a {
+        padding: 0px 10px;
+        color: #fff;
+        font-size: 13px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        border-right: 2px solid #fff;
     }
 
-        .menu-navigation .navbar-nav li a {
-    padding: 0px 10px;
-    color: #fff;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    border-right: 2px solid #fff;
-}
-.menu-navigation .navbar-nav li:last-child a{border:none;}
+    .menu-navigation .navbar-nav li:last-child a {
+        border: none;
+    }
 
 .menu-navigation .navbar-nav {
-    text-align:center;
+    text-align: center;
 }
 
 
@@ -566,8 +607,10 @@ th.action-th {
     border: none;
     box-shadow: inherit !important;
 }
-.form-group-text input[type="checkbox"] {height:auto;  
-}
+
+    .form-group-text input[type="checkbox"] {
+        height: auto;
+    }
 
 .form-group-textarea textarea {
     height: 120px;
@@ -705,8 +748,10 @@ input:checked + .outside .inside {
 }
 
 .footer-section {
-    background:#f2f2f2;
-    padding: 30px 0 70px;     position: relative;     margin: 50px 0 0;
+    background: #f2f2f2;
+    padding: 30px 0 70px;
+    position: relative;
+    margin: 50px 0 0;
 }
 
 .ftr-about-content p {
@@ -857,7 +902,8 @@ span.online-dot {
     /*height: 400px;*/
     padding: 0;
     position: relative;
-    background: #31506a; padding:60px 0; 
+    background: #31506a;
+    padding: 60px 0;
 }
 
 /*.banner-content {
@@ -866,36 +912,36 @@ span.online-dot {
     transform: translateY(-50%);
 }*/
 
-    .banner-content h2 {
-        color: white;
-        font-size: 24px;
-        text-transform: uppercase;
-        font-weight: 500;
-    }
+.banner-content h2 {
+    color: white;
+    font-size: 24px;
+    text-transform: uppercase;
+    font-weight: 500;
+}
 
-    .banner-content p {
-        color: white;
-        float: left;
-        font-size: 15px;
-        margin: 20px auto;
-        width:100%;
-        font-family: "Poppins",sans-serif;
-        font-weight: 300;
-        line-height: 25px;
-    }
+.banner-content p {
+    color: white;
+    float: left;
+    font-size: 15px;
+    margin: 20px auto;
+    width: 100%;
+    font-family: "Poppins",sans-serif;
+    font-weight: 300;
+    line-height: 25px;
+}
 
-    .banner-content > button {
-        background: black none repeat scroll 0 0;
-        border: medium none;
-        clear: both;
-        color: white;
-        float: left;
-        font-size: 15px;
-        font-weight: 600;
-        letter-spacing: 1px;
-        padding: 16px 40px;
-        text-transform: uppercase;
-    }
+.banner-content > button {
+    background: black none repeat scroll 0 0;
+    border: medium none;
+    clear: both;
+    color: white;
+    float: left;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 16px 40px;
+    text-transform: uppercase;
+}
 
 .policy-option li {
     display: inline-block;
@@ -1377,23 +1423,43 @@ table.policy-table-grid {
     z-index: 999;
 }
 
-.form-group-text .select2-container .select2-selection--single{height:50px; border-radius: 0;   border: none;}
-.form-group-text .select2-container--default .select2-selection--single .select2-selection__rendered{line-height:50px;}
-.form-group-text .select2-container--default .select2-selection--single .select2-selection__arrow{height:50px}
+.form-group-text .select2-container .select2-selection--single {
+    height: 50px;
+    border-radius: 0;
+    border: none;
+}
 
-.form-group-select .select2-container .select2-selection--single{height:50px; border-radius: 0;   border: none;}
-.form-group-select .select2-container--default .select2-selection--single .select2-selection__rendered{line-height:50px;}
-.form-group-select .select2-container--default .select2-selection--single .select2-selection__arrow{height:50px}
+.form-group-text .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 50px;
+}
+
+.form-group-text .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 50px;
+}
+
+.form-group-select .select2-container .select2-selection--single {
+    height: 50px;
+    border-radius: 0;
+    border: none;
+}
+
+.form-group-select .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 50px;
+}
+
+.form-group-select .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 50px;
+}
 
 .form-section-top div#myAddressModal .modal-body {
     display: inline-block;
     width: 100%;
 }
 
-.form-section-top div#myAddressModal .modal-body .form-group{
-    display: inline-block;
-    width: 100%;
-}
+    .form-section-top div#myAddressModal .modal-body .form-group {
+        display: inline-block;
+        width: 100%;
+    }
 
 .payment-card ul li {
     background: #fff;
@@ -1408,10 +1474,12 @@ table.policy-table-grid {
     font-size: 13px;
     border: 1px solid #c6dd7c;
 }
+
 #payment_2 img {
     width: 40px;
     height: auto;
 }
+
 #payment_3 img {
     width: 100px;
     height: auto;
@@ -1419,29 +1487,56 @@ table.policy-table-grid {
 
 /***/
 
-.renew-blocks .text-right{float:right; margin:0px 0 0;}
-.renew-btn {display:inline-block}
+.renew-blocks .text-right {
+    float: right;
+    margin: 0px 0 0;
+}
+
+.renew-btn {
+    display: inline-block;
+}
+
 .slider-content .carousel-caption {
     left: 0;
     right: 0;
     text-align: left;
     bottom: auto;
-    top: 80px;     text-shadow: inherit;
-}
-.slider-content .carousel-caption h3 {
-    font-size: 36px;
-    font-weight: 300; margin:0 0 7px;
+    top: 80px;
+    text-shadow: inherit;
 }
 
-.slider-content .carousel-caption p {
-    font-size: 18px;
-    font-weight: 300;
+    .slider-content .carousel-caption h3 {
+        font-size: 36px;
+        font-weight: 300;
+        margin: 0 0 7px;
+    }
+
+    .slider-content .carousel-caption p {
+        font-size: 18px;
+        font-weight: 300;
+    }
+
+.btn-rounded-list {
+    display: inline-block;
+    width: 100%;
+    margin: 25px 0 0;
 }
 
-.btn-rounded-list { display:inline-block; width:100%; margin:25px 0 0
-}
-.btn-rounded-list ul li a{ display:inline-block; padding:10px 25px; color:#fff; border:2px solid #fff; border-radius:30px; text-decoration:none; text-transform:uppercase; font-size:16px;}  
-.btn-rounded-list ul li.dark-btn a{border-color:#79378b; background:#79378b;}
+    .btn-rounded-list ul li a {
+        display: inline-block;
+        padding: 10px 25px;
+        color: #fff;
+        border: 2px solid #fff;
+        border-radius: 30px;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-size: 16px;
+    }
+
+    .btn-rounded-list ul li.dark-btn a {
+        border-color: #79378b;
+        background: #79378b;
+    }
 
 .policy-option-section {
     display: inline-block;
@@ -1455,52 +1550,62 @@ table.policy-table-grid {
     width: 100%;
     margin: 0 0 40px;
 }
-.insurance-text h4 {
-    font-size: 24px;
-    font-weight: 400;
-    color:#9db753;
-    margin: 0 0 7px;
-}
-.insurance-text p {
-    font-size: 22px;
-    font-weight: 400;
-    color: #666;
-}
+
+    .insurance-text h4 {
+        font-size: 24px;
+        font-weight: 400;
+        color: #9db753;
+        margin: 0 0 7px;
+    }
+
+    .insurance-text p {
+        font-size: 22px;
+        font-weight: 400;
+        color: #666;
+    }
 
 .next-btn .text-left ul li {
     float: left;
 }
-.next-btn .text-left ul li .text-right {
-    float: left;
-    margin: 0 10px 0 0;
-}
-.next-btn .text-left ul li .text-right:last-child {
-    margin: 0 0px 0 0;
-}
+
+    .next-btn .text-left ul li .text-right {
+        float: left;
+        margin: 0 10px 0 0;
+    }
+
+        .next-btn .text-left ul li .text-right:last-child {
+            margin: 0 0px 0 0;
+        }
+
 div#invoiceNumberDiv .form-group {
     margin: 26px 0 0;
 }
+
 .top-header-left {
     padding-left: 30px;
     padding-top: 0px;
     float: left;
 }
-.top-header-left ul {
-    float: left;
-    margin-right: 20px;
-    color: #fff;
-    text-transform: uppercase;
-}
-.top-header-left.skype-details ul li span {
-    padding: 0;
-}
-.top-header-left.skype-details .renew-btn {
-    margin: 0;
-}
-.top-header-left.skype-details {
-    margin: 0;
-    margin-top: 3px;
-}
+
+    .top-header-left ul {
+        float: left;
+        margin-right: 20px;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+    .top-header-left.skype-details ul li span {
+        padding: 0;
+    }
+
+    .top-header-left.skype-details .renew-btn {
+        margin: 0;
+    }
+
+    .top-header-left.skype-details {
+        margin: 0;
+        margin-top: 3px;
+    }
 
 .top-header-right.text-right .login-btn {
     margin: 3px 0 0;
@@ -1513,55 +1618,68 @@ div#invoiceNumberDiv .form-group {
     background: #fff;
 }
 
- .top-header-white:after {
-    content: "";
-    border-left: 30px solid #fff;
-    border-top: 33px solid transparent;
-    border-bottom: 0 solid transparent;
-    position: absolute;
-    left: 100%;
-    top: 0;
-}
+    .top-header-white:after {
+        content: "";
+        border-left: 30px solid #fff;
+        border-top: 33px solid transparent;
+        border-bottom: 0 solid transparent;
+        position: absolute;
+        left: 100%;
+        top: 0;
+    }
 
 .menu-navigation .navbar-nav.login-btn li a {
-    border: none ;
-    background:none !important;
-    color: #fff ;
+    border: none;
+    background: none !important;
+    color: #fff;
 }
 
 .menu-navigation .navbar-nav.login-btn li:hover .dropdown-menu {
     display: block;
 }
+
 .policy-option ul li img {
     width: 145px;
 }
-.touch-heading{margin-bottom:30px;}
-.touch-heading h3 {
-    color: #16909d;
-    text-transform: uppercase;
-    font-size: 30px;
-    font-weight: 400;
+
+.touch-heading {
+    margin-bottom: 30px;
 }
-.contact-details { margin:15px 0 0
+
+    .touch-heading h3 {
+        color: #16909d;
+        text-transform: uppercase;
+        font-size: 30px;
+        font-weight: 400;
+    }
+
+.contact-details {
+    margin: 15px 0 0;
 }
-.contact-details h4 {
-    color: #000;
-    font-size: 16px; margin-bottom:5px;
-}
-.contact-details p {
-    color: #000;
-    font-size: 14px;
-    margin-bottom:5px;
-}
-.contact-details h4 small {
-    color:#333;
-    font-size: 14px;
-}
+
+    .contact-details h4 {
+        color: #000;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    .contact-details p {
+        color: #000;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    .contact-details h4 small {
+        color: #333;
+        font-size: 14px;
+    }
+
 .footer-content-logo {
     border-right: 1px solid #ddd;
     padding-bottom: 15px;
     padding-top: 5px;
 }
+
 .touch-heading {
     margin-bottom: 30px;
     margin-top: 30px;
@@ -1580,67 +1698,91 @@ div#invoiceNumberDiv .form-group {
     border-radius: 50px;
     margin: auto;
 }
-.click-here a {
-    text-decoration: none;
-    color: #16909d;
-}
+
+    .click-here a {
+        text-decoration: none;
+        color: #16909d;
+    }
+
     .click-here.bottom-here {
         top: auto;
     }
 
     .click-here.bottom-here {
-    top: auto;
-    bottom:-30px;
-    background: #53c4d4;     z-index: 9999;
-}
-.click-here.bottom-here a{color:#fff;}
+        top: auto;
+        bottom: -30px;
+        background: #53c4d4;
+        z-index: 9999;
+    }
+
+        .click-here.bottom-here a {
+            color: #fff;
+        }
+
 .reset-heading h1 {
     font-size: 30px;
     margin: 0 0 10px;
     font-weight: 600;
 }
+
 .reset-heading {
     text-align: center;
     margin: 0 0 80px;
 }
+
 .reset-section {
     display: inline-block;
     width: 100%;
     padding: 50px 0 0;
 }
-.home-slider-sectopn .item img{width:100%;}
+
+.home-slider-sectopn .item img {
+    width: 100%;
+}
 
 
-.resize-none textarea { resize: none;  height: 90px;}
-.label-top{vertical-align:top;}
+.resize-none textarea {
+    resize: none;
+    height: 90px;
+}
+
+.label-top {
+    vertical-align: top;
+}
 
 .form-group-btn ul {
     float: right;
 }
-.form-group-btn ul li button {
-    padding: 0 25px;
-    height: 50px;
-    border-radius: 3px;
-    border: none;
-    font-size: 17px;
-}
+
+    .form-group-btn ul li button {
+        padding: 0 25px;
+        height: 50px;
+        border-radius: 3px;
+        border: none;
+        font-size: 17px;
+    }
+
 .form-group-section-date .form-group {
     margin: 0 0 0px;
 }
-.form-group-section-date .form-group-text input { border:1px solid #ddd;
+
+.form-group-section-date .form-group-text input {
+    border: 1px solid #ddd;
 }
 
-.font13px
-{
-    font-size:13px;
+.font13px {
+    font-size: 13px;
 }
-.size192{
-    width:127px;
+
+.size192 {
+    width: 127px;
 }
+
 .form-group-btn ul li {
     padding: 0;
     margin: 0 0 0 10px;
 }
+
 .form-group-section-date {
     display: inline-block;
     width: 100%;
@@ -1649,15 +1791,22 @@ div#invoiceNumberDiv .form-group {
     padding: 10px 15px 5px 15px;
     border: 1px solid #ddd;
 }
+
 .table-striped-area table {
     border: 1px solid #ddd;
 }
+
 .form-group-section-date .form-group-text .form-group span.text-danger {
     position: static;
 }
 
-.product-table-grid.claimant-list-grid .table tr th:first-child{width:125px}
-.product-table-grid.claimant-list-grid .table tr th.action-th{width:250px}
+.product-table-grid.claimant-list-grid .table tr th:first-child {
+    width: 125px;
+}
+
+.product-table-grid.claimant-list-grid .table tr th.action-th {
+    width: 250px;
+}
 
 .riskdetail-box {
     margin: 0 0 0;
@@ -1666,77 +1815,96 @@ div#invoiceNumberDiv .form-group {
     width: 100%;
 }
 
- .form-section-top-riskdetail{display:inline-block; width:100%; padding:30px 0}
-    .riskdetail-box ul li {
-        width:25%;
-        font-family: 'Roboto', sans-serif;
-        margin:0 0px 10px 0; padding-bottom: 0; float:left;
+.form-section-top-riskdetail {
+    display: inline-block;
+    width: 100%;
+    padding: 30px 0;
+}
+
+.riskdetail-box ul li {
+    width: 25%;
+    font-family: 'Roboto', sans-serif;
+    margin: 0 0px 10px 0;
+    padding-bottom: 0;
+    float: left;
+}
+
+    .riskdetail-box ul li.full-width-li {
+        width: 100%;
+        margin: 5px 0 10px;
     }
 
-        .riskdetail-box ul li.full-width-li {
-            width: 100%;
-            margin:5px 0 10px;
-        }
+.riskdetail-box label {
+    font-style: normal;
+    margin: 0 14px 0px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #000; /*width:100%;*/
+}
 
-        .riskdetail-box label {
-            font-style: normal;
-            margin: 0 14px 0px 0;
-            font-size: 14px;
-            font-weight: 500;
-            color: #000; /*width:100%;*/
-        }
+.riskdetail-box ul li span {
+    color: #666;
+}
 
-        .riskdetail-box ul li span {
-            color: #666;
-        }
-
-        .riskdetail-box ul li label input[type="checkbox"] {
+.riskdetail-box ul li label input[type="checkbox"] {
     float: left;
     margin: 5px 5px 0 0;
 }
-        .details-heading {
+
+.details-heading {
     display: inline-block;
     width: 100%;
-    margin:0 0 5px;
+    margin: 0 0 5px;
 }
-        .details-heading h4 {
-    font-size: 17px;
-    font-weight: 600;
-    color: #000;
-}
-        .riskdetail-section {
+
+    .details-heading h4 {
+        font-size: 17px;
+        font-weight: 600;
+        color: #000;
+    }
+
+.riskdetail-section {
     display: inline-block;
     width: 100%;
     padding: 15px;
-    border: 1px solid #ddd;     margin:0 0 20px;
-}
-        .riskdetail-section.border-box .container-riskdetail {
-    border-bottom: 1px solid #ddd;
-    display: inline-block;
-    width: 100%;
-    padding: 0 0 10px;
+    border: 1px solid #ddd;
     margin: 0 0 20px;
 }
-   .riskdetail-section.border-box .container-riskdetail:last-child {border: none;
+
+    .riskdetail-section.border-box .container-riskdetail {
+        border-bottom: 1px solid #ddd;
+        display: inline-block;
+        width: 100%;
+        padding: 0 0 10px;
+        margin: 0 0 20px;
+    }
+
+        .riskdetail-section.border-box .container-riskdetail:last-child {
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+
+.container-riskdetail:last-child .riskdetail-box {
     margin: 0;
+    border: none;
     padding: 0;
- }
-        .container-riskdetail:last-child .riskdetail-box {
-    margin: 0;
-    border: none; padding:0; 
 }
-        .form-section-top-riskdetail .form-title {
+
+.form-section-top-riskdetail .form-title {
     border: none;
     margin: 0 0 0px;
 }
 
-        .riskdetail-box ul li.half-width-li {
+.riskdetail-box ul li.half-width-li {
     width: 50%;
 }
-        .riskdetail-box ul li.half-width-li label.list-label {
-    width: 100%;
-}
-        .riskdetail-box ul li.claim-radio {
+
+    .riskdetail-box ul li.half-width-li label.list-label {
+        width: 100%;
+    }
+
+.riskdetail-box ul li.claim-radio {
     margin: 20px 0 0;
 }
 
@@ -1745,13 +1913,13 @@ div#invoiceNumberDiv .form-group {
     border-radius: 4px 4px 0 0;
     border-bottom: 1px solid #eee;
     padding: 0 0 15px;
-    text-align: center
-
+    text-align: center;
 }
 /**12/11*/
 .pdf-btn input {
     margin-top: 26px;
 }
+
 div#content {
     width: 100%;
 }
@@ -1761,28 +1929,35 @@ div#content {
 .head-title-list .list-inline li {
     border-right: 1px solid #fff;
     padding-right: 13px;
-    line-height: 1.1;     padding: 0;
+    line-height: 1.1;
+    padding: 0;
 }
+
     .head-title-list .list-inline li:last-child {
         border: none;
     }
-.head-title-list .list-inline li a {
-    text-decoration: none;
-    color: #41b8c8;
-    transition: all 0.5s ease-in-out;
-    text-transform: uppercase;
-    font-size: 13px;
-    padding: 4px 10px;
-    border-radius: 20px; font-weight:600
-}
+
+    .head-title-list .list-inline li a {
+        text-decoration: none;
+        color: #41b8c8;
+        transition: all 0.5s ease-in-out;
+        text-transform: uppercase;
+        font-size: 13px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+
 .tbl-btn-list li {
     margin: 0 0 10px;
 }
+
 .products-top {
     margin: 30px 0 0;
 }
 
-.claims-list-section {padding:30px 0 0
+.claims-list-section {
+    padding: 30px 0 0;
 }
 
 
@@ -1790,93 +1965,180 @@ div#content {
     max-width: 700px;
     width: 100%;
 }
+
 .document-table table td.label-top {
     width: 160px;
 }
+
 .document-table .resize-none textarea {
     height: 50px;
 }
 
-    .head-title-list .list-inline li a:hover{color:#fff; background:#41b8c8}
-    /*.head-title-list .list-inline li.active a{color:#000; }*/
+.head-title-list .list-inline li a:hover {
+    color: #fff;
+    background: #41b8c8;
+}
+/*.head-title-list .list-inline li.active a{color:#000; }*/
 
 
-      .form-group-text input[type="radio"] {
+.form-group-text input[type="radio"] {
     height: auto;
     float: left;
     margin: 4px 3px 0 0;
 }
 
-    label.radio-label {
+label.radio-label {
     width: 100%;
 }
-    .form-group-radio label {
+
+.form-group-radio label {
     margin: 0 10px 0 0;
 }
 
 /****/
 
 .riskdetail-box label.list-label {
-    width: 100%; margin: 0 0 5px;
+    width: 100%;
+    margin: 0 0 5px;
 }
+
 .claim-label label.claim-txt {
     display: inline-block;
-    width: 100%;     margin: 0 0 7px;
+    width: 100%;
+    margin: 0 0 7px;
 }
+
 .claim-label span label input[type="radio"] {
     float: left;
-    margin: 3px 4px 0 0; 
+    margin: 3px 4px 0 0;
 }
 
 .claim-status select {
     margin: 0 0 10px;
 }
-.checkbox-label {  display: inline-block;  width: 100%;  margin: 0 0 15px;}
-.checkbox-label label {  width: auto;  margin: 0;}
+
+.checkbox-label {
+    display: inline-block;
+    width: 100%;
+    margin: 0 0 15px;
+}
+
+    .checkbox-label label {
+        width: auto;
+        margin: 0;
+    }
 
 
 
-.about-top-banner img{width:100%;}
-.insure-section { display: inline-block;  width: 100%;  padding: 60px 0;}
-.about-heading-top h1 { text-transform: uppercase;  font-size: 50px;  font-weight: 300; color:#51C4D2;}
-.about-heading-top {  margin: 0 0 20px;}
-.insure-heading{margin:0 0 15px}
-.insure-heading h3 { font-size: 20px;  font-weight: 700;  color: #555;}
+.about-top-banner img {
+    width: 100%;
+}
 
-.p-contents p { font-size: 14px;  line-height: 25px;  color: #444;  margin: 0 0 20px;}
-.p-contents p:last-child {  margin:0;}
+.insure-section {
+    display: inline-block;
+    width: 100%;
+    padding: 60px 0;
+}
 
-.specialty-title-block { display: inline-block; width: 100%; margin: 60px 0 0;}
-.specialty-title h4 { font-size: 18px;  font-weight: 600; margin: 0 0 20px;  color: #444;}
-.insurance-area { display: inline-block;  width: 100%;  margin: 0 0 50px;}
-.insurance-area:last-child {  margin:0}
+.about-heading-top h1 {
+    text-transform: uppercase;
+    font-size: 50px;
+    font-weight: 300;
+    color: #51C4D2;
+}
 
-.insurance-list h4 { color: #444;  font-size: 16px;  margin: 0 0 15px;  font-weight: 600;}
-.insurance-list p {  line-height: 26px;}
-.about-img img{width:100%;}
+.about-heading-top {
+    margin: 0 0 20px;
+}
+
+.insure-heading {
+    margin: 0 0 15px;
+}
+
+    .insure-heading h3 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #555;
+    }
+
+.p-contents p {
+    font-size: 14px;
+    line-height: 25px;
+    color: #444;
+    margin: 0 0 20px;
+}
+
+    .p-contents p:last-child {
+        margin: 0;
+    }
+
+.specialty-title-block {
+    display: inline-block;
+    width: 100%;
+    margin: 60px 0 0;
+}
+
+.specialty-title h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 20px;
+    color: #444;
+}
+
+.insurance-area {
+    display: inline-block;
+    width: 100%;
+    margin: 0 0 50px;
+}
+
+    .insurance-area:last-child {
+        margin: 0;
+    }
+
+.insurance-list h4 {
+    color: #444;
+    font-size: 16px;
+    margin: 0 0 15px;
+    font-weight: 600;
+}
+
+.insurance-list p {
+    line-height: 26px;
+}
+
+.about-img img {
+    width: 100%;
+}
 
 .row-checkbox label.gender-label {
     width: auto;
     margin: 0 0 0 2px;
 }
+
 .row-checkbox input[type="checkbox"] {
-    margin: 4px 3px 0 0;    float: left;
-	}
-	/**15 june css end**/
-	
-.city-section-top {
-display: inline-block;
-width: 100%;
-padding: 50px 0 20px;
+    margin: 4px 3px 0 0;
+    float: left;
 }
+/**15 june css end**/
+
+.city-section-top {
+    display: inline-block;
+    width: 100%;
+    padding: 50px 0 20px;
+}
+
 .city-add-btn {
- margin: 0 0 15px;
-  /*text-align: right;*/
-		}
+    margin: 0 0 15px;
+    /*text-align: right;*/
+}
+
 .city-section-top table {
-	 border: 1px solid #ddd;
-				}
-.pt-50{padding-top:50px;}
+    border: 1px solid #ddd;
+}
+
+.pt-50 {
+    padding-top: 50px;
+}
 
 .product-table-grid table tr.highlights-bg {
     background: #ff9b9b;
@@ -1887,53 +2149,76 @@ ul#ui-id-1 {
     width: 345px !important;
     border: 1px solid #ccc;
     background: #fff;
+    z-index: 9999 !important;
 }
-ul#ui-id-1 li {
-    padding:5px 10px; cursor:pointer;
-}
-ul#ui-id-1 li:hover{background:#09f; color:#fff;}
+
+    ul#ui-id-1 li {
+        padding: 5px 10px;
+        cursor: pointer;
+         z-index: 9999 !important;
+    }
+
+        ul#ui-id-1 li:hover {
+            background: #09f;
+            color: #fff;
+        }
 
 .form-group.no-margin {
     margin: 0;
 }
-.number-block .gender-label{width:auto}
+
+.number-block .gender-label {
+    width: auto;
+}
+
 .number-block small {
     font-weight: 700;
     display: inline-block;
     margin: 0 0 0 5px;
 }
 
-.form-group.ml-0{margin:0 0 15px;}
-th.th-width-340 { width:340px;}
-
-div#content .product-table-grid table tr td {  vertical-align: middle; padding:10px 8px; 
-    overflow: hidden;}
-
-div#content .product-table-grid table tr td ul li, div#content .product-table-grid table tr td ul li label {
-    margin: 0;
-    padding: 0;
+.form-group.ml-0 {
+    margin: 0 0 15px;
 }
+
+th.th-width-340 {
+    width: 340px;
+}
+
+div#content .product-table-grid table tr td {
+    vertical-align: middle;
+    padding: 10px 8px;
+    overflow: hidden;
+}
+
+    div#content .product-table-grid table tr td ul li, div#content .product-table-grid table tr td ul li label {
+        margin: 0;
+        padding: 0;
+    }
+
 span.customer_title {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     width: 140px;
     display: inline-block;
-    cursor:pointer;
+    cursor: pointer;
 }
+
 .gray-box {
     background: #f2f2f2;
     display: inline-block;
     width: 100%;
     padding: 15px 0;
 }
+.print-btn { display:block !important;}
 
 
-
-
-
-
-
+@media print {
+    .print-btn { display:none !important;}
+    .top-header-section { display:none;    }
+    .footer-section { display:none;    }
+}
 
 
 

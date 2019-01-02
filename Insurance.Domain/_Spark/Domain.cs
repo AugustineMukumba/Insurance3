@@ -170,7 +170,21 @@ namespace Insurance.Domain
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
     }
+    public partial class ReceiptModuleHistory : Entity<ReceiptModuleHistory>
+    {
 
+        public int Id { get; set; }
+        public int PolicyId { get; set; }
+        public string PolicyNumber { get; set; }
+        public string CustomerName { get; set; }
+        public string InvoiceNumber { get; set; }
+        public int? PaymentMethodId { get; set; }
+        public decimal? AmountDue { get; set; }
+
+        public decimal? AmountPaid { get; set; }
+        public string Balance { get; set; }
+        public DateTime DatePosted { get; set; }
+    }
     public partial class PaymentTerm : Entity<PaymentTerm>
     {
         public PaymentTerm() { }

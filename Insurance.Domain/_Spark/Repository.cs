@@ -46,6 +46,9 @@ namespace Insurance.Domain
         public static AgeExcesses AgeExcesses { get { return new AgeExcesses(); } }
         public static SpecificExcesses SpecificExcesses { get { return new SpecificExcesses(); } }
 
+        public static ReceiptModuleHistorys ReceiptHistorys { get { return new ReceiptModuleHistorys(); } }
+
+
         public static Reinsurances Reinsurances { get { return new Reinsurances(); } }
         public static ReinsuranceBrokers ReinsuranceBrokers { get { return new ReinsuranceBrokers(); } }
         public static ReinsuranceTransactions ReinsuranceTransactions { get { return new ReinsuranceTransactions(); } }

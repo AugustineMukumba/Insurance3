@@ -56,6 +56,9 @@ namespace InsuranceClaim
                 cfg.CreateMap<Customer, EndorsementCustomerModel>().ReverseMap();
                 cfg.CreateMap<EndorsementCustomer, EndorsementCustomerModel>().ReverseMap();
 
+                //Receipt Module
+                cfg.CreateMap<SummaryDetail, ReceiptModuleModel>().ReverseMap();
+
                 //Second Phase Work 
                 cfg.CreateMap<ClaimNotification, ClaimNotificationModel>().ReverseMap();
                 cfg.CreateMap<ServiceProvider, ServiceProviderModel>().ReverseMap();

@@ -2994,7 +2994,179 @@ namespace InsuranceClaim.Controllers
             return View();
         }
 
+        //created by Rajat Khanna
+        #region Receipt Module
+        public ActionResult ReceiptModule()
+        {
+            var paymentMethod = InsuranceContext.PaymentMethods.All().ToList();
+            ViewBag.PaymentMethod = paymentMethod;
+            return View();
+        }
+        [HttpPost]
+        public JsonResult GetAutoSuggestions()
+        {
 
+            List<ReceiptModuleModel> objList = new List<ReceiptModuleModel>();
+            /*var Policylist = InsuranceContext.PolicyDetails.All().ToList();*/   ////  get data from database 
+            var NotificationList = new List<ReceiptModuleModel>(); /// create list 
+
+            var result = (from Vehicle in InsuranceContext.VehicleDetails.All().ToList()
+                          join Policylist in InsuranceContext.PolicyDetails.All().ToList()
+                          on Vehicle.PolicyId equals Policylist.Id
+                          join customer in InsuranceContext.Customers.All()
+                          on Vehicle.CustomerId equals customer.Id
+                          join paymentInfo in InsuranceContext.PaymentInformations.All().ToList()
+                          on Vehicle.PolicyId equals paymentInfo.PolicyId
+                          where Vehicle.IsActive == true
+                          select new ReceiptModuleModel
+                          {
+                              PolicyNumber = Policylist.PolicyNumber,
+                              PolicyId = Vehicle.PolicyId,
+                              CustomerName = customer.FirstName + " " + customer.LastName,
+                              InvoiceNumber = paymentInfo.InvoiceNumber
+                          }).ToList().OrderBy(x => x.PolicyId).Take(30);
+            //NotificationList = Policylist.Select(p => new ClaimNotificationModel()  //// get data from table using loop and added in model.
+            //{
+            //    PolicyNumber = p.PolicyNumber
+
+            //}).ToList();
+            //var result = (from j in NotificationList
+            //              select new
+            //              {
+            //                  j.PolicyNumber
+            //              }).ToList().Take(10);
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetCustomername(string txtvalue)
+        {
+            var customerName = "";
+            var policyNumber = "";
+            var invoiceNumber = "";
+            var totalPremium = 0;
+            var amountPaid = 0;
+
+
+
+
+            var policyAndRegistrationNumber = txtvalue; //Policy Number,VRN Number,Customer Name 
+            var policyAndRegistrationNumberArray = policyAndRegistrationNumber.Split(',');
+            if (policyAndRegistrationNumberArray.Length > 1)
+            {
+                policyNumber = policyAndRegistrationNumberArray[0]; //Policy Number
+                invoiceNumber = policyAndRegistrationNumberArray[2];//VRN Number
+            }
+            else
+            {
+                policyNumber = policyAndRegistrationNumberArray[0];
+            }
+
+            ReceiptModuleModel model = new ReceiptModuleModel();
+
+            var detail = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{policyNumber}'");
+            if (detail != null)
+            {
+                var invoicenumber = InsuranceContext.PaymentInformations.Single(where: $"InvoiceNumber = '{invoiceNumber}'");
+                var customerdetail = InsuranceContext.Customers.Single(where: $"Id='{detail.CustomerId}'");
+                var summarydetail = InsuranceContext.SummaryDetails.Single(where: $"Id='{invoicenumber.SummaryDetailId}'");
+                var policyId = InsuranceContext.PaymentInformations.Single(where: $"PolicyId = '{detail.Id}'");
+
+
+                customerName = customerdetail.FirstName + " " + customerdetail.LastName;
+                model.AmountDue = summarydetail.TotalPremium;
+                model.CustomerName = customerName;
+                model.InvoiceNumber = invoiceNumber;
+                model.PolicyNo = policyNumber;
+                model.PaymentMethodId = summarydetail.PaymentMethodId;
+                model.DatePosted = DateTime.Now;
+                model.PolicyId = policyId.PolicyId;
+                model.CustomerId = customerdetail.Id;
+                return Json(model, JsonRequestBehavior.AllowGet);
+            }
+            return Json(model, JsonRequestBehavior.AllowGet);
+
+        }
+
+        [HttpPost]
+        public ActionResult ReceiptModule(ReceiptModuleModel model)
+        {
+            var dbModel = Mapper.Map<ReceiptModuleModel, SummaryDetail>(model);
+            var customer = InsuranceContext.Customers.Single(where: $"Id='{model.CustomerId}'");
+            ReceiptModuleHistory Receipthistory = new ReceiptModuleHistory();
+            dbModel.AmountPaid = model.AmountPaid;
+            //InsuranceContext.SummaryDetails.Update(dbModel);
+            Receipthistory.AmountDue = model.AmountDue;
+            Receipthistory.AmountPaid = model.AmountPaid;
+            Receipthistory.Balance = model.Balance;
+            Receipthistory.CustomerName = model.CustomerName;
+            Receipthistory.DatePosted = model.DatePosted;
+            Receipthistory.InvoiceNumber = model.InvoiceNumber;
+            Receipthistory.PaymentMethodId = model.PaymentMethodId;
+            ViewBag.PaymentMethod = model.PaymentMethodId;
+            Receipthistory.PolicyNumber = model.PolicyNo;
+            Receipthistory.PolicyId = model.PolicyId;
+            InsuranceContext.ReceiptHistorys.Insert(Receipthistory);
+            var id = Receipthistory.Id;
+            ViewBag.CurrentSaveId = id;
+
+            string filepath = System.Configuration.ConfigurationManager.AppSettings["urlPath"];
+            ListReceiptModule receiptList = new ListReceiptModule();
+            PreviewReceiptListModel lstreceipt = new PreviewReceiptListModel();
+            lstreceipt.AmountDue = model.AmountDue;
+            lstreceipt.AmountPaid = model.AmountPaid;
+            lstreceipt.Balance = model.Balance;
+            lstreceipt.CustomerName = model.CustomerName;
+            lstreceipt.DatePosted = model.DatePosted;
+            lstreceipt.InvoiceNumber = model.InvoiceNumber;
+            lstreceipt.PaymentMethodId = model.PaymentMethodId;
+            lstreceipt.Address1 = customer.AddressLine1;
+            lstreceipt.Address2 = customer.AddressLine2;
+            lstreceipt.PolicyNumber = model.PolicyNo;
+            lstreceipt.PolicyId = model.PolicyId;
+            lstreceipt.Date = DateTime.Now.ToString("dd/MM/yyyy");
+            lstreceipt.filepath = filepath;
+            lstreceipt.PaymentDetails = model.Balance;
+            lstreceipt.paymentMethodType = (model.PaymentMethodId == 1 ? "Cash" : (model.PaymentMethodId == 2 ? "Ecocash" : (model.PaymentMethodId == 3 ? "Swipe" : "MasterVisa Card")));
+            receiptList.listReceipt = new List<PreviewReceiptListModel>();
+            receiptList.listReceipt.Add(lstreceipt);
+            //byte[] bytes = Encoding.ASCII.GetBytes(Body2);
+            //return File(bytes, "text/html");
+            //return RedirectToAction("ReceiptModule");
+            // return View(EmailBody2);
+            return View("~/Views/CustomerRegistration/PreviewReceiptModule.cshtml", lstreceipt);
+            //return Body2;
+        }
+        public ActionResult PreviewReceiptModule()
+        {
+            return View();
+        }
+        [HttpPost]
+        public JsonResult SendEmail(Int32 id)
+        {
+            //Send Email 
+            var ReceiptHistory = InsuranceContext.ReceiptHistorys.Single(where: $"Id='{id}'");
+            var policyDetails = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{ReceiptHistory.PolicyNumber}'");
+            var customer = InsuranceContext.Customers.Single(where: $"Id='{policyDetails.CustomerId}'");
+            //var AspNetUsers = InsuranceContext.AspNetUsersUpdates
+            var user = UserManager.FindById(customer.UserID);
+            Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
+            //string userRegisterationEmailPath = "~/Views/Shared/EmailTemplates/UserPaymentEmail.cshtml";
+            string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentEmail.cshtml";
+            string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
+            string filepath = System.Configuration.ConfigurationManager.AppSettings["urlPath"];
+            var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString())
+                .Replace("##path##", filepath).Replace("#FirstName#", customer.FirstName)
+                .Replace("#LastName#", customer.LastName)
+                .Replace("#AccountName#", ReceiptHistory.CustomerName)
+                .Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2)
+                .Replace("#Amount#", Convert.ToString(ReceiptHistory.AmountPaid))
+                .Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", ReceiptHistory.PolicyNumber)
+                .Replace("#PaymentType#", (ReceiptHistory.PaymentMethodId == 1 ? "Cash" : (ReceiptHistory.PaymentMethodId == 2 ? "PayPal" : "PayNow")));
+            List<string> attachements = new List<string>();
+            attachements.Add("");
+            objEmailService.SendEmail(user.Email, "", "", "Receipt Module", Body2, attachements);
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
+        #endregion
 
 
 
