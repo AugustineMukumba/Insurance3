@@ -153,6 +153,7 @@
     <Compile Include="Domain\PolicyRenewReminderSetting.cs" />
     <Compile Include="Domain\PolicyStatus.cs" />
     <Compile Include="Domain\Product.cs" />
+    <Compile Include="Domain\ReceiptModuleHistory.cs" />
     <Compile Include="Domain\RegistrationDocument.cs" />
     <Compile Include="Domain\Reinsurance.cs" />
     <Compile Include="Domain\ReinsuranceBroker.cs" />
@@ -214,6 +215,7 @@
     <Compile Include="Repository\PolicyRenewReminderSettings.cs" />
     <Compile Include="Repository\PolicyStatuses.cs" />
     <Compile Include="Repository\Products.cs" />
+    <Compile Include="Repository\ReceiptModuleHistorys.cs" />
     <Compile Include="Repository\RegistrationDocuments.cs" />
     <Compile Include="Repository\ReinsuranceBrokers.cs" />
     <Compile Include="Repository\Reinsurances.cs" />
