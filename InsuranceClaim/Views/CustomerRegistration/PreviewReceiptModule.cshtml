@@ -51,15 +51,15 @@
             <tr><td style="width:50%; height:20px; border: none;"></td><td style="width:50%; height:20px; border: none;"></td></tr>
             <tr><td style="width:50%; padding: 0 5px; border: none;"><font size="2">Call Center</font></td><td style="width:50%;  border: none;"></td></tr>
             <tr><td style="width:50%; height:20px;border: none;"></td><td style="width:50%; height:20px;border: none;"></td></tr>
-            <tr><td bgcolor="#000" colspan="2" style="background: black;color: white;text-align: center; padding: 5px;border: none;">Invoice</td></tr>
+            <tr><td bgcolor="#000" colspan="2" style="background: black;color: white;text-align: center; padding: 5px;border: none;">Receipt</td></tr>
             <tr><td style="width:50%; height:20px; border: none;"></td><td style="width:50%; height:20px;border: none;"></td></tr>
             <tr><td style="width:50%; padding: 0 5px;border: none;"><font size="2">DATE</font></td><td align="left" style="width:50%; padding: 0 5px; text-align:right;border: none;"><font size="2">@Model.Date</font></td></tr>
             <tr><td style="width:50%; height:20px; border: none;"></td><td style="width:50%; height:20px; border: none;"></td></tr>
-            <tr><td style="width:50%; padding: 0 5px; border: none;"><font size="2">Invoice Number</font></td><td align="left" style="width:50%; padding: 0 5px; text-align:right; border: none;"><font size="2">@Model.PolicyNumber</font></td></tr>
+            <tr><td style="width:50%; padding: 0 5px; border: none;"><font size="2">Receipt Number</font></td><td align="left" style="width:50%; padding: 0 5px; text-align:right; border: none;"><font size="2">@Model.PolicyNumber.Replace("GMCC", "R");    </font></td></tr>
             <tr><td style="width:50%; height:20px; border: none;"></td><td style="width:50%; height:20px;border: none;"></td></tr>
             <tr><td style="width:50%; padding: 0 5px;border: none;"><font size="2">Account Name</font></td><td align="left" style="width:50%; padding: 0 5px; text-align:right;border: none;"><font size="2">@Model.CustomerName</font></td></tr>
             <tr><td style="width:50%; height:20px;border: none;"></td><td style="width:50%; height:20px;border: none;"></td></tr>
-            <tr><td style="width:50%; padding: 0 5px;border: none;"><font size="2">Invoice Amount</font></td><td align="left" style="width:50%; padding: 0 5px; text-align:right;border: none;"><font size="2">$@Model.AmountPaid</font></td></tr>
+            <tr><td style="width:50%; padding: 0 5px;border: none;"><font size="2">Receipt Amount</font></td><td align="left" style="width:50%; padding: 0 5px; text-align:right;border: none;"><font size="2">$@Model.AmountPaid</font></td></tr>
             <tr><td style="width:50%; height:20px;border: none;"></td><td style="width:50%; height:20px;border: none;"></td></tr>
             <tr><td style="width:50%; padding: 0 5px;border: none;"><font size="2">Balance</font></td><td align="left" style="width:50%; padding: 0 5px; text-align:right;border: none;"><font size="2">$@Model.PaymentDetails</font></td></tr>
             <tr><td style="width:50%; height:20px;border: none;"></td><td style="width:50%; height:20px;border: none;"></td></tr>
