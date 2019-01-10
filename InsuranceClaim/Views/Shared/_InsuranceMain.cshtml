@@ -200,6 +200,11 @@
                                 }
 
 
+                                @if (User.IsInRole("Finance"))
+                                {
+                                    <li><a class="DashboardButton" href="@Url.Action("Dashboard","Account")">Dashboard</a></li>
+                                }
+
 
                             </ul>
                             <ul class="navbar-nav navbar-right login-btn" style="@(userLoggedin ? "display:none;" : "display:inline-block;")">

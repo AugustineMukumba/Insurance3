@@ -337,6 +337,7 @@
     <Content Include="testChat.html" />
     <Content Include="Views\Account\EndorsementDetials.cshtml" />
     <Content Include="Views\Report\ProductivityReport.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\UserPaymentEmai.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -394,7 +395,7 @@
     <Content Include="Views\VehicleUsage\EditVehicalUsege.cshtml" />
     <Content Include="Views\Paypal\SaveDetailList.cshtml" />
     <Content Include="Views\Shared\EmaiTemplates\UserRegisteration.cshtml" />
-    <Content Include="Views\Shared\EmaiTemplates\UserPaymentEmail.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\UserPaymentReceipt.cshtml" />
     <Content Include="Views\Renew\RiskDetail.cshtml" />
     <Content Include="Views\Renew\SummaryDetail.cshtml" />
     <Content Include="Views\PolicyInsurer\EditPolicy.cshtml" />
@@ -508,6 +509,8 @@
     <Content Include="Views\Shared\EmaiTemplates\EndorsementSehduleMotor.cshtml" />
     <Content Include="Views\CustomerRegistration\PreviewReceiptModule.cshtml" />
     <Content Include="Views\CustomerRegistration\ReceiptModule.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\UserPaymentEmail.cshtml" />
+    <Content Include="Views\Paypal\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

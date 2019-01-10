@@ -23,7 +23,12 @@ namespace InsuranceClaim.Models
         public decimal? AmountPaid { get; set; }
         public string Balance { get; set; }
         public DateTime DatePosted { get; set; }
-  
+        public string TransactionReference { get; set; }
+
+        public int SummaryDetailId { get; set; }
+
+        public int CreatedBy { get; set; }
+
 
     }
 

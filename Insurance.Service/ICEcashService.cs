@@ -16,11 +16,14 @@ namespace Insurance.Service
 {
     public class ICEcashService
     {
-        // public static string PSK = "127782435202916376850511";
-        //  public static string SandboxIceCashApi = "http://api-test.icecash.com/request/20523588";
+        public static string PSK = "127782435202916376850511";
+        public static string SandboxIceCashApi = "http://api-test.icecash.com/request/20523588";
 
-        public static string PSK = "565205790573235453203546";
-        public static string LiveIceCashApi = "https://api.icecash.co.zw/request/20350763";
+
+        //public static string PSK = "565205790573235453203546";
+        //public static string LiveIceCashApi = "https://api.icecash.co.zw/request/20350763";
+
+
         private static string GetSHA512(string text)
         {
             UnicodeEncoding UE = new UnicodeEncoding();
@@ -57,9 +60,12 @@ namespace Insurance.Service
         {
 
             ICEcashTokenResponse json = null;
+
+            //json = new ICEcashTokenResponse() { Date = "", PartnerReference = "", Version = "", Response = new TokenReposone() { Result = "1", Message = "", ExpireDate = "", Function = "", PartnerToken = "000000000374163" } };
+            //return json;
+
             try
             {
-
 
                 //string json = "%7B%20%20%20%22PartnerReference%22%3A%20%228eca64cb-ccf8-4304-a43f-a6eaef441918%22%2C%0A%20%20%20%20%22Date%22%3A%20%22201801080615165001%22%2C%0A%20%20%20%20%22Version%22%3A%20%222.0%22%2C%0A%20%20%20%20%22Request%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%22Function%22%3A%20%22PartnerToken%22%7D%7D";
                 //string PSK = "127782435202916376850511";
@@ -104,8 +110,8 @@ namespace Insurance.Service
 
                 JObject jsonobject = JObject.Parse(data);
 
-                //  var client = new RestClient(SandboxIceCashApi);
-                var client = new RestClient(LiveIceCashApi);
+                var client = new RestClient(SandboxIceCashApi);
+                //  var client = new RestClient(LiveIceCashApi);
                 var request = new RestRequest(Method.POST);
                 request.AddHeader("cache-control", "no-cache");
                 request.AddHeader("content-type", "application/x-www-form-urlencoded");
@@ -178,8 +184,9 @@ namespace Insurance.Service
 
             JObject jsonobject = JObject.Parse(data);
 
-            //  var client = new RestClient("http://api-test.icecash.com/request/20523588");
-            var client = new RestClient(LiveIceCashApi);
+
+            var client = new RestClient(SandboxIceCashApi);
+            //var client = new RestClient(LiveIceCashApi);
             var request = new RestRequest(Method.POST);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
@@ -250,8 +257,8 @@ namespace Insurance.Service
 
             JObject jsonobject = JObject.Parse(data);
 
-            // var client = new RestClient("http://api-test.icecash.com/request/20523588");
-            var client = new RestClient(LiveIceCashApi);
+            var client = new RestClient(SandboxIceCashApi);
+            //   var client = new RestClient(LiveIceCashApi);
             var request = new RestRequest(Method.POST);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
@@ -400,8 +407,8 @@ namespace Insurance.Service
 
             JObject jsonobject = JObject.Parse(data);
 
-            // var client = new RestClient("http://api-test.icecash.com/request/20523588");
-            var client = new RestClient(LiveIceCashApi);
+            var client = new RestClient(SandboxIceCashApi);
+            // var client = new RestClient(LiveIceCashApi);
             var request = new RestRequest(Method.POST);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
@@ -412,9 +419,6 @@ namespace Insurance.Service
 
             return json;
         }
-
-      
-
 
         public static ResultRootObject TPIPolicy(VehicleDetail vehicleDetail, string PartnerToken)
         {
@@ -478,8 +482,8 @@ namespace Insurance.Service
 
             JObject jsonobject = JObject.Parse(data);
 
-            //  var client = new RestClient("http://api-test.icecash.com/request/20523588");
-            var client = new RestClient(LiveIceCashApi);
+            var client = new RestClient(SandboxIceCashApi);
+            //  var client = new RestClient(LiveIceCashApi);
             var request = new RestRequest(Method.POST);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
@@ -492,31 +496,30 @@ namespace Insurance.Service
         }
 
 
-
         public static ResultRootObject LICQuote(string registrationNum, string PartnerToken)
         {
-
             //string PSK = "127782435202916376850511";
             string _json = "";
 
             List<VehicleLicObject> obj = new List<VehicleLicObject>();
-
             var CustomerInfo = (CustomerModel)HttpContext.Current.Session["CustomerDataModal"];
 
             //foreach (var item in listofvehicles)
             //{
-                obj.Add(new VehicleLicObject {
-                    VRN = registrationNum,
-                    IDNumber = CustomerInfo.NationalIdentificationNumber,
-                    ClientIDType = "1",
-                    FirstName = CustomerInfo.FirstName,
-                    LastName = CustomerInfo.LastName,
-                    Address1 = CustomerInfo.AddressLine1,
-                    Address2 = CustomerInfo.AddressLine2,
-                    SuburbID = "2",
-                    LicFrequency = "3",
-                    RadioTVUsage = "",
-                    RadioTVFrequency = "" } );
+            obj.Add(new VehicleLicObject
+            {
+                VRN = registrationNum,
+                IDNumber = CustomerInfo.NationalIdentificationNumber,
+                ClientIDType = "1",
+                FirstName = CustomerInfo.FirstName,
+                LastName = CustomerInfo.LastName,
+                Address1 = CustomerInfo.AddressLine1,
+                Address2 = CustomerInfo.AddressLine2,
+                SuburbID = "2",
+                LicFrequency = "3",
+                RadioTVUsage = "",
+                RadioTVFrequency = ""
+            });
             //}
 
             LICQuoteArguments objArg = new LICQuoteArguments();
@@ -558,20 +561,105 @@ namespace Insurance.Service
 
             JObject jsonobject = JObject.Parse(data);
 
-            //  var client = new RestClient("http://api-test.icecash.com/request/20523588");
-            var client = new RestClient(LiveIceCashApi);
+            var client = new RestClient(SandboxIceCashApi);
+            //var client = new RestClient(LiveIceCashApi);
             var request = new RestRequest(Method.POST);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
             request.AddParameter("application/x-www-form-urlencoded", jsonobject, ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
-
             ResultRootObject json = JsonConvert.DeserializeObject<ResultRootObject>(response.Content);
-
             return json;
 
         }
 
+        public static ResultRootObject TPILICUpdate( string registrationNum, string PartnerToken)
+        {
+            //string PSK = "127782435202916376850511";
+            string _json = "";
+
+            List<VehicleLicInsuraceObject> obj = new List<VehicleLicInsuraceObject>();
+            //  var CustomerInfo = (CustomerModel)HttpContext.Current.Session["CustomerDataModal"];
+
+            var CustomerInfo = new CustomerModel();
+
+            //foreach (var item in listofvehicles)
+            //{
+            obj.Add(new VehicleLicInsuraceObject
+            {
+                VRN = registrationNum,
+                EntityType = "Personal",
+                ClientIDType = "1",
+                IDNumber = "12-123456A12",
+                CompanyName = "",
+                FirstName = "1",
+                LastName = "",
+                MSISDN = "",
+                Email = "",
+                Address1 = "",
+                Address2 = "2",
+                SuburbID = "3",
+                InsuranceType = "",
+                VehicleType = "",
+                VehicleValue = "2",
+                DurationMonths = "3",
+                LicFrequency = "3",
+                RadioTVUsage = "",
+                RadioTVFrequency = "",
+
+            });
+            //}
+
+            LICInsuranceQuoteArguments objArg = new LICInsuranceQuoteArguments();
+            objArg.PartnerReference = Guid.NewGuid().ToString();
+            objArg.Date = DateTime.Now.ToString("yyyyMMddhhmmss");
+            objArg.Version = "2.0";
+            objArg.PartnerToken = PartnerToken;
+            objArg.Request = new LICInsuranceQuoteFunctionObject { Function = "TPILICQuote", Vehicles = obj };
+
+            _json = Newtonsoft.Json.JsonConvert.SerializeObject(objArg);
+
+            //string  = json.Reverse()
+            string reversejsonString = new string(_json.Reverse().ToArray());
+            string reversepartneridString = new string(PSK.Reverse().ToArray());
+
+            string concatinatedString = reversejsonString + reversepartneridString;
+
+            byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(concatinatedString);
+
+            string returnValue = System.Convert.ToBase64String(toEncodeAsBytes);
+
+            string GetSHA512encrypted = SHA512(returnValue);
+
+            string MAC = "";
+
+            for (int i = 0; i < 16; i++)
+            {
+                MAC += GetSHA512encrypted.Substring((i * 8), 1);
+            }
+
+            MAC = MAC.ToUpper();
+
+            LICInsuranceQuoteRequest objroot = new LICInsuranceQuoteRequest();
+            objroot.Arguments = objArg;
+            objroot.MAC = MAC;
+            objroot.Mode = "SH";
+
+            var data = Newtonsoft.Json.JsonConvert.SerializeObject(objroot);
+
+            JObject jsonobject = JObject.Parse(data);
+
+            var client = new RestClient(SandboxIceCashApi);
+            //var client = new RestClient(LiveIceCashApi);
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("cache-control", "no-cache");
+            request.AddHeader("content-type", "application/x-www-form-urlencoded");
+            request.AddParameter("application/x-www-form-urlencoded", jsonobject, ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+            ResultRootObject json = JsonConvert.DeserializeObject<ResultRootObject>(response.Content);
+            return json;
+
+        }
 
 
 
@@ -737,6 +825,8 @@ namespace Insurance.Service
         public ResultPolicy Policy { get; set; }
         public ResultClient Client { get; set; }
         public ResultVehicle Vehicle { get; set; }
+        public Licence Licence { get; set; }
+
     }
     public class ResultResponse
     {
@@ -828,8 +918,37 @@ namespace Insurance.Service
         public string LicFrequency { get; set; }
         public string RadioTVUsage { get; set; }
         public string RadioTVFrequency { get; set; }
-     
+
     }
+
+    public class VehicleLicInsuraceObject
+    {
+        public string VRN { get; set; }
+        public string EntityType { get; set; }
+        public string ClientIDType { get; set; }
+        public string IDNumber { get; set; }
+        public string CompanyName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string MSISDN { get; set; }
+        public string Email { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+
+
+        public string SuburbID { get; set; }
+        public string InsuranceType { get; set; }
+        public string VehicleType { get; set; }
+        public string VehicleValue { get; set; }
+
+        public string DurationMonths { get; set; }
+        public string LicFrequency { get; set; }
+        public string RadioTVUsage { get; set; }
+        public string RadioTVFrequency { get; set; }
+
+    }
+
+
 
     public class LICQuoteArguments
     {
@@ -840,6 +959,17 @@ namespace Insurance.Service
         public LICQuoteFunctionObject Request { get; set; }
     }
 
+    public class LICInsuranceQuoteArguments
+    {
+        public string PartnerReference { get; set; }
+        public string Date { get; set; }
+        public string Version { get; set; }
+        public string PartnerToken { get; set; }
+        public LICInsuranceQuoteFunctionObject Request { get; set; }
+    }
+
+
+    
 
     public class LICQuoteFunctionObject
     {
@@ -847,12 +977,48 @@ namespace Insurance.Service
         public List<VehicleLicObject> Vehicles { get; set; }
     }
 
+    public class LICInsuranceQuoteFunctionObject
+    {
+        public string Function { get; set; }
+        public List<VehicleLicInsuraceObject> Vehicles { get; set; }
+    }
+
+
     public class LICQuoteRequest
     {
         public LICQuoteArguments Arguments { get; set; }
         public string MAC { get; set; }
         public string Mode { get; set; }
     }
+
+
+    public class LICInsuranceQuoteRequest
+    {
+        public LICInsuranceQuoteArguments Arguments { get; set; }
+        public string MAC { get; set; }
+        public string Mode { get; set; }
+    }
+
+    public class Licence
+    {
+        public string LicFrequency { get; set; }
+        public string RadioTVUsage { get; set; }
+        public string RadioTVFrequency { get; set; }
+        public string NettMass { get; set; }
+        public string LicExpiryDate { get; set; }
+        public string TransactionAmt { get; set; }
+        public string ArrearsAmt { get; set; }
+        public string PenaltiesAmt { get; set; }
+        public string AdministrationAmt { get; set; }
+        public string TotalLicAmt { get; set; }
+        public string RadioTVAmt { get; set; }
+        public string RadioTVArrearsAmt { get; set; }
+        public string TotalRadioTVAmt { get; set; }
+        public string TotalAmount { get; set; }
+
+    }
+
+
 
 
 

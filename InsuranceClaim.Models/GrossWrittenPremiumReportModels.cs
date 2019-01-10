@@ -30,6 +30,8 @@ namespace InsuranceClaim.Models
         public string CoverType { get; set; }
 
         public decimal? Zinara_License_Fee { get; set; }
+
+        public string PolicyCreatedBy { get; set; }
     }
     public class ListGrossWrittenPremiumReportModels
     {

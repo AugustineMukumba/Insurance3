@@ -30,6 +30,13 @@ namespace InsuranceClaim.Models
         public DateTime DatePosted { get; set; }
         public string filepath { get; set; }
         public string paymentMethodType { get; set; }
+
+        public string TransactionReference { get; set; }
+
+        public string PolicyCreatedBy { get; set; }
+
+        public int CreatedBy { get; set; }
+
     }
     public class ListReceiptModule
     {

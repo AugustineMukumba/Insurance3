@@ -29,7 +29,7 @@ namespace InsuranceClaim.Models
     }
     public class DailyReceiptsSearchReportModel
     {
-        public List<DailyReceiptsReportModel> DailyReceiptsReport { get; set; }
+        public List<PreviewReceiptListModel> DailyReceiptsReport { get; set; }
         [Required(ErrorMessage = "Please Enter Start Date.")]
         public string FromDate { get; set; }
         [Required(ErrorMessage = "Please Enter End Date.")]

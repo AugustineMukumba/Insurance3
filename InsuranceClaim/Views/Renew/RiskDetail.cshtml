@@ -62,7 +62,7 @@
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-section-col">
 
-                    @using (Html.BeginForm("GenerateQuote", "CustomerRegistration"))
+                    @using (Html.BeginForm("GenerateQuote", "Renew"))
                     {
                         <div>
                             @Html.HiddenFor(m => m.PolicyId)
@@ -651,11 +651,11 @@
 
 
     $("#btnGenerateQuote").click(function(){
-        if ($("#IsLicenseDiskNeeded").is(":checked")){
+        //if ($("#IsLicenseDiskNeeded").is(":checked")){
 
-            $("#myAddressModal").modal('show');
-            return false;
-        }
+        //    $("#myAddressModal").modal('show');
+        //    return false;
+        //}
 
     });
 

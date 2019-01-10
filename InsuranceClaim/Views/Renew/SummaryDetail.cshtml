@@ -227,6 +227,50 @@
                                             </div>
                                         </div>
 
+
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-select">
+                                                <div class="form-group">
+                                                    @Html.Label("Payment Type", new { @class = "gender-label" })
+                                                    @Html.HiddenFor(m => m.PaymentMethodId)
+                                                    @Html.HiddenFor(m => m.Id)
+                                                    @Html.HiddenFor(m => m.CustomSumarryDetilId)
+
+                                                    <div class="payment-card">
+                                                        <ul class="list-inline">
+
+
+
+                                                            @if (User.IsInRole("Staff"))
+                                                            {
+                                                                <li id="payment_1" class="payment_type active" onclick="PaymentMethod(1)">  Cash   </li>
+                                                            }
+
+                                                            <li id="payment_2" class="payment_type" onclick="PaymentMethod(2)"><img src="~/Images/master-card.png" /></li>
+
+                                                            @*<li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"><img  style="width:65px;" src="~/Images/eft_pay.png" /></li>*@
+
+                                                            <li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"><img style="width:65px;" src="~/Images/Paynow-logo.png" /></li>
+
+                                                        </ul>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+
+                                            <div id="invoiceNumberDiv" class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.TextBoxFor(c => c.InvoiceNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Invoice number" })
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+
+
                                         <div class="row">
                                             <div class="col-md-12 next-btn">
                                                 <div class="row">
@@ -237,7 +281,7 @@
                                                     </div>
                                                     <div class="col-sm-6 col-md-6">
                                                         <div class="text-right">
-                                                            <button type="submit" class="btn">Make Payment</button>
+                                                            @*<button type="submit" class="btn">Make Payment</button>*@
                                                         </div>
                                                     </div>
                                                 </div>

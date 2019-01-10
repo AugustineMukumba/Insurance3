@@ -148,7 +148,9 @@ namespace InsuranceClaim.Controllers
                     viewModel.MedicalExpenses = data.MedicalExpenses;
                     viewModel.Addthirdparty = data.Addthirdparty;
                     viewModel.AddThirdPartyAmount = data.AddThirdPartyAmount;
-                    viewModel.isUpdate = true;
+                    //viewModel.isUpdate = true;
+                    viewModel.isUpdate = false;
+
                     viewModel.vehicleindex = Convert.ToInt32(0);
                     viewModel.PaymentTermId = data.PaymentTermId;
                     viewModel.ProductId = data.ProductId;
@@ -502,6 +504,7 @@ namespace InsuranceClaim.Controllers
                 objSaveDetailListModel.ProductId = _item.ProductId;
                 objSaveDetailListModel.PaymentId = PaymentId == null ? "" : PaymentId.ToString();
                 objSaveDetailListModel.InvoiceId = InvoiceId == null ? "" : InvoiceId.ToString();
+                objSaveDetailListModel.InvoiceNumber = policy.PolicyNumber;
                 InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
 
                 MiscellaneousService.AddLoyaltyPoints(summary.CustomerId.Value, policy.Id, _item);

@@ -18,6 +18,7 @@
                             {
                                 @Html.HiddenFor(x => x.PolicyId, new { @Id = "hdnPolicyId" })
                                 @Html.HiddenFor(x => x.CustomerId, new { @Id = "hdnCustomerId" })
+                                @Html.HiddenFor(x => x.SummaryDetailId, new { @Id = "hdnSummaryDetailId" })
                                 <div class="row">
                                     <div class="col-sm-12 col-md-12 form-group-text">
                                         <div class="form-group">
@@ -93,7 +94,18 @@
                                                 @Html.TextBoxFor(x => x.Balance, new { @class = "form-control", @placeholder = "Balance", @Id = "Balance", @readonly = "readonly" })
                                             </div>
                                         </div>
-                                        @*@Html.TextBoxFor(x => x.CoverEndDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Cover End Date", @Id = "CoverEndDate" })*@
+
+
+                                        <div class="form-group">
+
+
+
+                                            <div class='input-group'>
+                                                @Html.LabelFor(x => x.TransactionReference, "Transaction Reference", new { @class = "gender-label" })
+                                                @Html.TextBoxFor(x => x.TransactionReference, new { @class = "form-control", @placeholder = "Transaction Reference", @Id = "TransactionReference" })
+                                            </div>
+                                        </div>
+
                                     </div>
 
                                     <div class="col-sm-6 col-md-12 form-group-text">
@@ -104,6 +116,9 @@
                                         </div>
                                         @*@Html.TextBoxFor(x => x.CoverEndDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Cover End Date", @Id = "CoverEndDate" })*@
                                     </div>
+
+
+
 
                                 </div>
                                 <div class="col-sm-6 col-md-6">
@@ -157,7 +172,7 @@
                 dataType: "json",
                 success: function (data) {
                     for (var i = 0; i < data.length; i++) {
-                        policyNumbersArray.push(data[i].PolicyNumber + "," + data[i].CustomerName + "," + data[i].InvoiceNumber);
+                        policyNumbersArray.push(data[i].PolicyNumber + "," + data[i].CustomerName);
                     }
 
                 }
@@ -186,6 +201,7 @@
                     $('#hdnPolicyId').val(data.PolicyId);
                     $('#hdnCustomerId').val(data.CustomerId);
                     $('#PaymentMethodId').val(data.PaymentMethodId);
+                    $('#hdnSummaryDetailId').val(data.SummaryDetailId);
                     var currentDate = getCurrentDate();
                     $("#DatePosted").val(currentDate);
 

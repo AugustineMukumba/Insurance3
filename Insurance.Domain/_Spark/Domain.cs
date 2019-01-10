@@ -184,6 +184,11 @@ namespace Insurance.Domain
         public decimal? AmountPaid { get; set; }
         public string Balance { get; set; }
         public DateTime DatePosted { get; set; }
+
+        public string TransactionReference { get; set; }
+        public int SummaryDetailId { get; set; }
+
+        public int CreatedBy { get; set; }
     }
     public partial class PaymentTerm : Entity<PaymentTerm>
     {
@@ -374,6 +379,23 @@ namespace Insurance.Domain
         public int? ModifiedBy { get; set; }
 
     }
+
+
+    public partial class IceCashToken : Entity<IceCashToken>
+    {
+        public IceCashToken() { }
+        public IceCashToken(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public string ParterToken { get; set; }
+        public string ExpiredDate { get; set; }
+        public DateTime CreatedOn { get; set; }
+  
+
+    }
+
+
+
 
     public partial class BasicExcess : Entity<BasicExcess>
     {

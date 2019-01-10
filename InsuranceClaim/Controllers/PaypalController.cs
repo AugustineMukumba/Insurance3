@@ -37,6 +37,8 @@ namespace InsuranceClaim.Controllers
         public ActionResult Index(int id)
         {
 
+           // ApproveVRNToIceCash(6161);
+
             return View();
         }
 

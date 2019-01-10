@@ -1,4 +1,4 @@
-﻿@model InsuranceClaim.Models.DailyReceiptsSearchReportModel
+﻿@model InsuranceClaim.Models.DailyReceiptsSearchReportModel 
 @{
     ViewBag.Title = "DailyReceiptsReport";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
@@ -36,7 +36,7 @@
                         <div class="row">
                             <div class="col-sm-3 col-md-3 form-group-text">
                                 <div class="form-group">
-                                    @*@Html.LabelFor(x => x.FromDate, new { @class = "gender-label" })*@
+                               
                                     <div class='input-group' id='datetimenew'>
                                         @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @placeholder = "Start Date" })
                                         @Html.ValidationMessageFor(m => m.FromDate, "", new { @class = "text-danger" })
@@ -48,7 +48,7 @@
                             </div>
                             <div class="col-sm-3 col-md-3 form-group-text">
                                 <div class="form-group">
-                                    @*@Html.LabelFor(x => x.EndDate, new { @class = "gender-label" })*@
+                            
                                     <div class='input-group' id='datetimenew12'>
                                         @Html.TextBoxFor(m => m.EndDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "End Date" })
                                         @Html.ValidationMessageFor(m => m.EndDate, "", new { @class = "text-danger" })
@@ -82,15 +82,17 @@
 
                     <thead>
                         <tr>
+                            <th>User/Call Center agent</th>
                             <th>Customer Name</th>
-                            @*<th>Contact Number</th>*@
-                            <th>Product</th>
+                            @*<th>Contact Number</th>
+                            <th>Product</th>*@
                             <th>Policy Number</th>
                             <th>Transaction Date</th>
                             <th>Receipt Number</th>
                             <th>Premium Due</th>
                             <th>Amount Paid</th>
                             <th>Balance</th>
+                            <th>Transaction Reference</th>
                             <th style="text-align:left;">Payment Type</th>
                         </tr>
 
@@ -104,18 +106,18 @@
 
                         }
 
-                        @foreach (var item in Model.DailyReceiptsReport.ToList())
+                        @foreach (var item in Model.DailyReceiptsReport)
                         {
-                            if (item.PremiumDue != null)
+                            if (item.AmountDue != null)
                             {
-                                premiumDueTotal += Convert.ToDecimal(item.PremiumDue);
+                                premiumDueTotal += Convert.ToDecimal(item.AmountDue);
                             }
                             else
                             {
                                 premiumDueTotal = 0;
                             }
 
-                            if (item.AmountPaid != null && item.AmountPaid != "")
+                            if (item.AmountPaid != 0)
                             {
                                 amountPaidTotal += Convert.ToDecimal(item.AmountPaid);
                             }
@@ -125,7 +127,7 @@
                             }
 
 
-                            if (item.Balance != null && item.Balance != "")
+                            if (item.Balance != "")
                             {
                                 balanceTotal += Convert.ToDecimal(item.Balance);
                             }
@@ -134,35 +136,38 @@
                                 balanceTotal = 0;
                             }
 
-
-                            <tr>
-                               
+                            <tr>  
+                                <td> @item.PolicyCreatedBy </td>                          
                                 <td>
-                                    @item.FirstName @item.LastName
+                                    @item.CustomerName
                                 </td>
                                 @*<td>@item.Contact</td>*@
-                                <td>@item.Product</td>
+                                @*<td>@item.Product</td>*@
                                 <td>@item.PolicyNumber</td>
-                                <td>@item.TransactionDate</td>
-                                <td>@item.ReceiptNumber</td>
-                                <td>$ @item.PremiumDue</td>
+                                <td>@item.DatePosted</td>
+                                <td>@item.InvoiceNumber</td>
+                                <td>$ @item.AmountDue</td>
                                 <td>$ @item.AmountPaid</td>
-                                <td>$ @item.Balance</td>
-                                <td>@item.PaymentType</td>
+                                <td>$@Math.Round(Convert.ToDecimal(item.Balance), 2)</td>
+                                <td> @item.TransactionReference</td>
+                                <td>@item.paymentMethodType</td>
                             </tr>
                         }
 
                     </tbody>
                     <tfoot>
                         <tr>
+                           
                             <td><strong>Total:</strong></td>
                             <td></td>
+                            @*<td></td>*@
                             <td></td>
                             <td></td>
                             <td></td>
                             <td><strong>$@premiumDueTotal</strong></td>
                             <td><strong>$@amountPaidTotal</strong></td>
                             <td><strong>$@balanceTotal</strong></td>
+                            <td></td>
                             <td></td>
                         </tr>
                     </tfoot>
@@ -196,7 +201,6 @@
             format: 'MM/D/YYYY'
 
         });
-
     });
 
 

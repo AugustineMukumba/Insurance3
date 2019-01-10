@@ -169,7 +169,11 @@
                                             }
                                             else if (DateTime.Now >= _item.RenewalDate.AddDays(-21) && DateTime.Now <= _item.RenewalDate)
                                             {
-                                                <td>Renew</td>
+                                                <td>
+
+                                                    @Html.ActionLink("Renew", "RiskDetail", "Renew", new { Id = _item.VehicleId }, new { @class = "btn-sm btn-primary" })
+
+                                            </td>
                                                 <td></td>
 
                                             }
