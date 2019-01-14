@@ -511,6 +511,7 @@
     <Content Include="Views\CustomerRegistration\ReceiptModule.cshtml" />
     <Content Include="Views\Shared\EmaiTemplates\UserPaymentEmail.cshtml" />
     <Content Include="Views\Paypal\Index.cshtml" />
+    <Content Include="Views\Report\ReconciliationReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
