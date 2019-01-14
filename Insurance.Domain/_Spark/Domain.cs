@@ -226,6 +226,8 @@ namespace Insurance.Domain
         public int? CreatedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
+        public string Status { get; set; }
+
     }
 
     public partial class PolicyStatus : Entity<PolicyStatus>

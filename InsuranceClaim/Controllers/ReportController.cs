@@ -1087,13 +1087,15 @@ namespace InsuranceClaim.Controllers
             var query = "select ReceiptModuleHistory.*, Customer.FirstName +' ' + Customer.LastName as PolicyCreatedBy from ReceiptModuleHistory ";
             query += " join SummaryDetail on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.id ";
             //query +=  " join Customer on SummaryDetail.CreatedBy = Customer.Id";
-            query += "Left join Customer  on ReceiptModuleHistory.CreatedBy = Customer.Id ";
+            query += "Left join Customer  on ReceiptModuleHistory.CreatedBy = Customer.Id  ";
+
 
 
 
             var list = InsuranceContext.Query(query)
                .Select(res => new PreviewReceiptListModel()
                {
+                   Id = res.Id,
                    CustomerName = res.CustomerName,
                    PolicyNumber = res.PolicyNumber,
                    DatePosted = res.DatePosted,
@@ -1121,9 +1123,95 @@ namespace InsuranceClaim.Controllers
             //            }).ToList();
 
 
-            model.DailyReceiptsReport = list.OrderByDescending(c=>c.DatePosted).ToList();
+            model.DailyReceiptsReport = list.OrderByDescending(c=>c.Id).ToList();
 
             return View(model);
+        }
+
+        public ActionResult ReconciliationReport()
+        {
+            var ListDailyReceiptsReport = new List<DailyReceiptsReportModel>();
+            DailyReceiptsSearchReportModel model = new DailyReceiptsSearchReportModel();
+
+
+            var query = "select ReceiptModuleHistory.*, Customer.FirstName +' ' + Customer.LastName as PolicyCreatedBy from ReceiptModuleHistory ";
+            query += " join SummaryDetail on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.id ";
+            //query +=  " join Customer on SummaryDetail.CreatedBy = Customer.Id";
+            query += "Left join Customer  on ReceiptModuleHistory.CreatedBy = Customer.Id  ";
+
+
+
+
+            var list = InsuranceContext.Query(query)
+               .Select(res => new PreviewReceiptListModel()
+               {
+                   Id = res.Id,
+                   CustomerName = res.CustomerName,
+                   PolicyNumber = res.PolicyNumber,
+                   DatePosted = res.DatePosted,
+                   AmountDue = res.AmountDue,
+                   AmountPaid = res.AmountPaid,
+                   Balance = res.Balance,
+                   paymentMethodType = (res.PaymentMethodId == 1 ? "Cash" : (res.PaymentMethodId == 2 ? "Ecocash" : (res.PaymentMethodId == 3 ? "Swipe" : "MasterVisa Card"))),
+                   InvoiceNumber = res.InvoiceNumber,
+                   TransactionReference = res.TransactionReference,
+                   PolicyCreatedBy = res.PolicyCreatedBy
+               }).ToList();
+
+            //var list = (from res in InsuranceContext.ReceiptHistorys.All().ToList()
+            //            select new PreviewReceiptListModel
+            //            {
+            //                CustomerName = res.CustomerName,                        
+            //                PolicyNumber = res.PolicyNumber,
+            //                DatePosted = res.DatePosted,
+            //                AmountDue = res.AmountDue,
+            //                AmountPaid = res.AmountPaid,
+            //                Balance = res.Balance,                      
+            //                paymentMethodType = (res.PaymentMethodId == 1 ? "Cash" : (res.PaymentMethodId == 2 ? "Ecocash" : (res.PaymentMethodId == 3 ? "Swipe" : "MasterVisa Card"))),
+            //                InvoiceNumber = res.InvoiceNumber,
+            //                TransactionReference = res.TransactionReference,
+            //            }).ToList();
+
+
+            model.DailyReceiptsReport = list.OrderByDescending(c => c.Id).ToList();
+
+            return View(model);
+        }
+
+        public ActionResult ReconciliationSearchReport(DailyReceiptsSearchReportModel Model)
+        {
+            var ListDailyReceiptsReport = new List<DailyReceiptsReportModel>();
+            DailyReceiptsSearchReportModel model = new DailyReceiptsSearchReportModel();
+
+
+            var query = "select ReceiptModuleHistory.*, Customer.FirstName +' ' + Customer.LastName as PolicyCreatedBy from ReceiptModuleHistory ";
+            query += " join SummaryDetail on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.id ";
+            //query += " join Customer on SummaryDetail.CreatedBy = Customer.Id";
+            query += "Left join Customer  on ReceiptModuleHistory.CreatedBy = Customer.Id ";
+
+
+
+            var list = InsuranceContext.Query(query)
+               .Select(res => new PreviewReceiptListModel()
+               {
+                   CustomerName = res.CustomerName,
+                   PolicyNumber = res.PolicyNumber,
+                   DatePosted = res.DatePosted,
+                   AmountDue = res.AmountDue,
+                   AmountPaid = res.AmountPaid,
+                   Balance = res.Balance,
+                   paymentMethodType = (res.PaymentMethodId == 1 ? "Cash" : (res.PaymentMethodId == 2 ? "Ecocash" : (res.PaymentMethodId == 3 ? "Swipe" : "MasterVisa Card"))),
+                   InvoiceNumber = res.InvoiceNumber,
+                   TransactionReference = res.TransactionReference,
+                   PolicyCreatedBy = res.PolicyCreatedBy
+               }).ToList();
+
+
+
+            model.DailyReceiptsReport = list.Where(c => c.DatePosted >= Convert.ToDateTime(Model.FromDate) && c.DatePosted <= Convert.ToDateTime(Model.EndDate)).OrderByDescending(c => c.DatePosted).ToList();
+
+
+            return View("DailyReceiptsReport", model);
         }
         public ActionResult DailyReceiptsSearchReport(DailyReceiptsSearchReportModel Model)
         {
@@ -1158,7 +1246,7 @@ namespace InsuranceClaim.Controllers
             model.DailyReceiptsReport   = list.Where(c => c.DatePosted >= Convert.ToDateTime(Model.FromDate) && c.DatePosted <= Convert.ToDateTime(Model.EndDate)).OrderByDescending(c => c.DatePosted).ToList();
 
 
-            return View("DailyReceiptsReport", model);
+            return View("ReconciliationReport", model);
         }
         public ActionResult LapsedPoliciesReport()
         {

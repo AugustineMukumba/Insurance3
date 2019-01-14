@@ -46,5 +46,6 @@ namespace InsuranceClaim.Models
         public int? ModifiedBy { get; set; }
         public bool? IsActive { get; set; }
         public int PolicyTerm { get; set; }
+        public string Status { get; set; }
     }
 }

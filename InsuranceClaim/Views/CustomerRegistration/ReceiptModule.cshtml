@@ -3,7 +3,7 @@
     ViewBag.Title = "ReceiptModule";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
-
+<link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet" />
 <div class="body-content-section">
     <div class="form-section-top">
         <div class="container">
@@ -37,8 +37,8 @@
                                     </div>
                                     <div class="col-sm-6 col-md-4 form-group-text">
                                         <div class="form-group">
-                                            @Html.LabelFor(x => x.InvoiceNumber, "Invoice No.", new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.InvoiceNumber, new { @class = "form-control", @placeholder = "Invoice No.", @Id = "InvoiceNumber", @readonly = "readonly" })
+                                            @Html.LabelFor(x => x.Id, "Receipt No", new { @class = "gender-label" })
+                                            @Html.TextBoxFor(x => x.Id, new { @class = "form-control", @placeholder = "Invoice No.", @Id = "InvoiceNumber", @readonly = "readonly" })
 
                                         </div>
                                         @*@Html.TextBoxFor(x => x.CoverEndDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Cover End Date", @Id = "CoverEndDate" })*@
@@ -116,15 +116,14 @@
                                         </div>
                                         @*@Html.TextBoxFor(x => x.CoverEndDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Cover End Date", @Id = "CoverEndDate" })*@
                                     </div>
-
-
-
-
                                 </div>
                                 <div class="col-sm-6 col-md-6">
                                     <div class="text-left">
-                                        <button type="submit" id="btnSubmit" onclick="return" class="btn btn-success">Submit</button>
+                                        <button type="submit" id="btnSubmit" onclick="return" name="Submit" class="btn btn-success">Submit</button>
+
+                                        <button type="submit" id="btnCancel" value="Cancel" name="Submit" class="btn btn-success">Cancel</button>
                                     </div>
+
                                 </div>
                             }
                         </div>
@@ -135,20 +134,54 @@
     </div>
 </div>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
 <script>
     $(document).ready(function () {
         //$('#btnSubmit').prop('disabled', true);
         chkPolicyNumber();
         clear();
+        $("#DatePosted").datepicker({
+
+            dateFormat: "m/dd/yy",
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-60:+0"
+        });
         function chkPolicyNumber() {
             var policyNumbr = $('#txtPolicyNumber').val();
             if (policyNumbr != "") {
                 $('#btnSubmit').prop('disabled', false);
+                $('#btnCancel').prop('disabled', false);
             } else {
                 $('#btnSubmit').prop('disabled', true);
+                $('#btnCancel').prop('disabled', true);
             }
         }
+
+        $("#btnCancel").click(function () {
+            // PolicyUpdate();
+            var policyNumbr = $('#txtPolicyNumber').val();
+            $.ajax({
+                url: "/CustomerRegistration/PolicyStatusUpdate",
+                type: "GET",
+                dataType: "json",
+                contentType: "Application/Json; charset:utf-8",
+                data: { PolicyNo: policyNumbr },
+                success: function () {
+                    alert("Status has been Changed To Cancelled");
+                    //location.reload();
+                },
+                error: function () {
+                    alert("Something has gone wrong!!")
+                }
+            })
+        })
+
+        //function PolicyUpdate() {
+
+        //}
         function clear() {
             $('#CustomerName').val('');
             $('#InvoiceNumber').val('');
@@ -194,16 +227,18 @@
                 success: function (data) {
                     debugger;
                     $("#CustomerName").val(data.CustomerName);
+
+                    $("#InvoiceNumber").val(data.Id);
                     $("#PolicyNumber").val(data.PolicyNumber);
                     $('#PolicyNo').val(data.PolicyNo);
-                    $("#InvoiceNumber").val(data.InvoiceNumber);
+                 //   $("#InvoiceNumber").val(data.InvoiceNumber);
                     $("#AmountDue").val(data.AmountDue);
                     $('#hdnPolicyId').val(data.PolicyId);
                     $('#hdnCustomerId').val(data.CustomerId);
                     $('#PaymentMethodId').val(data.PaymentMethodId);
                     $('#hdnSummaryDetailId').val(data.SummaryDetailId);
-                    var currentDate = getCurrentDate();
-                    $("#DatePosted").val(currentDate);
+                    //var currentDate = getCurrentDate();
+                    //$("#DatePosted").val(currentDate);
 
                 },
                 error: function (error) {

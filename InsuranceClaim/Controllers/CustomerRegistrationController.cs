@@ -21,6 +21,7 @@ using System.IO;
 using System.Net;
 using System.Web.Script.Serialization;
 using System.Text;
+using InsuranceClaim.Models;
 
 namespace InsuranceClaim.Controllers
 {
@@ -2573,14 +2574,14 @@ namespace InsuranceClaim.Controllers
 
 
                                 }
-                                
+
                             }
                         }
                     }
                 }
 
                 json.Data = response;
-            
+
             }
             catch (Exception ex)
             {
@@ -2723,7 +2724,7 @@ namespace InsuranceClaim.Controllers
 
 
                 ICEcashService.getToken();
-               tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"]; 
+                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
 
                 //if (Session["ICEcashToken"] != null) 
                 //{
@@ -2776,7 +2777,7 @@ namespace InsuranceClaim.Controllers
 
 
 
-              
+
 
 
                 json.Data = response;
@@ -3000,7 +3001,7 @@ namespace InsuranceClaim.Controllers
         //created by Rajat Khanna
         #region Receipt Module
 
-      
+
         [Authorize(Roles = "Administrator,Finance")]
         public ActionResult ReceiptModule()
         {
@@ -3060,7 +3061,7 @@ namespace InsuranceClaim.Controllers
             if (policyAndRegistrationNumberArray.Length > 1)
             {
                 policyNumber = policyAndRegistrationNumberArray[0]; //Policy Number
-              //  invoiceNumber = policyAndRegistrationNumberArray[2];//VRN Number
+                                                                    //  invoiceNumber = policyAndRegistrationNumberArray[2];//VRN Number
             }
             else
             {
@@ -3072,24 +3073,33 @@ namespace InsuranceClaim.Controllers
             var detail = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{policyNumber}'");
             if (detail != null)
             {
-                  var invoicenumber = InsuranceContext.PaymentInformations.Single(where: $"PolicyId = '{detail.Id}'");
+                var invoicenumber = InsuranceContext.PaymentInformations.Single(where: $"PolicyId = '{detail.Id}'");
 
                 var customerdetail = InsuranceContext.Customers.Single(where: $"Id='{detail.CustomerId}'");
                 var summarydetail = InsuranceContext.SummaryDetails.Single(where: $"Id='{invoicenumber.SummaryDetailId}'");
                 var policyId = InsuranceContext.PaymentInformations.Single(where: $"PolicyId = '{detail.Id}'");
 
+                var query = "SELECT  top 1 [Id] FROM [InsuranceClaim_dev].[dbo].[ReceiptModuleHistory] order by Id Desc";
+                //var re = InsuranceContext.ReceiptHistorys.All(x => x.Id);
+                var receipt = InsuranceContext.Query(query).Select(x => new ReceiptModuleHistory() {
+                    Id = x.Id,
+                }).FirstOrDefault();
+             //   var receiptid=InsuranceContext.r
+
 
                 customerName = customerdetail.FirstName + " " + customerdetail.LastName;
-                model.AmountDue = summarydetail.TotalPremium;
+                model.Id =receipt.Id+1;
+                model.AmountDue = Convert.ToInt32(summarydetail.TotalPremium);
                 model.CustomerName = customerName;
                 model.InvoiceNumber = policyNumber;
                 model.PolicyNo = policyNumber;
                 model.PaymentMethodId = summarydetail.PaymentMethodId;
-                model.DatePosted = DateTime.Now;
+                model.DatePosted = DateTime.Now.ToUniversalTime();
+                String.Format("{0:MM/dd/yyyy}", model.DatePosted);
                 model.PolicyId = policyId.PolicyId;
                 model.CustomerId = customerdetail.Id;
 
-                if(summarydetail!=null)
+                if (summarydetail != null)
                     model.SummaryDetailId = summarydetail.Id;
 
 
@@ -3101,21 +3111,30 @@ namespace InsuranceClaim.Controllers
         }
 
         [HttpPost]
-        public ActionResult ReceiptModule(ReceiptModuleModel model)
+        public ActionResult ReceiptModule(ReceiptModuleModel model, string Submit)
         {
+           
             var dbModel = Mapper.Map<ReceiptModuleModel, SummaryDetail>(model);
             var customer = InsuranceContext.Customers.Single(where: $"Id='{model.CustomerId}'");
-
-
+           
             ReceiptModuleHistory Receipthistory = new ReceiptModuleHistory();
             dbModel.AmountPaid = model.AmountPaid;
+           
             //InsuranceContext.SummaryDetails.Update(dbModel);
-            Receipthistory.AmountDue = model.AmountDue;
+           
             Receipthistory.AmountPaid = model.AmountPaid;
+            if (Submit == "Cancel") {
+               // Receipthistory.Balance = (-1*Convert.ToInt32(model.Balance)).ToString();
+                Receipthistory.AmountDue = (-1*Convert.ToInt32(model.AmountDue));
+            }
+            else
+            {
+                Receipthistory.AmountDue = model.AmountDue;
+            }
             Receipthistory.Balance = model.Balance;
             Receipthistory.CustomerName = model.CustomerName;
             Receipthistory.DatePosted = model.DatePosted;
-            Receipthistory.InvoiceNumber = model.InvoiceNumber;
+            Receipthistory.InvoiceNumber = model.PolicyNumber;
             Receipthistory.PaymentMethodId = model.PaymentMethodId;
             ViewBag.PaymentMethod = model.PaymentMethodId;
             Receipthistory.PolicyNumber = model.PolicyNo;
@@ -3125,7 +3144,7 @@ namespace InsuranceClaim.Controllers
 
 
             //Made changes on 08Jan2018
-            
+
             bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             if (_userLoggedin)
             {
@@ -3151,7 +3170,7 @@ namespace InsuranceClaim.Controllers
             lstreceipt.Address2 = customer.AddressLine2;
             lstreceipt.PolicyNumber = model.PolicyNo;
             lstreceipt.PolicyId = model.PolicyId;
-            lstreceipt.Date = DateTime.Now.ToString("dd/MM/yyyy");
+            lstreceipt.Date = model.DatePosted.ToString("dd/MM/yyyy");                //  DateTime.Now.ToString("dd/MM/yyyy");       //  edited by Shankar narwal
             lstreceipt.filepath = filepath;
             lstreceipt.PaymentDetails = model.Balance;
             lstreceipt.TransactionReference = model.TransactionReference;
@@ -3162,7 +3181,7 @@ namespace InsuranceClaim.Controllers
             //byte[] bytes = Encoding.ASCII.GetBytes(Body2);
             //return File(bytes, "text/html");
             //return RedirectToAction("ReceiptModule");
-            // return View(EmailBody2);
+            //return View(EmailBody2);
             return View("~/Views/CustomerRegistration/PreviewReceiptModule.cshtml", lstreceipt);
             //return Body2;
         }
@@ -3196,7 +3215,7 @@ namespace InsuranceClaim.Controllers
             List<string> attachements = new List<string>();
             attachements.Add("");
 
-       
+
 
             objEmailService.SendEmail(user.Email, "", "", "Receipt Module", Body2, attachements);
             return Json("Success", JsonRequestBehavior.AllowGet);
@@ -3294,7 +3313,19 @@ namespace InsuranceClaim.Controllers
             return Json(new { IsError = false, error = TempData["ErrorMessage"].ToString() }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public JsonResult PolicyStatusUpdate(string PolicyNo)
+        {
+            
+            string[] plicynum = PolicyNo.Split(',');
+            string Policy = plicynum[0];
+            var insure = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{Policy}'");
+            insure.Status = "Cancelled";
+            InsuranceContext.PolicyDetails.Update(insure);
+            return Json(Policy, JsonRequestBehavior.AllowGet);
+           
 
+        }
     }
 }
 
