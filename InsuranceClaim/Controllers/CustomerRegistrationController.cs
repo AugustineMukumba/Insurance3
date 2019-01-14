@@ -3134,7 +3134,7 @@ namespace InsuranceClaim.Controllers
             Receipthistory.Balance = model.Balance;
             Receipthistory.CustomerName = model.CustomerName;
             Receipthistory.DatePosted = model.DatePosted;
-            Receipthistory.InvoiceNumber = model.PolicyNumber;
+            Receipthistory.InvoiceNumber = model.InvoiceNumber;
             Receipthistory.PaymentMethodId = model.PaymentMethodId;
             ViewBag.PaymentMethod = model.PaymentMethodId;
             Receipthistory.PolicyNumber = model.PolicyNo;
