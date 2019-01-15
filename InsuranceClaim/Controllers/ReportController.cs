@@ -418,7 +418,7 @@ namespace InsuranceClaim.Controllers
 
                         var modelDescription = "";
 
-                        if(model!=null && model.ModelDescription!=null)
+                        if (model != null && model.ModelDescription != null)
                             modelDescription = model.ModelDescription;
 
 
@@ -1136,23 +1136,15 @@ namespace InsuranceClaim.Controllers
             DailyReceiptsSearchReportModel model = new DailyReceiptsSearchReportModel();
 
 
-//            select PolicyDetail.PolicyNumber, Customer.FirstName + ' ' + Customer.LastName as CustomerName, SummaryDetail.CreatedOn as TransactionDate,
-//SummaryDetail.TotalPremium, PolicyDetail.PolicyNumber as InvoiceNumber, ReceiptModuleHistory.AmountDue,
-//ReceiptModuleHistory.Id as ReceiptNo, ReceiptModuleHistory.AmountPaid, 
-//case  ReceiptModuleHistory.Id when 0 then 'Yes' else 'No' end as Paid, ReceiptModuleHistory.DatePosted, 
-//ReceiptModuleHistory.Balance from Customer join PolicyDetail on Customer.Id = PolicyDetail.CustomerId
-//join VehicleDetail on PolicyDetail.id = VehicleDetail.PolicyId
-//join SummaryVehicleDetail on VehicleDetail.Id = SummaryVehicleDetail.SummaryDetailId
-//join SummaryDetail on SummaryDetail.Id = SummaryVehicleDetail.SummaryDetailId
-//left join ReceiptModuleHistory on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.Id
-
-
-
-
-
-
-
-
+            // select PolicyDetail.PolicyNumber, Customer.FirstName + ' ' + Customer.LastName as CustomerName, SummaryDetail.CreatedOn as TransactionDate,
+            //SummaryDetail.TotalPremium, PolicyDetail.PolicyNumber as InvoiceNumber, ReceiptModuleHistory.AmountDue,
+            //ReceiptModuleHistory.Id as ReceiptNo, ReceiptModuleHistory.AmountPaid, 
+            //case  ReceiptModuleHistory.Id when 0 then 'Yes' else 'No' end as Paid, ReceiptModuleHistory.DatePosted, 
+            //ReceiptModuleHistory.Balance from Customer join PolicyDetail on Customer.Id = PolicyDetail.CustomerId
+            //join VehicleDetail on PolicyDetail.id = VehicleDetail.PolicyId
+            //join SummaryVehicleDetail on VehicleDetail.Id = SummaryVehicleDetail.SummaryDetailId
+            //join SummaryDetail on SummaryDetail.Id = SummaryVehicleDetail.SummaryDetailId
+            //left join ReceiptModuleHistory on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.Id
 
 
             var query1 = "select PolicyDetail.PolicyNumber, Customer.FirstName + ' ' + Customer.LastName as CustomerName, SummaryDetail.CreatedOn as TransactionDate, ";
@@ -1166,7 +1158,7 @@ namespace InsuranceClaim.Controllers
             query1 += " left join ReceiptModuleHistory on ReceiptModuleHistory.SummaryDetailId= SummaryDetail.Id";
 
 
-          var query = "select ReceiptModuleHistory.*, Customer.FirstName +' ' + Customer.LastName as PolicyCreatedBy from ReceiptModuleHistory ";
+            var query = "select ReceiptModuleHistory.*, Customer.FirstName +' ' + Customer.LastName as PolicyCreatedBy from ReceiptModuleHistory ";
             query += " join SummaryDetail on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.id ";
             //query +=  " join Customer on SummaryDetail.CreatedBy = Customer.Id";
             query += "Left join Customer  on ReceiptModuleHistory.CreatedBy = Customer.Id  ";

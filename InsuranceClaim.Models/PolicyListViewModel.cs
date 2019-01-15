@@ -18,8 +18,8 @@ namespace InsuranceClaim.Models
         public int SummaryId { get; set; }
         public DateTime createdOn { get; set; }
         public bool  IsActive { get; set; }
-
         public string CustomerEmail { get; set; }
+        public string PolicyStatus { get; set; }
 
     }
 
