@@ -90,8 +90,11 @@ namespace Insurance.Service
                 string vehiclefolderpath = "";
 
 
-                filename = Guid.NewGuid() + "" + filename;
-
+                //  filename = Guid.NewGuid() + "," + filename;
+                string file = Convert.ToString(DateTime.Now.ToString("ddMMyyyy"));
+                filename = file + "," + filename;
+                //  string[] nfilename=filename.Split(",");
+                //  filename = DateTime.Now.ToString("dd/MM/yyyy") + "" + filename;
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
                     PdfWriter writer = PdfWriter.GetInstance(pdfDoc, memoryStream);
@@ -103,6 +106,7 @@ namespace Insurance.Service
 
                     string custfolderpath = HttpContext.Current.Server.MapPath("~/Documents/" + custid + "/");
                     string policyfolderpath = HttpContext.Current.Server.MapPath("~/Documents/" + custid + "/" + policynumber + "/");
+                    // string Backuppath = HttpContext.Current.Server.MapPath("~/F:/PolicyDetails/" + custid + "/" + policynumber + "/");
 
                     if (vehcleId > 0)
                     {
@@ -114,6 +118,7 @@ namespace Insurance.Service
                     {
                         Directory.CreateDirectory(custfolderpath);
                         Directory.CreateDirectory(policyfolderpath);
+                        // Directory.CreateDirectory(Backuppath);
                     }
                     else
                     {
@@ -123,6 +128,7 @@ namespace Insurance.Service
                             if (vehcleId > 0)
                             {
                                 Directory.CreateDirectory(vehiclefolderpath);
+                                //     Directory.CreateDirectory(Backuppath);
                             }
 
 
@@ -134,6 +140,7 @@ namespace Insurance.Service
                                 if (!Directory.Exists(vehiclefolderpath))
                                 {
                                     Directory.CreateDirectory(vehiclefolderpath);
+                                    //       Directory.CreateDirectory(Backuppath);
                                 }
                             }
 
@@ -144,13 +151,14 @@ namespace Insurance.Service
                     {
 
                         System.IO.File.WriteAllBytes(vehiclefolderpath + filename + ".pdf", memoryStream.ToArray());
+                        //    System.IO.File.WriteAllBytes(Backuppath + filename + ".pdf", memoryStream.ToArray());
                         path = "~/Documents/" + custid + "/" + policynumber + "/" + vehcleId + "/" + filename + ".pdf";
 
                     }
                     else
                     {
                         System.IO.File.WriteAllBytes(policyfolderpath + filename + ".pdf", memoryStream.ToArray());
-
+                        //    System.IO.File.WriteAllBytes(Backuppath + filename + ".pdf", memoryStream.ToArray());
                         //    path = "http://" + HttpContext.Current.Request.Url.Authority + "/" + "~/Documents/" + custid + "/" + policynumber + "/" + filename + ".pdf";
 
 
@@ -241,7 +249,7 @@ namespace Insurance.Service
 
         }
 
-        public static string AddLoyaltyPoints(int CustomerId, int PolicyId, RiskDetailModel vehicle, string email="",string filepath = "")
+        public static string AddLoyaltyPoints(int CustomerId, int PolicyId, RiskDetailModel vehicle, string email = "", string filepath = "")
         {
             var loaltyPointsSettings = InsuranceContext.Settings.Single(where: $"keyname='Points On Renewal'");
             var loyaltyPoint = 0.00m;
@@ -293,15 +301,15 @@ namespace Insurance.Service
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             var policy = InsuranceContext.PolicyDetails.Single(PolicyId);
             var customer = InsuranceContext.Customers.Single(CustomerId);
-           
-  
 
 
-             var TotalLoyaltyPoints = InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={CustomerId}").Sum(x => x.PointsEarned);
+
+
+            var TotalLoyaltyPoints = InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={CustomerId}").Sum(x => x.PointsEarned);
             string ReminderEmailPath = "/Views/Shared/EmaiTemplates/LoyaltyPoints.cshtml";
             string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(ReminderEmailPath));
-            var body = EmailBody2.Replace("##FirstName##", customer.FirstName).Replace("##path##",filepath).Replace("##LastName##", customer.LastName).Replace("##CreditedWalletAmount##", Convert.ToString(loyaltyPoint)).Replace("##TotalWalletBalance##", Convert.ToString(TotalLoyaltyPoints));
-           // var yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
+            var body = EmailBody2.Replace("##FirstName##", customer.FirstName).Replace("##path##", filepath).Replace("##LastName##", customer.LastName).Replace("##CreditedWalletAmount##", Convert.ToString(loyaltyPoint)).Replace("##TotalWalletBalance##", Convert.ToString(TotalLoyaltyPoints));
+            // var yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
             var attacheMentPath = MiscellaneousService.EmailPdf(body, policy.CustomerId, policy.PolicyNumber, "Loyalty Points");
 
             List<string> attachements = new List<string>();
@@ -312,8 +320,8 @@ namespace Insurance.Service
             //    objEmailService.SendEmail(email, "", "", "Loyalty Reward | Points Credited to your Wallet", body, attachements);
 
             //}
-            
-                objEmailService.SendEmail(email, "", "", "Loyalty Reward | Points Credited to your Wallet", body, attachements);
+
+            objEmailService.SendEmail(email, "", "", "Loyalty Reward | Points Credited to your Wallet", body, attachements);
 
 
             return "";

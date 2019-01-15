@@ -5,8 +5,6 @@
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
 
-
-
 <div class="productsave-section">
     <div class="container">
         <div class="row">
@@ -42,14 +40,14 @@
                                 </div>
                             </div>*@
                         <div class="col-sm-3 col-md-3">
-                           
+
                         </div>
                         <div class="col-sm-5 col-md-5">
                             <div class="text-left search-btn">
                                 <button type="submit" class="btn btn-success">Search</button>
                                 <button type="button" onclick="removeSearchBoxText();" class="btn btn-danger">Clear Search</button>
                             </div>
-                           
+
                         </div>
                     </div>
                 </div>
@@ -67,7 +65,6 @@
                         </tr>
                     </thead>*@
                 <tbody>
-
                     @if (Model != null)
                     {
                         if (Model.listpolicy.Count == 0)
@@ -75,14 +72,12 @@
                             <label>No Policies Found</label>
                         }
                     }
-
                     @foreach (var item in Model.listpolicy.ToList())
                     {
 
 
 
                         <tr class="policyheading-tr">
-
                             <th>Policy Number</th>
                             <th>Customer Name</th>
                             <th>Payment Method</th>
@@ -91,28 +86,22 @@
                             <th>Created On</th>
                             <th>Action(s)</th>
 
-
                         </tr>
                         <tr class="policynumber-tr">
-
                             <td>@item.PolicyNumber</td>
                             <td>@MiscellaneousService.GetCustomerNamebyID(item.CustomerId)</td>
                             <td>@MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId)</td>
                             <td>$@item.TotalSumInsured</td>
                             <td>$@item.TotalPremium</td>
                             <td>@item.createdOn.ToString("dd-MMM-yyyy")</td>
-
                             @*<td>@Html.ActionLink("View Policy", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</td>*@
-
                             <td>
                                 <div class="tbl-btn-list">
                                     <ul class="list-inline">
                                         <li>@Html.ActionLink("View Policy", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>
-
                                     </ul>
                                 </div>
                             </td>
-
                         </tr>
                         <tr>
                             <td colspan="7">
@@ -146,7 +135,7 @@
                                             <td>$@_item.FacultativeCommission</td>
                                             @if (_item.isLapsed)
                                             {
-                                                <td>Lapsed</td>                                                
+                                                <td>Lapsed</td>
                                             }
                                             else if (!_item.isActive)
                                             {
@@ -164,16 +153,13 @@
                                                             @*<li><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.CustomerId')">View/Upload Document</button></li>*@
                                                         </ul>
                                                     </div>
-
                                                 </td>
                                             }
                                             else if (DateTime.Now >= _item.RenewalDate.AddDays(-21) && DateTime.Now <= _item.RenewalDate)
                                             {
                                                 <td>
-
                                                     @Html.ActionLink("Renew", "RiskDetail", "Renew", new { Id = _item.VehicleId }, new { @class = "btn-sm btn-primary" })
-
-                                            </td>
+                                                </td>
                                                 <td></td>
 
                                             }
@@ -184,28 +170,27 @@
                                             }
 
                                             @*else if (DateTime.Now < _item.enddate)
-                                            {
-                                                <td>In Force</td>
-                                                <td>
-                                                    <div class="tbl-btn-list">
-                                                        <ul class="list-inline">
-                                                            <li><button onclick="disableVehicle('@_item.VehicleId')" class="btn-sm btn-danger">Disable Policy</button></li>
-                                                            <li><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId');">View/Upload Document</button></li>
-                                                        </ul>
-                                                    </div>
+                                                {
+                                                    <td>In Force</td>
+                                                    <td>
+                                                        <div class="tbl-btn-list">
+                                                            <ul class="list-inline">
+                                                                <li><button onclick="disableVehicle('@_item.VehicleId')" class="btn-sm btn-danger">Disable Policy</button></li>
+                                                                <li><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId');">View/Upload Document</button></li>
+                                                            </ul>
+                                                        </div>
 
-                                                </td>
-                                            }
-                                            else if (DateTime.Now >= _item.enddate && DateTime.Now <= _item.enddate.AddDays(30))
-                                            {
-                                                <td>Renew</td>
+                                                    </td>
+                                                }
+                                                else if (DateTime.Now >= _item.enddate && DateTime.Now <= _item.enddate.AddDays(30))
+                                                {
+                                                    <td>Renew</td>
 
-                                            }
-                                            else if (DateTime.Now >= _item.enddate.AddDays(30))
-                                            {
-                                                <td>Lapsed</td>
-                                            }*@
-                                            
+                                                }
+                                                else if (DateTime.Now >= _item.enddate.AddDays(30))
+                                                {
+                                                    <td>Lapsed</td>
+                                                }*@
 
                                         </tr>
                                     }
@@ -215,16 +200,10 @@
                     }
                 </tbody>
 
-
-
             </table>
         </div>
     </div>
-
 </div>
-
-
-
 
 
 <div class="modal fade" id="mymodals" role="dialog">
@@ -251,17 +230,17 @@
                         <tbody></tbody>
                     </table>
                     <ul id="fileListUL"></ul>
-
                 </div>
                 <div>
+                    <a id="url">Documents</a>
                     <table style="width:100%">
                         <tr>
-                            <td style="padding: 6px;">Title</td>
-                            <td style="padding: 6px;"><input class="form-control" id="txt" type="text" name="Textbox" /></td>
+                            @*<td style="padding: 6px;">Title</td>
+                                <td style="padding: 6px;"><input class="form-control" id="txt" type="text" name="Textbox" /></td>*@
 
 
                         </tr>
-                        
+
                         <tr>
                             <td class="label-top" style="padding: 6px;">Description</td>
                             <td class="resize-none" style="padding: 6px;"><textarea class="form-control" id="tarea" name="message" rows="2" cols="20"></textarea></td>
@@ -272,19 +251,13 @@
                         </tr>
                     </table>
 
-
-
                 </div>
-
                 <div>
-
                 </div>
-
 
             </div>
             <div class="modal-footer">
                 <input type="button" id="documnet" value="Upload" class="btn btn-primary" />
-
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -293,7 +266,6 @@
     @Html.Hidden("CustomerId")
     @Html.Hidden("vehicleId")
 </div>
-
 <script>
 
     function uploadFile() {
@@ -375,7 +347,11 @@
         $("#PolicyNumber").val(PolicyNumber);
         $("#CustomerId").val(CustomerId);
         $("#vehicleId").val(vehicleId);
-
+        var link = $("#url");
+        link.attr("href", "http://localhost:49873/Documents/" + CustomerId + "/" + PolicyNumber + "/" + vehicleId + "");
+        link.attr("title", "Documents");
+        link.text("Go to Documents");
+        link.addClass("link");
         getFiles();
 
         $("#txt").val("");

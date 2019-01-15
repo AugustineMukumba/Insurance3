@@ -21,6 +21,8 @@ using System.IO;
 using System.Net;
 using System.Web.Script.Serialization;
 using System.Text;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using InsuranceClaim.Models;
 
 namespace InsuranceClaim.Controllers
@@ -2423,7 +2425,21 @@ namespace InsuranceClaim.Controllers
             }
         }
 
+        public void Genpdf(string message)
+        {
+            using (System.IO.MemoryStream memory= new MemoryStream())
+            {
+                Document doc = new Document();
+                Chunk chunk = new Chunk("This is chunk");
+                doc.Add(chunk);
+                Phrase phrase = new Phrase("This is Phrase");
+                doc.Add(phrase);
+                Paragraph para = new Paragraph();
+                doc.Add(para);
 
+
+            }
+        }
         public string LoggedUserEmail()
         {
             string email = "";
@@ -2438,6 +2454,12 @@ namespace InsuranceClaim.Controllers
             return email;
 
         }
+
+      
+
+
+
+
 
         [HttpPost]
         public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost, int policytermid, Boolean isVehicleRegisteredonICEcash, string BasicPremium, string StampDuty, string ZTSCLevy, int ProductId = 0)
