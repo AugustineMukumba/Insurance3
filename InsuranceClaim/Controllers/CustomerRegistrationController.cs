@@ -2416,7 +2416,6 @@ namespace InsuranceClaim.Controllers
                 {
                     return RedirectToAction("SummaryDetail");
                 }
-
             }
             catch (Exception ex)
             {
@@ -3128,9 +3127,8 @@ namespace InsuranceClaim.Controllers
                 Receipthistory.AmountDue = (-1*Convert.ToInt32(model.AmountDue));
             }
             else
-            {
                 Receipthistory.AmountDue = model.AmountDue;
-            }
+
             Receipthistory.Balance = model.Balance;
             Receipthistory.CustomerName = model.CustomerName;
             Receipthistory.DatePosted = model.DatePosted;
@@ -3159,6 +3157,7 @@ namespace InsuranceClaim.Controllers
             string filepath = System.Configuration.ConfigurationManager.AppSettings["urlPath"];
             ListReceiptModule receiptList = new ListReceiptModule();
             PreviewReceiptListModel lstreceipt = new PreviewReceiptListModel();
+            lstreceipt.Id = Receipthistory.Id;
             lstreceipt.AmountDue = model.AmountDue;
             lstreceipt.AmountPaid = model.AmountPaid;
             lstreceipt.Balance = model.Balance;
@@ -3209,7 +3208,7 @@ namespace InsuranceClaim.Controllers
                 .Replace("#AccountName#", ReceiptHistory.CustomerName)
                 .Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2)
                 .Replace("#Amount#", Convert.ToString(ReceiptHistory.AmountPaid))
-                .Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", ReceiptHistory.PolicyNumber.Replace("GMCC", "R"))
+                .Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", ReceiptHistory.Id.ToString())
                  .Replace("#TransactionReference#", ReceiptHistory.TransactionReference).Replace("#TransactionReference#", ReceiptHistory.TransactionReference)
                 .Replace("#PaymentType#", (ReceiptHistory.PaymentMethodId == 1 ? "Cash" : (ReceiptHistory.PaymentMethodId == 2 ? "PayPal" : "PayNow")));
             List<string> attachements = new List<string>();

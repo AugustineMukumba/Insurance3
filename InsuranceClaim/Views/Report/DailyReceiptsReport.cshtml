@@ -99,7 +99,7 @@
 
                             if (item.AmountDue != null)
                             {
-                                premiumDueTotal += Convert.ToDecimal(item.AmountDue);
+                                premiumDueTotal += Math.Round(Convert.ToDecimal(item.AmountDue), 2) ;
                             }
                             else
                             {
@@ -108,7 +108,7 @@
 
                             if (item.AmountPaid != 0)
                             {
-                                amountPaidTotal += Convert.ToDecimal(item.AmountPaid);
+                                amountPaidTotal += Math.Round(Convert.ToDecimal(item.AmountPaid), 2);
                             }
                             else
                             {
@@ -118,21 +118,23 @@
 
                             if (item.Balance != "")
                             {
-                                balanceTotal += Convert.ToDecimal(item.Balance);
+                                balanceTotal += Math.Round(Convert.ToDecimal(item.Balance), 2);
                             }
                             else
                             {
                                 balanceTotal = 0;
                             }
                             <tr>
+                              
                                 <td>@item.Id</td>
                                 <td>@item.PolicyCreatedBy </td>
                                 <td>@item.CustomerName</td>
                                 @*<td>@item.Contact</td>*@
                                 @*<td>@item.Product</td>*@
                                 <td>@item.PolicyNumber</td>
-                                <td>@item.DatePosted</td>
+                                <td>@item.DatePosted.ToShortDateString()</td>
                                 <td>@item.InvoiceNumber</td>
+                              
                                 <td>$ @item.AmountDue</td>
                                 <td>$ @item.AmountPaid</td>
                                 <td>$@Math.Round(Convert.ToDecimal(item.Balance), 2)</td>
@@ -146,7 +148,7 @@
 
                             <td><strong>Total:</strong></td>
                             <td></td>
-                            @*<td></td>*@
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -157,8 +159,8 @@
                             <td></td>
                         </tr>
                     </tfoot>
-
                 </table>
+
             </div>
         </div>
 

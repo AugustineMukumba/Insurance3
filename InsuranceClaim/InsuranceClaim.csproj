@@ -337,7 +337,7 @@
     <Content Include="testChat.html" />
     <Content Include="Views\Account\EndorsementDetials.cshtml" />
     <Content Include="Views\Report\ProductivityReport.cshtml" />
-    <Content Include="Views\Shared\EmaiTemplates\UserPaymentEmai.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\UserPaymentEmail.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -509,7 +509,6 @@
     <Content Include="Views\Shared\EmaiTemplates\EndorsementSehduleMotor.cshtml" />
     <Content Include="Views\CustomerRegistration\PreviewReceiptModule.cshtml" />
     <Content Include="Views\CustomerRegistration\ReceiptModule.cshtml" />
-    <Content Include="Views\Shared\EmaiTemplates\UserPaymentEmail.cshtml" />
     <Content Include="Views\Paypal\Index.cshtml" />
     <Content Include="Views\Report\ReconciliationReport.cshtml" />
   </ItemGroup>

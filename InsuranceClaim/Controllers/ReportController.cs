@@ -63,8 +63,6 @@ namespace InsuranceClaim.Controllers
         public ActionResult InsuredVehical()
         {
             var results = new List<RiskDetailModel>();
-
-
             try
             {
                 //results = (from vehicalDetials in InsuranceContext.VehicleDetails.All()
@@ -328,7 +326,7 @@ namespace InsuranceClaim.Controllers
 
             //vehicledetail = vehicledetail.Where(c => c.CoverEndDate >= endDate).ToList();
 
-            vehicledetail = vehicledetail.Where(c => c.CoverEndDate >= fromDate &&  c.CoverEndDate <= endDate).ToList();
+            vehicledetail = vehicledetail.Where(c => c.CoverEndDate >= fromDate && c.CoverEndDate <= endDate).ToList();
 
             //var VehicleDetails = InsuranceContext.VehicleDetails.All().ToList();
             var policyDetails = InsuranceContext.PolicyDetails.All().ToList();
@@ -341,9 +339,9 @@ namespace InsuranceClaim.Controllers
             foreach (var item in vehicledetail)
             {
                 var obj = new VehicleRiskAboutExpireModels();
-                var Vehicle = vehicledetail.Where(m=>m.Id==item.Id).First();
-                var policy = policyDetails.Where(m => m.Id==item.PolicyId).First();
-                var customer= customerDetails.Where(m => m.Id==item.CustomerId).First();
+                var Vehicle = vehicledetail.Where(m => m.Id == item.Id).First();
+                var policy = policyDetails.Where(m => m.Id == item.PolicyId).First();
+                var customer = customerDetails.Where(m => m.Id == item.CustomerId).First();
                 var make = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'");
                 var model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
                 obj.Customer_Name = customer.FirstName + " " + customer.LastName;
@@ -379,9 +377,6 @@ namespace InsuranceClaim.Controllers
             //var modelList = InsuranceContext.VehicleModels.All().ToList();
 
 
-
-
-
             GrossWrittenPremiumReportSearchModels Model = new GrossWrittenPremiumReportSearchModels();
             var vehicledetail = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
             foreach (var item in vehicledetail)
@@ -408,19 +403,26 @@ namespace InsuranceClaim.Controllers
                     var summary = InsuranceContext.SummaryDetails.Single(vehicleSUmmarydetail.SummaryDetailId);
                     if (summary.isQuotation != true)
                     {
-                      
+
                         obj.Payment_Term = InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name;
                         var paymentMethod = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId);
 
                         obj.Payment_Mode = paymentMethod == null ? "" : paymentMethod.Name;
 
-                        if (customer!=null)
+                        if (customer != null)
                             obj.Customer_Name = customer.FirstName + " " + customer.LastName;
 
                         obj.Policy_Number = policy.PolicyNumber;
                         obj.Policy_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("dd/MM/yyy");
                         obj.Policy_endate = Convert.ToDateTime(item.CoverEndDate).ToString("dd/MM/yyy");
-                        obj.Vehicle_makeandmodel = make==null? "" : make.MakeDescription + "/" + model.ModelDescription;
+
+                        var modelDescription = "";
+
+                        if(model!=null && model.ModelDescription!=null)
+                            modelDescription = model.ModelDescription;
+
+
+                        obj.Vehicle_makeandmodel = make == null ? "" : make.MakeDescription + "/" + modelDescription;
                         obj.Stamp_duty = Convert.ToDecimal(item.StampDuty);
                         obj.ZTSC_Levy = Convert.ToDecimal(item.ZTSCLevy);
                         obj.Sum_Insured = Convert.ToDecimal(item.SumInsured);
@@ -428,11 +430,11 @@ namespace InsuranceClaim.Controllers
 
                         var customerDetails = InsuranceContext.Customers.Single(summary.CreatedBy);
 
-                       // var customerDetails = customerList.Single(c => c.CustomerId == summary.CreatedBy);
+                        // var customerDetails = customerList.Single(c => c.CustomerId == summary.CreatedBy);
 
-                        if(customerDetails!=null)
+                        if (customerDetails != null)
                             obj.PolicyCreatedBy = customerDetails.FirstName + " " + customerDetails.LastName;
-                        
+
 
 
                         obj.Comission_percentage = 30;
@@ -554,7 +556,7 @@ namespace InsuranceClaim.Controllers
                         obj.Sum_Insured = Convert.ToDecimal(item.SumInsured);
 
 
-               
+
 
                         var customerDetails = InsuranceContext.Customers.Single(summary.CreatedBy);
 
@@ -1123,23 +1125,51 @@ namespace InsuranceClaim.Controllers
             //            }).ToList();
 
 
-            model.DailyReceiptsReport = list.OrderByDescending(c=>c.Id).ToList();
+            model.DailyReceiptsReport = list.OrderByDescending(c => c.Id).ToList();
 
             return View(model);
         }
 
         public ActionResult ReconciliationReport()
         {
-            var ListDailyReceiptsReport = new List<DailyReceiptsReportModel>();
+            var ListDailyReceiptsReport = new List<PreviewReceiptListModel>();
             DailyReceiptsSearchReportModel model = new DailyReceiptsSearchReportModel();
 
 
-            var query = "select ReceiptModuleHistory.*, Customer.FirstName +' ' + Customer.LastName as PolicyCreatedBy from ReceiptModuleHistory ";
+//            select PolicyDetail.PolicyNumber, Customer.FirstName + ' ' + Customer.LastName as CustomerName, SummaryDetail.CreatedOn as TransactionDate,
+//SummaryDetail.TotalPremium, PolicyDetail.PolicyNumber as InvoiceNumber, ReceiptModuleHistory.AmountDue,
+//ReceiptModuleHistory.Id as ReceiptNo, ReceiptModuleHistory.AmountPaid, 
+//case  ReceiptModuleHistory.Id when 0 then 'Yes' else 'No' end as Paid, ReceiptModuleHistory.DatePosted, 
+//ReceiptModuleHistory.Balance from Customer join PolicyDetail on Customer.Id = PolicyDetail.CustomerId
+//join VehicleDetail on PolicyDetail.id = VehicleDetail.PolicyId
+//join SummaryVehicleDetail on VehicleDetail.Id = SummaryVehicleDetail.SummaryDetailId
+//join SummaryDetail on SummaryDetail.Id = SummaryVehicleDetail.SummaryDetailId
+//left join ReceiptModuleHistory on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.Id
+
+
+
+
+
+
+
+
+
+
+            var query1 = "select PolicyDetail.PolicyNumber, Customer.FirstName + ' ' + Customer.LastName as CustomerName, SummaryDetail.CreatedOn as TransactionDate, ";
+            query1 += "SummaryDetail.TotalPremium, PolicyDetail.PolicyNumber as InvoiceNumber, ReceiptModuleHistory.AmountDue, ";
+            query1 += "ReceiptModuleHistory.Id as ReceiptNo, ReceiptModuleHistory.AmountPaid, ";
+            query1 += " case  ReceiptModuleHistory.Id when 0 then 'Yes' else 'No' end as Paid, ReceiptModuleHistory.DatePosted, ";
+            query1 += " ReceiptModuleHistory.Balance  from Customer join PolicyDetail on Customer.Id = PolicyDetail.CustomerId ";
+            query1 += " join VehicleDetail on PolicyDetail.id= VehicleDetail.PolicyId ";
+            query1 += " join SummaryVehicleDetail on VehicleDetail.Id = SummaryVehicleDetail.SummaryDetailId";
+            query1 += " join SummaryDetail on SummaryDetail.Id= SummaryVehicleDetail.SummaryDetailId";
+            query1 += " left join ReceiptModuleHistory on ReceiptModuleHistory.SummaryDetailId= SummaryDetail.Id";
+
+
+          var query = "select ReceiptModuleHistory.*, Customer.FirstName +' ' + Customer.LastName as PolicyCreatedBy from ReceiptModuleHistory ";
             query += " join SummaryDetail on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.id ";
             //query +=  " join Customer on SummaryDetail.CreatedBy = Customer.Id";
             query += "Left join Customer  on ReceiptModuleHistory.CreatedBy = Customer.Id  ";
-
-
 
 
             var list = InsuranceContext.Query(query)
@@ -1243,7 +1273,7 @@ namespace InsuranceClaim.Controllers
 
 
 
-            model.DailyReceiptsReport   = list.Where(c => c.DatePosted >= Convert.ToDateTime(Model.FromDate) && c.DatePosted <= Convert.ToDateTime(Model.EndDate)).OrderByDescending(c => c.DatePosted).ToList();
+            model.DailyReceiptsReport = list.Where(c => c.DatePosted >= Convert.ToDateTime(Model.FromDate) && c.DatePosted <= Convert.ToDateTime(Model.EndDate)).OrderByDescending(c => c.DatePosted).ToList();
 
 
             return View("ReconciliationReport", model);
