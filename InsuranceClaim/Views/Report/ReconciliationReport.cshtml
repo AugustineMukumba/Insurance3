@@ -1,9 +1,6 @@
 ﻿@model InsuranceClaim.Models.DailyReceiptsSearchReportModel
 
 
-
-
-
 @{
     ViewBag.Title = "ReconciliationReport";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
@@ -21,12 +18,9 @@
                     @*<button type="button" class="btn btn-primary">Add</button>*@
                     @*<input class="btn btn-primary" type="button" value="Generate PDF" id="generatePdf" />*@
                     <input class="btn btn-primary" type="button" value="Generate Excel" id="generateExcel" />
-
                 </div>
             </div>
-
         </div>
-
         @using (Html.BeginForm("ReconciliationSearchReport", "Report", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
             <div class="container-main">
@@ -35,7 +29,6 @@
                         <div class="row">
                             <div class="col-sm-3 col-md-3 form-group-text">
                                 <div class="form-group">
-
                                     <div class='input-group' id='datetimenew'>
                                         @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @placeholder = "Start Date" })
                                         @Html.ValidationMessageFor(m => m.FromDate, "", new { @class = "text-danger" })
@@ -47,7 +40,6 @@
                             </div>
                             <div class="col-sm-3 col-md-3 form-group-text">
                                 <div class="form-group">
-
                                     <div class='input-group' id='datetimenew12'>
                                         @Html.TextBoxFor(m => m.EndDate, new { @class = "form-control", @autocomplete = "off", @placeholder = "End Date" })
                                         @Html.ValidationMessageFor(m => m.EndDate, "", new { @class = "text-danger" })
@@ -70,31 +62,31 @@
                 </div>
             </div>
         }
-
         <div class="product-table-grid">
             <div class="table-responsive">
                 <table class="table table-striped tablesorter" style="width:1873px;" id="report2excel">
                     <thead>
                         <tr>
-                            <th>Staff</th>
+                            @*<th>Staff</th>*@
                             <th>Policy Number</th>
                             <th>Customer Name</th>
                             <th>Transaction Date</th>
+                            <th>Invoice Amount</th>
                             <th>Premium Due</th>
                             <th>Invoice Number</th>
                             <th>Invoice Date</th>
-                            <th>Invoice Amount</th>
+
                             <th>Receipt No.</th>
                             <th>Receipt Amount</th>
-                            <th>Receipt Date</th>                           
+                            <th>Receipt Date</th>
                             <th>Paid(yes/no)</th>
                             <th style="text-align:left;">Balance</th>
                             @*
-                            <th>Amount Paid</th>
-                            
-                            <th>Transaction Reference</th>
-                            <th style="text-align:left;">Payment Type</th>
-                        </tr>*@
+                                    <th>Amount Paid</th>
+
+                                    <th>Transaction Reference</th>
+                                    <th style="text-align:left;">Payment Type</th>
+                                </tr>*@
                     </thead>
                     <tbody>
                         @{
@@ -135,15 +127,31 @@
                                 balanceTotal = 0;
                             }
                             <tr>
-                                <td>@item.PolicyCreatedBy </td>
+                                @*<td>@item.PolicyCreatedBy </td>*@
                                 <td>@item.PolicyNumber</td>
                                 <td>@item.CustomerName</td>
-                                <td>@item.DatePosted.ToString("MM/dd/yyyy")</td>
+                                <td>@item.TransactionDate.ToString("MM/dd/yyyy")</td>
+                                <td>@item.AmountDue</td>
                                 <td>@item.AmountDue</td>
                                 <td>@item.InvoiceNumber</td>
-                                <td>@item.DatePosted.ToString("MM/dd/yyyy")</td>
-                                <td>@item.AmountDue</td>
-                                <td>@item.Id</td>
+                                @if (item.DatePosted == Convert.ToDateTime(null))
+                                {
+                                    <td>Not posted yet</td>
+                                }
+                                else
+                                {
+                                    <td>@item.DatePosted.ToString("MM/dd/yyyy")</td>
+                                }
+
+                                @if (item.Id == 0)
+                                {
+                                    <td>No Receipt number</td>
+                                }
+                                else
+                                {
+                                    <td>@item.Id</td>
+                                }
+
                                 @if (item.AmountPaid == null)
                                 {
                                     <td>0</td>
@@ -151,8 +159,16 @@
                                 else
                                 {
                                     <td>@item.AmountPaid</td>
-                                }                              
-                                <td>@item.DatePosted.ToString("MM/dd/yyyy")</td>
+                                }
+                                @if (item.DatePosted == Convert.ToDateTime(null))
+                                {
+                                    <td>Not Posted Yet</td>
+                                }
+                                else
+                                {
+                                    <td>@item.DatePosted.ToString("MM/dd/yyyy")</td>
+                                }
+                                
                                 @if (item.AmountPaid == null)
                                 {
                                     <td>No</td>;
@@ -161,7 +177,6 @@
                                 {
                                     <td>Yes</td>;
                                 }
-
                                 @if (item.Balance == null)
                                 {
                                     <td>@item.AmountDue</td>
@@ -170,28 +185,26 @@
                                 {
                                     <td>@item.Balance</td>
                                 }
-                                
-                               
+
 
 
                                 @*
-                               
-                                
-                             
-                                
-                                <td>@item.DatePosted</td>
-                               
-                               
-                                <td>$ @item.AmountPaid</td>
-                                <td>$@Math.Round(Convert.ToDecimal(item.Balance), 2)</td>
-                                <td> @item.TransactionReference</td>
-                                <td>@item.paymentMethodType</td>*@
+
+
+
+
+                                    <td>@item.DatePosted</td>
+
+
+                                    <td>$ @item.AmountPaid</td>
+                                    <td>$@Math.Round(Convert.ToDecimal(item.Balance), 2)</td>
+                                    <td> @item.TransactionReference</td>
+                                    <td>@item.paymentMethodType</td>*@
                             </tr>
                         }
                     </tbody>
                     <tfoot>
                         <tr>
-
                             <td><strong>Total:</strong></td>
                             <td></td>
                             @*<td></td>*@
@@ -206,14 +219,12 @@
                             <td></td>
                             <td></td>
                             <td></td>
-                            
+
                         </tr>
                     </tfoot>
-
                 </table>
             </div>
         </div>
-
     </div>
 </div>
 <script>

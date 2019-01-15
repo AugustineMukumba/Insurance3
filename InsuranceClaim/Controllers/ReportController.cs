@@ -1164,20 +1164,22 @@ namespace InsuranceClaim.Controllers
             query += "Left join Customer  on ReceiptModuleHistory.CreatedBy = Customer.Id  ";
 
 
-            var list = InsuranceContext.Query(query)
+            var list = InsuranceContext.Query(query1)
                .Select(res => new PreviewReceiptListModel()
                {
-                   Id = res.Id,
+                   Id = Convert.ToInt32(res.ReceiptNo),
                    CustomerName = res.CustomerName,
                    PolicyNumber = res.PolicyNumber,
-                   DatePosted = res.DatePosted,
+                   DatePosted = Convert.ToDateTime(res.DatePosted) ,
+                   TransactionDate=res.TransactionDate,
                    AmountDue = res.AmountDue,
                    AmountPaid = res.AmountPaid,
                    Balance = res.Balance,
-                   paymentMethodType = (res.PaymentMethodId == 1 ? "Cash" : (res.PaymentMethodId == 2 ? "Ecocash" : (res.PaymentMethodId == 3 ? "Swipe" : "MasterVisa Card"))),
+                   TotalPremium=Convert.ToInt32(res.TotalPremium),
+                // paymentMethodType = (res.PaymentMethodId == 1 ? "Cash" : (res.PaymentMethodId == 2 ? "Ecocash" : (res.PaymentMethodId == 3 ? "Swipe" : "MasterVisa Card"))),
                    InvoiceNumber = res.InvoiceNumber,
-                   TransactionReference = res.TransactionReference,
-                   PolicyCreatedBy = res.PolicyCreatedBy
+                 //TransactionReference = res.TransactionReference,
+                 //PolicyCreatedBy = res.PolicyCreatedBy
                }).ToList();
 
             //var list = (from res in InsuranceContext.ReceiptHistorys.All().ToList()

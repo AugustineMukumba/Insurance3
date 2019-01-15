@@ -26,8 +26,10 @@ namespace InsuranceClaim.Models
         public decimal? AmountDue { get; set; }
         public string Date { get; set; }
         public decimal? AmountPaid { get; set; }
+        public int TotalPremium { get; set; }
         public string Balance { get; set; }
         public DateTime DatePosted { get; set; }
+        public DateTime TransactionDate { get; set; }
         public string filepath { get; set; }
         public string paymentMethodType { get; set; }
 
