@@ -1135,33 +1135,16 @@ namespace InsuranceClaim.Controllers
             var ListDailyReceiptsReport = new List<PreviewReceiptListModel>();
             DailyReceiptsSearchReportModel model = new DailyReceiptsSearchReportModel();
 
-
-            // select PolicyDetail.PolicyNumber, Customer.FirstName + ' ' + Customer.LastName as CustomerName, SummaryDetail.CreatedOn as TransactionDate,
-            //SummaryDetail.TotalPremium, PolicyDetail.PolicyNumber as InvoiceNumber, ReceiptModuleHistory.AmountDue,
-            //ReceiptModuleHistory.Id as ReceiptNo, ReceiptModuleHistory.AmountPaid, 
-            //case  ReceiptModuleHistory.Id when 0 then 'Yes' else 'No' end as Paid, ReceiptModuleHistory.DatePosted, 
-            //ReceiptModuleHistory.Balance from Customer join PolicyDetail on Customer.Id = PolicyDetail.CustomerId
-            //join VehicleDetail on PolicyDetail.id = VehicleDetail.PolicyId
-            //join SummaryVehicleDetail on VehicleDetail.Id = SummaryVehicleDetail.SummaryDetailId
-            //join SummaryDetail on SummaryDetail.Id = SummaryVehicleDetail.SummaryDetailId
-            //left join ReceiptModuleHistory on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.Id
-
-
             var query1 = "select PolicyDetail.PolicyNumber, Customer.FirstName + ' ' + Customer.LastName as CustomerName, SummaryDetail.CreatedOn as TransactionDate, ";
             query1 += "SummaryDetail.TotalPremium, PolicyDetail.PolicyNumber as InvoiceNumber, ReceiptModuleHistory.AmountDue, ";
             query1 += "ReceiptModuleHistory.Id as ReceiptNo, ReceiptModuleHistory.AmountPaid, ";
             query1 += " case  ReceiptModuleHistory.Id when 0 then 'Yes' else 'No' end as Paid, ReceiptModuleHistory.DatePosted, ";
             query1 += " ReceiptModuleHistory.Balance  from Customer join PolicyDetail on Customer.Id = PolicyDetail.CustomerId ";
             query1 += " join VehicleDetail on PolicyDetail.id= VehicleDetail.PolicyId ";
-            query1 += " join SummaryVehicleDetail on VehicleDetail.Id = SummaryVehicleDetail.SummaryDetailId";
+            query1 += " join SummaryVehicleDetail on VehicleDetail.Id = SummaryVehicleDetail.VehicleDetailsId";
             query1 += " join SummaryDetail on SummaryDetail.Id= SummaryVehicleDetail.SummaryDetailId";
             query1 += " left join ReceiptModuleHistory on ReceiptModuleHistory.SummaryDetailId= SummaryDetail.Id";
 
-
-            var query = "select ReceiptModuleHistory.*, Customer.FirstName +' ' + Customer.LastName as PolicyCreatedBy from ReceiptModuleHistory ";
-            query += " join SummaryDetail on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.id ";
-            //query +=  " join Customer on SummaryDetail.CreatedBy = Customer.Id";
-            query += "Left join Customer  on ReceiptModuleHistory.CreatedBy = Customer.Id  ";
 
 
             var list = InsuranceContext.Query(query1)
@@ -1182,19 +1165,7 @@ namespace InsuranceClaim.Controllers
                  //PolicyCreatedBy = res.PolicyCreatedBy
                }).ToList();
 
-            //var list = (from res in InsuranceContext.ReceiptHistorys.All().ToList()
-            //            select new PreviewReceiptListModel
-            //            {
-            //                CustomerName = res.CustomerName,                        
-            //                PolicyNumber = res.PolicyNumber,
-            //                DatePosted = res.DatePosted,
-            //                AmountDue = res.AmountDue,
-            //                AmountPaid = res.AmountPaid,
-            //                Balance = res.Balance,                      
-            //                paymentMethodType = (res.PaymentMethodId == 1 ? "Cash" : (res.PaymentMethodId == 2 ? "Ecocash" : (res.PaymentMethodId == 3 ? "Swipe" : "MasterVisa Card"))),
-            //                InvoiceNumber = res.InvoiceNumber,
-            //                TransactionReference = res.TransactionReference,
-            //            }).ToList();
+        
 
 
             model.DailyReceiptsReport = list.OrderByDescending(c => c.Id).ToList();
@@ -1204,38 +1175,45 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult ReconciliationSearchReport(DailyReceiptsSearchReportModel Model)
         {
-            var ListDailyReceiptsReport = new List<DailyReceiptsReportModel>();
+            var ListDailyReceiptsReport = new List<PreviewReceiptListModel>();
             DailyReceiptsSearchReportModel model = new DailyReceiptsSearchReportModel();
 
+            var query1 = "select PolicyDetail.PolicyNumber, Customer.FirstName + ' ' + Customer.LastName as CustomerName, CONVERT(datetime, CONVERT(varchar,SummaryDetail.CreatedOn, 101)) as TransactionDate, ";
+            query1 += "SummaryDetail.TotalPremium, PolicyDetail.PolicyNumber as InvoiceNumber, ReceiptModuleHistory.AmountDue, ";
+            query1 += "ReceiptModuleHistory.Id as ReceiptNo, ReceiptModuleHistory.AmountPaid, ";
+            query1 += " case  ReceiptModuleHistory.Id when 0 then 'Yes' else 'No' end as Paid, ReceiptModuleHistory.DatePosted, ";
+            query1 += " ReceiptModuleHistory.Balance  from Customer join PolicyDetail on Customer.Id = PolicyDetail.CustomerId ";
+            query1 += " join VehicleDetail on PolicyDetail.id= VehicleDetail.PolicyId ";
+            query1 += " join SummaryVehicleDetail on VehicleDetail.Id = SummaryVehicleDetail.SummaryDetailId";
+            query1 += " join SummaryDetail on SummaryDetail.Id= SummaryVehicleDetail.SummaryDetailId";
+            query1 += " left join ReceiptModuleHistory on ReceiptModuleHistory.SummaryDetailId= SummaryDetail.Id";
 
-            var query = "select ReceiptModuleHistory.*, Customer.FirstName +' ' + Customer.LastName as PolicyCreatedBy from ReceiptModuleHistory ";
-            query += " join SummaryDetail on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.id ";
-            //query += " join Customer on SummaryDetail.CreatedBy = Customer.Id";
-            query += "Left join Customer  on ReceiptModuleHistory.CreatedBy = Customer.Id ";
 
 
-
-            var list = InsuranceContext.Query(query)
+            var list = InsuranceContext.Query(query1)
                .Select(res => new PreviewReceiptListModel()
                {
+                   Id = Convert.ToInt32(res.ReceiptNo),
                    CustomerName = res.CustomerName,
                    PolicyNumber = res.PolicyNumber,
-                   DatePosted = res.DatePosted,
+                   DatePosted = Convert.ToDateTime(res.DatePosted),
+                   TransactionDate = res.TransactionDate,
                    AmountDue = res.AmountDue,
                    AmountPaid = res.AmountPaid,
                    Balance = res.Balance,
-                   paymentMethodType = (res.PaymentMethodId == 1 ? "Cash" : (res.PaymentMethodId == 2 ? "Ecocash" : (res.PaymentMethodId == 3 ? "Swipe" : "MasterVisa Card"))),
+                   TotalPremium = Convert.ToInt32(res.TotalPremium),
+                   // paymentMethodType = (res.PaymentMethodId == 1 ? "Cash" : (res.PaymentMethodId == 2 ? "Ecocash" : (res.PaymentMethodId == 3 ? "Swipe" : "MasterVisa Card"))),
                    InvoiceNumber = res.InvoiceNumber,
-                   TransactionReference = res.TransactionReference,
-                   PolicyCreatedBy = res.PolicyCreatedBy
+                   //TransactionReference = res.TransactionReference,
+                   //PolicyCreatedBy = res.PolicyCreatedBy
                }).ToList();
 
 
 
-            model.DailyReceiptsReport = list.Where(c => c.DatePosted >= Convert.ToDateTime(Model.FromDate) && c.DatePosted <= Convert.ToDateTime(Model.EndDate)).OrderByDescending(c => c.DatePosted).ToList();
+            model.DailyReceiptsReport = list.Where(c => c.TransactionDate >= Convert.ToDateTime(Model.FromDate) && c.TransactionDate <= Convert.ToDateTime(Model.EndDate)).OrderByDescending(c => c.TransactionDate).ToList();
 
 
-            return View("DailyReceiptsReport", model);
+            return View("ReconciliationReport", model);
         }
         public ActionResult DailyReceiptsSearchReport(DailyReceiptsSearchReportModel Model)
         {
