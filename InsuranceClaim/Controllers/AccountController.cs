@@ -1731,6 +1731,7 @@ namespace InsuranceClaim.Controllers
                     var product = InsuranceContext.Products.Single(Convert.ToInt32(vehicle.ProductId));
 
                     policylistviewmodel.PolicyNumber = policy.PolicyNumber;
+                    policylistviewmodel.PolicyStatus = policy.Status;
 
                     int i = 0;
 

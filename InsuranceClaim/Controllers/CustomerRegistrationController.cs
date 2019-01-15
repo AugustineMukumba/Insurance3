@@ -3075,8 +3075,6 @@ namespace InsuranceClaim.Controllers
             var amountPaid = 0;
 
 
-
-
             var policyAndRegistrationNumber = txtvalue; //Policy Number,VRN Number,Customer Name 
             var policyAndRegistrationNumberArray = policyAndRegistrationNumber.Split(',');
             if (policyAndRegistrationNumberArray.Length > 1)
@@ -3100,7 +3098,7 @@ namespace InsuranceClaim.Controllers
                 var summarydetail = InsuranceContext.SummaryDetails.Single(where: $"Id='{invoicenumber.SummaryDetailId}'");
                 var policyId = InsuranceContext.PaymentInformations.Single(where: $"PolicyId = '{detail.Id}'");
 
-                var query = "SELECT  top 1 [Id] FROM [InsuranceClaim_dev].[dbo].[ReceiptModuleHistory] order by Id Desc";
+                var query = "SELECT  top 1 [Id] FROM ReceiptModuleHistory order by Id Desc";
                 //var re = InsuranceContext.ReceiptHistorys.All(x => x.Id);
                 var receipt = InsuranceContext.Query(query).Select(x => new ReceiptModuleHistory() {
                     Id = x.Id,
