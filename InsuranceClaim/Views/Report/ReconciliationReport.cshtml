@@ -64,18 +64,19 @@
         }
         <div class="product-table-grid">
             <div class="table-responsive">
-                <table class="table table-striped tablesorter" style="width:1873px;" id="report2excel">
+                <table class="table table-striped tablesorter" style="width:1873px; height:100px!important" id="report2excel">
                     <thead>
                         <tr>
                             @*<th>Staff</th>*@
+                            <th>Created By</th>
                             <th>Policy Number</th>
                             <th>Customer Name</th>
                             <th>Transaction Date</th>
-                            <th>Invoice Amount</th>
+
                             <th>Premium Due</th>
                             <th>Invoice Number</th>
                             <th>Invoice Date</th>
-
+                            <th>Invoice Amount</th>
                             <th>Receipt No.</th>
                             <th>Receipt Amount</th>
                             <th>Receipt Date</th>
@@ -128,10 +129,11 @@
                             }
                             <tr>
                                 @*<td>@item.PolicyCreatedBy </td>*@
+                                <td>@item.PolicyCreatedBy</td>
                                 <td>@item.PolicyNumber</td>
                                 <td>@item.CustomerName</td>
                                 <td>@item.TransactionDate.ToString("MM/dd/yyyy")</td>
-                                <td>@item.AmountDue</td>
+
                                 <td>@item.AmountDue</td>
                                 <td>@item.InvoiceNumber</td>
                                 @if (item.DatePosted == Convert.ToDateTime(null))
@@ -142,7 +144,7 @@
                                 {
                                     <td>@item.DatePosted.ToString("MM/dd/yyyy")</td>
                                 }
-
+                                <td>@item.AmountDue</td>
                                 @if (item.Id == 0)
                                 {
                                     <td>No Receipt number</td>
@@ -168,7 +170,7 @@
                                 {
                                     <td>@item.DatePosted.ToString("MM/dd/yyyy")</td>
                                 }
-                                
+
                                 @if (item.AmountPaid == null)
                                 {
                                     <td>No</td>;

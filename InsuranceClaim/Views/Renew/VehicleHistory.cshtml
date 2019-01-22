@@ -83,6 +83,7 @@
                     <thead>
                         <tr>
                             <th>Policy Number</th>
+                            <th>CustomerName</th>
                             <th>Registration Number</th>
                             <th>Make</th>
                             <th>Model</th>
@@ -103,7 +104,8 @@
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td>@item.PolicyId</td>
+                                <td>@item.EngineNumber</td>
+                                <td>@item.ChasisNumber</td>
                                 <td>@item.RegistrationNo</td>
                                 <td>@item.MakeId</td>
                                 <td>@item.ModelId</td>

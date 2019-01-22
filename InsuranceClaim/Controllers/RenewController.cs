@@ -438,7 +438,7 @@ namespace InsuranceClaim.Controllers
             return new string(chars);
         }
 
-      
+
 
         [HttpPost]
         public async Task<ActionResult> SubmitPlan1(SummaryDetailModel model)
@@ -700,27 +700,7 @@ namespace InsuranceClaim.Controllers
 
                         // Genrate new policy number
 
-                        if (policy != null && policy.Id == 0)
-                        {
-                            string policyNumber = string.Empty;
-
-                            var objList = InsuranceContext.PolicyDetails.All(orderBy: "Id desc").FirstOrDefault();
-                            if (objList != null)
-                            {
-                                string number = objList.PolicyNumber.Split('-')[0].Substring(4, objList.PolicyNumber.Length - 6);
-                                long pNumber = Convert.ToInt64(number.Substring(2, number.Length - 2)) + 1;
-
-                                int length = 7;
-                                length = length - pNumber.ToString().Length;
-                                for (int i = 0; i < length; i++)
-                                {
-                                    policyNumber += "0";
-                                }
-                                policyNumber += pNumber;
-                                policy.PolicyNumber = "GMCC" + DateTime.Now.Year.ToString().Substring(2, 2) + policyNumber + "-1";
-
-                            }
-                        }
+                       
                         // end genrate policy number
 
 
@@ -813,6 +793,7 @@ namespace InsuranceClaim.Controllers
                                 var service = new RiskDetailService();
                                 _item.CustomerId = customer.Id;
                                 _item.PolicyId = policy.Id;
+                                
                                 //   _item.InsuranceId = model.InsuranceId;
                                 //if (model.AmountPaid < model.TotalPremium)
                                 //{
@@ -1003,6 +984,27 @@ namespace InsuranceClaim.Controllers
                         }
 
 
+
+
+                     //   var item = vehicle;
+
+                        try
+                        {
+                            var summarydetails = new SummaryVehicleDetail();
+                            summarydetails.SummaryDetailId = summary.Id;
+                            summarydetails.VehicleDetailsId = vehicle.Id;
+                            summarydetails.CreatedBy = customer.Id;
+                            summarydetails.CreatedOn = DateTime.Now;
+                            InsuranceContext.SummaryVehicleDetails.Insert(summarydetails);
+                        }
+                        catch (Exception ex)
+                        {
+                            Insurance.Service.EmailService log = new Insurance.Service.EmailService();
+                            log.WriteLog("exception during insert vehicel :" + ex.Message);
+
+                        }
+
+
                         var DbEntry = Mapper.Map<SummaryDetailModel, SummaryDetail>(model);
 
                         if (summary != null)
@@ -1070,23 +1072,7 @@ namespace InsuranceClaim.Controllers
                             //}
 
 
-                            var item = vehicle;
-
-                            try
-                            {
-                                var summarydetails = new SummaryVehicleDetail();
-                                summarydetails.SummaryDetailId = summary.Id;
-                                summarydetails.VehicleDetailsId = item.Id;
-                                summarydetails.CreatedBy = customer.Id;
-                                summarydetails.CreatedOn = DateTime.Now;
-                                InsuranceContext.SummaryVehicleDetails.Insert(summarydetails);
-                            }
-                            catch (Exception ex)
-                            {
-                                Insurance.Service.EmailService log = new Insurance.Service.EmailService();
-                                log.WriteLog("exception during insert vehicel :" + ex.Message);
-
-                            }
+                         
                         }
                         MiscellaneousService.UpdateBalanceForVehicles(summary.AmountPaid, summary.Id, Convert.ToDecimal(summary.TotalPremium), false);
 
@@ -1200,15 +1186,17 @@ namespace InsuranceClaim.Controllers
             //vehicles = InsuranceContext.VehicleDetails.All().Where(x => x.IsActive == false).ToList();
 
 
-            var list = InsuranceContext.Query("select PolicyId, RegistrationNo,Premium, VehicleMake.MakeDescription as makeId, VehicleModel.modeldescription as modelId from vehicledetail join VehicleMake on VehicleDetail.MakeId = VehicleMake.Makecode join VehicleModel on vehicledetail.modelId = vehiclemodel.modelcode where vehicledetail.Isactive=0")
-               .Select(x => new VehicleDetail()
-               {
-                   PolicyId = x.PolicyId,
-                   RegistrationNo = x.RegistrationNo,
-                   MakeId = x.makeId,
-                   ModelId = x.modelId,
-                   Premium = x.Premium,
-               }).ToList();
+            //   var list = InsuranceContext.Query("select PolicyId, RegistrationNo,Premium, VehicleMake.MakeDescription as makeId, VehicleModel.modeldescription as modelId from vehicledetail join VehicleMake on VehicleDetail.MakeId = VehicleMake.Makecode join VehicleModel on vehicledetail.modelId = vehiclemodel.modelcode where vehicledetail.Isactive=0")
+            var list = InsuranceContext.Query("select PolicyId, RegistrationNo,Premium, VehicleMake.MakeDescription as makeId, VehicleModel.modeldescription as modelId, PolicyDetail.PolicyNumber, Customer.FirstName,Customer.LastName from vehicledetail join VehicleMake on VehicleDetail.MakeId = VehicleMake.Makecode join VehicleModel on vehicledetail.modelId = vehiclemodel.modelcode join Policydetail on vehicledetail.PolicyId=Policydetail.Id join customer on vehicledetail.customerId=customer.Id where vehicledetail.Isactive=0")
+            .Select(x => new VehicleDetail()
+            {
+                EngineNumber = x.PolicyNumber,
+                ChasisNumber = x.FirstName + " " + x.LastName,
+                RegistrationNo = x.RegistrationNo,
+                MakeId = x.makeId,
+                ModelId = x.modelId,
+                Premium = x.Premium,
+            }).ToList();
 
             return View(list);
         }
@@ -1359,7 +1347,7 @@ namespace InsuranceClaim.Controllers
         }
         public async Task<ActionResult> SaveDetailList(Int32 id)
         {
-              var vehicleId = (Int32)Session["RenewVehicleId"];
+            var vehicleId = (Int32)Session["RenewVehicleId"];
             var PaymentId = Session["PaymentId"];
             var InvoiceId = Session["InvoiceId"];
             var summary = InsuranceContext.SummaryDetails.Single(id);

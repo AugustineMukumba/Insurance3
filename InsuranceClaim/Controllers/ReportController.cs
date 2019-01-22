@@ -1096,6 +1096,7 @@ namespace InsuranceClaim.Controllers
                {
                    Id = res.Id,
                    CustomerName = res.CustomerName,
+
                    PolicyNumber = res.PolicyNumber,
                    DatePosted = res.DatePosted,
                    AmountDue = res.AmountDue,
@@ -1132,37 +1133,47 @@ namespace InsuranceClaim.Controllers
             var ListDailyReceiptsReport = new List<PreviewReceiptListModel>();
             DailyReceiptsSearchReportModel model = new DailyReceiptsSearchReportModel();
 
-            var query1 = "select PolicyDetail.PolicyNumber, Customer.FirstName + ' ' + Customer.LastName as CustomerName, SummaryDetail.CreatedOn as TransactionDate, ";
-            query1 += "SummaryDetail.TotalPremium, PolicyDetail.PolicyNumber as InvoiceNumber, ReceiptModuleHistory.AmountDue, ";
+            //var query1 = "select PolicyDetail.PolicyNumber, Customer.FirstName + ' ' + Customer.LastName as CustomerName, SummaryDetail.CreatedOn as TransactionDate, ";
+            //query1 += "SummaryDetail.TotalPremium, PolicyDetail.PolicyNumber as InvoiceNumber, ReceiptModuleHistory.AmountDue, ";
+            //query1 += "ReceiptModuleHistory.Id as ReceiptNo, ReceiptModuleHistory.AmountPaid, ";
+            //query1 += " case  ReceiptModuleHistory.Id when 0 then 'Yes' else 'No' end as Paid, ReceiptModuleHistory.DatePosted, ";
+            //query1 += " ReceiptModuleHistory.Balance  from Customer join PolicyDetail on Customer.Id = PolicyDetail.CustomerId ";
+            //query1 += " join VehicleDetail on PolicyDetail.id= VehicleDetail.PolicyId ";
+            //query1 += " join SummaryVehicleDetail on VehicleDetail.Id = SummaryVehicleDetail.VehicleDetailsId";
+            //query1 += " join SummaryDetail on SummaryDetail.Id= SummaryVehicleDetail.SummaryDetailId";
+            //query1 += " left join ReceiptModuleHistory on ReceiptModuleHistory.SummaryDetailId= SummaryDetail.Id";
+
+            var query1 = "select PolicyDetail.PolicyNumber,createcust.FirstName + '' + createcust.LastName as Created, prcustomer.FirstName + ' ' + prcustomer.LastName as CustomerName, SummaryDetail.CreatedOn as TransactionDate,";
+            query1 += "Summarydetail.createdby , SummaryDetail.TotalPremium, PolicyDetail.PolicyNumber as InvoiceNumber, ReceiptModuleHistory.AmountDue,";
             query1 += "ReceiptModuleHistory.Id as ReceiptNo, ReceiptModuleHistory.AmountPaid, ";
             query1 += " case  ReceiptModuleHistory.Id when 0 then 'Yes' else 'No' end as Paid, ReceiptModuleHistory.DatePosted, ";
-            query1 += " ReceiptModuleHistory.Balance  from Customer join PolicyDetail on Customer.Id = PolicyDetail.CustomerId ";
-            query1 += " join VehicleDetail on PolicyDetail.id= VehicleDetail.PolicyId ";
+            query1 += " ReceiptModuleHistory.Balance from Customer as prcustomer join PolicyDetail on prcustomer.Id = PolicyDetail.CustomerId";
+            query1 += " join VehicleDetail on PolicyDetail.id = VehicleDetail.PolicyId";
             query1 += " join SummaryVehicleDetail on VehicleDetail.Id = SummaryVehicleDetail.VehicleDetailsId";
-            query1 += " join SummaryDetail on SummaryDetail.Id= SummaryVehicleDetail.SummaryDetailId";
-            query1 += " left join ReceiptModuleHistory on ReceiptModuleHistory.SummaryDetailId= SummaryDetail.Id";
-
-
+            query1 += " join SummaryDetail on SummaryDetail.Id = SummaryVehicleDetail.SummaryDetailId";
+            query1 += " left join ReceiptModuleHistory on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.Id";
+            query1 += " left join customer as createcust on createcust.id = summarydetail.createdby";
 
             var list = InsuranceContext.Query(query1)
                .Select(res => new PreviewReceiptListModel()
                {
                    Id = Convert.ToInt32(res.ReceiptNo),
                    CustomerName = res.CustomerName,
+                   PolicyCreatedBy = res.Created,
                    PolicyNumber = res.PolicyNumber,
-                   DatePosted = Convert.ToDateTime(res.DatePosted) ,
-                   TransactionDate=res.TransactionDate,
+                   DatePosted = Convert.ToDateTime(res.DatePosted),
+                   TransactionDate = res.TransactionDate,
                    AmountDue = res.AmountDue,
                    AmountPaid = res.AmountPaid,
                    Balance = res.Balance,
-                   TotalPremium=Convert.ToInt32(res.TotalPremium),
-                // paymentMethodType = (res.PaymentMethodId == 1 ? "Cash" : (res.PaymentMethodId == 2 ? "Ecocash" : (res.PaymentMethodId == 3 ? "Swipe" : "MasterVisa Card"))),
+                   TotalPremium = Convert.ToInt32(res.TotalPremium),
+                   // paymentMethodType = (res.PaymentMethodId == 1 ? "Cash" : (res.PaymentMethodId == 2 ? "Ecocash" : (res.PaymentMethodId == 3 ? "Swipe" : "MasterVisa Card"))),
                    InvoiceNumber = res.InvoiceNumber,
-                 //TransactionReference = res.TransactionReference,
-                 //PolicyCreatedBy = res.PolicyCreatedBy
+                   //TransactionReference = res.TransactionReference,
+                   //PolicyCreatedBy = res.PolicyCreatedBy
                }).ToList();
 
-        
+
 
 
             model.DailyReceiptsReport = list.OrderByDescending(c => c.Id).ToList();
@@ -1175,15 +1186,27 @@ namespace InsuranceClaim.Controllers
             var ListDailyReceiptsReport = new List<PreviewReceiptListModel>();
             DailyReceiptsSearchReportModel model = new DailyReceiptsSearchReportModel();
 
-            var query1 = "select PolicyDetail.PolicyNumber, Customer.FirstName + ' ' + Customer.LastName as CustomerName, CONVERT(datetime, CONVERT(varchar,SummaryDetail.CreatedOn, 101)) as TransactionDate, ";
-            query1 += "SummaryDetail.TotalPremium, PolicyDetail.PolicyNumber as InvoiceNumber, ReceiptModuleHistory.AmountDue, ";
+            var query1 = "select PolicyDetail.PolicyNumber,createcust.FirstName + '' + createcust.LastName as Created, prcustomer.FirstName + ' ' + prcustomer.LastName as CustomerName, SummaryDetail.CreatedOn as TransactionDate,";
+            query1 += "Summarydetail.createdby , SummaryDetail.TotalPremium, PolicyDetail.PolicyNumber as InvoiceNumber, ReceiptModuleHistory.AmountDue,";
             query1 += "ReceiptModuleHistory.Id as ReceiptNo, ReceiptModuleHistory.AmountPaid, ";
             query1 += " case  ReceiptModuleHistory.Id when 0 then 'Yes' else 'No' end as Paid, ReceiptModuleHistory.DatePosted, ";
-            query1 += " ReceiptModuleHistory.Balance  from Customer join PolicyDetail on Customer.Id = PolicyDetail.CustomerId ";
-            query1 += " join VehicleDetail on PolicyDetail.id= VehicleDetail.PolicyId ";
-            query1 += " join SummaryVehicleDetail on VehicleDetail.Id = SummaryVehicleDetail.SummaryDetailId";
-            query1 += " join SummaryDetail on SummaryDetail.Id= SummaryVehicleDetail.SummaryDetailId";
-            query1 += " left join ReceiptModuleHistory on ReceiptModuleHistory.SummaryDetailId= SummaryDetail.Id";
+            query1 += " ReceiptModuleHistory.Balance from Customer as prcustomer join PolicyDetail on prcustomer.Id = PolicyDetail.CustomerId";
+            query1 += " join VehicleDetail on PolicyDetail.id = VehicleDetail.PolicyId";
+            query1 += " join SummaryVehicleDetail on VehicleDetail.Id = SummaryVehicleDetail.VehicleDetailsId";
+            query1 += " join SummaryDetail on SummaryDetail.Id = SummaryVehicleDetail.SummaryDetailId";
+            query1 += " left join ReceiptModuleHistory on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.Id";
+            query1 += " left join customer as createcust on createcust.id = summarydetail.createdby";
+
+
+            //var query1 = "select Distinct PolicyDetail.PolicyNumber, Customer.FirstName + ' ' + Customer.LastName as CustomerName, CONVERT(datetime, CONVERT(varchar,SummaryDetail.CreatedOn, 101)) as TransactionDate, ";
+            //query1 += "SummaryDetail.TotalPremium, PolicyDetail.PolicyNumber as InvoiceNumber, ReceiptModuleHistory.AmountDue, ";
+            //query1 += "ReceiptModuleHistory.Id as ReceiptNo, ReceiptModuleHistory.AmountPaid, ";
+            //query1 += " case  ReceiptModuleHistory.Id when 0 then 'Yes' else 'No' end as Paid, ReceiptModuleHistory.DatePosted, ";
+            //query1 += " ReceiptModuleHistory.Balance  from Customer join PolicyDetail on Customer.Id = PolicyDetail.CustomerId ";
+            //query1 += " join VehicleDetail on PolicyDetail.id= VehicleDetail.PolicyId ";
+            //query1 += " join SummaryVehicleDetail on VehicleDetail.Id = SummaryVehicleDetail.VehicleDetailsId";
+            //query1 += " join SummaryDetail on SummaryDetail.Id= SummaryVehicleDetail.SummaryDetailId";
+            //query1 += " left join ReceiptModuleHistory on ReceiptModuleHistory.SummaryDetailId= SummaryDetail.Id";
 
 
 
@@ -1192,6 +1215,7 @@ namespace InsuranceClaim.Controllers
                {
                    Id = Convert.ToInt32(res.ReceiptNo),
                    CustomerName = res.CustomerName,
+                   PolicyCreatedBy = res.Created,
                    PolicyNumber = res.PolicyNumber,
                    DatePosted = Convert.ToDateTime(res.DatePosted),
                    TransactionDate = res.TransactionDate,

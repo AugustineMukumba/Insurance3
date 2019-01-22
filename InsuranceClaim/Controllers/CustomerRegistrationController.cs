@@ -3246,6 +3246,19 @@ namespace InsuranceClaim.Controllers
             return Json(riskDetailModel, JsonRequestBehavior.AllowGet);
         }
 
+
+        [HttpGet]
+        public JsonResult GetReNewLicenseAddress()
+        {
+            var customerData = (CustomerModel)Session["ReCustomerDataModal"];
+            //LicenseAddress licenseAddress = new LicenseAddress();
+            RiskDetailModel riskDetailModel = new RiskDetailModel();
+            riskDetailModel.LicenseAddress1 = customerData.AddressLine1;
+            riskDetailModel.LicenseAddress2 = customerData.AddressLine2;
+            riskDetailModel.LicenseCity = customerData.City;
+            return Json(riskDetailModel, JsonRequestBehavior.AllowGet);
+        }
+
         //public class LicenseAddress
         //{
         //    public string Address1 { get; set; }

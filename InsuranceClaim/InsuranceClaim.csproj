@@ -872,6 +872,7 @@
     <Content Include="Scripts\toastr.js" />
     <Content Include="testChat.html" />
     <Content Include="Views\Account\EndorsementDetials.cshtml" />
+    <Content Include="Views\Renew\Index.cshtml" />
     <Content Include="Views\Report\ProductivityReport.cshtml" />
     <Content Include="Views\Shared\EmaiTemplates\UserPaymentEmail.cshtml" />
     <Content Include="Web.config">
