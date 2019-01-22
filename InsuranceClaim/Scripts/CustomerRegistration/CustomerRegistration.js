@@ -75,3 +75,23 @@ function GoToSummaryDetail(json) {
 function GoToPaymentDetail(json) {
     window.location.href = '/CustomerRegistration/PaymentDetail';
 }
+//Renew 16 Jan
+
+
+function GoToProductsDetails(json) {
+    debugger
+
+    if (json.IsError == true) {
+        window.location.href = '/Renew/RiskDetail';
+    }
+    else {
+        var errorMessage = json.error;
+        if (errorMessage != null && errorMessage != '') {
+            toastr.error(errorMessage)
+            if (errorMessage == "Please Try Again") {
+                window.location.href = '/Renew/Index';
+            }
+
+        }
+    }
+}
