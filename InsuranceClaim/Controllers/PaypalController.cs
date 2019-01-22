@@ -36,8 +36,7 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult Index(int id)
         {
-
-           // ApproveVRNToIceCash(6161);
+            // ApproveVRNToIceCash(6161);
 
             return View();
         }
@@ -735,7 +734,7 @@ namespace InsuranceClaim.Controllers
 
 
             var dbPaymentInformation = InsuranceContext.PaymentInformations.Single(where: $"SummaryDetailId='{id}'");
-            if(dbPaymentInformation==null)
+            if (dbPaymentInformation == null)
             {
                 InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
             }
@@ -745,7 +744,7 @@ namespace InsuranceClaim.Controllers
                 InsuranceContext.PaymentInformations.Update(objSaveDetailListModel);
             }
 
-           
+
 
             ApproveVRNToIceCash(id);
 
@@ -923,7 +922,7 @@ namespace InsuranceClaim.Controllers
 
             //}
 
-           
+
             var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == vehicle.PaymentTermId);
             string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/SeheduleMotor.cshtml";
             string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
@@ -937,6 +936,7 @@ namespace InsuranceClaim.Controllers
             #region Invoice PDF
             var attacehmetnFile = MiscellaneousService.EmailPdf(Bodyy, policy.CustomerId, policy.PolicyNumber, "Schedule-motor");
             var Atter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
+
 
             #endregion
             List<string> __attachements = new List<string>();
@@ -1124,7 +1124,15 @@ namespace InsuranceClaim.Controllers
                                 }
                             }
 
-                            ICEcashService.TPIPolicy(vichelDetails, PartnerToken);
+                            var res = ICEcashService.TPIPolicy(vichelDetails, PartnerToken);
+                            if (res.Response != null && res.Response.Message == "Policy Retrieved")
+                            {
+                                vichelDetails.InsuranceStatus = "Approved";
+                                InsuranceContext.VehicleDetails.Update(vichelDetails);
+                            }
+
+
+
                         }
 
                     }

@@ -34,7 +34,7 @@ namespace Insurance.Service
                     var listVehicles = new List<VehicleDetail>();
                     foreach (var item in _SummaryVehicleDetails)
                     {
-                        var vehicle = InsuranceContext.VehicleDetails.Single(item.VehicleDetailsId);
+                        var vehicle = InsuranceContext.VehicleDetails.Single(where: $" Id='{item.VehicleDetailsId}' and IsActive<>0");
                         if (vehicle != null)
                         {
                             listVehicles.Add(vehicle);
@@ -182,6 +182,13 @@ namespace Insurance.Service
             return path;
 
         }
+
+
+
+     
+
+
+
 
         public static string GetCustomerNamebyID(int id)
         {

@@ -20,13 +20,13 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult RiskDetail(int? id = 1)
         {
-
             // summaryDetailId: it's represent to Qutation edit
-
+    
             if(Session["SummaryDetailId"]!=null)
             {
                 SetValueIntoSession(Convert.ToInt32(Session["SummaryDetailId"]));
                 Session["SummaryDetailId"] = null;
+                //IsUpdate = true;
             }
 
            

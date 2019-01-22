@@ -189,9 +189,47 @@ namespace Insurance.Service
                 }
                 else
                 {
-                    // it's for compresnsive
                     additionalchargersa = (sumInsured * RoadsideAssistancePercentage) / 100;
+
+                    //switch (PaymentTermid)
+                    //{
+                    //    case 3:
+                    //        additionalchargersa = 4.5m / 4;
+                    //        break;
+                    //    case 4:
+                    //        additionalchargersa = 4.5m / 3;
+                    //        break;
+                    //    case 5:
+                    //        additionalchargersa = 4.5m / 5;
+                    //        break;
+                    //    case 6:
+                    //        additionalchargersa = 4.5m / 6;
+                    //        break;
+                    //    case 7:
+                    //        additionalchargersa = 4.5m / 7;
+                    //        break;
+                    //    case 8:
+                    //        additionalchargersa = 4.5m / 8;
+                    //        break;
+                    //    case 9:
+                    //        additionalchargersa = 4.5m / 9;
+                    //        break;
+                    //    case 10:
+                    //        additionalchargersa = 4.5m / 10;
+                    //        break;
+                    //    case 11:
+                    //        additionalchargersa = 4.5m / 11;
+                    //        break;
+                    //    case 1:
+                    //        additionalchargersa = 4.5m;
+                    //        break;
+                    //}
+
+
                 }
+
+
+
             }
 
             if (MedicalExpenses)

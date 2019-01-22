@@ -5,6 +5,8 @@
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
 
+
+
 <div class="productsave-section">
     <div class="container">
         <div class="row">
@@ -65,6 +67,7 @@
                         </tr>
                     </thead>*@
                 <tbody>
+
                     @if (Model != null)
                     {
                         if (Model.listpolicy.Count == 0)
@@ -72,12 +75,14 @@
                             <label>No Policies Found</label>
                         }
                     }
+
                     @foreach (var item in Model.listpolicy.ToList())
                     {
 
 
 
                         <tr class="policyheading-tr">
+
                             <th>Policy Number</th>
                             <th>Customer Name</th>
                             <th>Payment Method</th>
@@ -86,22 +91,28 @@
                             <th>Created On</th>
                             <th>Action(s)</th>
 
+
                         </tr>
                         <tr class="policynumber-tr">
+
                             <td>@item.PolicyNumber</td>
                             <td>@MiscellaneousService.GetCustomerNamebyID(item.CustomerId)</td>
                             <td>@MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId)</td>
                             <td>$@item.TotalSumInsured</td>
                             <td>$@item.TotalPremium</td>
                             <td>@item.createdOn.ToString("dd-MMM-yyyy")</td>
+
                             @*<td>@Html.ActionLink("View Policy", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</td>*@
+
                             <td>
                                 <div class="tbl-btn-list">
                                     <ul class="list-inline">
                                         <li>@Html.ActionLink("View Policy", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>
+
                                     </ul>
                                 </div>
                             </td>
+
                         </tr>
                         <tr>
                             <td colspan="7">
@@ -153,12 +164,13 @@
                                                             @*<li><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.CustomerId')">View/Upload Document</button></li>*@
                                                         </ul>
                                                     </div>
+
                                                 </td>
                                             }
                                             else if (DateTime.Now >= _item.RenewalDate.AddDays(-21) && DateTime.Now <= _item.RenewalDate)
                                             {
                                                 <td>
-                                                    @Html.ActionLink("Renew", "RiskDetail", "Renew", new { Id = _item.VehicleId }, new { @class = "btn-sm btn-primary" })
+                                                    @Html.ActionLink("Renew", "Index", "Renew", new { vehicleid = _item.VehicleId }, new { @class = "btn-sm btn-primary" })
                                                 </td>
                                                 <td></td>
 
@@ -166,6 +178,7 @@
                                             else if (DateTime.Now > _item.RenewalDate)
                                             {
                                                 <td>Lapsed</td>
+                                                <td> @Html.ActionLink("Renew", "Index", "Renew", new { vehicleid = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</td>
                                                 @*<td>@Html.ActionLink("Renew", "RiskDetail", "Renew", new { id = _item.VehicleId }, new { @class = "btn-sm btn-danger", @style = "    width: 100%;    float: left;    text-align: center;" })</td>*@
                                             }
 
@@ -192,6 +205,7 @@
                                                     <td>Lapsed</td>
                                                 }*@
 
+
                                         </tr>
                                     }
                                 </table>
@@ -200,10 +214,16 @@
                     }
                 </tbody>
 
+
+
             </table>
         </div>
     </div>
+
 </div>
+
+
+
 
 
 <div class="modal fade" id="mymodals" role="dialog">
@@ -230,13 +250,13 @@
                         <tbody></tbody>
                     </table>
                     <ul id="fileListUL"></ul>
+
                 </div>
                 <div>
-                    <a id="url">Documents</a>
                     <table style="width:100%">
                         <tr>
-                            @*<td style="padding: 6px;">Title</td>
-                                <td style="padding: 6px;"><input class="form-control" id="txt" type="text" name="Textbox" /></td>*@
+                            <td style="padding: 6px;">Title</td>
+                            <td style="padding: 6px;"><input class="form-control" id="txt" type="text" name="Textbox" /></td>
 
 
                         </tr>
@@ -251,13 +271,19 @@
                         </tr>
                     </table>
 
+
+
                 </div>
+
                 <div>
+
                 </div>
+
 
             </div>
             <div class="modal-footer">
                 <input type="button" id="documnet" value="Upload" class="btn btn-primary" />
+
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -266,6 +292,7 @@
     @Html.Hidden("CustomerId")
     @Html.Hidden("vehicleId")
 </div>
+
 <script>
 
     function uploadFile() {
@@ -347,11 +374,7 @@
         $("#PolicyNumber").val(PolicyNumber);
         $("#CustomerId").val(CustomerId);
         $("#vehicleId").val(vehicleId);
-        var link = $("#url");
-        link.attr("href", "http://localhost:49873/Documents/" + CustomerId + "/" + PolicyNumber + "/" + vehicleId + "");
-        link.attr("title", "Documents");
-        link.text("Go to Documents");
-        link.addClass("link");
+
         getFiles();
 
         $("#txt").val("");

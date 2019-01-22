@@ -643,6 +643,12 @@ namespace InsuranceClaim.Controllers
                 model.AddThirdPartyAmount = 0.00m;
             }
 
+            // if policy id is not null it mean's it will be update
+
+            if(model.chkAddVehicles==false && model.PolicyId!=0)
+                model.isUpdate = true;
+
+
             // Submit & Add More Vehicle
 
             if (model.isUpdate)
@@ -717,16 +723,10 @@ namespace InsuranceClaim.Controllers
             }
             else
             {
-
                 try
                 {
-
-
-
-
                     if (model.chkAddVehicles)
                     {
-
                         DateTimeFormatInfo usDtfi = new CultureInfo("en-US", false).DateTimeFormat;
                         var service = new RiskDetailService();
                         var startDate = Request.Form["CoverStartDate"];
@@ -878,7 +878,6 @@ namespace InsuranceClaim.Controllers
         {
             try
             {
-
                 List<RiskDetailModel> vehicleList = new List<RiskDetailModel>();
                 if (summaryDetailId != 0)
                 {
@@ -889,7 +888,6 @@ namespace InsuranceClaim.Controllers
                     {
                         var vehicleDetails = InsuranceContext.VehicleDetails.Single(where: $" Id='{item.VehicleDetailsId}'");
                         RiskDetailModel vehicleModel = Mapper.Map<VehicleDetail, RiskDetailModel>(vehicleDetails);
-
                         vehicleModel.ZTSCLevy = vehicleDetails.ZTSCLevy;
 
                         //vehicleModel.Premium = vehicleDetails.Premium;
@@ -1070,7 +1068,7 @@ namespace InsuranceClaim.Controllers
 
                     foreach (var item in summaryVichalList)
                     {
-                        var vehicleDetails = InsuranceContext.VehicleDetails.Single(item.VehicleDetailsId);
+                        var vehicleDetails = InsuranceContext.VehicleDetails.Single(where: $" Id='{item.VehicleDetailsId}' and IsActive<>0");
 
                         if (vehicleDetails != null)
                         {
@@ -2206,8 +2204,6 @@ namespace InsuranceClaim.Controllers
                                 ListOfVehicles.Add(itemVehicle);
                             }
 
-
-
                             //List<VehicleDetail> ListOfVehicles = new List<VehicleDetail>();
                             string Summeryofcover = "";
                             var RoadsideAssistanceAmount = 0.00m;
@@ -2263,8 +2259,6 @@ namespace InsuranceClaim.Controllers
 
 
                                 string policyPeriod = item.CoverStartDate.Value.ToString("dd/MM/yyyy") + " - " + item.CoverEndDate.Value.ToString("dd/MM/yyyy");
-
-
 
                                 Summeryofcover += "<tr> <td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td> <td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td> <td style='padding: 7px 10px; font - size:15px;'>" + policyPeriod + "</td><td style='padding: 7px 10px; font - size:15px;'>" + paymentTermsNmae + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
 
@@ -2589,14 +2583,11 @@ namespace InsuranceClaim.Controllers
                                 else
                                 {
                                     // set make and model if IceCash does not retrun
-
                                     response.Data.Response.Quotes[0].Vehicle.Make = "0";
                                     response.Data.Response.Quotes[0].Vehicle.Model = "0";
-
-
                                 }
-
                             }
+
                         }
                     }
                 }

@@ -1091,9 +1091,6 @@ namespace InsuranceClaim.Controllers
             //query +=  " join Customer on SummaryDetail.CreatedBy = Customer.Id";
             query += "Left join Customer  on ReceiptModuleHistory.CreatedBy = Customer.Id  ";
 
-
-
-
             var list = InsuranceContext.Query(query)
                .Select(res => new PreviewReceiptListModel()
                {

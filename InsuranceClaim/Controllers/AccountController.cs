@@ -1138,7 +1138,7 @@ namespace InsuranceClaim.Controllers
                 {
                     customers = InsuranceContext.Customers.All(where: $"FirstName like '%{searchText}%' or LastName like '%{searchText}%' ").ToList();
                 }
-               
+
                 if (customers != null && customers.Count > 0)
                 {
 
@@ -1286,7 +1286,10 @@ namespace InsuranceClaim.Controllers
                 var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={item.Id}").ToList();
                 if (SummaryVehicleDetails != null && SummaryVehicleDetails.Count > 0)
                 {
-                    var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+
+                    var vehicle=  InsuranceContext.VehicleDetails.Single(where: $" Id='{SummaryVehicleDetails[0].VehicleDetailsId}' and IsActive<>0");
+
+                    
 
                     if (vehicle != null)
                     {
@@ -1399,7 +1402,7 @@ namespace InsuranceClaim.Controllers
                         var policyId = policye.Id;
                         var vehicle = InsuranceContext.VehicleDetails.Single(where: $"PolicyId = '" + policyId + "'");
 
-                        if (vehicle!=null)
+                        if (vehicle != null)
                         {
                             if (vehicle.Id != 0)
                             {
@@ -1412,7 +1415,7 @@ namespace InsuranceClaim.Controllers
                                     SummaryList = InsuranceContext.SummaryDetails.All(Convert.ToString(SummaryVehicleDetail.SummaryDetailId)).ToList();
                                 }
                             }
-                        }                   
+                        }
                     }
                 }
 
@@ -1431,7 +1434,7 @@ namespace InsuranceClaim.Controllers
 
                         var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={item.Id}").ToList();
                         var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
-                        if (vehicle!=null)
+                        if (vehicle != null)
                         {
                             if (vehicle.PolicyId != 0)
                             {
@@ -1448,7 +1451,7 @@ namespace InsuranceClaim.Controllers
 
 
 
-                        
+
                         foreach (var _item in SummaryVehicleDetails)
                         {
                             VehicleReinsuranceViewModel obj = new VehicleReinsuranceViewModel();
@@ -1490,7 +1493,7 @@ namespace InsuranceClaim.Controllers
                             else
                             {
                                 return View("PolicyList", policylist);
-                            }                           
+                            }
                         }
 
                         policylist.listpolicy.Add(policylistviewmodel);
@@ -1722,8 +1725,8 @@ namespace InsuranceClaim.Controllers
                 policylistviewmodel.createdOn = Convert.ToDateTime(item.CreatedOn);
 
                 var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={item.Id}").ToList();
-                var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
-
+             
+                var vehicle= InsuranceContext.VehicleDetails.Single(where: $" Id='{SummaryVehicleDetails[0].VehicleDetailsId}' and IsActive<>0");
 
                 if (vehicle != null)
                 {
@@ -2121,23 +2124,55 @@ namespace InsuranceClaim.Controllers
         [HttpPost]
         public JsonResult GetUplodedFiles()
         {
-            var PolicyNumber = System.Web.HttpContext.Current.Request.Params["PolicyNumber"];
-            var CustomerId = System.Web.HttpContext.Current.Request.Params["CustomerId"];
-            var vehicleId = System.Web.HttpContext.Current.Request.Params["vehicleId"];
-
-            //string[] filePaths = Directory.GetFiles(Server.MapPath("~/Documents/" + CustomerId + "/" + PolicyNumber + "/" + vehicleId + "/"));
-
-            var FileList = InsuranceContext.PolicyDocuments.All(where: $"CustomerId={CustomerId} and PolicyNumber='{PolicyNumber}' and vehicleId={vehicleId}");
             var list = new List<InsuranceClaim.Models.PolicyDocumentModels>();
-            foreach (var item in FileList)
+
+            try
             {
-                var obj = new InsuranceClaim.Models.PolicyDocumentModels();
-                obj.Title = item.Title;
-                obj.Decription = item.Description;
-                obj.FilePath = item.FilePath;
-                obj.id = item.Id;
-                list.Add(obj);
+                var PolicyNumber = System.Web.HttpContext.Current.Request.Params["PolicyNumber"];
+                var CustomerId = System.Web.HttpContext.Current.Request.Params["CustomerId"];
+                var vehicleId = System.Web.HttpContext.Current.Request.Params["vehicleId"];
+
+                //string[] filePaths = Directory.GetFiles(Server.MapPath("~/Documents/" + CustomerId + "/" + PolicyNumber + "/" + vehicleId + "/"));
+
+                var FileList = InsuranceContext.PolicyDocuments.All(where: $"CustomerId={CustomerId} and PolicyNumber='{PolicyNumber}' and vehicleId={vehicleId}");
+
+                foreach (var item in FileList)
+                {
+                    var obj = new InsuranceClaim.Models.PolicyDocumentModels();
+                    obj.Title = item.Title;
+                    obj.Decription = item.Description;
+                    obj.FilePath = item.FilePath;
+                    obj.id = item.Id;
+                    list.Add(obj);
+                }
+
+
+                string path = "/Documents/" + CustomerId + "/" + PolicyNumber + "/";
+                string filePath = Server.MapPath(path);
+
+
+                string baseUrl = Request.Url.Scheme + "://" + Request.Url.Authority +
+        Request.ApplicationPath.TrimEnd('/') + "/";
+
+
+                foreach (var files in Directory.GetFiles(filePath))
+                {
+                    FileInfo info = new FileInfo(files);
+                    var fileName = Path.GetFileName(info.FullName);
+                    var obj = new InsuranceClaim.Models.PolicyDocumentModels();
+                    obj.Title = fileName;
+                    obj.Decription = "";
+                    string documentPath = baseUrl + path + fileName;
+                    obj.FilePath = documentPath;
+                    list.Add(obj);
+                }
+
             }
+            catch (Exception ex)
+            {
+
+            }
+
 
             return Json(list, JsonRequestBehavior.AllowGet);
         }
@@ -2318,7 +2353,7 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult ProductDetail()
         {
-           
+
             return RedirectToAction("RiskDetail");
         }
 
@@ -2423,8 +2458,6 @@ namespace InsuranceClaim.Controllers
             //}
 
 
-
-
             viewModel.NoOfCarsCovered = 1;
 
             if (Session["ViewlistVehicles"] != null)
@@ -2434,8 +2467,6 @@ namespace InsuranceClaim.Controllers
                 {
                     viewModel.NoOfCarsCovered = list.Count + 1;
                 }
-
-
 
             }
 
@@ -3014,7 +3045,10 @@ namespace InsuranceClaim.Controllers
 
                     if (SummaryVehicleDetails.Count > 0)
                     {
-                        var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+
+                        var vehicle = InsuranceContext.VehicleDetails.Single(where: $" Id='{SummaryVehicleDetails[0].VehicleDetailsId}' and IsActive<>0");
+
+
                         if (vehicle != null)
                         {
                             var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
@@ -3290,7 +3324,7 @@ namespace InsuranceClaim.Controllers
 
         //    if (VehicelDetail == null)
         //    {
-               
+
 
         //        EndorsementSummaryDetail endorsementSummaryDetail = new EndorsementSummaryDetail();
         //        endorsementSummaryDetail.SummaryId = summaryDetail.Id;
@@ -3315,7 +3349,7 @@ namespace InsuranceClaim.Controllers
         //             _customerData = InsuranceContext.Customers.All(where: $"UserId ='{_User.Id}'").FirstOrDefault();
         //            endorsementSummaryDetail.CreatedBy = _customerData.Id;
         //        }
-           
+
         //        endorsementSummaryDetail.ModifiedOn = summaryDetail.ModifiedOn;
         //        endorsementSummaryDetail.ModifiedBy = summaryDetail.ModifiedBy;
         //        endorsementSummaryDetail.IsActive = summaryDetail.IsActive;
@@ -3379,15 +3413,15 @@ namespace InsuranceClaim.Controllers
         //                vehicleInsert.Addthirdparty = vehicle.Addthirdparty;
         //                vehicleInsert.AddThirdPartyAmount = vehicle.AddThirdPartyAmount;
 
-                     
 
-                                                             
+
+
         //                vehicleInsert.PassengerAccidentCoverAmount = vehicle.PassengerAccidentCoverAmount == null ? 0 : vehicle.PassengerAccidentCoverAmount;
         //                vehicleInsert.ExcessBuyBackAmount = vehicle.ExcessBuyBackAmount == null ? 0 : vehicle.ExcessBuyBackAmount;
-                      
+
         //                vehicleInsert.NumberofPersons = vehicle.NumberofPersons;
         //                vehicleInsert.IsLicenseDiskNeeded = vehicle.IsLicenseDiskNeeded;
-                       
+
 
         //                vehicleInsert.PassengerAccidentCoverAmountPerPerson = vehicle.PassengerAccidentCoverAmountPerPerson == null ? 0 : vehicle.PassengerAccidentCoverAmountPerPerson;
         //                vehicleInsert.ExcessBuyBackPercentage = vehicle.ExcessBuyBackPercentage == null ? 0 : vehicle.ExcessBuyBackPercentage;
@@ -3417,7 +3451,7 @@ namespace InsuranceClaim.Controllers
 
         //                vehicleInsert.RoadsideAssistancePercentage = vehicle.RoadsideAssistancePercentage == null ? 0 : vehicle.RoadsideAssistancePercentage;
         //                vehicleInsert.MedicalExpensesPercentage = vehicle.MedicalExpensesPercentage == null ? 0 : vehicle.MedicalExpensesPercentage;
-                        
+
         //                InsuranceContext.EndorsementVehicleDetails.Insert(vehicleInsert);
 
         //            }
