@@ -1261,7 +1261,7 @@ namespace InsuranceClaim.Controllers
             policylist.listpolicy = new List<PolicyListViewModel>();
             //   var SummaryList = InsuranceContext.SummaryDetails.All().OrderByDescending(x => x.Id).ToList(); // commented 
 
-            var SummaryList = InsuranceContext.SummaryDetails.All().OrderByDescending(x => x.Id).ToList().Take(50);
+            var SummaryList = InsuranceContext.SummaryDetails.All().OrderByDescending(x => x.Id).ToList();
 
             foreach (var item in SummaryList)
             {
@@ -2546,14 +2546,9 @@ namespace InsuranceClaim.Controllers
         }
 
 
-
-
-
-
         public void SetValueIntoSession(int summaryId)
         {
             //Session["ICEcashToken"] = null;
-
             Session["SummaryDetailIdView"] = summaryId;
 
             var summaryDetail = InsuranceContext.SummaryDetails.Single(summaryId);
@@ -2575,17 +2570,15 @@ namespace InsuranceClaim.Controllers
                     RiskDetailModel riskDetail = Mapper.Map<VehicleDetail, RiskDetailModel>(_vehicle);
                     listRiskDetail.Add(riskDetail);
                 }
-
             }
+
+
             // Session["VehicleDetails"] = listRiskDetail;
             Session["ViewlistVehicles"] = listRiskDetail;
 
             SummaryDetailModel summarymodel = Mapper.Map<SummaryDetail, SummaryDetailModel>(summaryDetail);
             summarymodel.Id = summaryDetail.Id;
             //Session["SummaryDetailed"] = summarymodel;
-
-
-
 
             Session["ViewSummaryDetail"] = summaryDetail;
 

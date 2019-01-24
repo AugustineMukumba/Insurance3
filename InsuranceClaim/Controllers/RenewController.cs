@@ -700,7 +700,7 @@ namespace InsuranceClaim.Controllers
 
                         // Genrate new policy number
 
-                       
+
                         // end genrate policy number
 
 
@@ -777,6 +777,8 @@ namespace InsuranceClaim.Controllers
                                 // item.Id = vehicelDetails.Id;
                                 vehicle.Id = 0;
                                 vehicelDetails.IsActive = false;
+                                vehicelDetails.RenewPolicyNumber = policy.PolicyNumber;
+                                vehicelDetails.isLapsed = true;
                                 InsuranceContext.VehicleDetails.Update(vehicelDetails);
 
 
@@ -784,8 +786,20 @@ namespace InsuranceClaim.Controllers
                                 if (SummaryVehicalDetails != null)
                                     summary.Id = SummaryVehicalDetails.SummaryDetailId;
 
-
                             }
+
+
+                            // Get renew policy number
+
+                            int policyLastSequence = 0;
+                            string[] splitPolicyNumber = policy.PolicyNumber.Split('-');
+
+                            if (splitPolicyNumber.Length > 1)
+                            {
+                                policyLastSequence = Convert.ToInt32(splitPolicyNumber[1]);
+                                policyLastSequence += 1;
+                            }
+                            string reNewPolicyNumber  = splitPolicyNumber[0] + "-" + policyLastSequence;
 
 
                             if (vehicle.Id == null || vehicle.Id == 0)
@@ -793,7 +807,7 @@ namespace InsuranceClaim.Controllers
                                 var service = new RiskDetailService();
                                 _item.CustomerId = customer.Id;
                                 _item.PolicyId = policy.Id;
-                                
+                                _item.RenewPolicyNumber = reNewPolicyNumber;
                                 //   _item.InsuranceId = model.InsuranceId;
                                 //if (model.AmountPaid < model.TotalPremium)
                                 //{
@@ -830,8 +844,6 @@ namespace InsuranceClaim.Controllers
 
                                     if (Licence != null)
                                     {
-
-
                                         string number = Licence.TicketNo.Substring(3);
 
                                         long tNumber = Convert.ToInt64(number) + 1;
@@ -851,10 +863,7 @@ namespace InsuranceClaim.Controllers
                                     else
                                     {
                                         var TicketNo = ConfigurationManager.AppSettings["TicketNo"];
-
                                         LicenceTicket.TicketNo = TicketNo;
-
-
                                     }
 
                                     LicenceTicket.VehicleId = _item.Id;
@@ -986,7 +995,7 @@ namespace InsuranceClaim.Controllers
 
 
 
-                     //   var item = vehicle;
+                        //   var item = vehicle;
 
                         try
                         {
@@ -1072,7 +1081,7 @@ namespace InsuranceClaim.Controllers
                             //}
 
 
-                         
+
                         }
                         MiscellaneousService.UpdateBalanceForVehicles(summary.AmountPaid, summary.Id, Convert.ToDecimal(summary.TotalPremium), false);
 
@@ -1124,8 +1133,6 @@ namespace InsuranceClaim.Controllers
 
                                 if (count == listReinsuranceTransaction.Count && !MailSent)
                                 {
-
-
                                     var user = UserManager.FindById(customer.UserID);
                                     Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
                                     var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
@@ -1146,7 +1153,6 @@ namespace InsuranceClaim.Controllers
 
                         #endregion
 
-
                         Session["RenewVehicleId"] = vehicle.Id;
                         // return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
 
@@ -1159,7 +1165,6 @@ namespace InsuranceClaim.Controllers
                             TempData["PaymentMethodId"] = model.PaymentMethodId;
                             return RedirectToAction("makepayment", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
                         }
-
                         else
                             return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
                     }
@@ -1359,8 +1364,8 @@ namespace InsuranceClaim.Controllers
             if (Session["RenewVehicleDetails"] != null)
             {
 
-                vehicle.isLapsed = true;
-                InsuranceContext.VehicleDetails.Update(vehicle);
+                //vehicle.isLapsed = true;
+                //InsuranceContext.VehicleDetails.Update(vehicle);
 
                 //var summaryvehicledetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"SummaryDetailId={summary.Id} and VehicleDetailsId={vehicleId}");               
                 //InsuranceContext.SummaryVehicleDetails.Delete(summaryvehicledetail);
@@ -1429,7 +1434,6 @@ namespace InsuranceClaim.Controllers
             {
                 var totalprem = data.Sum(x => Convert.ToDecimal(x.price));
 
-
                 string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentEmail.cshtml";
                 string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
 
@@ -1439,7 +1443,23 @@ namespace InsuranceClaim.Controllers
 
                 List<string> _attachements = new List<string>();
                 _attachements.Add(attachementPath);
-                objEmailService.SendEmail(user.Email, "", "", "Renew " + policy.PolicyNumber + " : Payment", Body2, _attachements);
+
+
+
+                if (!customer.IsCustomEmail) // if customer has custom email
+                {
+                    objEmailService.SendEmail(LoggedUserEmail(), "", "", "Renew " + policy.PolicyNumber + " : Payment", Body2, _attachements);
+
+                }
+                else
+                {
+                    objEmailService.SendEmail(user.Email, "", "", "Renew " + policy.PolicyNumber + " : Payment", Body2, _attachements);
+
+
+                }
+
+
+
 
             }
 
@@ -1460,7 +1480,7 @@ namespace InsuranceClaim.Controllers
             //}
 
 
-            var SummaryVehicleDetail = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={summary.Id}").ToList();
+          //  var SummaryVehicleDetail = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={summary.Id}").ToList();
 
             string Summeryofcover = "";
             //for (int i = 0; i < SummaryVehicleDetail.Count; i++)
@@ -1501,16 +1521,24 @@ namespace InsuranceClaim.Controllers
 
             var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
             var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == summary.PaymentTermId);
-            string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/SeheduleMotor.cshtml";
+            string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/ScheduleMotorRenew.cshtml";
             string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
             //var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (summary.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + summary.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(totalpaymentdue)).Replace("##StampDuty##", Convert.ToString(summary.TotalStampDuty)).Replace("##MotorLevy##", Convert.ToString(summary.TotalZTSCLevies)).Replace("##PremiumDue##", Convert.ToString(summary.TotalPremium)).Replace("##PostalAddress##", customer.Zipcode);
 
-            var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##path##", filepath).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (summary.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + summary.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(summary.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summary.TotalStampDuty)).Replace("##MotorLevy##", Convert.ToString(summary.TotalZTSCLevies)).Replace("##PremiumDue##", Convert.ToString(vehicle.Premium)).Replace("##PostalAddress##", customer.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(vehicle.ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(vehicle.MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(vehicle.PassengerAccidentCoverAmount)).Replace("##RoadsideAssistance##", Convert.ToString(vehicle.RoadsideAssistanceAmount).Replace("##RadioLicence##", Convert.ToString(vehicle.RadioLicenseCost)).Replace("##Discount##", Convert.ToString(vehicle.Discount)));
+            var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##ReNewPolicyNo##", vehicle.RenewPolicyNumber).Replace("##path##", filepath).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (summary.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + summary.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(summary.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summary.TotalStampDuty)).Replace("##MotorLevy##", Convert.ToString(summary.TotalZTSCLevies)).Replace("##PremiumDue##", Convert.ToString(vehicle.Premium)).Replace("##PostalAddress##", customer.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(vehicle.ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(vehicle.MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(vehicle.PassengerAccidentCoverAmount)).Replace("##RoadsideAssistance##", Convert.ToString(vehicle.RoadsideAssistanceAmount).Replace("##RadioLicence##", Convert.ToString(vehicle.RadioLicenseCost)).Replace("##Discount##", Convert.ToString(vehicle.Discount)));
 
             var attachemetPath = MiscellaneousService.EmailPdf(Bodyy, policy.CustomerId, policy.PolicyNumber, "Renew Schedule-motor");
             List<string> attachements = new List<string>();
             attachements.Add(attachemetPath);
-            objEmailService.SendEmail(user.Email, "", "", "Renew " + policy.PolicyNumber + " : Schedule-motor", Bodyy, attachements);
+
+
+            if (!customer.IsCustomEmail) // if customer has custom email
+                objEmailService.SendEmail(LoggedUserEmail(), "", "", "Renew " + policy.PolicyNumber + " :Renew Schedule-motor", Bodyy, attachements);
+            else
+                objEmailService.SendEmail(user.Email, "", "", "Renew " + policy.PolicyNumber + " :Renew Schedule-motor", Bodyy, attachements);
+
+
+
 
             //MiscellaneousService.ScheduleMotorPdf(Bodyy, policy.CustomerId, policy.PolicyNumber, "Renew-Schedule-motor");
 

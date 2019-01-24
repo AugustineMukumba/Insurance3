@@ -1049,6 +1049,7 @@
     <Content Include="Views\Paypal\Index.cshtml" />
     <Content Include="Views\Report\ReconciliationReport.cshtml" />
     <Content Include="Views\Renew\VehicleHistory.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\ScheduleMotorRenew.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

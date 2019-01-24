@@ -100,33 +100,33 @@
                         @foreach (var item in Model.DailyReceiptsReport)
                         {
 
-                            if (item.AmountDue != null)
+                            if (item.TotalPremium != 0)
                             {
-                                premiumDueTotal += Convert.ToDecimal(item.AmountDue);
+                                premiumDueTotal += Convert.ToDecimal(item.TotalPremium);
                             }
-                            else
-                            {
-                                premiumDueTotal = 0;
-                            }
+                            //else
+                            //{
+                            //    premiumDueTotal = 0;
+                            //}
 
                             if (item.AmountPaid != 0)
                             {
                                 amountPaidTotal += Convert.ToDecimal(item.AmountPaid);
                             }
-                            else
-                            {
-                                amountPaidTotal = 0;
-                            }
+                            //else
+                            //{
+                            //    amountPaidTotal = 0;
+                            //}
 
 
                             if (item.Balance != "")
                             {
                                 balanceTotal += Convert.ToDecimal(item.Balance);
                             }
-                            else
-                            {
-                                balanceTotal = 0;
-                            }
+                            //else
+                            //{
+                            //    balanceTotal = 0;
+                            //}
                             <tr>
                                 @*<td>@item.PolicyCreatedBy </td>*@
                                 <td>@item.PolicyCreatedBy</td>
@@ -134,7 +134,7 @@
                                 <td>@item.CustomerName</td>
                                 <td>@item.TransactionDate.ToString("MM/dd/yyyy")</td>
 
-                                <td>@item.AmountDue</td>
+                                <td>@item.TotalPremium</td>
                                 <td>@item.InvoiceNumber</td>
                                 @if (item.DatePosted == Convert.ToDateTime(null))
                                 {
@@ -212,15 +212,15 @@
                             @*<td></td>*@
                             <td></td>
                             <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
                             <td><strong>$@premiumDueTotal</strong></td>
-                            <td><strong>$@amountPaidTotal</strong></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong></strong></td>
+                            <td>$@amountPaidTotal</td>
+                            <td></td>
+                            <td></td>
                             <td><strong>$@balanceTotal</strong></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
 
                         </tr>
                     </tfoot>

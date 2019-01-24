@@ -108,5 +108,7 @@ namespace InsuranceClaim.Models
 
         public int CurrencyId { get; set; }
 
+        public string RenewPolicyNumber { get; set; }
+
     }
 }

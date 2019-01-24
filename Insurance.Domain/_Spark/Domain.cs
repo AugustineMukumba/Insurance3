@@ -348,6 +348,8 @@ namespace Insurance.Domain
 
         public int BusinessSourceDetailId { get; set; }
         public int CurrencyId { get; set; }
+
+        public string RenewPolicyNumber { get; set; }
     }
 
     public partial class VehicleMake : Entity<VehicleMake>
@@ -393,7 +395,7 @@ namespace Insurance.Domain
         public string ParterToken { get; set; }
         public string ExpiredDate { get; set; }
         public DateTime CreatedOn { get; set; }
-  
+
 
     }
 
