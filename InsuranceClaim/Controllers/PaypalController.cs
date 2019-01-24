@@ -790,33 +790,29 @@ namespace InsuranceClaim.Controllers
             //{
             //var totalprem = data.Sum(x => Convert.ToDecimal(x.price));
 
-            string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentEmail.cshtml";
+            // string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentEmail.cshtml"; 24_jan_2019
+             string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/Reciept.cshtml";
             string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
             var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("##path##", filepath).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#AccountName#", customer.FirstName + ", " + customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Amount#", Convert.ToString(summaryDetail.AmountPaid)).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Cash" : (summaryDetail.PaymentMethodId == 2 ? "PayPal" : "PayNow")));
 
             #region Payment Email
-            var attachementFile = MiscellaneousService.EmailPdf(Body2, policy.CustomerId, policy.PolicyNumber, "Reciept Payment");
+            var attachementFile = MiscellaneousService.EmailPdf(Body2, policy.CustomerId, policy.PolicyNumber, "Invoice");
             //var yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
             #region Payment Email
             //objEmailService.SendEmail(User.Identity.Name, "", "", "Payment", Body2, attachementFile);
             #endregion
 
-
             List<string> attachements = new List<string>();
             attachements.Add(attachementFile);
-            //if (!userLoggedin)
-            //{
-            //    attachements.Add(yAtter);
-            //}
-
+          
 
             if (customer.IsCustomEmail) // if customer has custom email
             {
-                objEmailService.SendEmail(LoggedUserEmail(), "", "", "Payment", Body2, attachements);
+                objEmailService.SendEmail(LoggedUserEmail(), "", "", "Invoice", Body2, attachements);
             }
             else
             {
-                objEmailService.SendEmail(user.Email, "", "", "Payment", Body2, attachements); ;
+                objEmailService.SendEmail(user.Email, "", "", "Invoice", Body2, attachements); ;
             }
 
 

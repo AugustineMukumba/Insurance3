@@ -1300,7 +1300,7 @@ namespace InsuranceClaim.Controllers
                         foreach (var _item in SummaryVehicleDetails)
                         {
                             VehicleReinsuranceViewModel obj = new VehicleReinsuranceViewModel();
-                            var _vehicle = InsuranceContext.VehicleDetails.Single(where: $" Id='{_item.VehicleDetailsId}' and IsActive<>0");
+                            var _vehicle = InsuranceContext.VehicleDetails.Single(where: $" Id='{_item.VehicleDetailsId}'");
 
                             if (_vehicle != null)
                             {

@@ -144,7 +144,12 @@
                                             @*<td>@MiscellaneousService.GetReinsuranceBrokerNamebybrokerid(_item.ReinsurerBrokerId)</td>*@
                                             <td>$@_item.BrokerCommission</td>
                                             <td>$@_item.FacultativeCommission</td>
-                                            @if (_item.isLapsed)
+                                            @if (_item.isLapsed && _item.isActive==false)
+                                            {
+                                                @*<td>Lapsed</td>*@
+                                                <td>Renewed</td>
+                                            }
+                                            else if (_item.isLapsed)
                                             {
                                                 <td>Lapsed</td>
                                             }
