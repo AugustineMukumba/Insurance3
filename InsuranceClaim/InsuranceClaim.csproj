@@ -1050,6 +1050,9 @@
     <Content Include="Views\Report\ReconciliationReport.cshtml" />
     <Content Include="Views\Renew\VehicleHistory.cshtml" />
     <Content Include="Views\Shared\EmaiTemplates\ScheduleMotorRenew.cshtml" />
+    <Content Include="Views\Renew\customeRenew.cshtml" />
+    <Content Include="Views\Renew\ReneSummaryDetails.cshtml" />
+    <Content Include="Views\Renew\Viewriskdetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

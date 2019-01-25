@@ -11,6 +11,9 @@ namespace InsuranceClaim.Controllers
     {
         public ActionResult Index()
         {  
+
+
+
             return View();
         }
 

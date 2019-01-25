@@ -79,8 +79,6 @@
                     @foreach (var item in Model.listpolicy.ToList())
                     {
 
-
-
                         <tr class="policyheading-tr">
 
                             <th>Policy Number</th>
@@ -90,6 +88,7 @@
                             <th>Total Premium</th>
                             <th>Created On</th>
                             <th>Action(s)</th>
+                           
 
 
                         </tr>
@@ -148,6 +147,8 @@
                                             {
                                                 @*<td>Lapsed</td>*@
                                                 <td>Renewed</td>
+                                                <td></td>
+                                                <td><button class="btn-sm btn-primary">@Html.ActionLink("View Policy", "customeRenew", "Renew", new { renewvehicle = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</button></td>
                                             }
                                             else if (_item.isLapsed)
                                             {
@@ -157,6 +158,7 @@
                                             {
                                                 <td>Disabled</td>
                                                 <td><button type="button" class="btn-sm btn-primary" onclick="ActivateVehicle('@_item.VehicleId')">Activate</button></td>
+                                                <td><button class="btn-sm btn-primary">@Html.ActionLink("View Policy", "customeRenew", "Renew", new { renewvehicle = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</button></td>
                                             }
                                             else if (DateTime.Now < _item.RenewalDate.AddDays(-21))
                                             {
@@ -169,7 +171,7 @@
                                                             @*<li><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.CustomerId')">View/Upload Document</button></li>*@
                                                         </ul>
                                                     </div>
-
+                                                <td><button class="btn-sm btn-primary">@Html.ActionLink("View Policy", "customeRenew", "Renew", new { renewvehicle = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</button></td>
                                                 </td>
                                             }
                                             else if (DateTime.Now >= _item.RenewalDate.AddDays(-21) && DateTime.Now <= _item.RenewalDate)
@@ -447,10 +449,7 @@
             success: function (result) {
                 debugger;
                 $("#tblfileListing").show();
-                for (var i = 0; i < result.length; i++) {
-
-                    alert(result[i].FilePath);
-
+                for (var i = 0; i < result.length; i++) {             
                     $("#tblfileListing tbody").append('<tr><td>' + result[i].Title + '</td><td>' + result[i].Decription + '</td><td><a href=' + result[i].FilePath + ' class = "glyphicon glyphicon-download-alt"></a><a style="margin-left: 15px;" href = "" class ="glyphicon glyphicon-trash" onclick = "return DeleteConfirm(' + result[i].id + ')"></a></td></tr>');
                 }
                 if (result.length == 0) {
