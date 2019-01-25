@@ -1057,9 +1057,6 @@ namespace InsuranceClaim.Controllers
                             }
 
                             // end is null
-
-
-
                             customerDetails = InsuranceContext.Customers.Single(vichelDetails.CustomerId);
 
                             //if (customerDetails != null)

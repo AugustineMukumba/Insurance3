@@ -1263,7 +1263,7 @@ namespace InsuranceClaim.Controllers
 
             var SummaryList = InsuranceContext.SummaryDetails.All().OrderByDescending(x => x.Id).ToList();
 
-            foreach (var item in SummaryList)
+            foreach (var item in SummaryList.Take(50))
             {
                 PolicyListViewModel policylistviewmodel = new PolicyListViewModel();
 

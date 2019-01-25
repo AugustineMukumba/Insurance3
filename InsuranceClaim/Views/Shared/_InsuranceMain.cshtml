@@ -27,10 +27,8 @@
 }
 @{
     var ErrorMessage = TempData["ErrorMessage"];
-
 }
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -187,11 +185,18 @@
 
 
 
-                                <li><a href="#">Renew Policy</a></li>
+                                @*<li><a href="#">Renew Policy</a></li>*@
                                 <li><a href="#">Change Policy</a></li>
                                 <li><a href="#">Register Claim</a></li>
                                 <li><a href="#">Policy/Claim Detail</a></li>
                                 <li><a href="/Home/About">About Us</a></li>
+
+                                @if (User.IsInRole("Staff"))
+                                {
+                                    <li><a href="/Account/PolicyList">Policy Management</a></li>
+                                }
+
+
                                 @*<li><a href="#">Contact</a></li>*@
 
                                 @if (User.IsInRole("Administrator"))
@@ -233,8 +238,6 @@
                                         </ul>
                                     </div>
                                 </li>
-
-
                             </ul>
 
                         </div><!-- /.navbar-collapse -->

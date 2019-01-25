@@ -2620,7 +2620,7 @@ namespace InsuranceClaim.Controllers
                     makeId = veshicalMake.Id;
                 }
 
-
+                makeId = dbVehicalMake.Id;
                 var dbVehicalModel = InsuranceContext.VehicleModels.Single(where: $"ModelDescription='{model}' and MakeCode = '{make}'");
 
                 // where: $"ModelDescription={model} and MakeCode = {make}'"

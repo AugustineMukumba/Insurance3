@@ -672,7 +672,9 @@
 
 <script>
     function gotoPeriviouse() {
-        location.href = '@Url.Action("Index", "CustomerRegistration", new { id=-1 })';
+        @*location.href = '@Url.Action("Index", "CustomerRegistration", new { id=-1 })';*@
+
+        location.href = '@Url.Action("BackToCustomerDetail", "Renew", new { id=-1 })';
     }
 
     function cancelUpdate() {

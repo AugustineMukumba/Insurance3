@@ -142,6 +142,12 @@ namespace Insurance.Service
 
             var CustomerInfo = (CustomerModel)HttpContext.Current.Session["CustomerDataModal"];
 
+            if (CustomerInfo == null)
+            {
+                CustomerInfo = (CustomerModel)HttpContext.Current.Session["ReCustomerDataModal"];
+            }
+
+
             foreach (var item in listofvehicles)
             {
                 obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 0, YearManufacture = 0, InsuranceType = 0, VehicleType = 0, TaxClass = 0, Make = "", Model = "", EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber });
