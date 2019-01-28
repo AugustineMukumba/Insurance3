@@ -13,7 +13,6 @@ namespace InsuranceClaim.Controllers
         {  
 
 
-
             return View();
         }
 
