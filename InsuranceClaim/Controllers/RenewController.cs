@@ -21,6 +21,7 @@ namespace InsuranceClaim.Controllers
     public class RenewController : Controller
     {
         private ApplicationUserManager _userManager;
+        Insurance.Service.smsService objsmsService = new Insurance.Service.smsService();
 
         string AdminEmail = WebConfigurationManager.AppSettings["AdminEmail"];
         string ZimnatEmail = WebConfigurationManager.AppSettings["ZimnatEmail"];
@@ -1284,6 +1285,14 @@ namespace InsuranceClaim.Controllers
                                 _item.CustomerId = customer.Id;
                                 _item.PolicyId = policy.Id;
                                 _item.RenewPolicyNumber = reNewPolicyNumber;
+
+                                if (_item.IncludeRadioLicenseCost)
+                                    _item.RadioLicenseCost = _item.RadioLicenseCost;
+                                else
+                                    _item.RadioLicenseCost = 0;
+
+
+
                                 //   _item.InsuranceId = model.InsuranceId;
                                 //if (model.AmountPaid < model.TotalPremium)
                                 //{
@@ -1459,15 +1468,9 @@ namespace InsuranceClaim.Controllers
 
                                     SummeryofVehicleInsured += "<tr><td style='padding:7px 10px; font-size:14px'><font size='2'>" + vehicledescription + "</font></td><td style='padding:7px 10px; font-size:14px'><font size='2'>" + Convert.ToString(vehicle.SumInsured) + " </font></td><td style='padding:7px 10px; font-size:14px'><font size='2'>" + Convert.ToString(vehicle.Premium) + "</font></td><td style='padding:7px 10px; font-size:14px'><font size='2'>" + AutoFacSumInsured.ToString() + "</font></td><td style='padding:7px 10px; font-size:14px'><font size='2'>" + AutoFacPremium.ToString() + "</ font ></td><td style='padding:7px 10px; font-size:14px'><font size='2'>" + FacSumInsured.ToString() + "</font></td><td style='padding:7px 10px; font-size:14px'><font size='2'>" + FacPremium.ToString() + "</font></td></tr>";
 
-
-
                                 }
-
                             }
-
-
                         }
-
 
 
 
@@ -1859,6 +1862,22 @@ namespace InsuranceClaim.Controllers
                 objSaveDetailListModel.PaymentId = PaymentId == null ? "" : PaymentId.ToString();
                 objSaveDetailListModel.InvoiceId = InvoiceId == null ? "" : InvoiceId.ToString();
                 objSaveDetailListModel.InvoiceNumber = policy.PolicyNumber;
+                objSaveDetailListModel.CreatedOn = DateTime.Now;
+
+                bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+                if (_userLoggedin)
+                {
+                    var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
+                    var _customerData = InsuranceContext.Customers.All(where: $"UserId ='{_User.Id}'").FirstOrDefault();
+
+                    if (_customerData != null)
+                    {
+                        objSaveDetailListModel.CreatedBy = _customerData.Id;
+                    }
+                }
+
+
+
                 InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
 
                 MiscellaneousService.AddLoyaltyPoints(summary.CustomerId.Value, policy.Id, _item);
@@ -1932,6 +1951,26 @@ namespace InsuranceClaim.Controllers
                 objEmailService.SendEmail(user.Email, "", "", "Renew " + policy.PolicyNumber + " : Invoice", Body2, _attachements);
 
             }
+
+
+            #region Send Payment SMS
+
+            // done
+            string Recieptbody = "Hello " + customer.FirstName + "\nWelcome to GeneInsure. Your payment of" + "$" + Convert.ToString(summary.AmountPaid) + " has been received. Policy number is : " + policy.PolicyNumber + "\n" + "\nThanks.";
+            var Recieptresult = await objsmsService.SendSMS(customer.Countrycode.Replace("+", "") + user.PhoneNumber, Recieptbody);
+
+            SmsLog objRecieptsmslog = new SmsLog()
+            {
+                Sendto = user.PhoneNumber,
+                Body = Recieptbody,
+                Response = Recieptresult,
+                CreatedBy = customer.Id,
+                CreatedOn = DateTime.Now
+            };
+
+            InsuranceContext.SmsLogs.Insert(objRecieptsmslog);
+
+            #endregion
 
 
 
@@ -2690,28 +2729,33 @@ namespace InsuranceClaim.Controllers
                     vichelDetails.InsuranceId = VehicalQuoteresponse.Response.Quotes[0].InsuranceID;
                 }
 
-
-                ResultRootObject quoteresponse = ICEcashService.TPIQuoteUpdate(customerDetails, vichelDetails, tokenObject.Response.PartnerToken, 1);
-
-
-                // if partern token expire
-
-                if (quoteresponse.Response.Quotes != null && quoteresponse.Response.Message == "Partner Token has expired.")
+                if (!string.IsNullOrEmpty(vichelDetails.InsuranceId))
                 {
-                    //  log.WriteLog(quoteresponse.Response.Quotes[0].Message + " reg no: " + vichelDetails.RegistrationNo);
-                    iceCash.getToken();
-                    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
-                    PartnerToken = tokenObject.Response.PartnerToken;
-                    ICEcashService.TPIQuoteUpdate(customerDetails, vichelDetails, PartnerToken, 1);
+
+                    ResultRootObject quoteresponse = ICEcashService.TPIQuoteUpdate(customerDetails, vichelDetails, tokenObject.Response.PartnerToken, 1);
+
+
+                    // if partern token expire
+
+                    if (quoteresponse.Response.Quotes != null && quoteresponse.Response.Message == "Partner Token has expired.")
+                    {
+                        //  log.WriteLog(quoteresponse.Response.Quotes[0].Message + " reg no: " + vichelDetails.RegistrationNo);
+                        iceCash.getToken();
+                        tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                        PartnerToken = tokenObject.Response.PartnerToken;
+                        ICEcashService.TPIQuoteUpdate(customerDetails, vichelDetails, PartnerToken, 1);
+                    }
+
+
+                    var res = ICEcashService.TPIPolicy(vichelDetails, PartnerToken);
+                    if (res.Response != null && res.Response.Message == "Policy Retrieved")
+                    {
+                        vichelDetails.InsuranceStatus = "Approved";
+                        InsuranceContext.VehicleDetails.Update(vichelDetails);
+                    }
                 }
 
 
-                var res = ICEcashService.TPIPolicy(vichelDetails, PartnerToken);
-                if (res.Response != null && res.Response.Message == "Policy Retrieved")
-                {
-                    vichelDetails.InsuranceStatus = "Approved";
-                    InsuranceContext.VehicleDetails.Update(vichelDetails);
-                }
 
             }
             catch (Exception ex)
@@ -2969,7 +3013,7 @@ namespace InsuranceClaim.Controllers
 
 
 
-            if (summarydetails != null && dbVehicalDetials.IsActive==true)
+            if (summarydetails != null && dbVehicalDetials.IsActive == true)
             {
 
                 Resummry = Mapper.Map<SummaryDetail, SummaryDetailModel>(summarydetails);
@@ -3007,7 +3051,7 @@ namespace InsuranceClaim.Controllers
                 Resummry.PaymentTermId = summarydetails.PaymentTermId;
                 Resummry.ReceiptNumber = summarydetails.ReceiptNumber;
 
-                Resummry.TotalPremium = Convert.ToDecimal( Math.Round(Convert.ToDouble(dbVehicalDetials.Premium + dbVehicalDetials.StampDuty + dbVehicalDetials.ZTSCLevy + dbVehicalDetials.VehicleLicenceFee + (Convert.ToBoolean(dbVehicalDetials.IncludeRadioLicenseCost) ? dbVehicalDetials.RadioLicenseCost : 0.00m)), 2));
+                Resummry.TotalPremium = Convert.ToDecimal(Math.Round(Convert.ToDouble(dbVehicalDetials.Premium + dbVehicalDetials.StampDuty + dbVehicalDetials.ZTSCLevy + dbVehicalDetials.VehicleLicenceFee + (Convert.ToBoolean(dbVehicalDetials.IncludeRadioLicenseCost) ? dbVehicalDetials.RadioLicenseCost : 0.00m)), 2));
                 Resummry.AmountPaid = Convert.ToDecimal(Math.Round(Convert.ToDouble(dbVehicalDetials.Premium + dbVehicalDetials.StampDuty + dbVehicalDetials.ZTSCLevy + dbVehicalDetials.VehicleLicenceFee + (Convert.ToBoolean(dbVehicalDetials.IncludeRadioLicenseCost) ? dbVehicalDetials.RadioLicenseCost : 0.00m)), 2));
 
                 Resummry.TotalStampDuty = VehicleRdetails.StampDuty;

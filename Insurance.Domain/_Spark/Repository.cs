@@ -95,6 +95,7 @@ namespace Insurance.Domain
         public static SourceDetails SourceDetails { get { return new SourceDetails(); } }
         public static AspNetUsersUpdates AspNetUsersUpdates { get { return new AspNetUsersUpdates(); } }
 
+        //public static VehicleLicenses VehicleLicenses { get { return new VehicleLicenses(); } }
 
 
         public static RegistrationDocuments RegistrationDocuments { get { return new RegistrationDocuments(); } }

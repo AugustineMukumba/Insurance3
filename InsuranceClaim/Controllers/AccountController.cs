@@ -1261,9 +1261,33 @@ namespace InsuranceClaim.Controllers
             policylist.listpolicy = new List<PolicyListViewModel>();
             //   var SummaryList = InsuranceContext.SummaryDetails.All().OrderByDescending(x => x.Id).ToList(); // commented 
 
-            var SummaryList = InsuranceContext.SummaryDetails.All().OrderByDescending(x => x.Id).ToList();
+            //      var SummaryList = InsuranceContext.SummaryDetails.All().OrderByDescending(x => x.Id).ToList();
 
-            foreach (var item in SummaryList.Take(50))
+            var SummaryList = new List<SummaryDetail>();
+
+            var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
+            var role = UserManager.GetRoles(_User.Id.ToString()).FirstOrDefault();
+
+            var customerID = InsuranceContext.Customers.Single(where: $"userid='{User.Identity.GetUserId().ToString()}'").Id;
+
+
+            if (role == "Staff")
+            {
+                SummaryList = InsuranceContext.SummaryDetails.All(where: $"CreatedBy={customerID} and isQuotation = '0'  ").OrderByDescending(x => x.Id).ToList();
+            }
+            else if (role == "Administrator")
+            {
+                SummaryList = InsuranceContext.SummaryDetails.All(where: $"isQuotation = '0'  ").OrderByDescending(x => x.Id).ToList();
+            }
+            else
+            {
+                SummaryList = InsuranceContext.SummaryDetails.All(where: $"customerid={customerID} and isQuotation = '0'").OrderByDescending(x => x.Id).ToList();
+            }
+
+
+
+
+            foreach (var item in SummaryList)
             {
                 PolicyListViewModel policylistviewmodel = new PolicyListViewModel();
 
@@ -1343,8 +1367,6 @@ namespace InsuranceClaim.Controllers
                         }
                     }
                 }
-
-
 
 
                 policylist.listpolicy.Add(policylistviewmodel);
@@ -1712,7 +1734,7 @@ namespace InsuranceClaim.Controllers
             }
 
 
-            foreach (var item in SummaryList.Take(50))
+            foreach (var item in SummaryList)
             {
                 PolicyListViewModel policylistviewmodel = new PolicyListViewModel();
 

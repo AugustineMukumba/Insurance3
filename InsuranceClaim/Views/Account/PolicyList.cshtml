@@ -150,10 +150,10 @@
                                                 <td></td>
                                                 <td><button class="btn-sm btn-primary">@Html.ActionLink("View Policy", "customeRenew", "Renew", new { renewvehicle = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</button></td>
                                             }
-                                            else if (_item.isLapsed)
+                                            @*else if (_item.isLapsed)
                                             {
                                                 <td>Lapsed</td>
-                                            }
+                                            }*@
                                             else if (!_item.isActive)
                                             {
                                                 <td>Disabled</td>

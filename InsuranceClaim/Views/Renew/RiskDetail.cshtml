@@ -556,7 +556,6 @@
 
                                                 @if (Session["issummaryformvisited"] != null && (bool)Session["issummaryformvisited"] && Session["VehicleDetails"] != null && ((List<InsuranceClaim.Models.RiskDetailModel>)Session["VehicleDetails"]).Count > 0)
                                                 {
-
                                                     <div class="col-sm-4 col-md-4">
                                                         <div class="text-right">
                                                             <button type="button" id="btnSkip" onclick="redirectToSummary();" class="btn" style="padding:20px 10px;width: 170px;">Skip</button>
@@ -678,11 +677,11 @@
     }
 
     function cancelUpdate() {
-        location.href = '@Url.Action("RiskDetail", "CustomerRegistration", new { id=0 })';
+        location.href = '@Url.Action("RiskDetail", "Renew", new { id=0 })';
     }
 
     function redirectToSummary() {
-        location.href = '@Url.Action("SummaryDetail", "CustomerRegistration")';
+        location.href = '@Url.Action("SummaryDetail", "Renew")';
     }
 
 
