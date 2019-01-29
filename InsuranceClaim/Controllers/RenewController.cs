@@ -1258,7 +1258,6 @@ namespace InsuranceClaim.Controllers
                                 vehicelDetails.isLapsed = true;
                                 InsuranceContext.VehicleDetails.Update(vehicelDetails);
 
-
                                 var SummaryVehicalDetails = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId={vehicelDetails.Id}");
                                 if (SummaryVehicalDetails != null)
                                     summary.Id = SummaryVehicalDetails.SummaryDetailId;

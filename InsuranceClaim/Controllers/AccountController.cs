@@ -1285,9 +1285,7 @@ namespace InsuranceClaim.Controllers
             }
 
 
-
-
-            foreach (var item in SummaryList)
+            foreach (var item in SummaryList.Take(50))
             {
                 PolicyListViewModel policylistviewmodel = new PolicyListViewModel();
 
@@ -2395,6 +2393,7 @@ namespace InsuranceClaim.Controllers
             }
             else if (TempData["RedirectedFrom"] != null && Convert.ToString(TempData["RedirectedFrom"]) == "PolicyList")
             {
+                Session["ViewlistVehicles"] = null;
                 ViewBag.RedirectedFrom = "PolicyList";
             }
             else if (TempData["RedirectedFrom"] != null && Convert.ToString(TempData["RedirectedFrom"]) == "QuotationList")
@@ -2456,6 +2455,7 @@ namespace InsuranceClaim.Controllers
             TempData["Policy"] = PolicyData;
             if (makers.Count > 0)
             {
+                // If 
                 var model = service.GetModel(makers.FirstOrDefault().MakeCode);
                 ViewBag.Model = model;
             }
@@ -2504,8 +2504,8 @@ namespace InsuranceClaim.Controllers
             if (id > 0)
             {
                 var list = (List<RiskDetailModel>)Session["ViewlistVehicles"];
-                if (list != null && list.Count > 0 && (list.Count >= id))
-                {
+                if (list != null && list.Count > 0 && (list.Count >= id)) // 29_jan_2019
+                { 
                     var data = (RiskDetailModel)list[Convert.ToInt32(id - 1)];
                     if (data != null)
                     {
