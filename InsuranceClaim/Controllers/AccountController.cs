@@ -644,9 +644,9 @@ namespace InsuranceClaim.Controllers
                     else
                     {
 
-                        //objEmailService.SendEmail(userinfo.Email, "", "", "Account Creation", Body, _attachements);
+                        objEmailService.SendEmail(userinfo.Email, "", "", "Account Creation", Body, _attachements);
 
-                        objEmailService.SendEmail("deepak.s@kindlebit.com", "", "", "Account Creation", Body, _attachements);
+                        //objEmailService.SendEmail("deepak.s@kindlebit.com", "", "", "Account Creation", Body, _attachements);
                     }
 
                     #endregion
@@ -668,8 +668,8 @@ namespace InsuranceClaim.Controllers
                     else
                     {
 
-                        //objEmailService.SendEmail(userinfo.Email, "", "", "Invoice", Body2, attachements);
-                        objEmailService.SendEmail("deepak.s@kindlebit.com", "", "", "Invoice", Body2, attachements);
+                        objEmailService.SendEmail(userinfo.Email, "", "", "Invoice", Body2, attachements);
+                        //objEmailService.SendEmail("deepak.s@kindlebit.com", "", "", "Invoice", Body2, attachements);
                     }
                     #endregion
 
@@ -732,8 +732,8 @@ namespace InsuranceClaim.Controllers
                     else
                     {
 
-                        //objEmailService.SendEmail(userinfo.Email, "", "", "Schedule-motor", Bodyy, __attachements);
-                        objEmailService.SendEmail("deepak.s@kindlebit.com", "", "", "Account Creation", Body, _attachements);
+                        objEmailService.SendEmail(userinfo.Email, "", "", "Schedule-motor", Bodyy, __attachements);
+                        //objEmailService.SendEmail("deepak.s@kindlebit.com", "", "", "Account Creation", Body, _attachements);
                     }
 
                     #endregion
@@ -757,7 +757,7 @@ namespace InsuranceClaim.Controllers
             {
                 var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
                 email = _User.Email;
-                email = "deepak.s@kindlebit.com";
+                //email = "deepak.s@kindlebit.com";
             }
             return email;
 
