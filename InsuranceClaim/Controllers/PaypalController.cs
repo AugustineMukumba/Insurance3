@@ -812,7 +812,7 @@ namespace InsuranceClaim.Controllers
             }
             else
             {
-                objEmailService.SendEmail(user.Email, "", "", "Invoice", Body2, attachements); ;
+                objEmailService.SendEmail(user.Email, "", "", "Invoice", Body2, attachements);
             }
 
 

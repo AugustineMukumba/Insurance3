@@ -126,9 +126,9 @@ th.action-th {
 }
 
 .policyList .btn-sm {
-    width: 100%;
+    width: 100%; display:inline-block;
 }
-
+.policyList .btn-width-auto a{width:auto}
 
 /*******START*********************Saturday - 11 aug 2018********/
 
@@ -2212,6 +2212,12 @@ span.customer_title {
     padding: 15px 0;
 }
 .print-btn { display:block !important;}
+
+.policyList .list-inline li.btn-width-auto {
+    width: auto;
+    float:left;
+}
+
 
 
 @media print {
