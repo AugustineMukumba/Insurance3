@@ -733,7 +733,7 @@ namespace InsuranceClaim.Controllers
                     {
 
                         objEmailService.SendEmail(userinfo.Email, "", "", "Schedule-motor", Bodyy, __attachements);
-                        //objEmailService.SendEmail("deepak.s@kindlebit.com", "", "", "Account Creation", Body, _attachements);
+                        //objEmailService.SendEmail("deepak.s@kindlebit.com", "", "", "Schedule-motor", Bodyy, __attachements);
                     }
 
                     #endregion

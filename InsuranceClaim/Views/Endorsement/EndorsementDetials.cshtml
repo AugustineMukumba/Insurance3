@@ -375,9 +375,9 @@
 
         var today = mm + '/' + dd + '/' + yyyy;
 
-        if (Session["CustomerDataModal"] == null) {
-            $("#DateOfBirth").val(today);
-        }
+        //if (Session["CustomerDataModal"] == null) {
+        //    $("#DateOfBirth").val(today);
+        //}
     });
 
 
@@ -386,8 +386,9 @@
 
 
         if ($("#IsCustomEmail").prop("checked") == true) {
+            debugger;
             $.ajax({
-                url: "@Url.Action("GetCustomerId", "CustomerRegistration")",
+                url: "@Url.Action("GetCustomerId", "Endorsement")",
                 type: "POST",
                 dataType: "json",
                 success: function (result) {
@@ -428,7 +429,7 @@
     }
 
 
-    function SetCustomerEmail() {
+    @*function SetCustomerEmail() {
 
         if ($("#IsCustomEmail").prop("checked") == true) {
             $.ajax({
@@ -444,6 +445,6 @@
             $("#EmailAddress").val('');
         }
 
-    }
+    }*@
 
 </script>

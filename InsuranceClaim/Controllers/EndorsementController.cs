@@ -121,6 +121,41 @@ namespace InsuranceClaim.Controllers
             }
 
         }
+
+        [HttpPost]
+        public JsonResult GetCustomerId()
+        {
+            var dbCustomer = InsuranceContext.UniqueCustomers.All(orderBy: "CreatedOn desc").FirstOrDefault();
+
+
+            int uniqueId = 0;
+            string customerUserId = "";
+
+            if (dbCustomer != null)
+            {
+                uniqueId = Convert.ToInt32(dbCustomer.UniqueCustomerId);
+
+                uniqueId = uniqueId + 1;
+
+                customerUserId = "Guest-" + uniqueId + "@gmail.com";
+
+                var uniquCustomer = new UniqueCustomer { UniqueCustomerId = uniqueId, CreatedOn = DateTime.Now };
+
+                InsuranceContext.UniqueCustomers.Insert(uniquCustomer);
+            }
+            else
+            {
+                uniqueId = 1000;
+                customerUserId = "Guest-" + uniqueId + "@gmail.com";
+                var uniquCustomer = new UniqueCustomer { UniqueCustomerId = uniqueId, CreatedOn = DateTime.Now };
+
+                InsuranceContext.UniqueCustomers.Insert(uniquCustomer);
+            }
+
+            return Json(customerUserId, JsonRequestBehavior.AllowGet);
+
+
+        }
         public async Task<JsonResult> UpdateCustomerData(EndorsementCustomerModel model, string buttonUpdate)
         {
             if (ModelState.IsValid)
@@ -137,14 +172,7 @@ namespace InsuranceClaim.Controllers
                         {
                             return Json(new { IsError = true, error = "Email already exist. Please Enter new Email" }, JsonRequestBehavior.AllowGet);
                         }
-                        else
-                        {
-                            var dbUser = UserManager.Users.FirstOrDefault(c => c.Id == model.UserID);
-                            dbUser.Id = model.UserID;
-                            dbUser.Email = model.EmailAddress;
-                            dbUser.UserName = model.EmailAddress;
-                            UserManager.Update(dbUser);
-                        }
+                      
                     }
 
                     var summaryDetails = InsuranceContext.SummaryDetails.Single(model.SummaryId);
@@ -178,31 +206,56 @@ namespace InsuranceClaim.Controllers
                                 obj.PhoneNumber = user.PhoneNumber;
                                 obj.UserId = user.Id;
                                 InsuranceContext.AspNetUsersUpdates.Insert(obj);
-                                //}
+                                //Update AspnetUser Table
+                                if (model.IsEmailUpdated)
+                                {
+                                    var dbUser = UserManager.Users.FirstOrDefault(c => c.Id == model.UserID);
+                                    dbUser.Id = model.UserID;
+                                    dbUser.Email = model.EmailAddress;
+                                    dbUser.UserName = model.EmailAddress;
+                                    UserManager.Update(dbUser);
+                                    //Update Customer Table
+                                    var custom = InsuranceContext.Customers.Single(where: $"Id = '{summaryDetails.CustomerId}'");
+                                    //Customer data = new Customer();
+                                    if (custom != null)
+                                    {
+                                        var endorcustom = Mapper.Map<EndorsementCustomerModel, Customer>(model);
+                                        custom.IsCustomEmail = model.IsCustomEmail;
+                                        InsuranceContext.Customers.Update(custom);
+                                    }
+                                }
 
 
-                                //Session["Enuser"] = dbUser.Id;
 
                             }
                             else
                             {
-                                //if (model.IsEmailUpdated)
-                                //{
-                                //    var isAssigned = UserManager.Users.Any(x => x.Email == model.EmailAddress);
-                                //    if (isAssigned)
-                                //    {
-                                //        return Json(new { IsError = false, error = "Email already exist" }, JsonRequestBehavior.AllowGet);
-                                //    }
-                                //    else
-                                //    {
-                                //        var dbUser = UserManager.Users.FirstOrDefault(c => c.Id == model.UserID);
-                                //        dbUser.Id = model.UserID;
-                                //        dbUser.Email = model.EmailAddress;
-                                //        dbUser.UserName = model.EmailAddress;
-                                //        UserManager.Update(dbUser);
-                                //    }
+                                if (model.IsEmailUpdated)
+                                {
+                                    var isAssigned = UserManager.Users.Any(x => x.Email == model.EmailAddress);
+                                    if (isAssigned)
+                                    {
+                                        return Json(new { IsError = false, error = "Email already exist" }, JsonRequestBehavior.AllowGet);
+                                    }
+                                    else
+                                    {
+                                        var dbUser = UserManager.Users.FirstOrDefault(c => c.Id == model.UserID);
+                                        dbUser.Id = model.UserID;
+                                        dbUser.Email = model.EmailAddress;
+                                        dbUser.UserName = model.EmailAddress;
+                                        UserManager.Update(dbUser);
+                                    }
+                                    var custom = InsuranceContext.Customers.Single(where: $"Id = '{model.PrimeryCustomerId}'");
+                                    if (custom != null)
+                                    {
+                                       // Customer cudata = new Customer();
+                                        var data = Mapper.Map<EndorsementCustomerModel, Customer>(model);
+                                        custom.IsCustomEmail = model.IsCustomEmail;
+                                        InsuranceContext.Customers.Update(custom);
+                                    }
 
-                                //}
+
+                                }
 
 
                                 var _customerdata = Mapper.Map<EndorsementCustomerModel, EndorsementCustomer>(model);
