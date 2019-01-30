@@ -388,10 +388,10 @@
 
 
                                                         @*@if (User.IsInRole("Staff"))
-                                                        {*@
+                                                        {
                                                             <li id="payment_1" class="payment_type active" onclick="PaymentMethod(1)">  Cash   </li>
-                                                        @*}*@
-
+                                                        }*@
+                                                        <li id="payment_1" class="payment_type active" onclick="PaymentMethod(1)">  Cash   </li>
                                                         <li id="payment_2" class="payment_type" onclick="PaymentMethod(2)"><img src="~/Images/master-card.png" /></li>
 
                                                         @*<li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"><img  style="width:65px;" src="~/Images/eft_pay.png" /></li>*@
@@ -494,6 +494,7 @@
 
     function PaymentMethod(paymentMethod)
     {
+        debugger;
         $("li").removeClass("active");
         $("#payment_"+paymentMethod).addClass("active");
         $("#PaymentMethodId").val(paymentMethod);
@@ -657,6 +658,7 @@
     }
 
     $(document).ready(function () {
+        debugger;
         var isUserStaff = '@User.IsInRole("Staff")';
 
 
@@ -665,7 +667,7 @@
             $("#invoiceNumberDiv").hide();
         }
 
-        if(isUserStaff == "False")
+        if(isUserStaff == "Customer")
         {
             $("#payment_2").addClass("active");
             $("#invoiceNumberDiv").hide();
@@ -700,7 +702,7 @@
         getVehicleList();
 
         $("#PaymentMethodId").val('');
-
+        debugger;
         if (@Model.PaymentMethodId != null && @Model.PaymentMethodId > 0)
         {
             $("#PaymentMethodId").val('@Model.PaymentMethodId');

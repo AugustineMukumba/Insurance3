@@ -132,7 +132,7 @@
                                             @if (_item.isLapsed && _item.isActive == false)
                                             {
                                                 <td>Renewed</td>
-                                                <td class="btn-width-auto">@Html.ActionLink("View Policy", "customeRenew", "Renew", new { renewvehicle = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</td>
+                                                <td class="btn-width-auto">@Html.ActionLink("View RenewPolicy", "customeRenew", "Renew", new { renewvehicle = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</td>
 
                                             }
                                             else if (!_item.isActive)
@@ -142,7 +142,7 @@
                                                <div class="tbl-btn-list">
                                                    <ul class="list-inline">
                                                        <li class="btn-width-auto"><button type="button" class="btn-sm btn-primary" onclick="ActivateVehicle('@_item.VehicleId')">Activate</button></li>
-                                                       <li class="btn-width-auto">@Html.ActionLink("View Policy", "customeRenew", "Renew", new { renewvehicle = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</li>
+                                                       <li class="btn-width-auto">@Html.ActionLink("View RenewPolicy", "customeRenew", "Renew", new { renewvehicle = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</li>
                                                        <li class="btn-width-auto"><a href="javascript:void(0)" class="btn-sm btn-primary" onclick="RsendPolicys(@_item.VehicleId)">Resend Policy </a></li>
                                                    </ul>
                                                </div>
@@ -157,7 +157,7 @@
                                                         <ul class="list-inline">
                                                             <li class="btn-width-auto"><button onclick="disableVehicle('@_item.VehicleId')" class="btn-sm btn-danger">Disable Policy</button></li>
                                                             <li class="btn-width-auto"><button type="button" class="btn-sm btn-primary" onclick="showPopupp('@item.PolicyNumber','@item.CustomerId','@_item.VehicleId');">View/Upload Document</button></li>
-                                                            <li class="btn-width-auto">@Html.ActionLink("View Policy", "customeRenew", "Renew", new { renewvehicle = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</li>
+                                                            <li class="btn-width-auto">@Html.ActionLink("View RenewPolicy", "customeRenew", "Renew", new { renewvehicle = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</li>
                                                             <li class="btn-width-auto"><a href="javascript:void(0)" class="btn-sm btn-primary" onclick="RsendPolicys(@_item.VehicleId)">Resend Policy </a></li>
                                                         </ul>
                                                     </div>
@@ -166,14 +166,14 @@
                                             }
                                             else if (DateTime.Now >= _item.RenewalDate.AddDays(-21) && DateTime.Now <= _item.RenewalDate)
                                             {
-                                                <td> @Html.ActionLink("Renew", "Index", "Renew", new { vehicleid = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</td>
+                                                <td class="btn-width-auto"> @Html.ActionLink("Renew", "Index", "Renew", new { vehicleid = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</td>
                                                 <td></td>
 
                                             }
                                             else if (DateTime.Now > _item.RenewalDate)
                                             {
                                                 <td>Lapsed</td>
-                                                <td> @Html.ActionLink("Renew", "Index", "Renew", new { vehicleid = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</td>
+                                                <td class="btn-width-auto"> @Html.ActionLink("Renew", "Index", "Renew", new { vehicleid = _item.VehicleId }, new { @class = "btn-sm btn-primary" })</td>
 
                                             }
 
