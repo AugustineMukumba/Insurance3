@@ -1713,7 +1713,7 @@ namespace InsuranceClaim.Controllers
             model.CarInsuredCount = vehicleList.Count;
             model.DebitNote = "INV" + Convert.ToString(SummaryDetailServiceObj.getNewDebitNote());
 
-            model.PaymentMethodId = model.PaymentTermId;
+            model.PaymentMethodId = model.PaymentMethodId;
 
             //default selection 
             //if (User.IsInRole("Staff"))
@@ -1726,7 +1726,7 @@ namespace InsuranceClaim.Controllers
             //}
 
 
-            model.PaymentTermId = 1;
+            model.PaymentTermId = model.PaymentTermId;
             model.ReceiptNumber = "";
             model.SMSConfirmation = false;
             //model.TotalPremium = vehicle.Sum(item => item.Premium + item.ZTSCLevy + item.StampDuty + item.RadioLicenseCost);
@@ -2120,10 +2120,11 @@ namespace InsuranceClaim.Controllers
             Session.Remove("RenewInvoiceId");
             Session.Remove("RenewVehicleSummary");
             Session.Remove("RenewVehiclePolicy");
-            //Session.Remove("RenewVehicle");
+            Session.Remove("RenewVehicle");
             Session.Remove("RenewVehicleDetails");
             Session.Remove("RenewCardDetail");
-
+            Session.Remove("ReSummaryDetailed");
+            
 
 
 
