@@ -1430,7 +1430,7 @@ namespace InsuranceClaim.Controllers
             }
 
 
-            foreach (var item in SummaryList.Take(50))
+            foreach (var item in SummaryList)
             {
                 PolicyListViewModel policylistviewmodel = new PolicyListViewModel();
 

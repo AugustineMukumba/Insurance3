@@ -1635,16 +1635,16 @@ namespace InsuranceClaim.Controllers
                         // return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
 
                         if (model.PaymentMethodId == 1)
-                            return RedirectToAction("SaveDetailList", "Renew", new { id = DbEntry.Id, invoiceNumer = model.InvoiceNumber });
+                            return RedirectToAction("SaveDetailList", "Renew", new { id = summary.Id, invoiceNumer = model.InvoiceNumber });
                         if (model.PaymentMethodId == 3)
                         {
 
                             //return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
                             TempData["PaymentMethodId"] = model.PaymentMethodId;
-                            return RedirectToAction("makepayment", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
+                            return RedirectToAction("makepayment", new { id = summary.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
                         }
                         else
-                            return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
+                            return RedirectToAction("PaymentDetail", new { id = summary.Id });
                     }
                     else
                     {
@@ -2673,10 +2673,6 @@ namespace InsuranceClaim.Controllers
 
                     return Json(vehiclelist, JsonRequestBehavior.AllowGet);
                 }
-
-
-
-
 
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
