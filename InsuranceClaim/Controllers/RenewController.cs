@@ -968,6 +968,35 @@ namespace InsuranceClaim.Controllers
                             model.CustomSumarryDetilId = model.Id;
                         }
 
+                        //Ds31Jan
+                        var vehicleREnewid = (RiskDetailModel)Session["CheckRenewVehicleDetails"];
+                        if (vehicleREnewid != null)
+                        {
+                            var summaryDetial = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId = '" + vehicleREnewid.Id + "'");
+                            if (summaryDetial != null) // while user come from qutation email
+                            {
+                                var vehicledetail = InsuranceContext.VehicleDetails.Single(where: $"Id = '{summaryDetial.VehicleDetailsId}'");
+                                if (vehicledetail != null)
+                                {
+                                    if (model.CustomSumarryDetilId != 0) // cehck if request is comming from agent email
+                                    {
+                                        if (model.PaymentMethodId == 1)
+                                            return RedirectToAction("SaveDetailList", "Renew", new { id = model.CustomSumarryDetilId, invoiceNumber = model.InvoiceNumber });
+                                        if (model.PaymentMethodId == 3)
+                                        {
+                                            //return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policyNum, Email = customerEmail });
+
+                                            TempData["PaymentMethodId"] = model.PaymentMethodId;
+                                            return RedirectToAction("makepayment", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
+                                        }
+                                        else
+                                            return RedirectToAction("PaymentDetail", new { id = model.CustomSumarryDetilId });
+                                    }
+                                }
+                            }
+                        }
+
+
                         #endregion
 
                         #region Add All info to database
@@ -1303,6 +1332,7 @@ namespace InsuranceClaim.Controllers
                                 // vehicles[Convert.ToInt32(_item.NoOfCarsCovered) - 1] = _item;
                                 vehicles = _item;
                                 Session["RenewVehicleDetails"] = vehicles;
+                                Session["CheckRenewVehicleDetails"] = vehicles;
 
 
                                 // Delivery Address Save
@@ -1638,7 +1668,6 @@ namespace InsuranceClaim.Controllers
                             return RedirectToAction("SaveDetailList", "Renew", new { id = summary.Id, invoiceNumer = model.InvoiceNumber });
                         if (model.PaymentMethodId == 3)
                         {
-
                             //return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
                             TempData["PaymentMethodId"] = model.PaymentMethodId;
                             return RedirectToAction("makepayment", new { id = summary.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
@@ -2124,7 +2153,8 @@ namespace InsuranceClaim.Controllers
             Session.Remove("RenewVehicleDetails");
             Session.Remove("RenewCardDetail");
             Session.Remove("ReSummaryDetailed");
-            
+            Session.Remove("CheckRenewVehicleDetails");
+
 
 
 
