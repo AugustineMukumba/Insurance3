@@ -1384,7 +1384,6 @@ namespace InsuranceClaim.Controllers
         public ActionResult ActiveDeactive(string id, string flag)
         {
             var data = InsuranceContext.Customers.Single(id);
-
             var userid = data.UserID;
             data.IsActive = Convert.ToBoolean(flag);
             InsuranceContext.Customers.Update(data);
@@ -1400,6 +1399,10 @@ namespace InsuranceClaim.Controllers
         [Authorize(Roles = "Staff,Administrator")]
         public ActionResult PolicyList()
         {
+
+            ClearRenewSession();
+
+
             TempData["RedirectedFrom"] = "PolicyList";
             Session["ViewlistVehicles"] = null;
             ListPolicy policylist = new ListPolicy();
@@ -1519,6 +1522,20 @@ namespace InsuranceClaim.Controllers
             return View(policylist);
         }
 
+        private void ClearRenewSession()
+        {
+            Session.Remove("RenewVehicleId");
+            Session.Remove("RenewPaymentId");
+            Session.Remove("RenewInvoiceId");
+            Session.Remove("RenewVehicleSummary");
+            Session.Remove("RenewVehiclePolicy");
+            Session.Remove("RenewVehicle");
+            Session.Remove("RenewVehicleDetails");
+            Session.Remove("RenewCardDetail");
+            Session.Remove("ReSummaryDetailed");
+            Session.Remove("CheckRenewVehicleDetails");
+            Session.Remove("ReCustomerDataModal");
+        }
 
         // GET: Dashboard
         [Authorize(Roles = "Administrator")]
@@ -1591,6 +1608,33 @@ namespace InsuranceClaim.Controllers
                         }
                     }
                 }
+
+
+                var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
+                var role = UserManager.GetRoles(_User.Id.ToString()).FirstOrDefault();
+
+                var customerID = InsuranceContext.Customers.Single(where: $"userid='{User.Identity.GetUserId().ToString()}'").Id;
+
+
+                if (role == "Staff")
+                {
+                    // SummaryList = InsuranceContext.SummaryDetails.All(where: $"CreatedBy={customerID} and isQuotation = '0'  ").OrderByDescending(x => x.Id).ToList();
+
+                    SummaryList = SummaryList.Where(c => c.CreatedBy == customerID && c.isQuotation == false).OrderByDescending(c=>c.Id).ToList();
+                }
+                else if (role == "Administrator")
+                {
+                  //  SummaryList = InsuranceContext.SummaryDetails.All(where: $"isQuotation = '0'  ").OrderByDescending(x => x.Id).ToList();
+                    SummaryList = SummaryList.Where(c => c.isQuotation == false).OrderByDescending(c => c.Id).ToList();
+                }
+                else
+                {
+                    SummaryList = SummaryList.Where(c => c.CreatedBy == customerID && c.isQuotation == false).OrderByDescending(c => c.Id).ToList();
+                }
+
+
+
+
 
                 if (SummaryList != null && SummaryList.Count > 0)
                 {

@@ -17,7 +17,6 @@ namespace InsuranceClaim.Controllers
     {
         public ActionResult SaveClaimant()
         {
-
             var service = new VehicleService();
             var makers = service.GetMakers();
 
@@ -35,8 +34,6 @@ namespace InsuranceClaim.Controllers
         {
             if (ModelState.IsValid)
             {
-
-
                 bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
                 string userid = "";
                 if (userLoggedin)

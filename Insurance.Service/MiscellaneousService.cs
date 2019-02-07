@@ -91,7 +91,9 @@ namespace Insurance.Service
 
 
                 //  filename = Guid.NewGuid() + "," + filename;
-                string file = Convert.ToString(DateTime.Now.ToString("ddMMyyyy"));
+               // string file = Convert.ToString(DateTime.Now.ToString("ddMMyyyy"));
+                string file = Convert.ToString(DateTime.Now.ToString("yyyyMMddHHmmss"));
+                
                 filename = file + "," + filename;
                 //  string[] nfilename=filename.Split(",");
                 //  filename = DateTime.Now.ToString("dd/MM/yyyy") + "" + filename;
@@ -317,7 +319,7 @@ namespace Insurance.Service
             string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(ReminderEmailPath));
             var body = EmailBody2.Replace("##FirstName##", customer.FirstName).Replace("##path##", filepath).Replace("##LastName##", customer.LastName).Replace("##CreditedWalletAmount##", Convert.ToString(loyaltyPoint)).Replace("##TotalWalletBalance##", Convert.ToString(TotalLoyaltyPoints));
             // var yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
-            var attacheMentPath = MiscellaneousService.EmailPdf(body, policy.CustomerId, policy.PolicyNumber, "Loyalty Points");
+            var attacheMentPath = MiscellaneousService.EmailPdf(body, policy.CustomerId, policy.PolicyNumber, "LoyaltyPoints");
 
             List<string> attachements = new List<string>();
             attachements.Add(attacheMentPath);

@@ -12,7 +12,8 @@
             var menutab = Html.Partial("ClaimRegister");
         }
         @menutab
-        <div class="row">
+       
+         <div class="row">
             <div class="claims-list-section">
                 <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 products-top-claim">
                     <div class="head-title">
@@ -21,7 +22,6 @@
                 </div>
                 <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 add-btn">
                     <div class="text-right">
-                        @*<button type="button" class="btn btn-primary">Add</button>*@
                         <form>
                             <input class="btn btn-primary" type="button" value="Add" onclick="window.location.href='@Url.Action("SaveClaimant", "Claimant")'" />
                         </form>
@@ -29,6 +29,21 @@
                 </div>
             </div>
         </div>
+
+
+        <div class="row">
+            <div class="col-md-12 next-btn">
+                <div class="row">
+                    <div class="col-sm-4 col-md-4">
+                        <div class="text-left">
+                            @Html.TextBox("searchText", null, new { @class = "form-control", @placeholder = "VRN Number / Customer Name" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         @using (Html.BeginForm("EditClaimant", "Claimant", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
             <div class="product-table-grid claimant-list-grid">
@@ -265,9 +280,19 @@
                 $("#txtDescriptionOfLoss").val(DescriptionOfLoss);
                 $("#txtEstimatedValueOfLoss").val(EstimatedValueOfLoss);
                 $("#txtThirdPartyDamageValue").val(ThirdPartyDamageValue);
-
             }
         });
     }
+
+    $(document).ready(function () {
+        $("#searchText").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $(".table>tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+
+
 
 </script>

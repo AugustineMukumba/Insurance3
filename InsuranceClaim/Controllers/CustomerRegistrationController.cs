@@ -1328,6 +1328,7 @@ namespace InsuranceClaim.Controllers
 
                         var summaryDetial = InsuranceContext.SummaryVehicleDetails.Single(where: $"SummaryDetailId = '" + model.CustomSumarryDetilId + "'");
 
+                     
                         if (summaryDetial != null && btnSendQuatation == "") // while user come from qutation email
                         {
                             if (model.CustomSumarryDetilId != 0 && btnSendQuatation == "") // cehck if request is comming from agent email
@@ -1885,6 +1886,13 @@ namespace InsuranceClaim.Controllers
                                     Vehicledata.PassengerAccidentCover = item.PassengerAccidentCover;
                                     Vehicledata.ExcessBuyBack = item.ExcessBuyBack;
                                     Vehicledata.RoadsideAssistance = item.RoadsideAssistance;
+
+                                    // 006_feb
+                                    Vehicledata.RoadsideAssistanceAmount = item.RoadsideAssistanceAmount;
+                                    Vehicledata.MedicalExpensesAmount = item.MedicalExpensesAmount;
+                               
+
+
                                     Vehicledata.MedicalExpenses = item.MedicalExpenses;
                                     Vehicledata.NumberofPersons = item.NumberofPersons;
                                     Vehicledata.IsLicenseDiskNeeded = item.IsLicenseDiskNeeded;
@@ -3183,6 +3191,11 @@ namespace InsuranceClaim.Controllers
             lstreceipt.paymentMethodType = (model.PaymentMethodId == 1 ? "Cash" : (model.PaymentMethodId == 2 ? "Ecocash" : (model.PaymentMethodId == 3 ? "Swipe" : "MasterVisa Card")));
             receiptList.listReceipt = new List<PreviewReceiptListModel>();
             receiptList.listReceipt.Add(lstreceipt);
+
+
+            SaveReciptPdf(id);
+
+
             //byte[] bytes = Encoding.ASCII.GetBytes(Body2);
             //return File(bytes, "text/html");
             //return RedirectToAction("ReceiptModule");
@@ -3220,11 +3233,46 @@ namespace InsuranceClaim.Controllers
             List<string> attachements = new List<string>();
             attachements.Add("");
 
+             objEmailService.SendEmail(user.Email, "", "", "Receipt Module", Body2, attachements);
+
+      
 
 
-            objEmailService.SendEmail(user.Email, "", "", "Receipt Module", Body2, attachements);
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
+
+
+        public void SaveReciptPdf(int receiptHistoryId)
+        {
+            var ReceiptHistory = InsuranceContext.ReceiptHistorys.Single(where: $"Id='{receiptHistoryId}'");
+            var policyDetails = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{ReceiptHistory.PolicyNumber}'");
+            var customer = InsuranceContext.Customers.Single(where: $"Id='{policyDetails.CustomerId}'");
+            //var AspNetUsers = InsuranceContext.AspNetUsersUpdates
+            var user = UserManager.FindById(customer.UserID);
+            Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
+            //string userRegisterationEmailPath = "~/Views/Shared/EmailTemplates/UserPaymentEmail.cshtml";
+            string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentReceipt.cshtml";
+            string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
+            string filepath = System.Configuration.ConfigurationManager.AppSettings["urlPath"];
+            var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString())
+                .Replace("##path##", filepath).Replace("#FirstName#", customer.FirstName)
+                .Replace("#LastName#", customer.LastName)
+                .Replace("#AccountName#", ReceiptHistory.CustomerName)
+                .Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2)
+                .Replace("#Amount#", Convert.ToString(ReceiptHistory.AmountPaid))
+                .Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", ReceiptHistory.Id.ToString())
+                 .Replace("#TransactionReference#", ReceiptHistory.TransactionReference).Replace("#TransactionReference#", ReceiptHistory.TransactionReference)
+                .Replace("#PaymentType#", (ReceiptHistory.PaymentMethodId == 1 ? "Cash" : (ReceiptHistory.PaymentMethodId == 2 ? "PayPal" : "PayNow")));
+            List<string> attachements = new List<string>();
+            attachements.Add("");
+
+
+            var attacehmetn_File = MiscellaneousService.EmailPdf(Body2, customer.Id, ReceiptHistory.PolicyNumber, "Receipt");
+
+
+        }
+
+
         #endregion
 
 

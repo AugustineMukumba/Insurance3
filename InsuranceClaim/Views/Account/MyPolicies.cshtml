@@ -101,6 +101,8 @@
 
                                         <li>@Html.ActionLink("View Policy", "CustomerDetials", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>
 
+                                    
+
 
                                         @foreach (var _item in item.Vehicles)
                                         {
@@ -506,20 +508,7 @@
             data: "{ 'summaryId': '" + summaryId + "'}",
             dataType: "json",
             success: function (Result) {
-
                 alert("Mail has been sent sucessfully.");
-                // Another way of writing
-                //  for (var i = 0; i < Result.length; i++) {
-                // $("#ddlcountry").append("<option value=" + Result[i].ID + ">" +
-                //     Result[i].Name + "</option>");
-                //  }
-
-                // One more way of writing
-                // for (var i in Result) {
-                //  $("#ddlcountry").append($("<option></option>").val(Result[i].ID).
-                //   text(Result[i].Name));
-                //  }
-
             },
             error: function (Result) {
                 alert("Error");

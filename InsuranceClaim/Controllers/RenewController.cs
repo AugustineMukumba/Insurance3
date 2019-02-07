@@ -75,6 +75,7 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult Index(int? vehicleid)
         {
+
             Session["RenewVehicleId"] = vehicleid;
             CustomerModel custdata = new CustomerModel();
             var GetUpdatedCustData = (CustomerModel)Session["ReCustomerDataModal"];
@@ -133,7 +134,8 @@ namespace InsuranceClaim.Controllers
 
             if (id != -1) // -1 use for getting session value when click on back button
             {
-                RemoveSession();
+                //  RemoveSession();
+                ClearRenewSession();
             }
 
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
@@ -218,7 +220,9 @@ namespace InsuranceClaim.Controllers
                     Session["CustomerDataModal"] = customerModel; // for admin
                 }
                 customerModel.Zipcode = "00263";
-                RemoveSession();
+                //  RemoveSession();
+
+                ClearRenewSession();
 
                 return RedirectToAction("Index", "Renew", new { vehicleid = vehicleId });
             }
@@ -2144,6 +2148,26 @@ namespace InsuranceClaim.Controllers
 
 
             //Session.Remove("policytermid");
+            //Session.Remove("RenewVehicleId");
+            //Session.Remove("RenewPaymentId");
+            //Session.Remove("RenewInvoiceId");
+            //Session.Remove("RenewVehicleSummary");
+            //Session.Remove("RenewVehiclePolicy");
+            //Session.Remove("RenewVehicle");
+            //Session.Remove("RenewVehicleDetails");
+            //Session.Remove("RenewCardDetail");
+            //Session.Remove("ReSummaryDetailed");
+            //Session.Remove("CheckRenewVehicleDetails");
+
+            ClearRenewSession();
+
+            return View(objSaveDetailListModel);
+        }
+
+
+        public JsonResult gotoExit(int? id)
+        {
+            JsonResult jsonResult = new JsonResult();
             Session.Remove("RenewVehicleId");
             Session.Remove("RenewPaymentId");
             Session.Remove("RenewInvoiceId");
@@ -2154,11 +2178,29 @@ namespace InsuranceClaim.Controllers
             Session.Remove("RenewCardDetail");
             Session.Remove("ReSummaryDetailed");
             Session.Remove("CheckRenewVehicleDetails");
+            Session.Remove("ReCustomerDataModal");
+
+            jsonResult.Data = 1;
+
+            return jsonResult;
+        }
 
 
 
 
-            return View(objSaveDetailListModel);
+        private void ClearRenewSession()
+        {
+            Session.Remove("RenewVehicleId");
+            Session.Remove("RenewPaymentId");
+            Session.Remove("RenewInvoiceId");
+            Session.Remove("RenewVehicleSummary");
+            Session.Remove("RenewVehiclePolicy");
+            Session.Remove("RenewVehicle");
+            Session.Remove("RenewVehicleDetails");
+            Session.Remove("RenewCardDetail");
+            Session.Remove("ReSummaryDetailed");
+            Session.Remove("CheckRenewVehicleDetails");
+            Session.Remove("ReCustomerDataModal");
         }
 
         public JsonResult GetLicenseAddress()

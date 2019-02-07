@@ -424,13 +424,11 @@
                 debugger;
                 $("#tblfileListing").show();
                 for (var i = 0; i < result.length; i++) {
-                    $("#tblfileListing tbody").append('<tr><td>' + result[i].Title + '</td><td>' + result[i].Decription + '</td><td><a href=' + result[i].FilePath + ' class = "glyphicon glyphicon-download-alt"></a><a style="margin-left: 15px;" href = "" class ="glyphicon glyphicon-trash" onclick = "return DeleteConfirm(' + result[i].id + ')"></a></td></tr>');
+                    $("#tblfileListing tbody").append('<tr><td>' + result[i].Title + '</td><td>' + result[i].Decription + '</td><td><a href="' + result[i].FilePath + '" class = "glyphicon glyphicon-download-alt"></a> </td></tr>');
                 }
                 if (result.length == 0) {
                     $("#tblfileListing tbody").append('<tr><td colspan=3> Records not found</td></tr>');
                     toastr.error("Records not found");
-
-
                 }
             },
             error: function (err) {
