@@ -1053,6 +1053,8 @@
     <Content Include="Views\Renew\customeRenew.cshtml" />
     <Content Include="Views\Renew\ReneSummaryDetails.cshtml" />
     <Content Include="Views\Renew\Viewriskdetail.cshtml" />
+    <Content Include="Views\Renew\makepayment.cshtml" />
+    <Content Include="Views\Renew\PaymentFailure.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -32,6 +32,10 @@ namespace InsuranceClaim.Models
         public decimal? Zinara_License_Fee { get; set; }
 
         public string PolicyCreatedBy { get; set; }
+
+        public DateTime PolicyRenewalDate { get; set; }
+        public bool? IsLapsed { get; set; }
+        public bool? IsActive { get; set; }
     }
     public class ListGrossWrittenPremiumReportModels
     {

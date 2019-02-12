@@ -776,6 +776,18 @@ namespace Insurance.Domain
     }
 
 
+    public partial class UniqeTransaction : Entity<UniqeTransaction>
+    {
+        public UniqeTransaction() { }
+        public UniqeTransaction(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public int UniqueTransactionId { get; set; }
+        public DateTime? CreatedOn { get; set; }
+
+    }
+
+
     public partial class City : Entity<City>
     {
         public City() { }

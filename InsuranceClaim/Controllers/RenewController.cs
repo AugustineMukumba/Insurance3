@@ -15,6 +15,9 @@ using Insurance.Service;
 using PayPal.Api;
 using System.Web.Script.Serialization;
 using System.Web.Configuration;
+using System.Net;
+using System.Text;
+using System.IO;
 
 namespace InsuranceClaim.Controllers
 {
@@ -1696,6 +1699,103 @@ namespace InsuranceClaim.Controllers
             }
         }
 
+
+        public ActionResult makepayment(Int32 id, decimal TotalPremiumPaid)
+        {
+            Dictionary<string, dynamic> responseData;
+            string data = "authentication.userId=8a8294175698883c01569ce4c4212119" +
+                "&authentication.password=Mc2NMzf8jM" +
+                "&authentication.entityId=8a8294175698883c01569ce4c3972115" +
+                "&amount=" + TotalPremiumPaid + "" +
+                "&currency=USD" +
+                "&paymentType=DB";
+
+
+            //string data = "authentication.userId=8a8294175698883c01569ce4c4212119" +
+            //   "&authentication.password=Mc2NMzf8jM" +
+            //   "&authentication.entityId=8a8294175698883c01569ce4c3972115" +
+            //   "&amount="+TotalPremiumPaid+"" +
+            //   "&currency=USD" +
+            //   "&paymentType=DB";
+            string url = "https://test.oppwa.com/v1/checkouts";
+            byte[] buffer = Encoding.ASCII.GetBytes(data);
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+           | SecurityProtocolType.Tls11
+           | SecurityProtocolType.Tls12
+           | SecurityProtocolType.Ssl3;
+
+
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
+            request.Method = "POST";
+            request.ContentType = "application/x-www-form-urlencoded";
+            Stream PostData = request.GetRequestStream();
+            PostData.Write(buffer, 0, buffer.Length);
+            PostData.Close();
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                var s = new JavaScriptSerializer();
+                responseData = s.Deserialize<Dictionary<string, dynamic>>(reader.ReadToEnd());
+                reader.Close();
+                dataStream.Close();
+            }
+
+            if (responseData["result"]["description"].Contains("successfull"))
+            {
+                ViewBag.checkoutId = Convert.ToString(responseData["id"]);
+
+                TempData["ID"] = id;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+
+        public ActionResult returnurl()
+        {
+            var id = HttpContext.Request.QueryString["id"];
+            Dictionary<string, dynamic> responseData;
+            string data = "authentication.userId=8a8294175698883c01569ce4c4212119" +
+                "&authentication.password=Mc2NMzf8jM" +
+                "&authentication.entityId=8a8294175698883c01569ce4c3972115";
+            string url = $"https://test.oppwa.com/v1/checkouts/{id}/payment?" + data;
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
+            request.Method = "GET";
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                var s = new JavaScriptSerializer();
+                responseData = s.Deserialize<Dictionary<string, dynamic>>(reader.ReadToEnd());
+                reader.Close();
+                dataStream.Close();
+            }
+
+            if (responseData["result"]["description"].Contains("successfull"))
+            {
+                var InvoiceId = responseData["id"];
+                int Summaryid = Convert.ToInt32(TempData["ID"]);
+                string PaymentId = Convert.ToString(TempData["PaymentMethodId"]);
+                //var result = new PaypalController().SaveDetailList(Summaryid, InvoiceId);
+                return RedirectToAction("SaveDetailList", "Renew", new { id = Summaryid, invoiceNumber = InvoiceId, PaymentId = PaymentId });
+            }
+            else
+            {
+                return RedirectToAction("PaymentFailure");
+            }
+        }
+
+        public ActionResult PaymentFailure()
+        {
+            return View();
+        }
+
+
         public ActionResult VehicleHistory()
         {
             //List<VehicleDetail> vehicles = new List<VehicleDetail>();
@@ -1861,7 +1961,7 @@ namespace InsuranceClaim.Controllers
 
             return View(cardDetails);
         }
-        public async Task<ActionResult> SaveDetailList(Int32 id)
+        public async Task<ActionResult> SaveDetailList(Int32 id, string invoiceNumber="", string paymentId="")
         {
             var vehicleId = (Int32)Session["RenewVehicleId"];
             var PaymentId = Session["PaymentId"];

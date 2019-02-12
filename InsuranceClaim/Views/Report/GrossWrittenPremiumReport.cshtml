@@ -95,18 +95,19 @@
                             <th>Cover Type</th>
 
                             <th style="width:170px;">Premium</th>
-                          
+
                             <th width="170px;">Stamp Duty</th>
                             <th>ZTSC Levy</th>
                             <th>Commission Detail</th>
                             <th>Radio Licence Cost</th>
                             <th>Zinara License Fee</th>
+                            <th>Status</th>
 
                         </tr>
                     </thead>
                     <tbody>
 
-                        @{ 
+                        @{
                             decimal sumInsuredTotal = 0;
                             decimal annualPremiumTotal = 0;
                             decimal premiumDueTotal = 0;
@@ -133,26 +134,49 @@
                                 <td>@item.PolicyCreatedBy</td>
                                 <td>@item.Customer_Name</td>
                                 <td>@item.Policy_Number</td>
-                                <td>                                
-                                    @item.Transaction_date                                           
+                                <td>
+                                    @item.Transaction_date
                                 </td>
                                 <td>
                                     @item.Payment_Mode
                                 </td>
                                 <td> @item.Payment_Term</td>
-                                <td>@item.CoverType</td>  
-                                                         
+                                <td>@item.CoverType</td>
+
                                 <td>
-                                    $@item.Premium_due                                
+                                    $@item.Premium_due
                                 </td>
-                                  
+
                                 <td>$ @item.Stamp_duty</td>
                                 <td>$ @item.ZTSC_Levy</td>
                                 <td>
                                     $@item.Comission_Amount
                                 </td>
                                 <td>$@item.RadioLicenseCost</td>
-                                <td> @item.Zinara_License_Fee </td>   
+                                <td> @item.Zinara_License_Fee </td>
+
+
+                                @if (DateTime.Now > item.PolicyRenewalDate)
+                                {
+                                    if (Convert.ToBoolean(item.IsLapsed) && item.IsActive == false)
+                                    {
+                                        <td>Renewed</td>
+                                    }
+                                    else
+                                    {
+                                        <td>Lapsed</td>
+                                    }
+                                }
+                                else if (Convert.ToBoolean(!item.IsActive))
+                                {
+                                    <td>Disabled</td>
+                                }
+                                else if (DateTime.Now < item.PolicyRenewalDate && Convert.ToBoolean(item.IsActive))
+                                {
+                                    <td>In Force</td>
+                                }
+
+
                             </tr>
                         }
                     </tbody>
@@ -161,7 +185,8 @@
                             <td><strong>Total:</strong></td>
                             <td></td>
                             <td></td>
-                            <td></td>                     
+                            <td></td>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td>
@@ -174,6 +199,7 @@
                             </td>
                             <td><strong>$@radioLicenseCostTotal</strong></td>
                             <td><strong> $@ZinaraLicenseFee </strong> </td>
+                            <td></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -252,10 +278,10 @@
             'elementHandlers': specialElementHandlers
         });
         doc.save('GrossWrittenPremiumReport.pdf');
-        
+
     });
 
-    
+
 
 
 </script>

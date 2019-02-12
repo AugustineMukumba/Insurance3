@@ -6,7 +6,7 @@
 
     var customerDetail = (InsuranceClaim.Models.CustomerModel)Session["CustomerDataModal"];
 
-   
+
 
     bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
 
@@ -103,7 +103,7 @@
                                                 <div class="choose-plan-box active" planpurchase="1" style="cursor:pointer" onclick="SelectPlan(this);">
                                                     <h4>Annual</h4>
                                                     <div class="plan-white-box">
-                                                        <h3>$@Math.Round(Convert.ToDouble(item.Premium + item.StampDuty + item.ZTSCLevy + item.VehicleLicenceFee + (Convert.ToBoolean(item.IncludeRadioLicenseCost) ? item.RadioLicenseCost : 0.00m)), 2)</h3>
+                                                        <h3> $@Math.Round(Convert.ToDouble(item.Premium + item.StampDuty + item.ZTSCLevy + item.VehicleLicenceFee + (Convert.ToBoolean(item.IncludeRadioLicenseCost) ? item.RadioLicenseCost : 0.00m)), 2) </h3>
                                                         <p>Vehicle Model : @Insurance.Domain.InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription</p>
                                                         <a href="javascript:void(0);" style="pointer-events:none;">PAY FOR 12 MONTHS</a>
                                                     </div>
@@ -155,12 +155,9 @@
                                                             <p>Vehicle Model : @Insurance.Domain.InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription</p>
                                                             <a href="javascript:void(0);" style="pointer-events:none;">PAY FOR @item.PaymentTermId MONTHS</a>
                                                         </div>
-
                                                     </div>
                                                 </div>
                                             }
-
-
 
 
                                         </div>
@@ -384,8 +381,6 @@
                                                 <div class="payment-card">
                                                     <ul class="list-inline">
 
-
-
                                                         @if (User.IsInRole("Staff"))
                                                         {
                                                             <li id="payment_1" class="payment_type active" onclick="PaymentMethod(1)">  Cash   </li>
@@ -394,8 +389,8 @@
                                                         <li id="payment_2" class="payment_type" onclick="PaymentMethod(2)"><img src="~/Images/master-card.png" /></li>
 
                                                         @*<li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"><img  style="width:65px;" src="~/Images/eft_pay.png" /></li>*@
-                                                   
-                                                      <li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"><img  style="width:65px;" src="~/Images/Paynow-logo.png" /></li>
+
+                                                        <li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"><img style="width:65px;" src="~/Images/Paynow-logo.png" /></li>
 
                                                     </ul>
                                                 </div>
@@ -408,13 +403,8 @@
                                             <div class="form-group">
                                                 @Html.TextBoxFor(c => c.InvoiceNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Invoice number" })
                                             </div>
-
                                         </div>
-
                                     </div>
-
-
-
 
 
                                     <div class="row">
@@ -428,16 +418,22 @@
                                                                 <a style="display:none" id="previouselink" href="/CustomerRegistration/RiskDetail" class="back"></a>
                                                             </li>
                                                             <li class="pull-right">
-                                                                @if ((ViewBag.CurrentUserRole == "Staff"  || ViewBag.CurrentUserRole == "Web Customer" || ViewBag.CurrentUserRole == "") && ViewBag.SummaryDetailId == 0)
+                                                                @if ((ViewBag.CurrentUserRole == "Staff" || ViewBag.CurrentUserRole == "Web Customer" || ViewBag.CurrentUserRole == "") && ViewBag.SummaryDetailId == 0)
                                                                 {
                                                                     <div class="text-right">
                                                                         <button type="submit" id="btnNext1" name="btnSendQuatation" value="sendQuatation" class="btn">Send Quotation</button>
 
                                                                     </div>
                                                                 }
+
                                                                 <div class="text-right">
-                                                                    <button type="submit" id="btnNext"  onclick="return checkAmountPaid();" class="btn">Next</button>
+                                                                    <button type="submit" id="btnNext" onclick="return checkAmountPaid();" class="btn">Next</button>
                                                                 </div>
+
+                                                                @*<div class="text-right">
+                                                                    <button type="button" id="btnPreview" onclick="return Preview();" class="btn">Preview</button>
+                                                                </div>*@
+
 
                                                             </li>
 
@@ -453,9 +449,7 @@
                                             <div class="row">
                                                 <div class="col-sm-6 col-md-6">
                                                 </div>
-
                                                 <div class="col-sm-6 col-md-6" style="margin-top:5px;">
-
                                                 </div>
                                             </div>
 
@@ -464,10 +458,114 @@
                                             <input type="hidden" id="errMsg" value="@errMsg" />
                                         </div>
                                     </div>
-
                                 </div>
                             }
                         </div>
+
+
+                        <div id="divPreview" style="display:none">
+
+                            <!-- Modal -->
+                            <div id="myModal" class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title">Policy Details</h4>
+                                        </div>
+                                        <h5 style="margin-left:10px; margin-top:10px;"><b>Your Personal Details </b> </h5>
+                                        <div class="modal-body">
+                                            <table class="table">
+                                                <tr>
+                                                    <td>Policy Number: </td>
+                                                    <td> @Model.InvoiceNumber</td>
+                                                    <td>Email Address: </td>
+                                                    <td> @customerDetail.EmailAddress </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>Cell Number: </td>
+                                                    <td>@customerDetail.PhoneNumber </td>
+                                                    <td> Date of Birth:</td>
+                                                    <td> @customerDetail.DateOfBirth.Value.ToShortDateString() </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        ID Number:
+                                                    </td>
+                                                    <td> @customerDetail.NationalIdentificationNumber </td>
+                                                    <td>
+                                                        Postal Address:
+                                                    </td>
+                                                    <td> @customerDetail.Zipcode </td>
+                                                </tr>
+                                            </table>
+
+                                            <h5>Premium Summary</h5>
+
+                                            <table class="table">
+                                                <tr>
+                                                    <td>Basic Premium: </td>
+                                                    <td> @Model.TotalPremium </td>
+                                                    <td>Stamp Duty: </td>
+                                                    <td> @Model.TotalStampDuty </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>ZTSC Levy</td>
+                                                    <td>@Model.TotalZTSCLevies</td>
+                                                    <td> Radio Licence Cost</td>
+                                                    <td> @Model.TotalRadioLicenseCost</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>Discount </td>
+                                                    <td>@Model.Discount </td>
+
+                                                    <td>Total Amount Due </td>
+                                                    <td>
+                                                        @if (vehicleList != null && vehicleList.Count > 0)
+                                                        {
+                                                            var amount = 0.0;
+                                                            foreach (var item in vehicleList)
+                                                            {
+                                                                amount += @Math.Round(Convert.ToDouble(item.Premium + item.StampDuty + item.ZTSCLevy + item.VehicleLicenceFee + (Convert.ToBoolean(item.IncludeRadioLicenseCost) ? item.RadioLicenseCost : 0.00m)), 2);
+                                                            }
+                                                            
+                                                            <span> @amount</span>
+                                                        }
+
+                                                    </td>
+
+                                                </tr>
+
+
+                                            </table>
+
+
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+
+
+
+
+
+
+                        </div>
+
+
 
                     </div>
                 </div>
@@ -478,6 +576,13 @@
 </div>
 @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
 <script>
+
+
+    function Preview()
+    {
+        $("#divPreview").show();
+        $("#myModal").modal("show")
+    }
 
     function gotoExit() {
         $.ajax({

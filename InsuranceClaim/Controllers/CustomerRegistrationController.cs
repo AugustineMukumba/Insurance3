@@ -485,8 +485,6 @@ namespace InsuranceClaim.Controllers
             viewModel.RoadsideAssistanceAmount = 0.00m;
             viewModel.RoadsideAssistancePercentage = 0.00m;
 
-
-
             var eExcessTypeData = from eExcessType e in Enum.GetValues(typeof(eExcessType))
                                   select new
                                   {
@@ -495,12 +493,6 @@ namespace InsuranceClaim.Controllers
                                   };
 
             ViewBag.eExcessTypeData = new SelectList(eExcessTypeData, "ID", "Name");
-
-
-
-
-
-
 
             //TempData["Policy"] = service.GetPolicy(id);
             if (makers.Count > 0)
@@ -645,7 +637,7 @@ namespace InsuranceClaim.Controllers
 
             // if policy id is not null it mean's it will be update
 
-            if(model.chkAddVehicles==false && model.PolicyId!=0)
+            if (model.chkAddVehicles == false && model.PolicyId != 0)
                 model.isUpdate = true;
 
 
@@ -1095,14 +1087,13 @@ namespace InsuranceClaim.Controllers
                             //vehicleModel.RoadsideAssistanceAmount = vehicleDetails.RoadsideAssistanceAmount;
                             //vehicleModel.ModelId = vehicleDetails.ModelId;
 
+                            if(!vehicleModel.IncludeRadioLicenseCost)
+                                vehicleModel.RadioLicenseCost = 0;
+
                             vehicleList.Add(vehicleModel);
                         }
-
-
-
                     }
                     vehicle = vehicleList;
-
                     Session["VehicleDetails"] = vehicle;
 
                 }

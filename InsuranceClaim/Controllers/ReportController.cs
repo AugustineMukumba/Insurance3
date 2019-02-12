@@ -366,6 +366,7 @@ namespace InsuranceClaim.Controllers
         }
 
         public ActionResult GrossWrittenPremiumReport()
+
         {
             List<GrossWrittenPremiumReportModels> ListGrossWrittenPremiumReport = new List<GrossWrittenPremiumReportModels>();
             ListGrossWrittenPremiumReportModels _ListGrossWrittenPremiumReport = new ListGrossWrittenPremiumReportModels();
@@ -378,7 +379,7 @@ namespace InsuranceClaim.Controllers
 
 
             GrossWrittenPremiumReportSearchModels Model = new GrossWrittenPremiumReportSearchModels();
-            var vehicledetail = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
+            var vehicledetail = InsuranceContext.VehicleDetails.All().ToList();
             foreach (var item in vehicledetail)
             {
                 var Vehicle = InsuranceContext.VehicleDetails.Single(item.Id);
@@ -401,88 +402,97 @@ namespace InsuranceClaim.Controllers
                 if (vehicleSUmmarydetail != null)
                 {
                     var summary = InsuranceContext.SummaryDetails.Single(vehicleSUmmarydetail.SummaryDetailId);
-                    if (summary.isQuotation != true)
+                    if (summary != null)
                     {
-
-                        obj.Payment_Term = InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name;
-                        var paymentMethod = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId);
-
-                        obj.Payment_Mode = paymentMethod == null ? "" : paymentMethod.Name;
-
-                        if (customer != null)
-                            obj.Customer_Name = customer.FirstName + " " + customer.LastName;
-
-                        obj.Policy_Number = policy.PolicyNumber;
-                        obj.Policy_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("dd/MM/yyy");
-                        obj.Policy_endate = Convert.ToDateTime(item.CoverEndDate).ToString("dd/MM/yyy");
-
-                        var modelDescription = "";
-
-                        if (model != null && model.ModelDescription != null)
-                            modelDescription = model.ModelDescription;
-
-
-                        obj.Vehicle_makeandmodel = make == null ? "" : make.MakeDescription + "/" + modelDescription;
-                        obj.Stamp_duty = Convert.ToDecimal(item.StampDuty);
-                        obj.ZTSC_Levy = Convert.ToDecimal(item.ZTSCLevy);
-                        obj.Sum_Insured = Convert.ToDecimal(item.SumInsured);
-                        obj.Zinara_License_Fee = Vehicle.VehicleLicenceFee;
-
-                        var customerDetails = InsuranceContext.Customers.Single(summary.CreatedBy);
-
-                        // var customerDetails = customerList.Single(c => c.CustomerId == summary.CreatedBy);
-
-                        if (customerDetails != null)
-                            obj.PolicyCreatedBy = customerDetails.FirstName + " " + customerDetails.LastName;
-
-
-
-                        obj.Comission_percentage = 30;
-
-                        if (Vehicle != null)
+                        if (summary.isQuotation != true)
                         {
-                            obj.Comission_Amount = Convert.ToDecimal(Vehicle.Premium * 30 / 100);
+
+                            obj.Payment_Term = InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name;
+                            var paymentMethod = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId);
+
+                            obj.Payment_Mode = paymentMethod == null ? "" : paymentMethod.Name;
+
+                            if (customer != null)
+                                obj.Customer_Name = customer.FirstName + " " + customer.LastName;
+
+                            obj.Policy_Number = policy.PolicyNumber;
+                            obj.Policy_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("dd/MM/yyy");
+                            obj.Policy_endate = Convert.ToDateTime(item.CoverEndDate).ToString("dd/MM/yyy");
+
+                            //8 Feb
+                            obj.PolicyRenewalDate = Convert.ToDateTime(item.RenewalDate);
+                            obj.IsActive = item.IsActive;
+                            obj.IsLapsed = item.isLapsed;
+
+
+                            var modelDescription = "";
+
+                            if (model != null && model.ModelDescription != null)
+                                modelDescription = model.ModelDescription;
+
+
+                            obj.Vehicle_makeandmodel = make == null ? "" : make.MakeDescription + "/" + modelDescription;
+                            obj.Stamp_duty = Convert.ToDecimal(item.StampDuty);
+                            obj.ZTSC_Levy = Convert.ToDecimal(item.ZTSCLevy);
+                            obj.Sum_Insured = Convert.ToDecimal(item.SumInsured);
+                            obj.Zinara_License_Fee = Vehicle.VehicleLicenceFee;
+
+                            var customerDetails = InsuranceContext.Customers.Single(summary.CreatedBy);
+
+                            // var customerDetails = customerList.Single(c => c.CustomerId == summary.CreatedBy);
+
+                            if (customerDetails != null)
+                                obj.PolicyCreatedBy = customerDetails.FirstName + " " + customerDetails.LastName;
+
+
+
+                            obj.Comission_percentage = 30;
+
+                            if (Vehicle != null)
+                            {
+                                obj.Comission_Amount = Convert.ToDecimal(Vehicle.Premium * 30 / 100);
+                            }
+
+
+                            string converType = "";
+
+                            if (item.CoverTypeId == (int)eCoverType.ThirdParty)
+                                converType = eCoverType.ThirdParty.ToString();
+
+                            if (item.CoverTypeId == (int)eCoverType.FullThirdParty)
+                                converType = eCoverType.FullThirdParty.ToString();
+
+                            if (item.CoverTypeId == (int)eCoverType.Comprehensive)
+                                converType = eCoverType.Comprehensive.ToString();
+
+                            obj.CoverType = converType;
+
+                            obj.Net_Premium = item.Premium;
+                            obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("dd/MM/yyy");
+
+                            if (item.PaymentTermId == 1)
+                            {
+                                obj.Annual_Premium = Convert.ToDecimal(item.Premium);
+
+                                obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
+                            }
+                            if (item.PaymentTermId == 3)
+                            {
+                                obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
+                                obj.Annual_Premium = obj.Premium_due * 4;
+
+                            }
+                            if (item.PaymentTermId == 4)
+                            {
+                                obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
+                                obj.Annual_Premium = obj.Premium_due * 3;
+
+                            }
+
+                            obj.RadioLicenseCost = item.RadioLicenseCost;
+                            ListGrossWrittenPremiumReport.Add(obj);
+
                         }
-
-
-                        string converType = "";
-
-                        if (item.CoverTypeId == (int)eCoverType.ThirdParty)
-                            converType = eCoverType.ThirdParty.ToString();
-
-                        if (item.CoverTypeId == (int)eCoverType.FullThirdParty)
-                            converType = eCoverType.FullThirdParty.ToString();
-
-                        if (item.CoverTypeId == (int)eCoverType.Comprehensive)
-                            converType = eCoverType.Comprehensive.ToString();
-
-                        obj.CoverType = converType;
-
-                        obj.Net_Premium = item.Premium;
-                        obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("dd/MM/yyy");
-
-                        if (item.PaymentTermId == 1)
-                        {
-                            obj.Annual_Premium = Convert.ToDecimal(item.Premium);
-
-                            obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
-                        }
-                        if (item.PaymentTermId == 3)
-                        {
-                            obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
-                            obj.Annual_Premium = obj.Premium_due * 4;
-
-                        }
-                        if (item.PaymentTermId == 4)
-                        {
-                            obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
-                            obj.Annual_Premium = obj.Premium_due * 3;
-
-                        }
-
-                        obj.RadioLicenseCost = item.RadioLicenseCost;
-                        ListGrossWrittenPremiumReport.Add(obj);
-
                     }
                 }
 
@@ -491,8 +501,6 @@ namespace InsuranceClaim.Controllers
             Model.ListGrossWrittenPremiumReportdata = ListGrossWrittenPremiumReport.OrderBy(p => p.Customer_Name).ThenBy(p => p.Payment_Term).ThenBy(p => p.Payment_Mode).ToList();
             return View(Model);
         }
-
-
 
 
         public ActionResult SearchGrossReports(GrossWrittenPremiumReportSearchModels _model)
@@ -504,7 +512,8 @@ namespace InsuranceClaim.Controllers
 
             GrossWrittenPremiumReportSearchModels Model = new GrossWrittenPremiumReportSearchModels();
 
-            var vehicledetail = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
+            //  var vehicledetail = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
+            var vehicledetail = InsuranceContext.VehicleDetails.All().ToList();
 
 
             DateTime fromDate = DateTime.Now.AddDays(-1);
@@ -542,83 +551,89 @@ namespace InsuranceClaim.Controllers
                 if (vehicleSUmmarydetail != null)
                 {
                     var summary = InsuranceContext.SummaryDetails.Single(vehicleSUmmarydetail.SummaryDetailId);
-                    if (summary.isQuotation != true)
+                    if (summary != null)
                     {
-                        obj.Payment_Term = InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name;
-                        obj.Payment_Mode = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name;
-                        obj.Customer_Name = customer.FirstName + " " + customer.LastName;
-                        obj.Policy_Number = policy.PolicyNumber;
-                        obj.Policy_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("dd/MM/yyy");
-                        obj.Policy_endate = Convert.ToDateTime(item.CoverEndDate).ToString("dd/MM/yyy");
-                        obj.Vehicle_makeandmodel = make.MakeDescription + "/" + model.ModelDescription;
-                        obj.Stamp_duty = Convert.ToDecimal(item.StampDuty);
-                        obj.ZTSC_Levy = Convert.ToDecimal(item.ZTSCLevy);
-                        obj.Sum_Insured = Convert.ToDecimal(item.SumInsured);
 
-
-
-
-                        var customerDetails = InsuranceContext.Customers.Single(summary.CreatedBy);
-
-                        if (customerDetails != null)
-                            obj.PolicyCreatedBy = customerDetails.FirstName + " " + customerDetails.LastName;
-
-                        obj.Zinara_License_Fee = Vehicle.VehicleLicenceFee;
-
-
-                        string converType = "";
-
-                        if (item.CoverTypeId == (int)eCoverType.ThirdParty)
-                            converType = eCoverType.ThirdParty.ToString();
-
-                        if (item.CoverTypeId == (int)eCoverType.FullThirdParty)
-                            converType = eCoverType.FullThirdParty.ToString();
-
-                        if (item.CoverTypeId == (int)eCoverType.Comprehensive)
-                            converType = eCoverType.Comprehensive.ToString();
-
-                        obj.CoverType = converType;
-
-
-                        obj.Comission_percentage = 30;
-
-                        if (Vehicle != null)
+                        if (summary.isQuotation != true)
                         {
-                            obj.Comission_Amount = Convert.ToDecimal(Vehicle.Premium * 30 / 100);
+                            obj.Payment_Term = InsuranceContext.PaymentTerms.Single(item.PaymentTermId)?.Name;
+                            obj.Payment_Mode = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId)?.Name;
+                            obj.Customer_Name = customer.FirstName + " " + customer.LastName;
+                            obj.Policy_Number = policy.PolicyNumber;
+                            obj.Policy_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("dd/MM/yyy");
+                            obj.Policy_endate = Convert.ToDateTime(item.CoverEndDate).ToString("dd/MM/yyy");
+                            obj.Vehicle_makeandmodel = make.MakeDescription + "/" + model.ModelDescription;
+                            obj.Stamp_duty = Convert.ToDecimal(item.StampDuty);
+                            obj.ZTSC_Levy = Convert.ToDecimal(item.ZTSCLevy);
+                            obj.Sum_Insured = Convert.ToDecimal(item.SumInsured);
+
+                            //8 Feb
+                            obj.IsLapsed = item.isLapsed;
+                            obj.PolicyRenewalDate = Convert.ToDateTime(item.RenewalDate);
+                            obj.IsActive = item.IsActive;
+
+
+                            var customerDetails = InsuranceContext.Customers.Single(summary.CreatedBy);
+
+                            if (customerDetails != null)
+                                obj.PolicyCreatedBy = customerDetails.FirstName + " " + customerDetails.LastName;
+
+                            obj.Zinara_License_Fee = Vehicle.VehicleLicenceFee;
+
+
+                            string converType = "";
+
+                            if (item.CoverTypeId == (int)eCoverType.ThirdParty)
+                                converType = eCoverType.ThirdParty.ToString();
+
+                            if (item.CoverTypeId == (int)eCoverType.FullThirdParty)
+                                converType = eCoverType.FullThirdParty.ToString();
+
+                            if (item.CoverTypeId == (int)eCoverType.Comprehensive)
+                                converType = eCoverType.Comprehensive.ToString();
+
+                            obj.CoverType = converType;
+
+
+                            obj.Comission_percentage = 30;
+
+                            if (Vehicle != null)
+                            {
+                                obj.Comission_Amount = Convert.ToDecimal(Vehicle.Premium * 30 / 100);
+                            }
+
+
+                            obj.Net_Premium = item.Premium;
+                            obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("dd/MM/yyy");
+
+                            if (item.PaymentTermId == 1)
+                            {
+                                obj.Annual_Premium = Convert.ToDecimal(item.Premium);
+
+                                obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
+                            }
+                            if (item.PaymentTermId == 3)
+                            {
+                                obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
+                                obj.Annual_Premium = obj.Premium_due * 4;
+
+                            }
+                            if (item.PaymentTermId == 4)
+                            {
+                                obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
+                                obj.Annual_Premium = obj.Premium_due * 3;
+
+                            }
+
+                            obj.RadioLicenseCost = item.RadioLicenseCost;
+                            ListGrossWrittenPremiumReport.Add(obj);
                         }
-
-
-                        obj.Net_Premium = item.Premium;
-                        obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("dd/MM/yyy");
-
-                        if (item.PaymentTermId == 1)
-                        {
-                            obj.Annual_Premium = Convert.ToDecimal(item.Premium);
-
-                            obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
-                        }
-                        if (item.PaymentTermId == 3)
-                        {
-                            obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
-                            obj.Annual_Premium = obj.Premium_due * 4;
-
-                        }
-                        if (item.PaymentTermId == 4)
-                        {
-                            obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
-                            obj.Annual_Premium = obj.Premium_due * 3;
-
-                        }
-
-                        obj.RadioLicenseCost = item.RadioLicenseCost;
-                        ListGrossWrittenPremiumReport.Add(obj);
-
                     }
                 }
 
             }
             //_ListGrossWrittenPremiumReport.ListGrossWrittenPremiumReportdata = ListGrossWrittenPremiumReport.OrderBy(p => p.Customer_Name).ThenBy(p => p.Payment_Term).ThenBy(p => p.Payment_Mode).ToList();
-            Model.ListGrossWrittenPremiumReportdata = ListGrossWrittenPremiumReport.OrderBy(p => p.Customer_Name).ThenBy(p => p.Payment_Term).ThenBy(p => p.Payment_Mode).ToList();
+            Model.ListGrossWrittenPremiumReportdata = ListGrossWrittenPremiumReport.OrderBy(p => p.Customer_Name).ThenBy(c=>c.Policy_Number).ThenBy(c=>c.Policy_Number).ThenBy(p => p.Payment_Term).ThenBy(p => p.Payment_Mode).ToList();
             return View("GrossWrittenPremiumReport", Model);
 
         }
@@ -1208,7 +1223,7 @@ namespace InsuranceClaim.Controllers
             //query1 += " join SummaryDetail on SummaryDetail.Id= SummaryVehicleDetail.SummaryDetailId";
             //query1 += " left join ReceiptModuleHistory on ReceiptModuleHistory.SummaryDetailId= SummaryDetail.Id";
 
-         
+
 
 
             var list = InsuranceContext.Query(query1)

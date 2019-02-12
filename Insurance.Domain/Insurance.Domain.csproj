@@ -236,6 +236,7 @@
     <Compile Include="Repository\SpecificExcesses.cs" />
     <Compile Include="Repository\SummaryDetails.cs" />
     <Compile Include="Repository\SummaryVehicleDetails.cs" />
+    <Compile Include="Repository\UniqeTransactions.cs" />
     <Compile Include="Repository\UniqueCustomer.cs" />
     <Compile Include="Repository\UserManagementViews.cs" />
     <Compile Include="Repository\VehicleCoverTypes.cs" />
