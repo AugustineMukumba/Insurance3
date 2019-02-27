@@ -921,6 +921,7 @@ namespace InsuranceClaim.Controllers
                             obj.premium = item.Premium.ToString();
                             obj.suminsured = item.SumInsured.ToString();
                             obj.ZTSCLevy = item.ZTSCLevy == null ? "0" : item.ZTSCLevy.ToString();
+                            obj.Id = item.Id;
                             vehiclelist.Add(obj);
                         }
 
@@ -944,6 +945,7 @@ namespace InsuranceClaim.Controllers
                         obj.excess = item.ExcessAmount == null ? "0" : item.ExcessAmount.ToString();
                         obj.vehicle_license_fee = item.VehicleLicenceFee == 0 ? "0" : item.VehicleLicenceFee.ToString();
                         obj.stampDuty = item.StampDuty == null ? "0" : item.StampDuty.ToString();
+                        obj.Id = item.Id;
 
 
                         if (item.IncludeRadioLicenseCost == true)
@@ -1073,6 +1075,9 @@ namespace InsuranceClaim.Controllers
             EnderSomentVehical.IsCompleted = true;
             EnderSomentVehical.CreatedOn = model.CreatedOn;
             EnderSomentVehical.CreatedBy = model.CreatedBy;
+            EnderSomentVehical.VehicleLicenceFee = model.VehicleLicenceFee;
+
+
             InsuranceContext.EndorsementVehicleDetails.Update(EnderSomentVehical);
             Session.Remove("EnViewlistVehicles");
             return RedirectToAction("EndorsementSummaryDetail", "Endorsement");
@@ -1191,6 +1196,8 @@ namespace InsuranceClaim.Controllers
                     //InsuranceContext.EndorsementVehicleDetails.Insert(vehicleInsert);
                     //var vehicleId = vehicleInsert;
                     //Session["vehicleId"] = vehicleInsert;
+
+                    obj.Id = envehicle.Id;
                     RiskDetalModel.Add(obj);
                     Session["EnViewlistVehicles"] = RiskDetalModel;
                 }

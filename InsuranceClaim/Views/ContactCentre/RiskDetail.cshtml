@@ -529,8 +529,6 @@
                                                     @Html.Label("Add More Vehicles ?", new { @class = "gender-label" })
                                                     @*@Html.CheckBoxFor(m => m.chkAddVehicles, new { @class = (Model.isUpdate ? "btnDisabled" : ""), @style = "width: 40px;height: 36px;" })*@
                                                
-
-
                                                     @Html.CheckBoxFor(m => m.chkAddVehicles, new { @class = "", @style = "width: 40px;height: 36px;" })
                                                 
                                                  </div>
@@ -1326,12 +1324,7 @@
                     getProductIdbyVehicleUsageId(vUsage);
 
 
-
-
                     // call prodid drp change event
-
-
-
 
                     $("fieldset").removeAttr("disabled");
                     $("#isVehicleRegisteredonICEcash").val(1);
@@ -1348,6 +1341,7 @@
 
                 if ($("#isVehicleRegisteredonICEcash").val() == 1) {
                     generateQuotewithICEcash();
+                   // GetZinaraLicenseFee();
                 }
                 else{
                     QuoteCalculation();
@@ -1439,9 +1433,48 @@
                     }
                 } //EINDE error
             }); //EINDE ajax
+
+
         }
 
     }
+
+
+    function GetZinaraLicenseFee()
+    {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetZinaraLicenseFee", "CustomerRegistration")",
+            data: { regNo: $("#RegistrationNo").val() },
+        success: function (data) {
+            debugger;
+            if (data.result == 0) {
+                toastr.error(data.message);
+                $("fieldset").removeAttr("disabled");
+                //$("#ProductId").removeClass("inputDisabled")
+                $(".loading-area").hide();
+                $("#InsuranceId").val("");
+            }
+            if (data.result == 1) {
+           
+              var zinaraDetials   = data.Data.Response.Quotes[0];
+
+                var StampDuty = policy.StampDuty;
+                $("#VehicleLicenceFee").val(parseFloat(zinaraDetials.TotalAmount).toFixed(2));
+               
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            $(".loading-area").hide();
+            if (textStatus == 'timeout') {
+                //doe iets
+            } else if (textStatus == 'error') {
+                //doe iets
+            }
+        } //EINDE error
+    }); //EINDE ajax
+    }
+
 
     function GetVehicleModels(ModelName)
     {

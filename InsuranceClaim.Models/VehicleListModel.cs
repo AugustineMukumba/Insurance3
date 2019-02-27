@@ -21,5 +21,6 @@ public class VehicleListModel
         public string RegistrationNo { get; set; }
 
         public string ZTSCLevy { get; set; }
+        public int Id { get; set; }
     }
 }

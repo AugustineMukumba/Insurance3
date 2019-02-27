@@ -1898,12 +1898,10 @@ namespace InsuranceClaim.Controllers
             policylist.listpolicy = new List<PolicyListViewModel>();
 
 
-
             var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
             var role = UserManager.GetRoles(_User.Id.ToString()).FirstOrDefault();
 
             var customerID = InsuranceContext.Customers.Single(where: $"userid='{User.Identity.GetUserId().ToString()}'").Id;
-
 
             var SummaryList = new List<SummaryDetail>();
 
@@ -1921,7 +1919,7 @@ namespace InsuranceClaim.Controllers
             }
 
 
-            foreach (var item in SummaryList)
+            foreach (var item in SummaryList.Take(50))
             {
                 PolicyListViewModel policylistviewmodel = new PolicyListViewModel();
 
@@ -2704,7 +2702,7 @@ namespace InsuranceClaim.Controllers
                         viewModel.CoverNoteNo = data.CoverNoteNo;
                         viewModel.CoverStartDate = data.CoverStartDate;
                         viewModel.CoverTypeId = data.CoverTypeId;
-                        viewModel.CubicCapacity = (int)Math.Round(data.CubicCapacity.Value, 0);
+                        viewModel.CubicCapacity = data.CubicCapacity==null? 0: (int)Math.Round(data.CubicCapacity.Value, 0);
                         viewModel.CustomerId = data.CustomerId;
                         viewModel.EngineNumber = data.EngineNumber;
                         // viewModel.Equals = data.Equals;

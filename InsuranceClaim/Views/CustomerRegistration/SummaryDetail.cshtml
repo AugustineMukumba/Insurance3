@@ -430,26 +430,34 @@
                                                                     <button type="submit" id="btnNext" onclick="return checkAmountPaid();" class="btn">Next</button>
                                                                 </div>
 
-                                                                @*<div class="text-right">
-                                                                    <button type="button" id="btnPreview" onclick="return Preview();" class="btn">Preview</button>
-                                                                </div>*@
 
 
                                                             </li>
 
                                                         </ul>
+
+
+
                                                     </div>
                                                 </div>
 
-
-
-
                                             </div>
+
+                                            <div class="text-right">
+                                                <button type="button" id="btnPreview" onclick="return Preview();" class="btn btn-primary">Preview</button>
+                                            </div>
+
+
+
 
                                             <div class="row">
                                                 <div class="col-sm-6 col-md-6">
+                                                    <div class="text-right">
+
+                                                    </div>
                                                 </div>
                                                 <div class="col-sm-6 col-md-6" style="margin-top:5px;">
+
                                                 </div>
                                             </div>
 
@@ -504,12 +512,88 @@
                                                 </tr>
                                             </table>
 
-                                            <h5>Premium Summary</h5>
 
                                             <table class="table">
                                                 <tr>
+                                                    <th> VRN</th>
+                                                    <th> Sum Insured</th>
+                                                    <th> Cover Type</th>
+                                                    <th> Policy Period</th>
+                                                    <th>Payment Term </th>
+                                                    <th> Premium</th>
+                                                </tr>
+
+                                                @foreach (var item in vehicleList)
+                                                {
+                                                    <tr>
+                                                        <td> @item.RegistrationNo</td>
+                                                        <td> @item.SumInsured </td>
+                                                        <td> @Insurance.Domain.InsuranceContext.CoverTypes.Single(item.CoverTypeId).Name </td>
+                                                        <td> @item.CoverStartDate.Value.ToShortDateString() <b>-</b> @item.CoverEndDate.Value.ToShortDateString() </td>
+                                                        <td>
+                                                            @if (item.PaymentTermId == 1)
+                                                            {
+                                                                <span>Annual </span> ;
+                                                            }
+                                                            else if (item.PaymentTermId == 4)
+                                                            {
+                                                                <span>Termly </span> ;
+                                                            }
+                                                            else
+                                                            {
+                                                                <span> @item.PaymentTermId</span> <span>Months</span>
+                                                            }
+                                                        </td>
+                                                        <td> @item.Premium</td>
+                                                    </tr>
+                                                }
+
+                                            </table>
+
+
+                                            <h5 style="margin-bottom:10px;"> <b>EXTENSIONS & OPTIONAL COVERS </b> </h5>
+                                            <table class="table">
+                                                <tr>
+                                                    <td> Passenger Accident Cover</td>
+                                                    <td> @Model.PassengerAccidentCoverAmount</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td> Excess Buy Back</td>
+                                                    <td> @Model.ExcessBuyBackAmount</td>
+                                                </tr>
+                                                <tr>
+                                                    <td> Roadside Assistance</td>
+                                                    <td> @Model.RoadsideAssistanceAmount</td>
+                                                </tr>
+                                                <tr>
+                                                    <td> Medical Expenses</td>
+                                                    <td> @Model.MedicalExpensesAmount</td>
+                                                </tr>
+                                                <tr>
+                                                    <td> Excess Amount </td>
+                                                    <td> @Model.ExcessAmount</td>
+                                                </tr>
+                                            </table>
+
+
+
+                                            <h5 style="margin-left:10px; margin-bottom:10px;"> <b> Premium Summary</b> </h5>
+                                            <table class="table">
+                                                <tr>
                                                     <td>Basic Premium: </td>
-                                                    <td> @Model.TotalPremium </td>
+                                                    <td>
+                                                        @if (vehicleList != null && vehicleList.Count > 0)
+                                                        {
+                                                            var basicPremium = 0.0;
+                                                            foreach (var item in vehicleList)
+                                                            {
+                                                                basicPremium += @Math.Round(Convert.ToDouble(item.Premium), 2);
+                                                            }
+
+                                                            <span> @basicPremium</span>
+                                                        }
+                                                    </td>
                                                     <td>Stamp Duty: </td>
                                                     <td> @Model.TotalStampDuty </td>
                                                 </tr>
@@ -534,7 +618,6 @@
                                                             {
                                                                 amount += @Math.Round(Convert.ToDouble(item.Premium + item.StampDuty + item.ZTSCLevy + item.VehicleLicenceFee + (Convert.ToBoolean(item.IncludeRadioLicenseCost) ? item.RadioLicenseCost : 0.00m)), 2);
                                                             }
-                                                            
                                                             <span> @amount</span>
                                                         }
 

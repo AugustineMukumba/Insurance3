@@ -403,8 +403,6 @@
     }
 
     function SetCustomerEmail() {
-
-
         if ($("#IsCustomEmail").prop("checked") == true) {
             $.ajax({
                 url: "@Url.Action("GetCustomerId", "CustomerRegistration")",
@@ -418,10 +416,10 @@
         else {
             $("#EmailAddress").val('');
         }
-
-
-
     }
+
+
+
 
 
 

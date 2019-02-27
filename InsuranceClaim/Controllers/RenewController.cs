@@ -681,7 +681,7 @@ namespace InsuranceClaim.Controllers
                         viewModels.CoverNoteNo = data.CoverNoteNo;
                         viewModels.CoverStartDate = data.CoverStartDate;
                         viewModels.CoverTypeId = data.CoverTypeId;
-                        viewModels.CubicCapacity = (int)Math.Round(data.CubicCapacity.Value, 0);
+                        viewModels.CubicCapacity = data.CubicCapacity==null? 0: (int)Math.Round(data.CubicCapacity.Value, 0);
                         viewModels.CustomerId = data.CustomerId;
                         viewModels.EngineNumber = data.EngineNumber;
                         viewModels.Excess = (int)Math.Round(data.Excess, 0);

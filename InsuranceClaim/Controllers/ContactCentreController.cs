@@ -180,8 +180,8 @@ namespace InsuranceClaim.Controllers
                         viewModel.BusinessSourceDetailId = data.BusinessSourceDetailId;
                         viewModel.CurrencyId = data.CurrencyId;
 
-                       // viewModel.isUpdate = true; //commented on "31 oct"
-                        viewModel.isUpdate = false;
+                        viewModel.isUpdate = true; //commented on "31 oct"
+                        //viewModel.isUpdate = false; // 02_feb_2019
                  
                         viewModel.vehicleindex = Convert.ToInt32(id);
 

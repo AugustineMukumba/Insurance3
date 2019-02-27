@@ -189,7 +189,6 @@ namespace Insurance.Service
             objroot.Mode = "SH";
 
             var data = Newtonsoft.Json.JsonConvert.SerializeObject(objroot);
-
             JObject jsonobject = JObject.Parse(data);
 
 
@@ -499,8 +498,6 @@ namespace Insurance.Service
             IRestResponse response = client.Execute(request);
 
             ResultRootObject json = JsonConvert.DeserializeObject<ResultRootObject>(response.Content);
-
-           
 
             return json;
         }
@@ -832,6 +829,10 @@ namespace Insurance.Service
         public string InsuranceID { get; set; }
         public int Result { get; set; }
         public string Message { get; set; }
+
+        public string LicenceID { get; set; }
+        public string TotalAmount { get; set; }
+
         public ResultPolicy Policy { get; set; }
         public ResultClient Client { get; set; }
         public ResultVehicle Vehicle { get; set; }

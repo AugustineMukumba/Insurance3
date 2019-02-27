@@ -228,12 +228,12 @@ namespace InsuranceClaim.Controllers
 
                     if (User.IsInRole("Staff"))
                     {
-                        if (buttonUpdate != null)
-                        {
-                            AddOrUpdateCustomerInformation(model);
+                        //if (buttonUpdate != null)
+                        //{
+                        //    AddOrUpdateCustomerInformation(model);
 
-                            return Json(new { IsError = false, error = "Sucessfully update" }, JsonRequestBehavior.AllowGet);
-                        }
+                        //    return Json(new { IsError = false, error = "Sucessfully update" }, JsonRequestBehavior.AllowGet);
+                        //}
 
                         var email = LoggedUserEmail();
 
@@ -241,6 +241,9 @@ namespace InsuranceClaim.Controllers
                         {
                             return Json(new { IsError = false, error = "Staff and customer email can not be same" }, JsonRequestBehavior.AllowGet);
                         }
+
+
+
                     }
 
                     Session["CustomerDataModal"] = model;
@@ -294,8 +297,6 @@ namespace InsuranceClaim.Controllers
 
                     // Persiste the changes
                     UserManager.Update(user);
-
-
 
                 }
 
@@ -396,7 +397,6 @@ namespace InsuranceClaim.Controllers
                 SetValueIntoSession(Convert.ToInt32(Session["SummaryDetailId"]));
                 Session["SummaryDetailId"] = null;
             }
-
 
 
             ViewBag.Products = InsuranceContext.Products.All(where: "Active = 'True' or Active is null").ToList();
@@ -571,8 +571,8 @@ namespace InsuranceClaim.Controllers
                         viewModel.Discount = Math.Round(Convert.ToDecimal(data.Discount), 2);
                         viewModel.VehicleLicenceFee = Convert.ToDecimal(data.VehicleLicenceFee);
 
-                        //  viewModel.isUpdate = true; // commented on 31 oct
-                        viewModel.isUpdate = false;                         // viewModel.isUpdate = false; 
+                         // viewModel.isUpdate = true; // commented on 31 oct
+                         viewModel.isUpdate = false;                        // commented on 02 feb 2019
                         viewModel.vehicleindex = Convert.ToInt32(id);
                         viewModel.BusinessSourceDetailId = data.BusinessSourceDetailId;
                         viewModel.CurrencyId = data.CurrencyId;
@@ -602,7 +602,6 @@ namespace InsuranceClaim.Controllers
             var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
             var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
 
-
             Session["PolicyData"] = policy;
 
             List<RiskDetailModel> listRiskDetail = new List<RiskDetailModel>();
@@ -625,6 +624,7 @@ namespace InsuranceClaim.Controllers
         public ActionResult GenerateQuote(RiskDetailModel model, string btnAddVehicle = "")
         {
 
+
             if (model.NumberofPersons == null)
             {
                 model.NumberofPersons = 0;
@@ -639,16 +639,17 @@ namespace InsuranceClaim.Controllers
 
             if (model.chkAddVehicles == false && model.PolicyId != 0)
                 model.isUpdate = true;
+            else if(model.chkAddVehicles)
+                model.isUpdate = false;
+            
 
-
+          
             // Submit & Add More Vehicle
 
             if (model.isUpdate)
             {
-
                 try
                 {
-
                     model.Id = 0;
 
                     //if (!model.IncludeRadioLicenseCost)
@@ -670,7 +671,14 @@ namespace InsuranceClaim.Controllers
                         model.Id = listriskdetailmodel[model.vehicleindex - 1].Id;
                         model.CustomerId = listriskdetailmodel[model.vehicleindex - 1].CustomerId;
                         model.InsuranceId = listriskdetailmodel[model.vehicleindex - 1].InsuranceId;
+
+                        if (!model.IncludeRadioLicenseCost)
+                            model.RadioLicenseCost = 0;
+                        
                         listriskdetailmodel[model.vehicleindex - 1] = model;
+
+                        
+
 
                         Session["VehicleDetails"] = listriskdetailmodel;
                     }
@@ -748,6 +756,10 @@ namespace InsuranceClaim.Controllers
                                 }
                             }
 
+                            if (!model.IncludeRadioLicenseCost) // 13_feb_2019
+                                model.RadioLicenseCost = 0;
+
+
                             listriskdetailmodel.Add(model);
                             Session["VehicleDetails"] = listriskdetailmodel;
 
@@ -800,6 +812,10 @@ namespace InsuranceClaim.Controllers
                                 }
                             }
                             model.Id = 0;
+
+                            if (!model.IncludeRadioLicenseCost) // 13_feb_2019
+                                model.RadioLicenseCost = 0;
+
                             listriskdetailmodel.Add(model);
                             Session["VehicleDetails"] = listriskdetailmodel;
 
@@ -2595,6 +2611,46 @@ namespace InsuranceClaim.Controllers
                 response.result = 0;
                 json.Data = response;
             }
+
+            return json;
+        }
+
+
+        [HttpPost]
+        public JsonResult GetZinaraLicenseFee(string regNo)
+        {
+            JsonResult json = new JsonResult();
+            Insurance.Service.ICEcashService ICEcashService = new Insurance.Service.ICEcashService();
+
+            #region get ICE cash token
+            var tokenObject = new ICEcashTokenResponse();
+
+          
+
+            if (Session["ICEcashToken"] != null)
+            {
+                var icevalue = (ICEcashTokenResponse)Session["ICEcashToken"];
+                string format = "yyyyMMddHHmmss";
+                var IceDateNowtime = DateTime.Now;
+                var IceExpery = DateTime.ParseExact(icevalue.Response.ExpireDate, format, CultureInfo.InvariantCulture);
+                if (IceDateNowtime > IceExpery)
+                {
+                    ICEcashService.getToken();
+                }
+
+                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+            }
+            else
+            {
+                ICEcashService.getToken();
+                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+            }
+            #endregion
+
+            ResultRootObject quoteresponse = ICEcashService.LICQuote(regNo, tokenObject.Response.PartnerToken);
+
+
+            json.Data = quoteresponse;
 
             return json;
         }

@@ -399,7 +399,15 @@
                                             </div>
                                         </div>
 
-                                      
+                                        <hr class="higlighter" />
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                                <div class="form-group">
+                                                    @Html.Label("Vehicle Licence Fee", new { @class = "gender-label" })
+                                                    @Html.TextBoxFor(x => x.VehicleLicenceFee, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Licence Fee" })
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div style="display:none">
                                             <hr class="higlighter" />
                                             <div class="row">
@@ -781,14 +789,17 @@
             dataType: "json",
             success: function (result) {
                 var list = result;
-
+                debugger;
                 var bodyHTML = "";
                 var count = 0;
                 var totalpremium = 0.00;
+                //var Id = 0;
                 $.each(list, function (index, value) {
+                    debugger;
                     count++;
                     bodyHTML += "<tr><td>" + value.make + "</td><td>" + value.model + "</td><td>" + value.covertype + "</td><td>$" + value.suminsured + "</td><td>$" + value.premium + "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >Edit</button></li><li><button type='button' onclick='DeleteVehicleDetails(" + count + ")' class='btn-sm btn-danger' >Delete</button></li></ul></div></td></tr>"
                     totalpremium += parseFloat(value.premium);
+                    //Id = value.Id;
                 });
 
                 $("#tdTotalPremium").text("$" + totalpremium);
@@ -806,7 +817,6 @@
     }
 
     function EditVehicleDetails(index) {
-
         debugger;
         var redirecturl = '@Url.Action("EndorsementRiskDetails", "Endorsement", new { id= 0 })';
         redirecturl = redirecturl.replace("0", index);
