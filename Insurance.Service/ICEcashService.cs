@@ -133,6 +133,80 @@ namespace Insurance.Service
             return json;
         }
 
+        //public ResultRootObject checkVehicleExists(List<RiskDetailModel> listofvehicles, string PartnerToken, string PartnerReference)
+        //{
+        //    //string PSK = "127782435202916376850511";
+        //    string _json = "";
+
+        //    List<VehicleObject> obj = new List<VehicleObject>();
+
+        //    var CustomerInfo = (CustomerModel)HttpContext.Current.Session["CustomerDataModal"];
+
+        //    if (CustomerInfo == null)
+        //    {
+        //        CustomerInfo = (CustomerModel)HttpContext.Current.Session["ReCustomerDataModal"];
+        //    }
+
+
+        //    foreach (var item in listofvehicles)
+        //    {
+        //        obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 0, YearManufacture = 0, InsuranceType = 0, VehicleType = 0, TaxClass = 0, Make = "", Model = "", EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber });
+        //    }
+
+        //    QuoteArguments objArg = new QuoteArguments();
+        //    objArg.PartnerReference = Guid.NewGuid().ToString();
+        //    objArg.Date = DateTime.Now.ToString("yyyyMMddhhmmss");
+        //    objArg.Version = "2.0";
+        //    objArg.PartnerToken = PartnerToken;
+        //    objArg.Request = new QuoteFunctionObject { Function = "TPIQuote", Vehicles = obj };
+
+        //    _json = Newtonsoft.Json.JsonConvert.SerializeObject(objArg);
+
+        //    //string  = json.Reverse()
+        //    string reversejsonString = new string(_json.Reverse().ToArray());
+        //    string reversepartneridString = new string(PSK.Reverse().ToArray());
+
+        //    string concatinatedString = reversejsonString + reversepartneridString;
+
+        //    byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(concatinatedString);
+
+        //    string returnValue = System.Convert.ToBase64String(toEncodeAsBytes);
+
+        //    string GetSHA512encrypted = SHA512(returnValue);
+
+        //    string MAC = "";
+
+        //    for (int i = 0; i < 16; i++)
+        //    {
+        //        MAC += GetSHA512encrypted.Substring((i * 8), 1);
+        //    }
+
+        //    MAC = MAC.ToUpper();
+
+        //    ICEQuoteRequest objroot = new ICEQuoteRequest();
+        //    objroot.Arguments = objArg;
+        //    objroot.MAC = MAC;
+        //    objroot.Mode = "SH";
+
+        //    var data = Newtonsoft.Json.JsonConvert.SerializeObject(objroot);
+        //    JObject jsonobject = JObject.Parse(data);
+
+
+        //    var client = new RestClient(LiveIceCashApi);
+        //    //var client = new RestClient(LiveIceCashApi);
+        //    var request = new RestRequest(Method.POST);
+        //    request.AddHeader("cache-control", "no-cache");
+        //    request.AddHeader("content-type", "application/x-www-form-urlencoded");
+        //    request.AddParameter("application/x-www-form-urlencoded", jsonobject, ParameterType.RequestBody);
+        //    IRestResponse response = client.Execute(request);
+
+        //    ResultRootObject json = JsonConvert.DeserializeObject<ResultRootObject>(response.Content);
+
+        //    return json;
+        //}
+
+
+
         public ResultRootObject checkVehicleExists(List<RiskDetailModel> listofvehicles, string PartnerToken, string PartnerReference)
         {
             //string PSK = "127782435202916376850511";
@@ -147,11 +221,25 @@ namespace Insurance.Service
                 CustomerInfo = (CustomerModel)HttpContext.Current.Session["ReCustomerDataModal"];
             }
 
+            int durationMonth = 0;
+
 
             foreach (var item in listofvehicles)
             {
-                obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 0, YearManufacture = 0, InsuranceType = 0, VehicleType = 0, TaxClass = 0, Make = "", Model = "", EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber });
+                if (item.PaymentTermId == 1)
+                    durationMonth = 12;
+                else
+                    durationMonth = item.PaymentTermId;
+
+                obj.Add(new VehicleObject { VRN = item.RegistrationNo, IDNumber= CustomerInfo.NationalIdentificationNumber, FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, MSISDN= CustomerInfo.CountryCode + CustomerInfo.PhoneNumber, Address1=CustomerInfo.AddressLine1, Town= CustomerInfo.AddressLine2, EntityType= "Personal", DurationMonths = durationMonth, InsuranceType=item.CoverTypeId.Value, VehicleType= item.ProductId, Make=item.MakeId, Model=item.ModelId, TaxClass=item.TaxClassId, YearManufacture=item.VehicleYear.Value });
             }
+
+
+
+            //foreach (var item in listofvehicles)
+            //{
+            //    obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 0, YearManufacture = 0, InsuranceType = 0, VehicleType = 0, TaxClass = 0, Make = "", Model = "", EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber });
+            //}
 
             QuoteArguments objArg = new QuoteArguments();
             objArg.PartnerReference = Guid.NewGuid().ToString();
@@ -204,6 +292,10 @@ namespace Insurance.Service
 
             return json;
         }
+
+
+
+
 
         public ResultRootObject RequestQuote(string PartnerToken, string RegistrationNo, string suminsured, string make, string model, int PaymentTermId, int VehicleYear, int CoverTypeId, int VehicleUsage, string PartnerReference)
         {
@@ -827,6 +919,7 @@ namespace Insurance.Service
     {
         public string VRN { get; set; }
         public string InsuranceID { get; set; }
+        public string PolicyNo { get; set; }
         public int Result { get; set; }
         public string Message { get; set; }
 
@@ -843,6 +936,7 @@ namespace Insurance.Service
     {
         public int Result { get; set; }
         public string Message { get; set; }
+        public string PolicyNo { get; set; }
         public List<ResultQuote> Quotes { get; set; }
     }
     public class ResultRootObject

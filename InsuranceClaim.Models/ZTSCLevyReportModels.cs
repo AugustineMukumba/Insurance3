@@ -14,6 +14,8 @@ namespace InsuranceClaim.Models
         public  string Transaction_date { get; set; }
         public decimal Premium_due { get; set; }
         public decimal ZTSCLevy { get; set; }
+
+        public string Currency { get; set; }
     }
 
     public class ListZTSCLevyReportModels

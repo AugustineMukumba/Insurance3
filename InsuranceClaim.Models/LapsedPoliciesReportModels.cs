@@ -17,6 +17,8 @@ namespace InsuranceClaim.Models
         public decimal? Premium { get; set; }
         public string startDate { get; set; }
         public string endDate { get; set; }
+
+        public string Currency { get; set; }
     }
     public class ListLapsedPoliciesReport
     {

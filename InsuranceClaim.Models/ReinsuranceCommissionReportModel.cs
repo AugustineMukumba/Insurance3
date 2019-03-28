@@ -18,6 +18,8 @@ namespace InsuranceClaim.Models
 
         public decimal AutoFacultativeReinsurance { get; set; }
         public decimal FacultativeReinsurance { get; set; }
+
+        public string Currency { get; set; }
     }
 
 

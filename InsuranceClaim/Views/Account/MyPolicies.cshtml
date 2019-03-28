@@ -89,21 +89,18 @@
                             <td>@MiscellaneousService.GetCustomerNamebyID(item.CustomerId)</td>
                             <td>@item.CustomerEmail
                             <td>@MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId)</td>
-                            <td>$@item.TotalSumInsured</td>
-                            <td>$@item.TotalPremium</td>
+                            <td>@item.Currency@item.TotalSumInsured</td>
+                            <td>@item.Currency@item.TotalPremium</td>
                             <td>@item.createdOn.ToString("dd-MMM-yyyy")</td>
                             <td> @item.PolicyStatus </td>
                             <td>
                                 <div class="tbl-btn-list">
                                     <ul class="list-inline">
-                                        @*
-                                            <li>@Html.ActionLink("View Policy", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>*@
+                                        
 
                                         <li>@Html.ActionLink("View Policy", "CustomerDetials", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>
 
-                                    
-
-
+                                      
                                         @foreach (var _item in item.Vehicles)
                                         {
                                             if (DateTime.Now >= _item.RenewalDate && DateTime.Now >= _item.RenewalDate.AddDays(-21))

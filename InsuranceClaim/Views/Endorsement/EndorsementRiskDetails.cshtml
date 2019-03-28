@@ -63,6 +63,8 @@
                         <div>
                             @Html.HiddenFor(m => m.PolicyId)
                             @Html.HiddenFor(m => m.Id)
+                            @Html.HiddenFor(m => m.EndorsementVehicleId)
+                            
                             @Html.HiddenFor(m => m.VehicleId)
                             @Html.HiddenFor(m => m.isUpdate)
                             @Html.HiddenFor(m => m.vehicleindex)
@@ -399,16 +401,18 @@
                                             </div>
                                         </div>
 
-                                        <hr class="higlighter" />
-                                        <div class="row">
+                                     
+
+
+                                        @*<div class="row">
                                             <div class="col-sm-6 col-md-6 form-group-text">
                                                 <div class="form-group">
                                                     @Html.Label("Vehicle Licence Fee", new { @class = "gender-label" })
                                                     @Html.TextBoxFor(x => x.VehicleLicenceFee, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Licence Fee" })
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div style="display:none">
+                                        </div>*@
+                                        <div>
                                             <hr class="higlighter" />
                                             <div class="row">
                                                 <div class="col-sm-6 col-md-6 form-group-text">
@@ -1256,6 +1260,19 @@
             QuoteCalculation();
         });
         $("#IncludeRadioLicenseCost").click(function () {
+
+            debugger;
+
+
+            if($("#IncludeRadioLicenseCost").prop("checked") == true){
+                GetRadioLicenseCost();
+            }
+            else if($("#IncludeRadioLicenseCost").prop("checked") == false){
+                $("#RadioLicenseCost").val(0)
+            }
+
+
+
             QuoteCalculation();
         });
 

@@ -24,6 +24,8 @@ namespace InsuranceClaim.Models
         public decimal FacSumInsured { get; set; }
         public decimal FacPremium { get; set; }
         public decimal FacCommission { get; set; }
+
+        public string Currency { get; set; }
     }
 
     public class ListReinsuranceReport

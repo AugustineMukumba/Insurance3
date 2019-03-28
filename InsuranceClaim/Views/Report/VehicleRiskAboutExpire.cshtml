@@ -123,8 +123,8 @@
                             <td>@item.Vehicle_startdate</td>
                             <td>@item.Vehicle_enddate</td>
                            
-                            <td>$ @item.Sum_Insured</td>
-                            <td>$ @item.Premium_due</td>
+                            <td>@item.Currency@item.Sum_Insured</td>
+                            <td>@item.Currency@item.Premium_due</td>
 
                         </tr>
                     }
@@ -136,8 +136,9 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td><strong>$@sumInsuredTotal</strong></td>
-                        <td><strong>$@premiumDueTotal</strong></td>
+                        <td></td>
+                        <td><strong>@sumInsuredTotal</strong></td>
+                        <td><strong>@premiumDueTotal</strong></td>
                     </tr>
                 </tfoot>
             </table>

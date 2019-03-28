@@ -22,5 +22,7 @@ public class VehicleListModel
 
         public string ZTSCLevy { get; set; }
         public int Id { get; set; }
+
+        public string CurrencyName { get; set; }
     }
 }

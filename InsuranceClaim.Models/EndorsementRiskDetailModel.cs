@@ -12,6 +12,8 @@ namespace InsuranceClaim.Models
 
         public bool IncludeRadioLicenseCost { get; set; }
         public int Id { get; set; }
+
+        public int EndorsementVehicleId { get; set; }
         public int VehicleId { get; set; }
         public int PolicyId { get; set; }
         //[Required(ErrorMessage = "Please Enter No Of Cars Covered")]

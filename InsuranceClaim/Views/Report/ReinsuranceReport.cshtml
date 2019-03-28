@@ -141,7 +141,6 @@
                                 <table class="sub-table">
                                     <tr>
                                         <td><b>Policy Start Date :</b><br />@item.StartDate<br /></td>
-
                                     </tr>
                                     <tr>
                                         <td><b>Policy End Date : </b><br />@item.EndDate<br /></td>
@@ -158,15 +157,15 @@
                             <td>
                                 <table class="sub-table">
                                     <tr>
-                                        <td><b>Total Sum Insured :</b><br />$ @item.SumInsured<br /></td>
+                                        <td><b>Total Sum Insured :</b><br />@item.Currency@item.SumInsured<br /></td>
 
                                     </tr>
                                     <tr>
-                                        <td><b>Auto-Fac Sum Inured : </b><br />$ @item.AutoFacSumInsured<br /></td>
+                                        <td><b>Auto-Fac Sum Inured : </b><br />@item.Currency@item.AutoFacSumInsured<br /></td>
 
                                     </tr>
                                     <tr>
-                                        <td><b>Fac Sum Inured :</b><br />$ @item.FacSumInsured<br /></td>
+                                        <td><b>Fac Sum Inured :</b><br />@item.Currency@item.FacSumInsured<br /></td>
                                     </tr>
                                 </table>
                             </td>
@@ -176,15 +175,14 @@
                             <td>
                                 <table class="sub-table">
                                     <tr>
-                                        <td><b>Total Premium :</b><br />$ @item.Premium<br /></td>
+                                        <td><b>Total Premium :</b><br />@item.Currency@item.Premium<br /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Auto-Fac Premium : </b><br />@item.Currency@item.AutoFacPremium<br /></td>
 
                                     </tr>
                                     <tr>
-                                        <td><b>Auto-Fac Premium : </b><br />$ @item.AutoFacPremium<br /></td>
-
-                                    </tr>
-                                    <tr>
-                                        <td><b>Fac Premium :</b><br />$ @item.FacPremium<br /></td>
+                                        <td><b>Fac Premium :</b><br />@item.Currency@item.FacPremium<br /></td>
                                     </tr>
                                 </table>
                             </td>
@@ -193,11 +191,11 @@
                             <td>
                                 <table class="sub-table">
                                     <tr>
-                                        <td><b>Auto-Fac Commission :</b><br />$ @item.AutoFacCommission<br /></td>
+                                        <td><b>Auto-Fac Commission :</b><br />@item.Currency@item.AutoFacCommission<br /></td>
 
                                     </tr>
                                     <tr>
-                                        <td><b>Fac Commission : </b><br />$ @item.FacCommission<br /></td>
+                                        <td><b>Fac Commission : </b><br />@item.Currency@item.FacCommission<br /></td>
 
                                     </tr>
                                 </table>
@@ -220,41 +218,41 @@
                         <td>
                             <table class="sub-table">
                                 <tr>
-                                    <td><b>Total Sum Insured :</b><br /><b>$@sumInsuredTotal</b><br /></td>
+                                    <td><b>Total Sum Insured :</b><br /><b>@sumInsuredTotal</b><br /></td>
 
                                 </tr>
                                 <tr>
-                                    <td><b>Auto-Fac Sum Inured : </b><br /><b>$@autoFacSumInsuredTotal</b><br /></td>
+                                    <td><b>Auto-Fac Sum Inured : </b><br /><b>@autoFacSumInsuredTotal</b><br /></td>
 
                                 </tr>
                                 <tr>
-                                    <td><b>Fac Sum Inured :</b><br /><b>$@facSumInsuredTotal</b><br /></td>
+                                    <td><b>Fac Sum Inured :</b><br /><b>@facSumInsuredTotal</b><br /></td>
                                 </tr>
                             </table>
                         </td>
                         <td>
                             <table class="sub-table">
                                 <tr>
-                                    <td><b>Total Premium :</b><br /><b>$@premiumTotal</b><br /></td>
+                                    <td><b>Total Premium :</b><br /><b>@premiumTotal</b><br /></td>
 
                                 </tr>
                                 <tr>
-                                    <td><b>Auto-Fac Premium : </b><br /><b>$@autoFacPremiumTotal</b><br /></td>
+                                    <td><b>Auto-Fac Premium : </b><br /><b>@autoFacPremiumTotal</b><br /></td>
 
                                 </tr>
                                 <tr>
-                                    <td><b>Fac Premium :</b><br /><b>$@facPremiumTotal</b><br /></td>
+                                    <td><b>Fac Premium :</b><br /><b>@facPremiumTotal</b><br /></td>
                                 </tr>
                             </table>
                         </td>
                         <td>
                             <table class="sub-table">
                                 <tr>
-                                    <td><b>Auto-Fac Commission :</b><br /><b>$@autoFacCommissionTotal</b><br /></td>
+                                    <td><b>Auto-Fac Commission :</b><br /><b>@autoFacCommissionTotal</b><br /></td>
 
                                 </tr>
                                 <tr>
-                                    <td><b>Fac Commission : </b><br /><b>$@facCommissionTotal</b><br /></td>
+                                    <td><b>Fac Commission : </b><br /><b>@facCommissionTotal</b><br /></td>
 
                                 </tr>
                             </table>

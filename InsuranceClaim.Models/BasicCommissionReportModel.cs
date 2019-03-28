@@ -17,6 +17,7 @@ namespace InsuranceClaim.Models
         public decimal? Premium { get; set; }
         public decimal? Commission { get; set; }
         public decimal? ManagementCommission { get; set; }
+        public string Currency { get; set; }
     }
 
 

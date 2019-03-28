@@ -36,6 +36,9 @@ namespace InsuranceClaim.Models
         public DateTime PolicyRenewalDate { get; set; }
         public bool? IsLapsed { get; set; }
         public bool? IsActive { get; set; }
+        public string Currency { get; set; }
+
+
     }
     public class ListGrossWrittenPremiumReportModels
     {

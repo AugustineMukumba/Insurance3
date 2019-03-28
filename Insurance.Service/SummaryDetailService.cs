@@ -29,5 +29,28 @@ namespace Insurance.Service
             }
 
         }
+
+
+        public List<Currency> GetAllCurrency()
+        {
+            return InsuranceContext.Currencies.All().ToList();
+        }
+
+
+        public string GetCurrencyName(List<Currency> currenyList, int? currencyId)
+        {
+
+    
+            var currencyDetails = currenyList.FirstOrDefault(c => c.Id == currencyId);
+            if (currencyDetails != null)
+                return currencyDetails.Name;
+            else
+                return  "USD";
+        }
+
+
+
+
+
     }
 }

@@ -98,7 +98,7 @@
                             <td>@item.FirstName @item.LastName</td>
                             <td>@item.Policy_Number</td>
                             <td>@item.Transaction_date</td>
-                            <td>$ @item.RadioLicenseCost</td>
+                            <td>@item.Currency @item.RadioLicenseCost</td>
                         </tr>
                     }
 
@@ -108,7 +108,7 @@
                         <td><strong>Total:</strong></td>
                         <td></td>
                         <td></td>
-                        <td><strong>$@radioLicenseCostTotal</strong></td>
+                        <td><strong>@radioLicenseCostTotal</strong></td>
                     </tr>
                 </tfoot>
             </table>

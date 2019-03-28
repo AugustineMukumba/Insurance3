@@ -361,7 +361,6 @@ namespace InsuranceClaim.Controllers
             try
             {
 
-
                 response.Message = "Success";
                 response.Status = true;
                 json.Data = response;
@@ -400,6 +399,9 @@ namespace InsuranceClaim.Controllers
 
 
             ViewBag.Products = InsuranceContext.Products.All(where: "Active = 'True' or Active is null").ToList();
+
+            ViewBag.TaxClass = InsuranceContext.VehicleTaxClasses.All().ToList();
+
             //var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm))
             //                       select new
             //                       {
@@ -571,8 +573,8 @@ namespace InsuranceClaim.Controllers
                         viewModel.Discount = Math.Round(Convert.ToDecimal(data.Discount), 2);
                         viewModel.VehicleLicenceFee = Convert.ToDecimal(data.VehicleLicenceFee);
 
-                         // viewModel.isUpdate = true; // commented on 31 oct
-                         viewModel.isUpdate = false;                        // commented on 02 feb 2019
+                        viewModel.isUpdate = true; // commented on 31 oct
+                        // viewModel.isUpdate = false;                        // commented on 02 feb 2019
                         viewModel.vehicleindex = Convert.ToInt32(id);
                         viewModel.BusinessSourceDetailId = data.BusinessSourceDetailId;
                         viewModel.CurrencyId = data.CurrencyId;
@@ -624,7 +626,6 @@ namespace InsuranceClaim.Controllers
         public ActionResult GenerateQuote(RiskDetailModel model, string btnAddVehicle = "")
         {
 
-
             if (model.NumberofPersons == null)
             {
                 model.NumberofPersons = 0;
@@ -639,13 +640,14 @@ namespace InsuranceClaim.Controllers
 
             if (model.chkAddVehicles == false && model.PolicyId != 0)
                 model.isUpdate = true;
-            else if(model.chkAddVehicles)
+            else if (model.chkAddVehicles)
                 model.isUpdate = false;
-            
 
-          
+            int selectedIndex = 0;
+
             // Submit & Add More Vehicle
 
+         
             if (model.isUpdate)
             {
                 try
@@ -692,11 +694,11 @@ namespace InsuranceClaim.Controllers
                         // while click on updat button or submit buttton without add more.
                         if (User.IsInRole("Staff"))
                         {
-                            return RedirectToAction("RiskDetail", "ContactCentre");
+                            return RedirectToAction("RiskDetail", "ContactCentre", new { id = 0 });
                         }
                         else
                         {
-                            return RedirectToAction("RiskDetail");
+                            return RedirectToAction("RiskDetail", new { id = 0 });
 
                         }
 
@@ -747,7 +749,7 @@ namespace InsuranceClaim.Controllers
                             model.Id = 0;
 
                             List<RiskDetailModel> listriskdetailmodel = new List<RiskDetailModel>();
-                            if (Session["VehicleDetails"] != null)
+                            if (Session["VehicleDetails"] != null) // 06 march
                             {
                                 List<RiskDetailModel> listriskdetails = (List<RiskDetailModel>)Session["VehicleDetails"];
                                 if (listriskdetails != null && listriskdetails.Count > 0)
@@ -763,7 +765,14 @@ namespace InsuranceClaim.Controllers
                             listriskdetailmodel.Add(model);
                             Session["VehicleDetails"] = listriskdetailmodel;
 
+                            selectedIndex = listriskdetailmodel.Count();
+
                         }
+
+                        
+
+                       
+
                         if (User.IsInRole("Staff"))
                         {
                             return RedirectToAction("RiskDetail", "ContactCentre", new { id = 0 });
@@ -886,6 +895,7 @@ namespace InsuranceClaim.Controllers
         {
             try
             {
+
                 List<RiskDetailModel> vehicleList = new List<RiskDetailModel>();
                 if (summaryDetailId != 0)
                 {
@@ -897,6 +907,13 @@ namespace InsuranceClaim.Controllers
                         var vehicleDetails = InsuranceContext.VehicleDetails.Single(where: $" Id='{item.VehicleDetailsId}'");
                         RiskDetailModel vehicleModel = Mapper.Map<VehicleDetail, RiskDetailModel>(vehicleDetails);
                         vehicleModel.ZTSCLevy = vehicleDetails.ZTSCLevy;
+
+                        var currency = InsuranceContext.Currencies.Single(where: $" Id='{vehicleModel.CurrencyId}'");
+
+                        if(currency!=null)
+                            vehicleModel.CurrencyName = currency.Name;
+
+
 
                         //vehicleModel.Premium = vehicleDetails.Premium;
                         //vehicleModel.ZTSCLevy = vehicleDetails.ZTSCLevy;
@@ -934,9 +951,6 @@ namespace InsuranceClaim.Controllers
 
                     foreach (var item in list)
                     {
-
-
-
                         VehicleListModel obj = new VehicleListModel();
                         obj.make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{item.MakeId}'").MakeDescription;
                         obj.model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription;
@@ -944,6 +958,11 @@ namespace InsuranceClaim.Controllers
                         obj.premium = item.Premium.ToString();
                         obj.suminsured = item.SumInsured.ToString();
                         obj.RegistrationNo = item.RegistrationNo;
+
+
+                        var currency = InsuranceContext.Currencies.Single(where: $" Id='{item.CurrencyId}'");
+                        if (currency != null)
+                            obj.CurrencyName = currency.Name;
 
 
                         if (item.IncludeRadioLicenseCost == true)
@@ -1083,6 +1102,13 @@ namespace InsuranceClaim.Controllers
 
                             RiskDetailModel vehicleModel = Mapper.Map<VehicleDetail, RiskDetailModel>(vehicleDetails);
 
+                            // vehicleModel.CurrencyName = 
+
+                            var currency = InsuranceContext.Currencies.Single(where: $" Id='{vehicleModel.CurrencyId}' ");
+
+                            if (currency != null)
+                                vehicleModel.CurrencyName = currency.Name;
+                            
 
 
                             //vehicleModel.Premium = vehicleDetails.Premium;
@@ -1103,7 +1129,7 @@ namespace InsuranceClaim.Controllers
                             //vehicleModel.RoadsideAssistanceAmount = vehicleDetails.RoadsideAssistanceAmount;
                             //vehicleModel.ModelId = vehicleDetails.ModelId;
 
-                            if(!vehicleModel.IncludeRadioLicenseCost)
+                            if (!vehicleModel.IncludeRadioLicenseCost)
                                 vehicleModel.RadioLicenseCost = 0;
 
                             vehicleList.Add(vehicleModel);
@@ -1148,6 +1174,14 @@ namespace InsuranceClaim.Controllers
                         model.TotalRadioLicenseCost += item.RadioLicenseCost;
                     }
                     model.Discount += item.Discount;
+
+
+                    var currency = InsuranceContext.Currencies.Single(where: $" Id='{item.CurrencyId}' ");
+
+                    if (currency != null)
+                        item.CurrencyName = currency.Name;
+
+
                     //if (DiscountSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
                     //{
                     //    var amountToCalculateDiscount = 0.00m;
@@ -1638,7 +1672,6 @@ namespace InsuranceClaim.Controllers
                         var Id = 0;
                         var listReinsuranceTransaction = new List<ReinsuranceTransaction>();
                         var vehicle = (List<RiskDetailModel>)Session["VehicleDetails"];
-
 
 
                         if (vehicle != null && vehicle.Count > 0)
@@ -2512,13 +2545,131 @@ namespace InsuranceClaim.Controllers
             return json;
         }
 
+        //[HttpPost]
+        //public JsonResult checkVRNwithICEcash(string regNo, string PaymentTerm)
+        //{
+        //    checkVRNwithICEcashResponse response = new checkVRNwithICEcashResponse();
+        //    JsonResult json = new JsonResult();
+        //    json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+        //    //json.Data = "";
+
+        //    try
+        //    {
+
+        //        Insurance.Service.ICEcashService ICEcashService = new Insurance.Service.ICEcashService();
+        //        var tokenObject = new ICEcashTokenResponse();
+
+        //        #region get ICE cash token
+
+        //        Session["ICEcashToken"] = null;
+
+        //        if (Session["ICEcashToken"] != null)
+        //        {
+        //            var icevalue = (ICEcashTokenResponse)Session["ICEcashToken"];
+        //            string format = "yyyyMMddHHmmss";
+        //            var IceDateNowtime = DateTime.Now;
+        //            var IceExpery = DateTime.ParseExact(icevalue.Response.ExpireDate, format, CultureInfo.InvariantCulture);
+        //            if (IceDateNowtime > IceExpery)
+        //            {
+        //                ICEcashService.getToken();
+        //            }
+
+        //            tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+        //        }
+        //        else
+        //        {
+        //            ICEcashService.getToken();
+        //            tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+        //        }
+        //        #endregion
+
+        //        List<RiskDetailModel> objVehicles = new List<RiskDetailModel>();
+        //        //objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo });
+        //        objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo, PaymentTermId = Convert.ToInt32(PaymentTerm) });
+
+        //        if (tokenObject.Response.PartnerToken != "")
+        //        {
+        //            ResultRootObject quoteresponse = ICEcashService.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
+        //            response.result = quoteresponse.Response.Result;
+        //            if (response.result == 0)
+        //            {
+        //                response.message = quoteresponse.Response.Quotes[0].Message;
+        //            }
+        //            else
+        //            {
+        //                // Handle excepton token expired
+        //                if (quoteresponse.Response.Quotes[0] != null && quoteresponse.Response.Quotes[0].Message == "Partner Token has expired.")
+        //                {
+
+        //                    ICEcashService.getToken();
+        //                    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+        //                    quoteresponse = ICEcashService.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
+
+        //                    response.message = "A Connection Error Occured, please add manually.";
+        //                    response.result = 0;
+        //                    json.Data = response;
+        //                }
+        //                else
+        //                {
+        //                    response.Data = quoteresponse;
+
+        //                    // check make and model exit or not if not then save into table.
+
+        //                    if (response.Data.Response.Quotes != null && response.Data.Response.Quotes[0].Vehicle != null)
+        //                    {
+        //                        string make = response.Data.Response.Quotes[0].Vehicle.Make;
+        //                        string model = response.Data.Response.Quotes[0].Vehicle.Model;
+        //                        if (!string.IsNullOrEmpty(make) && !string.IsNullOrEmpty(model))
+        //                        {
+        //                            SaveVehicalMakeAndModel(make, model);
+        //                        }
+        //                        else
+        //                        {
+        //                            // set make and model if IceCash does not retrun
+        //                            response.Data.Response.Quotes[0].Vehicle.Make = "0";
+        //                            response.Data.Response.Quotes[0].Vehicle.Model = "0";
+        //                        }
+        //                    }
+
+        //                }
+        //            }
+        //        }
+
+        //        json.Data = response;
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.message = "A Connection Error Occured, please add manually.";
+        //        response.result = 0;
+        //        json.Data = response;
+        //    }
+
+        //    return json;
+        //}
+
+
+
         [HttpPost]
-        public JsonResult checkVRNwithICEcash(string regNo, string PaymentTerm)
+        public JsonResult checkVRNwithICEcash(string regNo, string PaymentTerm, string CoverTypeId, string ProductId, string MakeId, string ModelId, string TaxClassId, string VehicleYear)
         {
             checkVRNwithICEcashResponse response = new checkVRNwithICEcashResponse();
             JsonResult json = new JsonResult();
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             //json.Data = "";
+
+            if (CoverTypeId == "")
+                CoverTypeId = "0";
+            if (ProductId == "")
+                ProductId = "0";
+            if (TaxClassId == "")
+                TaxClassId = "0";
+            if (VehicleYear == "")
+                VehicleYear = "1900";
+
+
+
+
 
             try
             {
@@ -2540,7 +2691,6 @@ namespace InsuranceClaim.Controllers
                     {
                         ICEcashService.getToken();
                     }
-
                     tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
                 }
                 else
@@ -2552,7 +2702,7 @@ namespace InsuranceClaim.Controllers
 
                 List<RiskDetailModel> objVehicles = new List<RiskDetailModel>();
                 //objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo });
-                objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo, PaymentTermId = Convert.ToInt32(PaymentTerm) });
+                objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo, PaymentTermId = Convert.ToInt32(PaymentTerm), CoverTypeId= Convert.ToInt32(CoverTypeId), ProductId= Convert.ToInt32(ProductId), MakeId= MakeId, ModelId= ModelId, TaxClassId= Convert.ToInt32(TaxClassId), VehicleYear= Convert.ToInt32(VehicleYear) });
 
                 if (tokenObject.Response.PartnerToken != "")
                 {
@@ -2614,6 +2764,12 @@ namespace InsuranceClaim.Controllers
 
             return json;
         }
+
+
+
+
+
+
 
 
         [HttpPost]
@@ -2944,8 +3100,6 @@ namespace InsuranceClaim.Controllers
 
         public PartialViewResult Addvehicle(int id = 0)
         {
-
-
 
             return PartialView();
         }

@@ -28,6 +28,7 @@ namespace Insurance.Domain
 
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Code { get; set; }
 
         public string Description { get; set; }
         public DateTime? CreatedOn { get; set; }
@@ -350,6 +351,13 @@ namespace Insurance.Domain
         public int CurrencyId { get; set; }
 
         public string RenewPolicyNumber { get; set; }
+
+        public string LicenseId { get; set; }
+
+        public string CoverNote { get; set; }
+
+        public int TaxClassId { get; set; }
+
     }
 
     public partial class VehicleMake : Entity<VehicleMake>
@@ -384,6 +392,23 @@ namespace Insurance.Domain
         public int? ModifiedBy { get; set; }
 
     }
+
+
+    public partial class VehicleTaxClass : Entity<VehicleTaxClass>
+    {
+        public VehicleTaxClass() { }
+        public VehicleTaxClass(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public int TaxClassId { get; set; }
+        public string Description { get; set; }
+        public string VehicleType { get; set; }
+        public string CreatedOn { get; set; }
+
+
+    }
+
+
 
 
     public partial class IceCashToken : Entity<IceCashToken>

@@ -14,6 +14,7 @@ namespace InsuranceClaim.Models
         public string Transaction_date { get; set; }
         public decimal Premium_due { get; set; }
         public decimal Stamp_duty { get; set; }
+        public string Currency { get; set; }
     }
     public class ListStampDutyReportModels
     {

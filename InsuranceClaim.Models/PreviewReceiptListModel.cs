@@ -39,6 +39,8 @@ namespace InsuranceClaim.Models
 
         public int CreatedBy { get; set; }
 
+        public string Currency { get; set; }
+
     }
     public class ListReceiptModule
     {

@@ -112,10 +112,10 @@
                             @*<td>@item.LastName</td>*@
                             <td>@item.PolicyNumber</td>
                             <td>@item.TransactionDate</td>
-                            <td>$ @item.SumInsured</td>
-                            <td>$ @item.Premium</td>
-                            <td>$ @item.Commission</td>
-                            <td>$ @item.ManagementCommission</td>
+                            <td>@item.Currency@item.SumInsured</td>
+                            <td>@item.Currency@item.Premium</td>
+                            <td>@item.Currency@item.Commission</td>
+                            <td>@item.Currency@item.ManagementCommission</td>
                             @*<td>
                                 <div class="tbl-btn-list">
                                     <ul class="list-inline"></ul>
@@ -129,10 +129,10 @@
                         <td><strong>Total:</strong></td>
                         <td></td>
                         <td></td>
-                        <td><strong>$@sumInsuredTotal</strong></td>
-                        <td><strong>$@premiumDueTotal</strong></td>
-                        <td><strong>$@commissionTotal</strong></td>
-                        <td><strong>$@managementCommissionTotal</strong></td>
+                        <td><strong>@sumInsuredTotal</strong></td>
+                        <td><strong>@premiumDueTotal</strong></td>
+                        <td><strong>@commissionTotal</strong></td>
+                        <td><strong>@managementCommissionTotal</strong></td>
                     </tr>
                 </tfoot>
             </table>

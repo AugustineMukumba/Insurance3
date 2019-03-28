@@ -99,6 +99,7 @@
                     @{ 
                         decimal premiumDueTotal = 0;
                         decimal stampDutyTotal = 0;
+                       
                     }
 
 
@@ -106,12 +107,13 @@
                     {
                         premiumDueTotal += item.Premium_due;
                         stampDutyTotal += item.Stamp_duty;
+                  
                         <tr>
                             <td>@item.Customer_Name</td>
                             <td>@item.Policy_Number</td>
                             <td>@item.Transaction_date</td>
-                            <td>$@item.Premium_due</td>
-                            <td>$@item.Stamp_duty</td>
+                            <td>@item.Currency@item.Premium_due</td>
+                            <td>@item.Currency@item.Stamp_duty</td>
                         </tr>
                     }
                 </tbody>
@@ -120,8 +122,8 @@
                         <td><strong>Total:</strong></td>
                         <td></td>
                         <td></td>
-                        <td><strong>$@premiumDueTotal</strong></td>
-                        <td><strong>$@stampDutyTotal</strong></td>
+                        <td><strong>@premiumDueTotal</strong></td>
+                        <td><strong>@stampDutyTotal</strong></td>
                     </tr>
                 </tfoot>
             </table>

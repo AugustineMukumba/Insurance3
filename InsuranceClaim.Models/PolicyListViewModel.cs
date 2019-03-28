@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,12 +21,35 @@ namespace InsuranceClaim.Models
         public bool  IsActive { get; set; }
         public string CustomerEmail { get; set; }
         public string PolicyStatus { get; set; }
+        public string CustomerName { get; set; }
+
+        public string CustomerContactNumber { get; set; }
+
+        public string CoverTypeName { get; set; }
+        public string PaymentTerm { get; set; }
+        public string Make { get; set; }
+        public string Model { get; set; }
+        public string RegisterationNumber { get; set; }
+
+        public string startdate { get; set; }
+        public string enddate { get; set; }
+
+        public string RenewalDate { get; set; }
+
+        public string Currency { get; set; }
+
 
     }
 
     public class ListPolicy
     {
         public List<PolicyListViewModel> listpolicy { get; set; }
+
+
+        [Required(ErrorMessage = "Please Enter Start Date.")]
+        public string FromDate { get; set; }
+        [Required(ErrorMessage = "Please Enter End Date.")]
+        public string EndDate { get; set; }
     }
 
     public class VehicleReinsuranceViewModel
@@ -53,7 +77,10 @@ namespace InsuranceClaim.Models
         public bool isActive { get; set; }
         public string RegistrationNo { get; set; }
 
-
+        public string Make { get; set; }
+        public string Model { get; set; }
+        public string CoverTypeName { get; set; }
+        public string PaymentTerm { get; set; }
 
     }
 }

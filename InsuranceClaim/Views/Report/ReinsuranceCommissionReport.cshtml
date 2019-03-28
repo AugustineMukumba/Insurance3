@@ -103,9 +103,8 @@
                             <td>@item.TransactionDate</td>
                             <td>@item.StartDate</td>
                             <td>@item.EndDate</td>
-                            <td>$@item.AutoFacultativeReinsurance</td>
-                            <td>$@item.FacultativeReinsurance</td>
-                          
+                            <td>@item.Currency@item.AutoFacultativeReinsurance</td>
+                            <td>@item.Currency@item.FacultativeReinsurance</td>                        
                         </tr>
                     }
                 </tbody>
@@ -116,8 +115,8 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td><strong>$@autoFacultativeReinsuranceTotal</strong></td>
-                        <td><strong>$@facultativeReinsuranceTotal</strong></td>
+                        <td><strong>@autoFacultativeReinsuranceTotal</strong></td>
+                        <td><strong>@facultativeReinsuranceTotal</strong></td>
                     </tr>
                 </tfoot>
             </table>

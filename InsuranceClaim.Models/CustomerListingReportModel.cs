@@ -24,6 +24,7 @@ namespace InsuranceClaim.Models
         public string VehicleUsage { get; set; }
         public string PaymentTerm { get; set; }
         public string PaymentType { get; set; }
+    
 
     }
     public class ListCustomerListingReport

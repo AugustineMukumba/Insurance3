@@ -103,6 +103,12 @@ namespace Insurance.Domain
 
         public static ServiceProviderPaymentHistories ServiceProviderPaymentHistories { get { return new ServiceProviderPaymentHistories(); } }
 
+        public static UniqeTransactions UniqeTransactions { get { return new UniqeTransactions(); } }
+
+
+        public static VehicleTaxClasses VehicleTaxClasses { get { return new VehicleTaxClasses(); } }
+
+        // UniqeTransactions
 
         // general purpose operations
 

@@ -147,7 +147,8 @@
                                         </div>
 
                                     </div>
-                                    <div class="row">
+                                   
+                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-select">
 
                                             <div class="form-group">
@@ -166,6 +167,8 @@
                                             </div>
                                         </div>
                                     </div>
+
+
                                     <fieldset @(Model.isUpdate ? "" : "disabled")>
                                         <div class="row">
                                             <div class="col-sm-6 col-md-6 form-group-select">
@@ -184,6 +187,20 @@
                                                 </div>
                                             </div>
                                         </div>
+
+
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-select">
+                                                <div class="form-group">
+                                                    @Html.Label("TaxClass", new { @class = "gender-label" })
+                                                    @Html.DropDownListFor(x => x.TaxClassId, new SelectList(ViewBag.TaxClass, "TaxClassId", "Description"), "Select Tax Class", new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(x => x.TaxClassId, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
                                         <div class="row">
                                             <div class="col-sm-6 col-md-6 form-group-text">
                                                 <div class="form-group">
@@ -769,10 +786,6 @@
     $("form").submit(function(){
 
     });
-
-
-
-
 </script>
 
 
@@ -928,6 +941,9 @@
     }
 
     $(document).ready(function () {
+
+
+       
 
         $("#datetimepicker2").datetimepicker({
             format: 'MM/D/YYYY',
@@ -1220,7 +1236,6 @@
         //});
 
         $("#Excess").blur(function () {
-
             QuoteCalculation();
         });
         $("#ExcessType").change(function () {
@@ -1231,6 +1246,18 @@
 
             QuoteCalculation();
         });
+
+
+        $("#VehicleYear").blur(function () {
+
+            if($("#RegistrationNo").val()=="TBA" && $("#VehicleYear").val()!="" )
+            {
+                checkTBAVRNwithICEcash();
+            }
+            
+        });
+
+
         //$("#CoverTypeId").change(function () {
 
         //    QuoteCalculation();
@@ -1314,6 +1341,7 @@
                     $("#ModelId").removeClass("inputDisabled")
                     //$("#VehicleUsage").removeClass("inputDisabled")
                     $("#isVehicleRegisteredonICEcash").val(0);
+                    $("#InsuranceId").val(""); // 25_march 2019
                     $(".loading-area").hide();
                 }
                 if (data.result == 1) {
@@ -1362,6 +1390,8 @@
                     $("#EngineNumber").addClass("inputDisabled")
                     $("#ChasisNumber").addClass("inputDisabled")
 
+                    $("#InsuranceId").val(data.Data.Response.Quotes[0].InsuranceID); // 25_march 2019
+
                     $(".loading-area").hide();
                 }
 
@@ -1383,6 +1413,88 @@
             } //EINDE error
         }); //EINDE ajax
     }
+
+
+
+    function checkTBAVRNwithICEcash() {
+
+        
+        debugger;
+       
+
+        if( $("#TaxClassId").val()=="" ||  $("#CoverTypeId").val()=="" || $("#MakeId").val()=="" || $("#ModelId").val()=="" )
+        {
+            toastr.error("Please select Cover type, tax class, make and model.");
+
+
+           
+
+            return false;
+        }
+
+        $(".loading-area").show();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("checkVRNwithICEcash", "CustomerRegistration")",
+            data: { regNo: $("#RegistrationNo").val(), PaymentTerm : $("#PaymentTermId").val(), CoverTypeId:  $("#CoverTypeId").val(),ProductId: $("#ProductId").val(), MakeId: $("#MakeId").val() ,ModelId: $("#ModelId").val(), TaxClassId: $("#TaxClassId").val()  ,  VehicleYear: $("#VehicleYear").val()     },
+        success: function (data) {
+
+            debugger;
+
+
+            if (data.result == 0) {
+                toastr.error(data.message);
+                $("fieldset").removeAttr("disabled");
+                //$("#ProductId").removeClass("inputDisabled")
+                $(".loading-area").hide();
+                $("#InsuranceId").val("");
+            }
+            if (data.result == 1) {
+                var policy = {};
+                policy = data.Data.Response.Quotes[0].Policy;
+
+                var StampDuty = policy.StampDuty;
+                $("#StampDuty").val(parseFloat(StampDuty).toFixed(2));
+                var GovernmentLevy = policy.GovernmentLevy;
+                $("#ZTSCLevy").val(parseFloat(GovernmentLevy).toFixed(2));
+                var CoverAmount = policy.CoverAmount;
+                //$("#Premium").val(parseFloat(CoverAmount).toFixed(2));
+                $("#Discount").val(parseFloat(data.Data.LoyaltyDiscount).toFixed(2));
+
+                var calulatePremium = CoverAmount-data.Data.LoyaltyDiscount;
+
+                $("#Premium").val(parseFloat(calulatePremium).toFixed(2));
+
+                $("#InsuranceId").val(data.Data.Response.Quotes[0].InsuranceID);
+
+                $("#basicPremiumICEcash").val(parseFloat(CoverAmount).toFixed(2));
+
+                $("#stampDutyICEcash").val(parseFloat(StampDuty).toFixed(2))
+                $("#LevyICEcash").val(parseFloat(GovernmentLevy).toFixed(2))
+                QuoteCalculation()
+                $(".loading-area").hide();
+            }
+
+
+
+
+
+
+
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            $(".loading-area").hide();
+            if (textStatus == 'timeout') {
+                //doe iets
+            } else if (textStatus == 'error') {
+                //doe iets
+            }
+        } //EINDE error
+    }); //EINDE ajax
+    }
+
+
+
 
     function generateQuotewithICEcash() {
         var flag = true;

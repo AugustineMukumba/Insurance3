@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 namespace Insurance.Domain
 {
-   
-    public partial class UniqeTransactions : Repository<UniqeTransaction>
+    public partial class VehicleTaxClasses : Repository<VehicleTaxClass>
     {
+
     }
-
-
-
 
 
 }

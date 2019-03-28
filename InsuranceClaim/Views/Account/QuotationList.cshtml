@@ -52,7 +52,6 @@
                     }
 
                     <tr class="policyheading-tr">
-
                         <th>Policy Number</th>
                         <th>Customer Name</th>
                         <th>Customer Email</th>
@@ -61,19 +60,17 @@
                         <th>Total Premium</th>
                         <th>Created On</th>
                         <th class="action-th">Action(s)</th>
-
                     </tr>
 
                     @foreach (var item in Model.listpolicy.ToList())
                     {
                         <tr class="policynumber-tr">
-
                             <td>@item.PolicyNumber</td>
                             <td>@MiscellaneousService.GetCustomerNamebyID(item.CustomerId)</td>
                             <td>@item.CustomerEmail</td>
                             <td>@MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId)</td>
-                            <td>$@item.TotalSumInsured</td>
-                            <td>$@item.TotalPremium</td>
+                            <td>@item.Currency@item.TotalSumInsured</td>
+                            <td>@item.Currency@item.TotalPremium</td>
                             <td>@item.createdOn.ToString("dd-MM-yyyy")</td>
                             <td>
                                 <div class="tbl-btn-list">

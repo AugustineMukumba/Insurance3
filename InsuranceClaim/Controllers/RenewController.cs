@@ -93,15 +93,23 @@ namespace InsuranceClaim.Controllers
             {
                 var vehicledetails = InsuranceContext.VehicleDetails.Single(where: $"Id = '{vehicleid}'");
                 var customerdetail = InsuranceContext.Customers.Single(where: $"Id= '{vehicledetails.CustomerId}'");
+
                 if (customerdetail != null)
                 {
 
                     custdata = Mapper.Map<Customer, CustomerModel>(customerdetail);
+
+                    // for approving 
+                    //Session["ReCustomerDataModal"] = custdata;
+                    //RenewApproveVRNToIceCash(customerdetail, vehicledetails);
+
                     var dbUser = UserManager.Users.FirstOrDefault(c => c.Id == customerdetail.UserID);
                     if (dbUser != null)
                     {
                         custdata.EmailAddress = dbUser.Email;
                     }
+
+
 
                 }
             }
@@ -302,11 +310,7 @@ namespace InsuranceClaim.Controllers
             Session.Remove("issummaryformvisited");
             Session.Remove("PaymentId");
             Session.Remove("InsuranceId");
-
-
         }
-
-
 
 
         [HttpPost]
@@ -790,7 +794,6 @@ namespace InsuranceClaim.Controllers
             {
                 // model.Id = 0;
 
-
                 // List<RiskDetailModel> listriskdetailmodel = new List<RiskDetailModel>();
                 if (Session["RenewVehicleDetails"] != null)
                 {
@@ -819,6 +822,7 @@ namespace InsuranceClaim.Controllers
 
             ViewBag.SummaryDetailId = summaryDetailId;
             var role = "";
+
             if (System.Web.HttpContext.Current.User.Identity.GetUserId() != null)
             {
                 role = UserManager.GetRoles(System.Web.HttpContext.Current.User.Identity.GetUserId()).FirstOrDefault();
@@ -863,7 +867,7 @@ namespace InsuranceClaim.Controllers
             model.TotalPremium = vehicle.Premium + vehicle.ZTSCLevy + vehicle.StampDuty + vehicle.VehicleLicenceFee;
             if (vehicle.IncludeRadioLicenseCost)
             {
-                model.TotalPremium = vehicle.RadioLicenseCost;
+                model.TotalPremium = model.TotalPremium +  vehicle.RadioLicenseCost;
                 model.TotalRadioLicenseCost = vehicle.RadioLicenseCost;
             }
             model.Discount = vehicle.Discount;
@@ -2128,6 +2132,9 @@ namespace InsuranceClaim.Controllers
 
             //  var SummaryVehicleDetail = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={summary.Id}").ToList();
 
+
+            RenewApproveVRNToIceCash(customer, vehicle);
+
             string Summeryofcover = "";
             //for (int i = 0; i < SummaryVehicleDetail.Count; i++)
             //{
@@ -2163,7 +2170,7 @@ namespace InsuranceClaim.Controllers
                     coverType = eCoverType.Comprehensive.ToString();
                 var paymentMonths = vehicle.PaymentTermId.ToString() == "1" ? "Yearly" : vehicle.PaymentTermId + " Months";
 
-                Summeryofcover += "<tr><td>" + vehicle.RegistrationNo + "</td> <td>" + vehicledescription + "</td><td>$" + vehicle.SumInsured + "</td><td>" + coverType + "</td><td>" + InsuranceContext.VehicleUsages.All(Convert.ToString(vehicle.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td>$0.00</td><td>" + paymentMonths + " </td><td>$" + Convert.ToString(_Premium) + "</td></tr>";
+                Summeryofcover += "<tr><td>" + vehicle.RegistrationNo + "</td> <td>" + vehicledescription + "</td> <td> " + vehicle.CoverNote + " </td>  <td>$" + vehicle.SumInsured + "</td><td>" + coverType + "</td><td>" + InsuranceContext.VehicleUsages.All(Convert.ToString(vehicle.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td>$0.00</td><td>" + paymentMonths + " </td><td>$" + Convert.ToString(_Premium) + "</td></tr>";
 
 
             }
@@ -2209,13 +2216,20 @@ namespace InsuranceClaim.Controllers
             var paymentTerms = summary.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + summary.PaymentTermId.ToString() + " Months)";
 
 
+            decimal radioLicenseAmount = 0;
+            if (vehicle.IncludeRadioLicenseCost.Value)
+                radioLicenseAmount = vehicle.RadioLicenseCost.Value;
+
+              var totalPremium=  vehicle.Premium + vehicle.ZTSCLevy + vehicle.StampDuty + vehicle.VehicleLicenceFee+ radioLicenseAmount;
+
+        
 
             var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##NINumber##", customer.NationalIdentificationNumber).Replace("##ReNewPolicyNo##", vehicle.RenewPolicyNumber).Replace("##path##", filepath).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).
                 Replace("##PaymentTerm##", paymentTerms)
                 .Replace("##ExcessAmount##", Convert.ToString(vehicle.ExcessAmount))
                 .Replace("##Discount##", Convert.ToString(vehicle.Discount))
                 .Replace("##RadioLicence##", Convert.ToString(vehicle.RadioLicenseCost))
-                .Replace("##TotalPremiumDue##", Convert.ToString(summary.TotalPremium))
+                .Replace("##TotalPremiumDue##", Convert.ToString(totalPremium))
                 .Replace("##StampDuty##", Convert.ToString(summary.TotalStampDuty))
                 .Replace("##MotorLevy##", Convert.ToString(summary.TotalZTSCLevies))
                 .Replace("##PremiumDue##", Convert.ToString(vehicle.Premium))
@@ -2244,7 +2258,7 @@ namespace InsuranceClaim.Controllers
             //MiscellaneousService.ScheduleMotorPdf(Bodyy, policy.CustomerId, policy.PolicyNumber, "Renew-Schedule-motor");
 
 
-            RenewApproveVRNToIceCash(customer, vehicle);
+         
 
 
             //Session.Remove("policytermid");
@@ -2883,7 +2897,7 @@ namespace InsuranceClaim.Controllers
                 ResultRootObject VehicalQuoteresponse = iceCash.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
 
 
-                if (VehicalQuoteresponse.Response != null && VehicalQuoteresponse.Response.Message == "Partner Token has expired. ")
+                if (VehicalQuoteresponse.Response != null && VehicalQuoteresponse.Response.Message.Contains("Partner Token has expired"))
                 {
                     iceCash.getToken();
                     tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
@@ -2905,7 +2919,7 @@ namespace InsuranceClaim.Controllers
 
                     // if partern token expire
 
-                    if (quoteresponse.Response.Quotes != null && quoteresponse.Response.Message == "Partner Token has expired.")
+                    if (quoteresponse.Response.Quotes != null && quoteresponse.Response.Message.Contains("Partner Token has expired"))
                     {
                         //  log.WriteLog(quoteresponse.Response.Quotes[0].Message + " reg no: " + vichelDetails.RegistrationNo);
                         iceCash.getToken();
@@ -2919,6 +2933,7 @@ namespace InsuranceClaim.Controllers
                     if (res.Response != null && res.Response.Message == "Policy Retrieved")
                     {
                         vichelDetails.InsuranceStatus = "Approved";
+                        vichelDetails.CoverNote = res.Response.PolicyNo; // it's represent to Cover Note
                         InsuranceContext.VehicleDetails.Update(vichelDetails);
                     }
                 }
@@ -3191,7 +3206,9 @@ namespace InsuranceClaim.Controllers
                 Resummry.PaymentTermId = summarydetails.PaymentTermId;
                 Resummry.ReceiptNumber = summarydetails.ReceiptNumber;
 
-                Resummry.TotalPremium = summarydetails.TotalPremium;
+                Resummry.TotalPremium = Convert.ToDecimal(Math.Round(Convert.ToDouble(dbVehicalDetials.Premium + dbVehicalDetials.StampDuty + dbVehicalDetials.ZTSCLevy + dbVehicalDetials.VehicleLicenceFee + (Convert.ToBoolean(dbVehicalDetials.IncludeRadioLicenseCost) ? dbVehicalDetials.RadioLicenseCost : 0.00m)), 2)); ;
+                Resummry.AmountPaid = Convert.ToDecimal(Math.Round(Convert.ToDouble(dbVehicalDetials.Premium + dbVehicalDetials.StampDuty + dbVehicalDetials.ZTSCLevy + dbVehicalDetials.VehicleLicenceFee + (Convert.ToBoolean(dbVehicalDetials.IncludeRadioLicenseCost) ? dbVehicalDetials.RadioLicenseCost : 0.00m)), 2));
+
 
 
                 Resummry.TotalStampDuty = VehicleRdetails.StampDuty;

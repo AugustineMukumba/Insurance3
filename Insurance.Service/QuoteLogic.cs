@@ -460,13 +460,11 @@ namespace Insurance.Service
 
             if (coverType == eCoverType.Comprehensive)
             {
-                totalPremiumForZtscLevy = (this.Premium + discountField) ;
-
+                totalPremiumForZtscLevy = (this.Premium + discountField);
             }
             else
             {
                 totalPremiumForZtscLevy = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + discountField;
-
             }
 
 

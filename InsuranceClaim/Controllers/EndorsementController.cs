@@ -490,7 +490,10 @@ namespace InsuranceClaim.Controllers
                 List<EndorsementVehicleDetail> listriskdetailmodel = new List<EndorsementVehicleDetail>();
                 foreach (var item in SummaryVehicleDetails)
                 {
-                    var vehicle = InsuranceContext.VehicleDetails.Single(where: $"Id={item.VehicleDetailsId}");
+                    var vehicle = InsuranceContext.VehicleDetails.Single(where: $"Id={item.VehicleDetailsId} and IsActive=1 ");
+
+                    if (vehicle == null)
+                        continue;
 
                     var Endorsmentpolicy = (EndorsementPolicyDetail)Session["PolicyDataView"];
 
@@ -854,7 +857,7 @@ namespace InsuranceClaim.Controllers
                         viewModel.VehicleColor = data.VehicleColor;
                         viewModel.VehicleUsage = data.VehicleUsage;
                         viewModel.VehicleYear = data.VehicleYear;
-                        viewModel.Id = data.Id;
+                        viewModel.Id = data.Id;    
                         viewModel.ZTSCLevy = data.ZTSCLevy;
                         viewModel.NumberofPersons = data.NumberofPersons;
                         viewModel.PassengerAccidentCover = data.PassengerAccidentCover;
@@ -874,7 +877,9 @@ namespace InsuranceClaim.Controllers
                         viewModel.VehicleUsage = data.VehicleUsage;
                         viewModel.isUpdate = true;
                         viewModel.vehicleindex = Convert.ToInt32(id);
-                        viewModel.VehicleId = data.VehicleId;
+                        viewModel.EndorsementVehicleId = data.Id;
+                        // viewModel.VehicleId = data.VehicleId;
+                        viewModel.VehicleId = data.PrimaryVehicleId.Value;
                         viewModel.EndorsementCustomerId = data.EndorsementCustomerId;
                         viewModel.EndorsementPolicyId = data.EndorsementPolicyId;
                         viewModel.PrimaryVehicleId = data.PrimaryVehicleId;
@@ -992,14 +997,18 @@ namespace InsuranceClaim.Controllers
             var dbVehicle = InsuranceContext.VehicleDetails.Single(where: $"Id={model.VehicleId}");
 
             //var endorsementvehicle = InsuranceContext.EndorsementVehicleDetails.Single(where: $"Id = '{model.Id}'");
-            var EnderSomentVehical = InsuranceContext.EndorsementVehicleDetails.Single(where: $"Id={model.Id}");
+            var EnderSomentVehical = InsuranceContext.EndorsementVehicleDetails.Single(where: $"Id={model.EndorsementVehicleId}");
+
+          //  var EnderSomentVehical = InsuranceContext.EndorsementVehicleDetails.Single(where: $"Id={model.vehicleindex}");
+
             bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
 
 
             var vehicleUpdate = Mapper.Map<EndorsementRiskDetailModel, EndorsementVehicleDetail>(model);
 
             EnderSomentVehical.PrimaryVehicleId = model.PrimaryVehicleId;
-            EnderSomentVehical.Id = model.Id;
+            // EnderSomentVehical.Id = model.Id;
+            EnderSomentVehical.Id = model.EndorsementVehicleId;
             EnderSomentVehical.EndorsementCustomerId = model.EndorsementCustomerId;
             EnderSomentVehical.EndorsementPolicyId = model.EndorsementPolicyId;
             EnderSomentVehical.NoOfCarsCovered = vehicleUpdate.NoOfCarsCovered;
@@ -1765,7 +1774,8 @@ namespace InsuranceClaim.Controllers
             var endorsepolicy = InsuranceContext.EndorsementPolicyDetails.Single(endorsevehicle.EndorsementPolicyId);
             var endorsementCustomer = InsuranceContext.EndorsementCustomers.Single(endorsementsummay.EndorsementCustomerId);
             var product = InsuranceContext.Products.Single(Convert.ToInt32(endorsevehicle.ProductId));
-            var currency = InsuranceContext.Currencies.Single(endorsepolicy.CurrencyId);
+
+           // var currency = InsuranceContext.Currencies.Single(endorsepolicy.CurrencyId);
             var paymentInformations = InsuranceContext.PaymentInformations.SingleCustome(id);
 
             var user = UserManager.FindById(endorsementCustomer.UserID);

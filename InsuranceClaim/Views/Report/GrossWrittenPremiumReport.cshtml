@@ -144,16 +144,16 @@
                                 <td>@item.CoverType</td>
 
                                 <td>
-                                    $@item.Premium_due
+                                    @item.Currency@item.Premium_due
                                 </td>
 
-                                <td>$ @item.Stamp_duty</td>
-                                <td>$ @item.ZTSC_Levy</td>
+                                <td> @item.Currency@item.Stamp_duty</td>
+                                <td> @item.Currency@item.ZTSC_Levy</td>
                                 <td>
-                                    $@item.Comission_Amount
+                                    @item.Currency@item.Comission_Amount
                                 </td>
-                                <td>$@item.RadioLicenseCost</td>
-                                <td> @item.Zinara_License_Fee </td>
+                                <td>@item.Currency@item.RadioLicenseCost</td>
+                                <td> @item.Currency@item.Zinara_License_Fee </td>
 
 
                                 @if (DateTime.Now > item.PolicyRenewalDate)
@@ -176,7 +176,6 @@
                                     <td>In Force</td>
                                 }
 
-
                             </tr>
                         }
                     </tbody>
@@ -190,15 +189,15 @@
                             <td></td>
                             <td></td>
                             <td>
-                                <b> $@premiumDueTotal </b>
+                                <b> @premiumDueTotal </b>
                             </td>
-                            <td><strong>$@stampdutyTotal</strong></td>
-                            <td><strong>$@ztscLevyTotal</strong></td>
+                            <td><strong>@stampdutyTotal</strong></td>
+                            <td><strong>@ztscLevyTotal</strong></td>
                             <td>
-                                <strong>$@commissionAmountTotal</strong>
+                                <strong>@commissionAmountTotal</strong>
                             </td>
-                            <td><strong>$@radioLicenseCostTotal</strong></td>
-                            <td><strong> $@ZinaraLicenseFee </strong> </td>
+                            <td><strong>@radioLicenseCostTotal</strong></td>
+                            <td><strong> @ZinaraLicenseFee </strong> </td>
                             <td></td>
                         </tr>
                     </tfoot>

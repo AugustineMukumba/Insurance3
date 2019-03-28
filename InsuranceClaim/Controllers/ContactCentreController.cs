@@ -21,15 +21,14 @@ namespace InsuranceClaim.Controllers
         public ActionResult RiskDetail(int? id = 1)
         {
             // summaryDetailId: it's represent to Qutation edit
-    
-            if(Session["SummaryDetailId"]!=null)
+
+            if (Session["SummaryDetailId"] != null)
             {
                 SetValueIntoSession(Convert.ToInt32(Session["SummaryDetailId"]));
                 Session["SummaryDetailId"] = null;
-                //IsUpdate = true;
             }
 
-           
+
             if (Session["CustomerDataModal"] == null)
             {
                 // return RedirectToAction("Index", "CustomerRegistration");
@@ -48,6 +47,9 @@ namespace InsuranceClaim.Controllers
             //ViewBag.ePaymentTermData = new SelectList(ePaymentTermData, "ID", "Name");
            // ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All().ToList();
             ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All(where: "IsActive = 'True' or IsActive is Null").ToList();
+
+
+            ViewBag.TaxClass = InsuranceContext.VehicleTaxClasses.All().ToList();
 
             var eExcessTypeData = from eExcessType e in Enum.GetValues(typeof(eExcessType))
                                   select new
@@ -113,6 +115,7 @@ namespace InsuranceClaim.Controllers
             {
                 var list = (List<RiskDetailModel>)Session["VehicleDetails"];
                 viewModel.NoOfCarsCovered = list.Count + 1;
+
             }
 
             if (id > 0)
@@ -184,6 +187,7 @@ namespace InsuranceClaim.Controllers
                         //viewModel.isUpdate = false; // 02_feb_2019
                  
                         viewModel.vehicleindex = Convert.ToInt32(id);
+                        viewModel.TaxClassId = data.TaxClassId;
 
                         var ser = new VehicleService();
                         var model = ser.GetModel(data.MakeId);

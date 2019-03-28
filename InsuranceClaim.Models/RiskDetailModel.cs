@@ -107,8 +107,11 @@ namespace InsuranceClaim.Models
         public int BusinessSourceDetailId { get; set; }
 
         public int CurrencyId { get; set; }
-
+        public string CurrencyName { get; set; }
         public string RenewPolicyNumber { get; set; }
+
+        [Required(ErrorMessage = "Please Select Tax Class.")]
+        public int TaxClassId { get; set; }
 
     }
 }

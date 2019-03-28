@@ -14,6 +14,9 @@ namespace InsuranceClaim.Models
         public string Policy_Number { get; set; }
         public string Transaction_date { get; set; }
         public decimal? RadioLicenseCost { get; set; }
+
+        public string Currency { get; set; }
+             
     }
     public class ListRadioLicenceReport
     {
