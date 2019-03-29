@@ -88,8 +88,8 @@
                             <td>@item.PolicyNumber</td>
                             <td>@MiscellaneousService.GetCustomerNamebyID(item.CustomerId)</td>
                             <td>@MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId)</td>
-                            <td>$@item.TotalSumInsured</td>
-                            <td>$@item.TotalPremium</td>
+                            <td>@item.TotalSumInsured</td>
+                            <td>@item.Currency&nbsp;@item.TotalPremium</td>
                             <td>@item.createdOn.ToString("dd-MMM-yyyy")</td>
                             @*<td>@Html.ActionLink("View Policy", "RiskDetail", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</td>*@
                             <td>
@@ -122,13 +122,13 @@
                                         <tr>
                                             <td>@_item.RegistrationNo</td>
                                             <td>@MiscellaneousService.GetMakeNamebyMakeCode(_item.MakeId)/@MiscellaneousService.GetModelNamebyModelCode(_item.ModelId)</td>
-                                            <td>$@_item.SumInsured</td>
-                                            <td>$@_item.AutoFacReinsuranceAmount</td>
-                                            <td>$@_item.AutoFacPremium</td>
-                                            <td>$@_item.FacReinsuranceAmount</td>
-                                            <td>$@_item.FacPremium</td>
-                                            <td>$@_item.BrokerCommission</td>
-                                            <td>$@_item.FacultativeCommission</td>
+                                            <td>@item.Currency&nbsp;$@_item.SumInsured</td>
+                                            <td>@item.Currency&nbsp;$@_item.AutoFacReinsuranceAmount</td>
+                                            <td>@item.Currency&nbsp;$@_item.AutoFacPremium</td>
+                                            <td>@item.Currency&nbsp;$@_item.FacReinsuranceAmount</td>
+                                            <td>@item.Currency&nbsp;$@_item.FacPremium</td>
+                                            <td>@item.Currency&nbsp;$@_item.BrokerCommission</td>
+                                            <td>@item.Currency&nbsp;$@_item.FacultativeCommission</td>
                                             @if (_item.isLapsed && _item.isActive == false)
                                             {
                                                 <td>Renewed</td>

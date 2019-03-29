@@ -357,6 +357,7 @@ namespace Insurance.Domain
         public string CoverNote { get; set; }
 
         public int TaxClassId { get; set; }
+        public string Currency { get; set; }
 
     }
 

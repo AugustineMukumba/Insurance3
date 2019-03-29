@@ -1413,7 +1413,7 @@ namespace InsuranceClaim.Controllers
             //      var SummaryList = InsuranceContext.SummaryDetails.All().OrderByDescending(x => x.Id).ToList();
 
             var SummaryList = new List<SummaryDetail>();
-
+            var currenyList = _summaryDetailService.GetAllCurrency();
             var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
             var role = UserManager.GetRoles(_User.Id.ToString()).FirstOrDefault();
 
@@ -1476,7 +1476,7 @@ namespace InsuranceClaim.Controllers
                             if (_vehicle != null)
                             {
                                 var _reinsurenaceTrans = InsuranceContext.ReinsuranceTransactions.All(where: $"SummaryDetailId={item.Id} and VehicleId={_item.VehicleDetailsId}").ToList();
-
+                                
                                 obj.RegistrationNo = _vehicle.RegistrationNo;
                                 obj.CoverType = Convert.ToInt32(_vehicle.CoverTypeId);
                                 obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
@@ -1491,6 +1491,7 @@ namespace InsuranceClaim.Controllers
                                 obj.RenewalDate = Convert.ToDateTime(_vehicle.RenewalDate);
                                 obj.isLapsed = _vehicle.isLapsed;
                                 obj.isActive = Convert.ToBoolean(_vehicle.IsActive);
+                                obj.currency= _summaryDetailService.GetCurrencyName(currenyList,_vehicle.CustomerId);
                                 if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
                                 {
                                     obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
@@ -2989,13 +2990,19 @@ namespace InsuranceClaim.Controllers
 
             if (id > 0)
             {
+                SummaryDetailService _summaryDetailService = new SummaryDetailService();
+
+                var currenyList = _summaryDetailService.GetAllCurrency();
                 var list = (List<RiskDetailModel>)Session["ViewlistVehicles"];
                 if (list != null && list.Count > 0 && (list.Count >= id)) // 29_jan_2019
                 {
                     var data = (RiskDetailModel)list[Convert.ToInt32(id - 1)];
                     if (data != null)
                     {
+
+
                         viewModel.AgentCommissionId = data.AgentCommissionId;
+                        viewModel.currency = _summaryDetailService.GetCurrencyName(currenyList,data.CurrencyId);
                         viewModel.ChasisNumber = data.ChasisNumber;
                         viewModel.CoverEndDate = data.CoverEndDate;
                         viewModel.CoverNoteNo = data.CoverNoteNo;

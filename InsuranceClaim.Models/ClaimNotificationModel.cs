@@ -53,6 +53,7 @@ namespace InsuranceClaim.Models
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
         public bool IsExists { get; set; }
+        public string Currency { get; set; }
 
         [Required(ErrorMessage = "Please Enter Claimant Name")]
         [Display(Name = "Claimant Name")]

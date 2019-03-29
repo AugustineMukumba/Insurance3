@@ -69,6 +69,9 @@ namespace InsuranceClaim.Controllers
         [HttpGet]
         public ActionResult ClaimantList()
         {
+            SummaryDetailService _summaryDetailService = new SummaryDetailService();
+
+            var currenyList = _summaryDetailService.GetAllCurrency();
 
             List<ClaimNotificationModel> objList = new List<ClaimNotificationModel>();
 
@@ -104,6 +107,8 @@ namespace InsuranceClaim.Controllers
                            ThirdPartyDamageValue = j.ThirdPartyDamageValue,
                            Id = j.Id,
                            IsExists = rt == null ? false : true,
+                           Currency = _summaryDetailService.GetCurrencyName(currenyList, rt.CurrencyId),
+
                        }
                      ).ToList();
 

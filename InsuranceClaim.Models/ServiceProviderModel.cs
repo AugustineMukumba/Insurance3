@@ -36,5 +36,6 @@ namespace InsuranceClaim.Models
         public int ClaimRegistrationId { get; set; }
         public decimal? OtherServiceProvider { get; set; }
         public decimal RepairersProviderFees { get; set; }
+        public string Currency { get; set; }
     }
 }

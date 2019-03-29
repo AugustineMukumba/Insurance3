@@ -45,6 +45,7 @@ namespace InsuranceClaim.Models
         public decimal? SumInsured { get; set; }
         [Required(ErrorMessage = "Please Enter Basic Premium")]
         public decimal? Premium { get; set; }
+        public string currency { get; set; }
         public int? AgentCommissionId { get; set; }
         public decimal? Rate { get; set; }
         public decimal? StampDuty { get; set; }

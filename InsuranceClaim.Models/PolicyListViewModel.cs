@@ -76,11 +76,14 @@ namespace InsuranceClaim.Models
         public decimal Premium { get; set; }
         public bool isActive { get; set; }
         public string RegistrationNo { get; set; }
+        
 
         public string Make { get; set; }
         public string Model { get; set; }
         public string CoverTypeName { get; set; }
         public string PaymentTerm { get; set; }
+
+        public string currency { get; set; }
 
     }
 }

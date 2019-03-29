@@ -1802,12 +1802,21 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult VehicleHistory()
         {
+        
+
+
+
+            SummaryDetailService _summaryDetailService = new SummaryDetailService();
+
+            var currenyList = _summaryDetailService.GetAllCurrency();
+
+
             //List<VehicleDetail> vehicles = new List<VehicleDetail>();
             //vehicles = InsuranceContext.VehicleDetails.All().Where(x => x.IsActive == false).ToList();
 
 
             //   var list = InsuranceContext.Query("select PolicyId, RegistrationNo,Premium, VehicleMake.MakeDescription as makeId, VehicleModel.modeldescription as modelId from vehicledetail join VehicleMake on VehicleDetail.MakeId = VehicleMake.Makecode join VehicleModel on vehicledetail.modelId = vehiclemodel.modelcode where vehicledetail.Isactive=0")
-            var list = InsuranceContext.Query("select PolicyId, RegistrationNo,Premium, VehicleMake.MakeDescription as makeId, VehicleModel.modeldescription as modelId, PolicyDetail.PolicyNumber, Customer.FirstName,Customer.LastName from vehicledetail join VehicleMake on VehicleDetail.MakeId = VehicleMake.Makecode join VehicleModel on vehicledetail.modelId = vehiclemodel.modelcode join Policydetail on vehicledetail.PolicyId=Policydetail.Id join customer on vehicledetail.customerId=customer.Id where vehicledetail.Isactive=0")
+            var list = InsuranceContext.Query("select vehicledetail.CurrencyId, PolicyId, RegistrationNo,Premium, VehicleMake.MakeDescription as makeId, VehicleModel.modeldescription as modelId, PolicyDetail.PolicyNumber, Customer.FirstName,Customer.LastName from vehicledetail join VehicleMake on VehicleDetail.MakeId = VehicleMake.Makecode join VehicleModel on vehicledetail.modelId = vehiclemodel.modelcode join Policydetail on vehicledetail.PolicyId=Policydetail.Id join customer on vehicledetail.customerId=customer.Id where vehicledetail.Isactive=0")
             .Select(x => new VehicleDetail()
             {
                 EngineNumber = x.PolicyNumber,
@@ -1815,7 +1824,9 @@ namespace InsuranceClaim.Controllers
                 RegistrationNo = x.RegistrationNo,
                 MakeId = x.makeId,
                 ModelId = x.modelId,
-                Premium = x.Premium,
+                Premium=x.Premium,
+                Currency = _summaryDetailService.GetCurrencyName(currenyList,x.CurrencyId)
+                
             }).ToList();
 
             return View(list);

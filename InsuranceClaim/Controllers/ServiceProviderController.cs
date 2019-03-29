@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using InsuranceClaim.Models;
 using Insurance.Domain;
 using AutoMapper;
+using Insurance.Service;
 
 namespace InsuranceClaim.Controllers
 {
@@ -36,13 +37,16 @@ namespace InsuranceClaim.Controllers
         [HttpGet]
         public ActionResult ProvidersList()
         {
+            SummaryDetailService _summaryDetailService = new SummaryDetailService();
+
+            var currenyList = _summaryDetailService.GetAllCurrency();
             //InsuranceClaim.Models.ServiceProviderModel obj = new InsuranceClaim.Models.ServiceProviderModel();
             //List<Insurance.Domain.ServiceProvider> objList = new List<Insurance.Domain.ServiceProvider>();
             // objList = InsuranceContext.ServiceProviders.All(where: "IsDeleted = 'True' or IsDeleted is null").ToList();
 
             //var servicetype = InsuranceContext.ServiceProviderTypes.All().ToList();
 
-           var  objList = (from _service in InsuranceContext.ServiceProviders.All().ToList()
+            var  objList = (from _service in InsuranceContext.ServiceProviders.All().ToList()
                         join _servicetype in InsuranceContext.ServiceProviderTypes.All().ToList()
                         on _service.ServiceProviderType equals _servicetype.Id
                         where _service.IsDeleted == true 
@@ -53,6 +57,7 @@ namespace InsuranceClaim.Controllers
                             ServiceProviderType = Convert.ToString(_servicetype.ProviderType),
                             ServiceProviderContactDetails = _service.ServiceProviderContactDetails,
                             ServiceProviderFees = _service.ServiceProviderFees,
+                           
                             Id = _service.Id
 
 
