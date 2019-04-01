@@ -3678,7 +3678,7 @@ namespace InsuranceClaim.Controllers
             policylist.listpolicy = new List<PolicyListViewModel>();
             var customerID = InsuranceContext.Customers.Single(where: $"userid='{User.Identity.GetUserId().ToString()}'").Id;
 
-            var currencyList = InsuranceContext.Currencies.All();
+           
 
             var SummaryList = new List<SummaryDetail>();
 
@@ -3693,8 +3693,11 @@ namespace InsuranceClaim.Controllers
             else
             {
                 SummaryList = InsuranceContext.SummaryDetails.All(where: $"customerid={customerID} and isQuotation = 'True'").OrderByDescending(x => x.Id).ToList();
-
             }
+
+            SummaryDetailService detailService = new SummaryDetailService();
+
+            var currencyList = detailService.GetAllCurrency();
 
             foreach (var item in SummaryList)
             {
@@ -3724,11 +3727,7 @@ namespace InsuranceClaim.Controllers
                             var product = InsuranceContext.Products.Single(Convert.ToInt32(vehicle.ProductId));
                             policylistviewmodel.PolicyNumber = policy.PolicyNumber;
 
-                            var currencyDetails = currencyList.FirstOrDefault(c => c.Id == vehicle.CurrencyId);
-                            if (currencyDetails != null)
-                                policylistviewmodel.Currency = currencyDetails.Name;
-
-
+                            policylistviewmodel.Currency = detailService.GetCurrencyName(currencyList, vehicle.CurrencyId);
 
                             int increment = 0;
                             var _vehicle = new VehicleDetail();

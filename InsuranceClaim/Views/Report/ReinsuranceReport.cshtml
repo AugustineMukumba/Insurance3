@@ -96,6 +96,7 @@
                         <th style="width:180px;">Policy Dates</th>
                         @*<th>Policy End Date</th>*@
                         @*<th>Transaction Date</th>*@
+                        <th>Currency</th>
                         <th style="width:200px;">Sum Insured</th>
                         @*<th>Auto-Fac Sum Insured</th>
                             <th>Facultive Sum Insured</th>*@
@@ -136,6 +137,7 @@
                             <td>@item.FirstName @item.LastName</td>
                             <td>@item.PhoneNumber</td>
                             <td>@item.PolicyNumber</td>
+                            
 
                             <td>
                                 <table class="sub-table">
@@ -151,21 +153,23 @@
                                     </tr>
                                 </table>
                             </td>
+
+                            <td>@item.Currency</td>
                             @*<td>@item.EndDate</td>
                                 <td>@item.TransactionDate</td>*@
 
                             <td>
                                 <table class="sub-table">
                                     <tr>
-                                        <td><b>Total Sum Insured :</b><br />@item.Currency@item.SumInsured<br /></td>
+                                        <td><b>Total Sum Insured :</b><br />@item.SumInsured<br /></td>
 
                                     </tr>
                                     <tr>
-                                        <td><b>Auto-Fac Sum Inured : </b><br />@item.Currency@item.AutoFacSumInsured<br /></td>
+                                        <td><b>Auto-Fac Sum Inured : </b><br />@item.AutoFacSumInsured<br /></td>
 
                                     </tr>
                                     <tr>
-                                        <td><b>Fac Sum Inured :</b><br />@item.Currency@item.FacSumInsured<br /></td>
+                                        <td><b>Fac Sum Inured :</b><br />@item.FacSumInsured<br /></td>
                                     </tr>
                                 </table>
                             </td>
@@ -175,14 +179,14 @@
                             <td>
                                 <table class="sub-table">
                                     <tr>
-                                        <td><b>Total Premium :</b><br />@item.Currency@item.Premium<br /></td>
+                                        <td><b>Total Premium :</b><br />@item.Premium<br /></td>
                                     </tr>
                                     <tr>
-                                        <td><b>Auto-Fac Premium : </b><br />@item.Currency@item.AutoFacPremium<br /></td>
+                                        <td><b>Auto-Fac Premium : </b><br />@item.AutoFacPremium<br /></td>
 
                                     </tr>
                                     <tr>
-                                        <td><b>Fac Premium :</b><br />@item.Currency@item.FacPremium<br /></td>
+                                        <td><b>Fac Premium :</b><br />@item.FacPremium<br /></td>
                                     </tr>
                                 </table>
                             </td>
@@ -191,11 +195,11 @@
                             <td>
                                 <table class="sub-table">
                                     <tr>
-                                        <td><b>Auto-Fac Commission :</b><br />@item.Currency@item.AutoFacCommission<br /></td>
+                                        <td><b>Auto-Fac Commission :</b><br />@item.AutoFacCommission<br /></td>
 
                                     </tr>
                                     <tr>
-                                        <td><b>Fac Commission : </b><br />@item.Currency@item.FacCommission<br /></td>
+                                        <td><b>Fac Commission : </b><br />@item.FacCommission<br /></td>
 
                                     </tr>
                                 </table>
@@ -212,6 +216,7 @@
                 <tfoot>
                     <tr>
                         <td><strong>Total:</strong></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>

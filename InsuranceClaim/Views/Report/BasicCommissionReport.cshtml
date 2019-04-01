@@ -83,6 +83,7 @@
                         <th>Customer Name</th>
                         <th>Policy Number</th>
                         <th>Transaction Date</th>
+                        <th>Currency</th>
                         <th>Sum Insured</th>
                         <th>Premium Due</th>
                         <th>Commission </th>
@@ -98,10 +99,8 @@
                     }
 
 
-
                     @foreach (var item in Model.BasicCommissionReport.ToList())
-                    {
-                       
+                    {                      
                             sumInsuredTotal += Convert.ToDecimal(item.SumInsured);
                             premiumDueTotal += Convert.ToDecimal(item.Premium);
                             commissionTotal += Convert.ToDecimal(item.Commission);
@@ -112,10 +111,11 @@
                             @*<td>@item.LastName</td>*@
                             <td>@item.PolicyNumber</td>
                             <td>@item.TransactionDate</td>
-                            <td>@item.Currency@item.SumInsured</td>
-                            <td>@item.Currency@item.Premium</td>
-                            <td>@item.Currency@item.Commission</td>
-                            <td>@item.Currency@item.ManagementCommission</td>
+                            <td>@item.Currency </td>
+                            <td>@item.SumInsured</td>
+                            <td>@item.Premium</td>
+                            <td>@item.Commission</td>
+                            <td>@item.ManagementCommission</td>
                             @*<td>
                                 <div class="tbl-btn-list">
                                     <ul class="list-inline"></ul>
@@ -127,6 +127,7 @@
                 <tfoot>
                     <tr>
                         <td><strong>Total:</strong></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td><strong>@sumInsuredTotal</strong></td>

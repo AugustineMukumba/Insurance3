@@ -80,6 +80,7 @@
                         <th>Transaction Date</th>
                         <th>Policy Start Date</th>
                         <th>Policy End date</th>
+                        <th>Currency</th>
                         <th>Auto-Fac Commission</th>
                         <th>Facultative Commission</th>
                     </tr>
@@ -103,14 +104,16 @@
                             <td>@item.TransactionDate</td>
                             <td>@item.StartDate</td>
                             <td>@item.EndDate</td>
-                            <td>@item.Currency@item.AutoFacultativeReinsurance</td>
-                            <td>@item.Currency@item.FacultativeReinsurance</td>                        
+                            <td>@item.Currency</td>
+                            <td>@item.AutoFacultativeReinsurance</td>
+                            <td>@item.FacultativeReinsurance</td>                        
                         </tr>
                     }
                 </tbody>
                 <tfoot>
                     <tr>
                         <td><strong>Total:</strong></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>

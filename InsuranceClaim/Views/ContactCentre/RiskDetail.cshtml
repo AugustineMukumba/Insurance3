@@ -108,6 +108,7 @@
                                             <th>Make</th>
                                             <th>Model</th>
                                             <th>Cover Type</th>
+                                            <th>Currency</th>
                                             <th>Sum Insured</th>
                                             <th>Premium</th>
                                             <th style="text-align: center;">Option(s)</th>
@@ -115,7 +116,7 @@
                                     </thead>
                                     <tbody></tbody>
                                     <tfoot style="background: white;font-weight:bold;">
-                                        <tr><td colspan="4">Total Premium</td><td colspan="2" id="tdTotalPremium">0.00</td></tr>
+                                        <tr><td colspan="5">Total Premium</td><td colspan="2" id="tdTotalPremium">0.00</td></tr>
                                     </tfoot>
                                 </table>
                                 <hr class="higlighter" />
@@ -281,6 +282,7 @@
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div class="row">
                                             <div class="col-sm-6 col-md-6 form-group-text">
                                                 <div class="form-group">
@@ -791,11 +793,11 @@
                 var totalpremium = 0.00;
                 $.each(list, function (index, value) {
                     count++;
-                    bodyHTML += "<tr><td>" + value.make + "</td><td>" + value.model + "</td><td>" + value.covertype + "</td><td>$" + value.suminsured + "</td><td>$" + value.premium + "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >Edit</button></li><li><button type='button' onclick='DeleteVehicleDetails(" + count + ")' class='btn-sm btn-danger' >Delete</button></li></ul></div></td></tr>"
+                    bodyHTML += "<tr><td>" + value.make + "</td><td>" + value.model + "</td><td>" + value.covertype + "</td><td>" + value.CurrencyName + "</td><td>"  + value.suminsured + "</td><td>" + value.premium + "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >Edit</button></li><li><button type='button' onclick='DeleteVehicleDetails(" + count + ")' class='btn-sm btn-danger' >Delete</button></li></ul></div></td></tr>"
                     totalpremium += parseFloat(value.premium);
                 });
 
-                $("#tdTotalPremium").text("$" + totalpremium);
+                $("#tdTotalPremium").text(totalpremium);
 
                 $("#tblVehicleList tbody").append(bodyHTML);
 

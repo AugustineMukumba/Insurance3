@@ -95,6 +95,7 @@
                         <th>End Dates</th>
                         @*<th>vehicle/risk end date</th>
                             <th>Transaction Date</th>*@
+                        <th>Currency</th>
                         <th>Sum Insured</th>
                         <th style="width:130px; text-align: left;">Premium Due</th>
 
@@ -122,9 +123,9 @@
 
                             <td>@item.Vehicle_startdate</td>
                             <td>@item.Vehicle_enddate</td>
-                           
-                            <td>@item.Currency@item.Sum_Insured</td>
-                            <td>@item.Currency@item.Premium_due</td>
+                            <td>@item.Currency</td>
+                            <td>@item.Sum_Insured</td>
+                            <td>@item.Premium_due</td>
 
                         </tr>
                     }
@@ -132,6 +133,7 @@
                 <tfoot>
                     <tr>
                         <td><strong>Total:</strong></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
