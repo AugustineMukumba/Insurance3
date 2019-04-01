@@ -1491,7 +1491,7 @@ namespace InsuranceClaim.Controllers
                                 obj.RenewalDate = Convert.ToDateTime(_vehicle.RenewalDate);
                                 obj.isLapsed = _vehicle.isLapsed;
                                 obj.isActive = Convert.ToBoolean(_vehicle.IsActive);
-                                obj.currency= _summaryDetailService.GetCurrencyName(currenyList,_vehicle.CustomerId);
+                               obj.currency= _summaryDetailService.GetCurrencyName(currenyList,_vehicle.CurrencyId);
                                 if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
                                 {
                                     obj.BrokerCommission = Convert.ToDecimal(_reinsurenaceTrans[0].ReinsuranceCommission);
@@ -3129,6 +3129,7 @@ namespace InsuranceClaim.Controllers
                         obj.covertype = InsuranceContext.CoverTypes.Single(item.CoverTypeId).Name;
                         obj.premium = item.Premium.ToString();
                         obj.suminsured = item.SumInsured.ToString();
+                        obj.CurrencyName = item.currency.ToString();
                         obj.ZTSCLevy = item.ZTSCLevy == null ? "0" : item.ZTSCLevy.ToString();
                         vehiclelist.Add(obj);
                     }
@@ -3145,29 +3146,35 @@ namespace InsuranceClaim.Controllers
 
         }
 
-        public ActionResult SummaryDetail(int? Id = 0)
+        public ActionResult SummaryDetail(int Id = 0)
         {
+            
+         //  var currenyList = _summaryDetailService.GetAllCurrency();
             var _model = new SummaryDetailModel();
             var summaryDetail = Session["ViewSummaryDetail"];
             var listVehicles = Session["ViewlistVehicles"];
             var vehicle = (List<RiskDetailModel>)Session["ViewlistVehicles"];// summary.GetVehicleInformation(id);
             var summarydetail = (SummaryDetail)Session["ViewSummaryDetail"];
             SummaryDetailService SummaryDetailServiceObj = new SummaryDetailService();
-
+           
             if (summarydetail != null)
             {
 
-
+                
                 var model = Mapper.Map<SummaryDetail, SummaryDetailModel>(summarydetail);
                 model.CarInsuredCount = vehicle.Count;
                 model.DebitNote = "INV" + Convert.ToString(SummaryDetailServiceObj.getNewDebitNote());
                 model.PaymentMethodId = summarydetail.PaymentMethodId;
+              //  model.Currency = _summaryDetailService.GetCurrencyName(currenyList, _vehicle.CustomerId);
                 model.PaymentTermId = 1;
                 model.ReceiptNumber = "";
                 model.SMSConfirmation = false;
 
+              
+
+
                 model.TotalPremium = vehicle.Sum(item => item.Premium + item.ZTSCLevy + item.StampDuty + item.VehicleLicenceFee + (item.IncludeRadioLicenseCost ? item.RadioLicenseCost : 0.00m));// + vehicle.StampDuty + vehicle.ZTSCLevy;
-                                                                                                                                                                                                  //model.TotalRadioLicenseCost = vehicle.Sum(item => item.RadioLicenseCost);
+              //  model.Currency = _summaryDetailService.GetCurrencyName(currenyList,vehicle.Sum(item=>item.CurrencyId));                                                                                                                                                                                  //model.TotalRadioLicenseCost = vehicle.Sum(item => item.RadioLicenseCost);
                 model.TotalStampDuty = vehicle.Sum(item => item.StampDuty);
                 model.TotalSumInsured = vehicle.Sum(item => item.SumInsured);
                 model.TotalZTSCLevies = vehicle.Sum(item => item.ZTSCLevy);
