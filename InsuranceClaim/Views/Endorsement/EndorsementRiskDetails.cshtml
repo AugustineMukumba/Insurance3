@@ -233,6 +233,17 @@
                                                     @*@Html.DropDownListFor(x => x.BusinessSourceId, ViewBag.Sources as SelectList, "Select Business Source", new { @class = "form-control" })*@
                                                 </div>
                                             </div>
+
+
+                                            <div class="col-sm-6 col-md-6 form-group-select">
+                                                <div class="form-group">
+                                                    @Html.Label("Currency", new { @class = "gender-label" })
+                                                    @Html.DropDownListFor(x => x.CurrencyId, new SelectList(ViewBag.Currencies, "Id", "Name"), new { @class = "form-control" })
+                                                </div>
+                                            </div>
+
+
+
                                         </div>
 
                                         <hr class="higlighter" />
@@ -801,12 +812,12 @@
                 $.each(list, function (index, value) {
                     debugger;
                     count++;
-                    bodyHTML += "<tr><td>" + value.make + "</td><td>" + value.model + "</td><td>" + value.covertype + "</td><td>$" + value.suminsured + "</td><td>$" + value.premium + "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >Edit</button></li><li><button type='button' onclick='DeleteVehicleDetails(" + count + ")' class='btn-sm btn-danger' >Delete</button></li></ul></div></td></tr>"
+                    bodyHTML += "<tr><td>" + value.make + "</td><td>" + value.model + "</td><td>" + value.covertype + "</td><td>" +value.CurrencyName + value.suminsured + "</td><td>" + value.CurrencyName + value.premium + "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >Edit</button></li><li><button type='button' onclick='DeleteVehicleDetails(" + count + ")' class='btn-sm btn-danger' >Delete</button></li></ul></div></td></tr>"
                     totalpremium += parseFloat(value.premium);
                     //Id = value.Id;
                 });
 
-                $("#tdTotalPremium").text("$" + totalpremium);
+                $("#tdTotalPremium").text(totalpremium);
 
                 $("#tblVehicleList tbody").append(bodyHTML);
 
