@@ -46,6 +46,6 @@ namespace InsuranceClaim.Models
      
         public string InvoiceNumber { get; set; }
 
-
+        public string Currency { get; set; }
     }
 }
