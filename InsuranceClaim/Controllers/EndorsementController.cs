@@ -2159,6 +2159,11 @@ namespace InsuranceClaim.Controllers
             var EndorsementcustomerID = InsuranceContext.EndorsementCustomers.Single(where: $"PrimeryCustomerId='{custome}'");
             var policyinfo = InsuranceContext.EndorsementPolicyDetails.All(where: $"PolicyNumber = '{Policynumber}'");
 
+
+            SummaryDetailService detialService = new SummaryDetailService();
+
+            var currencyList = detialService.GetAllCurrency();
+
             var endorsementsummary = new List<EndorsementSummaryDetail>();
 
             foreach (var item in policyinfo)
@@ -2196,7 +2201,9 @@ namespace InsuranceClaim.Controllers
 
                     ListEndorsmentDetail.PolicyNumber = Endorsepolicy.PolicyNumber;
 
-                    int i = 0;
+                    ListEndorsmentDetail.Currency = detialService.GetCurrencyName(currencyList, Endorsementvehicle.CurrencyId);
+
+                    // int i = 0;
 
                 }
                 EndorsementVehicleReinsurance obj = new EndorsementVehicleReinsurance();
@@ -2222,6 +2229,8 @@ namespace InsuranceClaim.Controllers
                     obj.BalanceAmount = Convert.ToDecimal(_Endorsementvehicle.BalanceAmount);
                     obj.isActive = Convert.ToBoolean(_Endorsementvehicle.IsActive);
                     obj.Premium = Convert.ToDecimal(_Endorsementvehicle.Premium + _Endorsementvehicle.StampDuty + _Endorsementvehicle.ZTSCLevy + (Convert.ToBoolean(_Endorsementvehicle.IncludeRadioLicenseCost) ? Convert.ToDecimal(_Endorsementvehicle.RadioLicenseCost) : 0.00m));
+
+                   
 
                     //if (_reinsurenaceTrans != null && _reinsurenaceTrans.Count > 0)
                     //{
