@@ -2318,7 +2318,11 @@ namespace InsuranceClaim.Controllers
             var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
             var role = UserManager.GetRoles(_User.Id.ToString()).FirstOrDefault();
 
-            var currencyList = InsuranceContext.Currencies.All();
+            // var currencyList = InsuranceContext.Currencies.All();
+
+            SummaryDetailService detailDervice = new SummaryDetailService();
+            var currencyList = detailDervice.GetAllCurrency();
+
 
             var customerID = InsuranceContext.Customers.Single(where: $"userid='{User.Identity.GetUserId().ToString()}'").Id;
 
@@ -2385,15 +2389,7 @@ namespace InsuranceClaim.Controllers
                     policylistviewmodel.PolicyNumber = policy.PolicyNumber;
                     policylistviewmodel.PolicyStatus = policy.Status;
 
-
-                    var currencyDetails = currencyList.FirstOrDefault(c => c.Id == vehicle.CurrencyId);
-                    if (currencyDetails != null)
-                        policylistviewmodel.Currency = currencyDetails.Name;
-                    else
-                        policylistviewmodel.Currency = "USD";
-
-
-
+                    policylistviewmodel.Currency = detailDervice.GetCurrencyName(currencyList, vehicle.CurrencyId);
 
 
                     //foreach (var _item in SummaryVehicleDetails)

@@ -21,6 +21,8 @@ namespace InsuranceClaim.Models
         public int? EndorsementCustomerId { get; set; }
 
         public string CustomerEmail { get; set; }
+
+        public string Currency { get; set; }
     }
     public class ListEndorsementPolicy
     {
@@ -49,5 +51,7 @@ namespace InsuranceClaim.Models
         public decimal BalanceAmount { get; set; }
         public decimal Premium { get; set; }
         public bool isActive { get; set; }
+
+      
     }
 }
