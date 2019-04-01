@@ -93,6 +93,7 @@
                             <th style="width:170px;">Payment Detail</th>
                             <th>Term Period</th>
                             <th>Cover Type</th>
+                            <th>Currency</th>
 
                             <th style="width:170px;">Premium</th>
 
@@ -142,18 +143,19 @@
                                 </td>
                                 <td> @item.Payment_Term</td>
                                 <td>@item.CoverType</td>
+                                <td>@item.Currency</td>
 
                                 <td>
-                                    @item.Currency@item.Premium_due
+                                    @item.Premium_due
                                 </td>
 
-                                <td> @item.Currency@item.Stamp_duty</td>
-                                <td> @item.Currency@item.ZTSC_Levy</td>
+                                <td>@item.Stamp_duty</td>
+                                <td>@item.ZTSC_Levy</td>
                                 <td>
-                                    @item.Currency@item.Comission_Amount
+                                    @item.Comission_Amount
                                 </td>
-                                <td>@item.Currency@item.RadioLicenseCost</td>
-                                <td> @item.Currency@item.Zinara_License_Fee </td>
+                                <td>@item.RadioLicenseCost</td>
+                                <td>@item.Zinara_License_Fee </td>
 
 
                                 @if (DateTime.Now > item.PolicyRenewalDate)
