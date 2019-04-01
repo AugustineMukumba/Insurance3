@@ -78,7 +78,8 @@
                         <th>Customer Name</th>
                         <th>Contact Detail</th>
                         <th>Vehicle Make</th>
-                        <th>Vehicle Model</th>
+                        <th>Vehicle Model</th>  
+                        <th>Currency</th>                   
                         <th>Sum Insured</th>
                         <th>Premium</th>
                         <th>Start Date</th>
@@ -101,8 +102,9 @@
                             <td>@item.contactDetails</td>
                             <td>@item.vehicleMake</td>
                             <td>@item.vehicleModel</td>
-                            <td>@item.Currency @item.sumInsured</td>
-                            <td>@item.Currency @item.Premium</td>
+                            <td>@item.Currency</td>
+                            <td>@item.sumInsured</td>
+                            <td>@item.Premium</td>
                             <td>@item.startDate</td>
                             <td>@item.endDate</td>
                             
@@ -112,6 +114,7 @@
                 <tfoot>
                     <tr>
                         <td><strong>Total:</strong></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
