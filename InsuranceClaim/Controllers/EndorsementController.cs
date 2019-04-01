@@ -779,6 +779,10 @@ namespace InsuranceClaim.Controllers
             ViewBag.eExcessTypeData = new SelectList(eExcessTypeData, "ID", "Name");
 
             ViewBag.Products = InsuranceContext.Products.All().ToList();
+
+            ViewBag.Currencies = InsuranceContext.Currencies.All();
+
+
             var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm))
                                    select new
                                    {
@@ -908,14 +912,22 @@ namespace InsuranceClaim.Controllers
         }
         public JsonResult getEndorsementVehicleList(int EndorsementsummaryDetailId = 0)
         {
+
             try
             {
+
+                SummaryDetailService summaryDetailService = new SummaryDetailService();
+                var currencyList = summaryDetailService.GetAllCurrency();
+
+
+
                 if (EndorsementsummaryDetailId != 0)
                 {
                     if (Session["EnViewlistVehicles"] != null)
                     {
                         var list = (List<EndorsementRiskDetailModel>)Session["EnViewlistVehicles"];
                         List<VehicleListModel> vehiclelist = new List<VehicleListModel>();
+
 
                         foreach (var item in list)
                         {
@@ -927,6 +939,9 @@ namespace InsuranceClaim.Controllers
                             obj.suminsured = item.SumInsured.ToString();
                             obj.ZTSCLevy = item.ZTSCLevy == null ? "0" : item.ZTSCLevy.ToString();
                             obj.Id = item.Id;
+                            obj.CurrencyName = summaryDetailService.GetCurrencyName(currencyList, item.CurrencyId);
+
+
                             vehiclelist.Add(obj);
                         }
 
@@ -951,6 +966,8 @@ namespace InsuranceClaim.Controllers
                         obj.vehicle_license_fee = item.VehicleLicenceFee == 0 ? "0" : item.VehicleLicenceFee.ToString();
                         obj.stampDuty = item.StampDuty == null ? "0" : item.StampDuty.ToString();
                         obj.Id = item.Id;
+
+                        obj.CurrencyName = summaryDetailService.GetCurrencyName(currencyList, item.CurrencyId);
 
 
                         if (item.IncludeRadioLicenseCost == true)
@@ -1011,6 +1028,7 @@ namespace InsuranceClaim.Controllers
             EnderSomentVehical.Id = model.EndorsementVehicleId;
             EnderSomentVehical.EndorsementCustomerId = model.EndorsementCustomerId;
             EnderSomentVehical.EndorsementPolicyId = model.EndorsementPolicyId;
+            EnderSomentVehical.CurrencyId = model.CurrencyId;
             EnderSomentVehical.NoOfCarsCovered = vehicleUpdate.NoOfCarsCovered;
             EnderSomentVehical.PolicyId = vehicleUpdate.PolicyId;
             EnderSomentVehical.RegistrationNo = vehicleUpdate.RegistrationNo;
@@ -1109,6 +1127,14 @@ namespace InsuranceClaim.Controllers
 
             var endorsesummaryDetail = InsuranceContext.EndorsementSummaryDetails.All(where: $"Id={EnorsesummaryDetail.Id}").FirstOrDefault();
             var endorseSummaryVehicleDetails = InsuranceContext.EndorsementSummaryVehicleDetails.All(where: $"EndorsementSummaryId={EnorsesummaryDetail.Id}").ToList();
+
+
+
+            SummaryDetailService detailService = new SummaryDetailService();
+
+            var currencyList = detailService.GetAllCurrency();
+
+
             if (endorseSummaryVehicleDetails != null)
             {
                 foreach (var item in endorseSummaryVehicleDetails)
@@ -1202,6 +1228,9 @@ namespace InsuranceClaim.Controllers
                     obj.RoadsideAssistancePercentage = envehicle.RoadsideAssistancePercentage == null ? 0 : envehicle.RoadsideAssistancePercentage;
                     obj.MedicalExpensesPercentage = envehicle.MedicalExpensesPercentage == null ? 0 : envehicle.MedicalExpensesPercentage;
                     obj.IsCompleted = envehicle.IsCompleted;
+
+                    obj.Currency = detailService.GetCurrencyName(currencyList, envehicle.CurrencyId);
+
                     //InsuranceContext.EndorsementVehicleDetails.Insert(vehicleInsert);
                     //var vehicleId = vehicleInsert;
                     //Session["vehicleId"] = vehicleInsert;
@@ -1781,7 +1810,7 @@ namespace InsuranceClaim.Controllers
             var user = UserManager.FindById(endorsementCustomer.UserID);
             var DebitNote = endorsementsummay.DebitNote;
             EndorsementPaymentInformation objSaveDetailListModel = new EndorsementPaymentInformation();
-            objSaveDetailListModel.CurrencyId = endorsepolicy.CurrencyId;
+          //  objSaveDetailListModel.CurrencyId = EndorsementSummaryVehicleDetails.;
             objSaveDetailListModel.PrimaryPolicyId = endorsepolicy.PrimaryPolicyId;
             objSaveDetailListModel.PrimaryCustomerId = endorsementsummay.CustomerId.Value;
             objSaveDetailListModel.PrimaryVehicleDetailId = endorsevehicle.PrimaryVehicleId;
@@ -2158,6 +2187,7 @@ namespace InsuranceClaim.Controllers
                 ListEndorsmentDetail.SummaryId = item.SummaryId;
                 ListEndorsmentDetail.createdOn = Convert.ToDateTime(item.CreatedOn);
                 ListEndorsmentDetail.EndorsementSummaryId = item.Id;
+              
 
                 if (Endorsementvehicle != null)
                 {
@@ -2290,6 +2320,7 @@ namespace InsuranceClaim.Controllers
 
 
             ViewBag.Products = InsuranceContext.Products.All().ToList();
+            ViewBag.Currencies = InsuranceContext.Currencies.All();
             var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm))
                                    select new
                                    {
@@ -2384,7 +2415,7 @@ namespace InsuranceClaim.Controllers
                         endorsementRisk.VehicleLicenceFee = Convert.ToDecimal(data.VehicleLicenceFee);
 
                         endorsementRisk.VehicleUsage = data.VehicleUsage;
-
+                        endorsementRisk.CustomerId = data.CurrencyId;
 
                         endorsementRisk.isUpdate = true;
                         endorsementRisk.vehicleindex = Convert.ToInt32(id);
@@ -2441,6 +2472,10 @@ namespace InsuranceClaim.Controllers
                     var list = (List<EndorsementRiskDetailModel>)Session["EndorselistVehicles"];
                     List<VehicleListModel> vehiclelist = new List<VehicleListModel>();
 
+                    SummaryDetailService serviceDetails = new SummaryDetailService();
+
+                    var currencyList = serviceDetails.GetAllCurrency();
+
                     foreach (var item in list)
                     {
                         VehicleListModel obj = new VehicleListModel();
@@ -2450,6 +2485,7 @@ namespace InsuranceClaim.Controllers
                         obj.premium = item.Premium.ToString();
                         obj.suminsured = item.SumInsured.ToString();
                         obj.ZTSCLevy = item.ZTSCLevy == null ? "0" : item.ZTSCLevy.ToString();
+                        obj.CurrencyName = serviceDetails.GetCurrencyName(currencyList, item.CurrencyId);
                         vehiclelist.Add(obj);
                     }
 

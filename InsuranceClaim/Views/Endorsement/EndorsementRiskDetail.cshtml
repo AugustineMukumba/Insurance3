@@ -185,6 +185,19 @@
                                                 </div>
                                             </div>
                                         </div>
+
+
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 form-group-select">
+                                                <div class="form-group">
+                                                    @Html.Label("Currency", new { @class = "gender-label" })
+                                                    @Html.DropDownListFor(x => x.CurrencyId, new SelectList(ViewBag.Currencies, "Id", "Name"), new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                     
+
+
                                         <hr class="higlighter" />
 
                                         <div class="row">
@@ -799,11 +812,11 @@
                 var totalpremium = 0.00;
                 $.each(list, function (index, value) {
                     count++;
-                    bodyHTML += "<tr><td>" + value.make + "</td><td>" + value.model + "</td><td>" + value.covertype + "</td><td>$" + value.suminsured + "</td><td>$" + value.premium + "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >View Policy</button></li></ul></div></td></tr>"
+                    bodyHTML += "<tr><td>" + value.make + "</td><td>" + value.model + "</td><td>" + value.covertype + "</td><td>" + value.CurrencyName + value.suminsured + "</td><td>"+ value.CurrencyName + value.premium + "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >View Policy</button></li></ul></div></td></tr>"
                     totalpremium += parseFloat(value.premium);
                 });
 
-                $("#tdTotalPremium").text("$" + totalpremium);
+                $("#tdTotalPremium").text(totalpremium);
 
                 $("#tblVehicleList tbody").append(bodyHTML);
 

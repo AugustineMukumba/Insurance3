@@ -123,5 +123,7 @@ namespace InsuranceClaim.Models
         public int? ModifiedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
 
+        public string Currency { get; set; }
+
     }
 }

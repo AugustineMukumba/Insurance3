@@ -428,7 +428,7 @@ namespace InsuranceClaim.Controllers
 
 
             GrossWrittenPremiumReportSearchModels Model = new GrossWrittenPremiumReportSearchModels();
-            var vehicledetail = InsuranceContext.VehicleDetails.All().ToList();
+            var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive='1'").ToList();
             var currenyList = InsuranceContext.Currencies.All();
 
 
@@ -587,6 +587,11 @@ namespace InsuranceClaim.Controllers
             vehicledetail = vehicledetail.Where(c => Convert.ToDateTime(c.TransactionDate.Value.ToShortDateString()) >= fromDate && Convert.ToDateTime(c.TransactionDate.Value.ToShortDateString()) <= endDate).ToList();
 
 
+            SummaryDetailService service = new SummaryDetailService();
+
+            var currencyList = service.GetAllCurrency();
+
+
             //var customerList = InsuranceContext.Customers.All().ToList();
             //var makeList = InsuranceContext.VehicleMakes.All().ToList();
             //var modelList = InsuranceContext.VehicleModels.All().ToList();
@@ -630,6 +635,7 @@ namespace InsuranceClaim.Controllers
                             obj.PolicyRenewalDate = Convert.ToDateTime(item.RenewalDate);
                             obj.IsActive = item.IsActive;
 
+                            obj.Currency = service.GetCurrencyName(currencyList, item.CurrencyId);
 
                             var customerDetails = InsuranceContext.Customers.Single(summary.CreatedBy);
 
