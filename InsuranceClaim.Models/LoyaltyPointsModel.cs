@@ -19,6 +19,9 @@ namespace InsuranceClaim.Models
 
         public int PolicyId { get; set; }
 
+        public string Currency { get; set; }
+
+
         
 
     }

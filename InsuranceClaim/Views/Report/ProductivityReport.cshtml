@@ -72,6 +72,7 @@
                         <th>Policy Number</th>
                         <th>Transaction Date</th>
                         <th>Product</th>
+                        <th>Currency</th>
                         <th>Sum Insured</th>
                         <th>Premium due</th>
                         <th>Status</th>
@@ -94,8 +95,9 @@
                             <td>@item.PolicyNumber</td>
                             <td>@item.TransactionDate</td>
                             <td>@item.Product</td>
-                            <td>$@item.SumInsured</td>
-                            <td>$@item.PremiumDue</td>
+                            <td>@item.Currency</td>
+                            <td>@item.SumInsured</td>
+                            <td>@item.PremiumDue</td>
                             <td>@item.PolicyStatus</td>
                         </tr>
                     }
@@ -107,8 +109,9 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td><strong>$@premiumDueTotal</strong></td>
-                        <td><strong>$@suminsured</strong></td>
+                        <td></td>
+                        <td><strong>@premiumDueTotal</strong></td>
+                        <td><strong>@suminsured</strong></td>
                         <td></td>
                     </tr>
                 </tfoot>

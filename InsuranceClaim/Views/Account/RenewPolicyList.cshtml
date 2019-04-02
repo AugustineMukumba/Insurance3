@@ -96,6 +96,7 @@
                         <th>Make </th>
                         <th>Model</th>
                         <th>Cover type</th>
+                        <td>Currency</td>
                         <th>Sum Insured</th>
                         <th>Total Premium</th>
                         <th>Status</th>
@@ -118,14 +119,15 @@
                             <td>@item.Make</td>
                             <td>@item.Model</td>
                             <td>@item.CoverTypeName</td>
+                            <td>@item.Currency</td>
 
                             <td>
                                 @if (item.TotalSumInsured != 0)
                                 {
-                                    <b>@item.Currency</b>@item.TotalSumInsured;
+                                    @item.TotalSumInsured;
                                 }
                             </td>
-                            <td>@item.Currency @item.TotalPremium</td>
+                            <td> @item.TotalPremium</td>
                             <td> Lapsed </td>
 
                             </tr>

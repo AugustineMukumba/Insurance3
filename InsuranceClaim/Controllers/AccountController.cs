@@ -1640,16 +1640,10 @@ namespace InsuranceClaim.Controllers
 
                             policylist.listpolicy.Add(policylistviewmodel);
                         }
-
-
-
                     }
 
                   
-                        
-
-
-
+                   
                 }
 
 
@@ -1716,6 +1710,9 @@ namespace InsuranceClaim.Controllers
 
 
                 var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={item.Id}").ToList();
+
+                var currencyList = _summaryDetailService.GetAllCurrency();
+
 
                 if (SummaryVehicleDetails != null && SummaryVehicleDetails.Count > 0)
                 {
@@ -1784,6 +1781,7 @@ namespace InsuranceClaim.Controllers
                             policylistviewmodel.startdate = _vehicle.CoverStartDate.Value.ToShortDateString();
                             policylistviewmodel.enddate = _vehicle.CoverEndDate.Value.ToShortDateString();
                             policylistviewmodel.RenewalDate = _vehicle.RenewalDate.Value.ToShortDateString();
+                            policylistviewmodel.Currency = _summaryDetailService.GetCurrencyName(currencyList, _vehicle.CurrencyId);
 
                             policylist.listpolicy.Add(policylistviewmodel);
                         }

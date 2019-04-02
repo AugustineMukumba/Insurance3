@@ -40,7 +40,7 @@ namespace InsuranceClaim.Controllers
 
   
             var vehicledetail = InsuranceContext.VehicleDetails.All(where: "IsActive=1").ToList();
-            foreach (var item in vehicledetail.Take(50))
+            foreach (var item in vehicledetail)
             {
                 ZTSCLevyReportModels obj = new ZTSCLevyReportModels();
                 var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
@@ -202,7 +202,7 @@ namespace InsuranceClaim.Controllers
             var currenyList = _summaryDetailService.GetAllCurrency();
 
 
-            foreach (var item in vehicledetail.Take(50))
+            foreach (var item in vehicledetail)
             {
                 StampDutyReportModels obj = new StampDutyReportModels();
                 var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
@@ -245,7 +245,7 @@ namespace InsuranceClaim.Controllers
             var currencyList = _summaryDetailService.GetAllCurrency();
 
 
-            foreach (var item in vehicledetail.Take(50))
+            foreach (var item in vehicledetail)
             {
                 StampDutyReportModels obj = new StampDutyReportModels();
                 var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
@@ -382,7 +382,7 @@ namespace InsuranceClaim.Controllers
 
             //else
             //vehicledetail = InsuranceContext.VehicleDetails.All().Where(p => p.CoverEndDate.Value.ToShortDateString() == (Date == null ? DateTime.Now.ToShortDateString() : Date.Value.ToShortDateString())).ToList();
-            foreach (var item in vehicledetail.Take(50))
+            foreach (var item in vehicledetail)
             {
                 var obj = new VehicleRiskAboutExpireModels();
                 var Vehicle = vehicledetail.Where(m => m.Id == item.Id).First();
@@ -433,7 +433,7 @@ namespace InsuranceClaim.Controllers
             var currenyList = _summaryDetailService.GetAllCurrency();
 
 
-            foreach (var item in vehicledetail.Take(50))
+            foreach (var item in vehicledetail)
             {
                 var Vehicle = InsuranceContext.VehicleDetails.Single(item.Id);
                 GrossWrittenPremiumReportModels obj = new GrossWrittenPremiumReportModels();
@@ -715,7 +715,7 @@ namespace InsuranceClaim.Controllers
 
 
 
-            foreach (var item in VehicleDetails.Take(50))
+            foreach (var item in VehicleDetails)
             {
                 var Policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
                 var Customer = InsuranceContext.Customers.Single(item.CustomerId);
@@ -906,7 +906,7 @@ namespace InsuranceClaim.Controllers
             var currenyList = _summaryDetailService.GetAllCurrency();
 
 
-            foreach (var item in VehicleDetails.Take(50))
+            foreach (var item in VehicleDetails)
             {
                 var Policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
                 var Customer = InsuranceContext.Customers.Single(item.CustomerId);
@@ -1012,7 +1012,7 @@ namespace InsuranceClaim.Controllers
             var currenyList = _summaryDetailService.GetAllCurrency();
 
 
-            foreach (var item in VehicleDetails.Take(20))
+            foreach (var item in VehicleDetails)
             {
                 var Policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
                 var Customer = InsuranceContext.Customers.Single(item.CustomerId);
@@ -1482,6 +1482,9 @@ namespace InsuranceClaim.Controllers
             ProductiviySearchReportModel model = new ProductiviySearchReportModel();
             var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive = 'True'or IsActive is null").ToList();
 
+            var currencyList = _summaryDetailService.GetAllCurrency();
+
+
             foreach (var item in vehicledetail)
             {
                 var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
@@ -1522,11 +1525,12 @@ namespace InsuranceClaim.Controllers
                                     obj.SumInsured = Convert.ToDecimal(item.SumInsured);
                                     obj.UserName = userDetials.Email;
                                     obj.Product = InsuranceContext.Products.Single(item.ProductId).ProductName;
+                                    obj.Currency = _summaryDetailService.GetCurrencyName(currencyList, item.CurrencyId);
 
-                                    if (summary.isQuotation)
-                                        obj.PolicyStatus = "Quotation";
-                                    else
-                                        obj.PolicyStatus = "Policy";
+                                    //if (summary.isQuotation)
+                                    //    obj.PolicyStatus = "Quotation";
+                                    //else
+                                    //    obj.PolicyStatus = "Policy";
 
 
 
@@ -1554,6 +1558,8 @@ namespace InsuranceClaim.Controllers
             ProductiviySearchReportModel model = new ProductiviySearchReportModel();
 
             var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive = 'True'or IsActive is null").ToList();
+
+            var currencyList = _summaryDetailService.GetAllCurrency();
 
             #region
             DateTime fromDate = DateTime.Now.AddDays(-1);
@@ -1606,6 +1612,7 @@ namespace InsuranceClaim.Controllers
                                     obj.SumInsured = Convert.ToDecimal(item.SumInsured);
                                     obj.UserName = userDetials.Email;
                                     obj.Product = InsuranceContext.Products.Single(item.ProductId).ProductName;
+                                    obj.Currency = _summaryDetailService.GetCurrencyName(currencyList, item.CurrencyId);
 
                                     if (summary.isQuotation)
                                         obj.PolicyStatus = "Quotation";
@@ -1635,6 +1642,8 @@ namespace InsuranceClaim.Controllers
             LoyaltyPointsReportSeachModels model = new LoyaltyPointsReportSeachModels();
 
             var VehicleDetails = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
+
+            var currencyList = _summaryDetailService.GetAllCurrency();
 
             if (VehicleDetails != null)
             {
@@ -1674,6 +1683,7 @@ namespace InsuranceClaim.Controllers
                                             EmailAddress = User.Email,
                                             LoyaltyPoints = Convert.ToString(loyalityDetail),
                                             PolicyId = item.PolicyId,
+                                            Currency = _summaryDetailService.GetCurrencyName(currencyList, item.CurrencyId),
 
                                         });
                                     }
@@ -1710,6 +1720,10 @@ namespace InsuranceClaim.Controllers
                 endDate = Convert.ToDateTime(Model.EndDate);
             }
             VehicleDetails = VehicleDetails.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
+
+            var currencyList = _summaryDetailService.GetAllCurrency();
+
+
             #endregion
             if (VehicleDetails != null)
             {
@@ -1746,6 +1760,7 @@ namespace InsuranceClaim.Controllers
                                             EmailAddress = User.Email,
                                             LoyaltyPoints = Convert.ToString(loyalityDetail),
                                             PolicyId = item.PolicyId,
+                                            Currency = _summaryDetailService.GetCurrencyName(currencyList, item.CurrencyId),
 
                                         });
                                     }

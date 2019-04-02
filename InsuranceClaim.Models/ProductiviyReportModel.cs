@@ -18,6 +18,8 @@ namespace InsuranceClaim.Models
         public decimal SumInsured { get; set; }
         public decimal PremiumDue { get; set; }
         public string PolicyStatus { get; set; }
+
+        public string Currency { get; set; }
     }
     public class ListProductiviyReportModel
     {
