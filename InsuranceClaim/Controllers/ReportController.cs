@@ -1097,27 +1097,31 @@ namespace InsuranceClaim.Controllers
                 if (vehicleSummarydetail != null)
                 {
 
-                    var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
+                      var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
+                    
                     var _User = UserManager.FindById(Customer.UserID.ToString());
 
 
                     ListCustomerListingReport.Add(new CustomerListingReportModel()
                     {
+
                         FirstName = Customer.FirstName == null ? "" : Customer.FirstName,
                         LastName = Customer.LastName == null ? "" : Customer.LastName,
                         Gender = Customer.Gender == null ? "" : Customer.Gender,
                         EmailAddress = _User.Email == null ? "" : _User.Email,
                         ContactNumber = Customer.Countrycode == null ? "" : Customer.Countrycode + "-" + Customer.PhoneNumber == null ? "" : Customer.PhoneNumber,
                         Dateofbirth = Convert.ToDateTime(Customer.DateOfBirth),
-                        NationalIdentificationNumber = Customer.NationalIdentificationNumber==null?"": Customer.NationalIdentificationNumber,
-                       // City = Customer.City==null?"":Customer.City,
-                       // Product = InsuranceContext.Products.Single(item.ProductId)==null?"":InsuranceContext.Products.Single(item.ProductId).ProductName,
-                       // VehicleMake = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'")==null?"":InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'").MakeDescription,
-                       // VehicleModel = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'")==null?"":InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription,
-                       // VehicleUsage = InsuranceContext.VehicleUsages.Single(item.VehicleUsage)==null?"":InsuranceContext.VehicleUsages.Single(item.VehicleUsage).VehUsage,
-                       // PaymentTerm = InsuranceContext.PaymentTerms.Single(item.PaymentTermId)==null?"":InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name,
-                     //   PaymentType = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId)==null?"": InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name
-                 
+                        NationalIdentificationNumber = Customer.NationalIdentificationNumber == null ? "" : Customer.NationalIdentificationNumber,
+                        City = Customer.City == null ? "" : Customer.City,
+                        Product = InsuranceContext.Products.Single(item.ProductId) == null ? "" : InsuranceContext.Products.Single(item.ProductId).ProductName,
+                        VehicleMake = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'") == null ? "" : InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'").MakeDescription,
+                        VehicleModel = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'") == null ? "" : InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription,
+                        VehicleUsage = InsuranceContext.VehicleUsages.Single(item.VehicleUsage) == null ? "" : InsuranceContext.VehicleUsages.Single(item.VehicleUsage).VehUsage,
+                        PaymentTerm = InsuranceContext.PaymentTerms.Single(item.PaymentTermId) == null ? "" : InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name,
+                        PaymentType = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name,                    
+
+                   
+
                     });
 
                 }
@@ -1192,7 +1196,8 @@ namespace InsuranceClaim.Controllers
         {
             var ListDailyReceiptsReport = new List<DailyReceiptsReportModel>();
             DailyReceiptsSearchReportModel model = new DailyReceiptsSearchReportModel();
-
+            SummaryDetailService _summaryDetailService = new SummaryDetailService();
+            var currenyList = _summaryDetailService.GetAllCurrency();
 
             var query = "select ReceiptModuleHistory.*, Customer.FirstName +' ' + Customer.LastName as PolicyCreatedBy from ReceiptModuleHistory ";
             query += " join SummaryDetail on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.id ";
@@ -1213,7 +1218,10 @@ namespace InsuranceClaim.Controllers
                    paymentMethodType = (res.PaymentMethodId == 1 ? "Cash" : (res.PaymentMethodId == 2 ? "Ecocash" : (res.PaymentMethodId == 3 ? "Swipe" : "MasterVisa Card"))),
                    InvoiceNumber = res.InvoiceNumber,
                    TransactionReference = res.TransactionReference,
-                   PolicyCreatedBy = res.PolicyCreatedBy
+                   PolicyCreatedBy = res.PolicyCreatedBy,
+               //    Currency=_summaryDetailService.GetCurrencyName(currenyList,),
+                   
+                  
                }).ToList();
 
             //var list = (from res in InsuranceContext.ReceiptHistorys.All().ToList()
