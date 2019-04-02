@@ -569,7 +569,7 @@ namespace InsuranceClaim.Controllers
             GrossWrittenPremiumReportSearchModels Model = new GrossWrittenPremiumReportSearchModels();
 
             //  var vehicledetail = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
-            var vehicledetail = InsuranceContext.VehicleDetails.All().ToList();
+            var vehicledetail = InsuranceContext.VehicleDetails.All(where: "IsActive=1").ToList();
 
 
             DateTime fromDate = DateTime.Now.AddDays(-1);
