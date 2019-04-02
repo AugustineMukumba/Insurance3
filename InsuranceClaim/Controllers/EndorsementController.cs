@@ -1803,8 +1803,11 @@ namespace InsuranceClaim.Controllers
             var endorsepolicy = InsuranceContext.EndorsementPolicyDetails.Single(endorsevehicle.EndorsementPolicyId);
             var endorsementCustomer = InsuranceContext.EndorsementCustomers.Single(endorsementsummay.EndorsementCustomerId);
             var product = InsuranceContext.Products.Single(Convert.ToInt32(endorsevehicle.ProductId));
+            SummaryDetailService detailDervice = new SummaryDetailService();
+            var currencyList = detailDervice.GetAllCurrency();
+            var currency = detailDervice.GetCurrencyName(currencyList, endorsepolicy.CurrencyId);
 
-           // var currency = InsuranceContext.Currencies.Single(endorsepolicy.CurrencyId);
+            // var currency = InsuranceContext.Currencies.Single(endorsepolicy.CurrencyId);
             var paymentInformations = InsuranceContext.PaymentInformations.SingleCustome(id);
 
             var user = UserManager.FindById(endorsementCustomer.UserID);
@@ -1925,7 +1928,7 @@ namespace InsuranceClaim.Controllers
             string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
 
 
-            var Bodyy = MotorBody.Replace("##PolicyNo##", endorsepolicy.PolicyNumber).Replace("##paht##", filepath).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", endorsementCustomer.FirstName).Replace("##LastName##", endorsementCustomer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", endorsementCustomer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", endorsementCustomer.AddressLine1).Replace("##Address2##", endorsementCustomer.AddressLine2).Replace("##Renewal##", endorsevehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", endorsevehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (endorsevehicle.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + endorsevehicle.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(endorsementsummay.TotalPremium)).Replace("##StampDuty##", Convert.ToString(endorsementsummay.TotalStampDuty)).Replace("##MotorLevy##", Convert.ToString(endorsementsummay.TotalZTSCLevies)).Replace("##PremiumDue##", Convert.ToString(endorsementsummay.TotalPremium - endorsementsummay.TotalStampDuty - endorsementsummay.TotalZTSCLevies - endorsementsummay.TotalRadioLicenseCost - ListOfVehicles.Sum(x => x.VehicleLicenceFee) + ListOfVehicles.Sum(x => x.Discount))).Replace("##PostalAddress##", endorsementCustomer.ZipCode).Replace("##ExcessBuyBackAmount##", Convert.ToString(ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount)).Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount)).Replace("##RadioLicence##", Convert.ToString(endorsementsummay.TotalRadioLicenseCost)).Replace("##Discount##", Convert.ToString(ListOfVehicles.Sum(x => x.Discount))).Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).Replace("##NINumber##", endorsementCustomer.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(ListOfVehicles.Sum(x => x.VehicleLicenceFee)));
+            var Bodyy = MotorBody.Replace("##PolicyNo##", endorsepolicy.PolicyNumber).Replace("##paht##", filepath).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", endorsementCustomer.FirstName).Replace("##LastName##", endorsementCustomer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", endorsementCustomer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", endorsementCustomer.AddressLine1).Replace("##Address2##", endorsementCustomer.AddressLine2).Replace("##Renewal##", endorsevehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", endorsevehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (endorsevehicle.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + endorsevehicle.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(endorsementsummay.TotalPremium)).Replace("##Currency##",currency).Replace("##StampDuty##", Convert.ToString(endorsementsummay.TotalStampDuty)).Replace("##MotorLevy##", Convert.ToString(endorsementsummay.TotalZTSCLevies)).Replace("##PremiumDue##", Convert.ToString(endorsementsummay.TotalPremium - endorsementsummay.TotalStampDuty - endorsementsummay.TotalZTSCLevies - endorsementsummay.TotalRadioLicenseCost - ListOfVehicles.Sum(x => x.VehicleLicenceFee) + ListOfVehicles.Sum(x => x.Discount))).Replace("##PostalAddress##", endorsementCustomer.ZipCode).Replace("##ExcessBuyBackAmount##", Convert.ToString(ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount)).Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount)).Replace("##RadioLicence##", Convert.ToString(endorsementsummay.TotalRadioLicenseCost)).Replace("##Discount##", Convert.ToString(ListOfVehicles.Sum(x => x.Discount))).Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).Replace("##NINumber##", endorsementCustomer.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(ListOfVehicles.Sum(x => x.VehicleLicenceFee)));
 
             var attacehmetnFile = MiscellaneousService.EmailPdf(Bodyy, Convert.ToInt32(endorsepolicy.EndorsementCustomerId), endorsepolicy.PolicyNumber, "Endorsement_Schedule-motor");
             var Atter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
@@ -2161,8 +2164,9 @@ namespace InsuranceClaim.Controllers
 
 
             SummaryDetailService detialService = new SummaryDetailService();
-
             var currencyList = detialService.GetAllCurrency();
+
+           
 
             var endorsementsummary = new List<EndorsementSummaryDetail>();
 
