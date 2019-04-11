@@ -72,7 +72,7 @@
                             <th>Policy Number</th>
                             <th>Customer Name</th>
                             <th>Transaction Date</th>
-
+                            <th>Currency</th>
                             <th>Premium Due</th>
                             <th>Invoice Number</th>
                             <th>Invoice Date</th>
@@ -133,8 +133,8 @@
                                 <td>@item.PolicyNumber</td>
                                 <td>@item.CustomerName</td>
                                 <td>@item.TransactionDate.ToString("MM/dd/yyyy")</td>
-
-                                <td>@item.Currency @item.TotalPremium</td>
+                                <td>@item.Currency </td>
+                                <td> @item.TotalPremium</td>
                                 <td>@item.InvoiceNumber</td>
                                 @if (item.DatePosted == Convert.ToDateTime(null))
                                 {
@@ -144,7 +144,7 @@
                                 {
                                     <td>@item.DatePosted.ToString("MM/dd/yyyy")</td>
                                 }
-                                <td>@item.Currency @item.AmountDue</td>
+                                <td> @item.AmountDue</td>
                                 @if (item.Id == 0)
                                 {
                                     <td>No Receipt number</td>
@@ -160,7 +160,7 @@
                                 }
                                 else
                                 {
-                                    <td>@item.Currency @item.AmountPaid</td>
+                                    <td> @item.AmountPaid</td>
                                 }
                                 @if (item.DatePosted == Convert.ToDateTime(null))
                                 {
@@ -181,11 +181,11 @@
                                 }
                                 @if (item.Balance == null)
                                 {
-                                    <td>@item.Currency @item.AmountDue</td>
+                                    <td> @item.AmountDue</td>
                                 }
                                 else
                                 {
-                                    <td>@item.Currency @item.Balance</td>
+                                    <td> @item.Balance</td>
                                 }
 
 
@@ -208,6 +208,7 @@
                     <tfoot>
                         <tr>
                             <td><strong>Total:</strong></td>
+                            <td></td>
                             <td></td>
                             @*<td></td>*@
                             <td></td>

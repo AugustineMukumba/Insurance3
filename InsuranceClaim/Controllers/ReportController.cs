@@ -1199,10 +1199,18 @@ namespace InsuranceClaim.Controllers
             SummaryDetailService _summaryDetailService = new SummaryDetailService();
             var currenyList = _summaryDetailService.GetAllCurrency();
 
-            var query = "select ReceiptModuleHistory.*, Customer.FirstName +' ' + Customer.LastName as PolicyCreatedBy from ReceiptModuleHistory ";
+            //var query = "select ReceiptModuleHistory.*, Customer.FirstName +' ' + Customer.LastName as PolicyCreatedBy from ReceiptModuleHistory ";
+            //query += " join SummaryDetail on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.id ";
+            //query += "Left join Customer  on ReceiptModuleHistory.CreatedBy = Customer.Id  ";
+
+
+            var query = "select VehicleDetail.[CurrencyId], ReceiptModuleHistory.*, Customer.FirstName +' ' + Customer.LastName as PolicyCreatedBy from ReceiptModuleHistory ";
             query += " join SummaryDetail on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.id ";
             //query +=  " join Customer on SummaryDetail.CreatedBy = Customer.Id";
             query += "Left join Customer  on ReceiptModuleHistory.CreatedBy = Customer.Id  ";
+            query += "join VehicleDetail  on ReceiptModuleHistory.PolicyId=VehicleDetail.PolicyId";
+
+
 
             var list = InsuranceContext.Query(query)
                .Select(res => new PreviewReceiptListModel()
@@ -1219,9 +1227,7 @@ namespace InsuranceClaim.Controllers
                    InvoiceNumber = res.InvoiceNumber,
                    TransactionReference = res.TransactionReference,
                    PolicyCreatedBy = res.PolicyCreatedBy,
-               //    Currency=_summaryDetailService.GetCurrencyName(currenyList,),
-                   
-                  
+                   Currency = _summaryDetailService.GetCurrencyName(currenyList, res.CurrencyId)
                }).ToList();
 
             //var list = (from res in InsuranceContext.ReceiptHistorys.All().ToList()
@@ -1305,9 +1311,12 @@ namespace InsuranceClaim.Controllers
             var ListDailyReceiptsReport = new List<PreviewReceiptListModel>();
             DailyReceiptsSearchReportModel model = new DailyReceiptsSearchReportModel();
 
+
+            var currenyList = _summaryDetailService.GetAllCurrency();
+
             var query1 = "select PolicyDetail.PolicyNumber,createcust.FirstName + '' + createcust.LastName as Created, prcustomer.FirstName + ' ' + prcustomer.LastName as CustomerName,   SummaryDetail.CreatedOn TransactionDate,";
             query1 += "Summarydetail.createdby , SummaryDetail.TotalPremium, PolicyDetail.PolicyNumber as InvoiceNumber, ReceiptModuleHistory.AmountDue,";
-            query1 += "ReceiptModuleHistory.Id as ReceiptNo, ReceiptModuleHistory.AmountPaid, ";
+            query1 += "ReceiptModuleHistory.Id as ReceiptNo, ReceiptModuleHistory.AmountPaid, VehicleDetail.CurrencyId , ";
             query1 += " case  ReceiptModuleHistory.Id when 0 then 'Yes' else 'No' end as Paid, ReceiptModuleHistory.DatePosted, ";
             query1 += " ReceiptModuleHistory.Balance from Customer as prcustomer join PolicyDetail on prcustomer.Id = PolicyDetail.CustomerId";
             query1 += " join VehicleDetail on PolicyDetail.id = VehicleDetail.PolicyId";
@@ -1345,6 +1354,7 @@ namespace InsuranceClaim.Controllers
                    TotalPremium = Convert.ToInt32(res.TotalPremium),
                    // paymentMethodType = (res.PaymentMethodId == 1 ? "Cash" : (res.PaymentMethodId == 2 ? "Ecocash" : (res.PaymentMethodId == 3 ? "Swipe" : "MasterVisa Card"))),
                    InvoiceNumber = res.InvoiceNumber,
+                   Currency = _summaryDetailService.GetCurrencyName(currenyList, res.CurrencyId)
                    //TransactionReference = res.TransactionReference,
                    //PolicyCreatedBy = res.PolicyCreatedBy
                }).ToList();
@@ -1580,7 +1590,7 @@ namespace InsuranceClaim.Controllers
             var Vehicledetail = vehicledetail.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
 
             #endregion
-            foreach (var item in vehicledetail)
+            foreach (var item in Vehicledetail)
             {
                 var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
 
@@ -1615,7 +1625,8 @@ namespace InsuranceClaim.Controllers
                                     ProductiviyReportModel obj = new ProductiviyReportModel();
                                     obj.CustomerName = customer.FirstName + " " + customer.LastName;
                                     obj.PolicyNumber = policy.PolicyNumber;
-                                    obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy");
+                                    //obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy");
+                                    obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("MM/dd/yyyy");
                                     obj.PremiumDue = Convert.ToDecimal(item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost);
                                     obj.SumInsured = Convert.ToDecimal(item.SumInsured);
                                     obj.UserName = userDetials.Email;

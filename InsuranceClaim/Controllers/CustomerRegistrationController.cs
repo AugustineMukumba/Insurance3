@@ -458,7 +458,7 @@ namespace InsuranceClaim.Controllers
 
 
 
-            ViewBag.Currencies = InsuranceContext.Currencies.All();
+            ViewBag.Currencies = InsuranceContext.Currencies.All(where: $"IsActive = 'True'");
 
             ViewBag.Makers = makers;
             viewModel.isUpdate = false;

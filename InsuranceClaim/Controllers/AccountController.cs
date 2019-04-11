@@ -2138,11 +2138,8 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult DeleteReinsuranceBroker(int Id)
         {
-
             string query = $"Delete ReinsuranceBroker  where Id = {Id}";
             InsuranceContext.ReinsuranceBrokers.Execute(query);
-
-
             return RedirectToAction("ListReinsuranceBroker");
         }
         public ActionResult RenewPolicy(int Id)
@@ -3210,6 +3207,7 @@ namespace InsuranceClaim.Controllers
             var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
             var product = InsuranceContext.Products.Single(Convert.ToInt32(policy.PolicyName));
 
+           
 
             Session["PolicyDataView"] = policy;
 
@@ -3221,6 +3219,7 @@ namespace InsuranceClaim.Controllers
                 if (_vehicle != null)
                 {
                     RiskDetailModel riskDetail = Mapper.Map<VehicleDetail, RiskDetailModel>(_vehicle);
+
                     listRiskDetail.Add(riskDetail);
                 }
             }
@@ -3258,6 +3257,9 @@ namespace InsuranceClaim.Controllers
                 {
                     var list = (List<RiskDetailModel>)Session["ViewlistVehicles"];
                     List<VehicleListModel> vehiclelist = new List<VehicleListModel>();
+                    SummaryDetailService detailService = new SummaryDetailService();
+
+                    var currencyList = detailService.GetAllCurrency();
 
                     foreach (var item in list)
                     {
@@ -3266,8 +3268,8 @@ namespace InsuranceClaim.Controllers
                         obj.model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ShortDescription;
                         obj.covertype = InsuranceContext.CoverTypes.Single(item.CoverTypeId).Name;
                         obj.premium = item.Premium.ToString();
-                        obj.suminsured = item.SumInsured.ToString();
-                        obj.CurrencyName = item.currency.ToString();
+                        obj.suminsured = item.SumInsured==null? "0" : item.SumInsured.ToString() ;
+                        obj.CurrencyName = detailService.GetCurrencyName(currencyList, item.CurrencyId);
                         obj.ZTSCLevy = item.ZTSCLevy == null ? "0" : item.ZTSCLevy.ToString();
                         vehiclelist.Add(obj);
                     }

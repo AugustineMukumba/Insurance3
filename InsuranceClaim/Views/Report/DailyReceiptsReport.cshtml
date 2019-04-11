@@ -79,6 +79,7 @@
                             <th>Policy Number</th>
                             <th>Transaction Date</th>
                             <th>Receipt Number</th>
+                            <th>Currency</th>
                             <th>Premium Due</th>
                             <th>Amount Paid</th>
                             <th>Balance</th>
@@ -134,10 +135,10 @@
                                 <td>@item.PolicyNumber</td>
                                 <td>@item.DatePosted.ToShortDateString()</td>
                                 <td>@item.InvoiceNumber</td>
-                              
-                                <td>$ @item.AmountDue</td>
-                                <td>$ @item.AmountPaid</td>
-                                <td>$@Math.Round(Convert.ToDecimal(item.Balance), 2)</td>
+                                <th> @item.Currency </th>
+                                <td> @item.AmountDue</td>
+                                <td> @item.AmountPaid</td>
+                                <td>@Math.Round(Convert.ToDecimal(item.Balance), 2)</td>
                                 <td> @item.TransactionReference</td>
                                 <td>@item.paymentMethodType</td>
                             </tr>
@@ -152,9 +153,9 @@
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td><strong>$@premiumDueTotal</strong></td>
-                            <td><strong>$@amountPaidTotal</strong></td>
-                            <td><strong>$@balanceTotal</strong></td>
+                            <td><strong>@premiumDueTotal</strong></td>
+                            <td><strong>@amountPaidTotal</strong></td>
+                            <td><strong>@balanceTotal</strong></td>
                             <td></td>
                             <td></td>
                         </tr>

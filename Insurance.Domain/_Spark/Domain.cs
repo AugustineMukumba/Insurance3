@@ -35,6 +35,7 @@ namespace Insurance.Domain
         public int? CreatedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public int? ModifiedBy { get; set; }
+        public bool IsActive { get; set; }
 
     }
 
@@ -119,6 +120,16 @@ namespace Insurance.Domain
         public int? ModifiedBy { get; set; }
 
         public bool IsCustomEmail { get; set; }
+
+        // Corporate details
+        public string CompanyName { get; set; }
+        public string CompanyEmail { get; set; }
+        public string CompanyAddress { get; set; }
+        public string CompanyPhone { get; set; }
+        public string CompanyCity { get; set; }
+        public string CompanyBusinessId { get; set; }
+        public bool IsCorporate { get; set; }
+
 
     }
 

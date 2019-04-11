@@ -36,7 +36,7 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult Index(int id)
         {
-            // ApproveVRNToIceCash(7201);
+           //  ApproveVRNToIceCash(7839);
             return View();
         }
 
@@ -666,8 +666,10 @@ namespace InsuranceClaim.Controllers
             //var PaymentId = Session["PaymentId"];
             //var InvoiceId = Session["InvoiceId"];
 
+            SummaryDetailService detailService = new SummaryDetailService();
 
-            var currencylist = InsuranceContext.Currencies.All();
+
+            var currencylist = detailService.GetAllCurrency();
             string currencyName = "$";
 
 
@@ -799,9 +801,12 @@ namespace InsuranceClaim.Controllers
 
 
 
-            var currencyDetails = currencylist.FirstOrDefault(c => c.Id == vehicle.CurrencyId);
-            if(currencyDetails!=null)
-                currencyName = currencyDetails.Name;
+            //var currencyDetails = currencylist.FirstOrDefault(c => c.Id == vehicle.CurrencyId);
+            //if(currencyDetails!=null)
+
+           
+
+                currencyName = detailService.GetCurrencyName(currencylist, vehicle.CurrencyId);
             
 
 
@@ -929,12 +934,12 @@ namespace InsuranceClaim.Controllers
 
                 string policyPeriod = item.CoverStartDate.Value.ToString("dd/MM/yyyy") + " - " + item.CoverEndDate.Value.ToString("dd/MM/yyyy");
 
-                 currencyDetails = currencylist.FirstOrDefault(c => c.Id == item.CurrencyId);
+              //   currencyDetails = currencylist.FirstOrDefault(c => c.Id == item.CurrencyId);
 
-               
 
-                if(currencyDetails!=null)
-                    currencyName = currencyDetails.Name;
+
+
+                currencyName = detailService.GetCurrencyName(currencylist, item.CurrencyId);
                 
 
                 //Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + (item.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>$0.00</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Excess) + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";

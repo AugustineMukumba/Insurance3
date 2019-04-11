@@ -102,6 +102,8 @@
 
                                         <li>@Html.ActionLink("View Policy", "CustomerDetials", "Account", new { id = item.SummaryId }, new { @class = "btn-sm btn-primary" })</li>
 
+                                        <li>  <a class="btn-sm btn-primary" href="/CustomerRegistration/Index?id=@item.SummaryId"> Edit   </a>  </li>
+
                                       
                                         @foreach (var _item in item.Vehicles)
                                         {

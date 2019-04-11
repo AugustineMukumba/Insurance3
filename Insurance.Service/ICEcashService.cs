@@ -18,12 +18,12 @@ namespace Insurance.Service
     {
 
         // SendBox
-        public static string PSK = "127782435202916376850511";
-        public static string LiveIceCashApi = "http://api-test.icecash.com/request/20523588";
+        //public static string PSK = "127782435202916376850511";
+        //public static string LiveIceCashApi = "http://api-test.icecash.com/request/20523588";
 
         // Live
-        //public static string PSK = "565205790573235453203546";
-        //public static string LiveIceCashApi = "https://api.icecash.co.zw/request/20350763";
+        public static string PSK = "565205790573235453203546";
+        public static string LiveIceCashApi = "https://api.icecash.co.zw/request/20350763";
 
 
         private static string GetSHA512(string text)
@@ -230,12 +230,15 @@ namespace Insurance.Service
                     durationMonth = 12;
                 else
                     durationMonth = item.PaymentTermId;
+                // durationMonth = GetMonthKey(item.PaymentTermId);
 
-                obj.Add(new VehicleObject { VRN = item.RegistrationNo, IDNumber= CustomerInfo.NationalIdentificationNumber, FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, MSISDN= CustomerInfo.CountryCode + CustomerInfo.PhoneNumber, Address1=CustomerInfo.AddressLine1, Town= CustomerInfo.AddressLine2, EntityType= "Personal", DurationMonths = durationMonth, InsuranceType=item.CoverTypeId.Value, VehicleType= item.ProductId, Make=item.MakeId, Model=item.ModelId, TaxClass=item.TaxClassId, YearManufacture=item.VehicleYear.Value });
+                // do
+                obj.Add(new VehicleObject { VRN = item.RegistrationNo, IDNumber = CustomerInfo.NationalIdentificationNumber, FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber, Address1 = CustomerInfo.AddressLine1, Town = CustomerInfo.AddressLine2, EntityType = "Personal", DurationMonths = durationMonth, InsuranceType = item.CoverTypeId == null ? 0 : item.CoverTypeId.Value, VehicleType = item.ProductId, Make = item.MakeId, Model = item.ModelId, TaxClass = item.TaxClassId, YearManufacture = item.VehicleYear == null ? 0 : item.VehicleYear.Value });
+
             }
 
 
-
+            // need to uncomment
             //foreach (var item in listofvehicles)
             //{
             //    obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 0, YearManufacture = 0, InsuranceType = 0, VehicleType = 0, TaxClass = 0, Make = "", Model = "", EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber });
@@ -310,10 +313,19 @@ namespace Insurance.Service
 
             List<VehicleObject> obj = new List<VehicleObject>();
 
+            int paymentTermId = GetMonthKey(PaymentTermId);
+
+
+
+
             //foreach (var item in listofvehicles)
             //{
 
             obj.Add(new VehicleObject { VRN = RegistrationNo, DurationMonths = (PaymentTermId == 1 ? 12 : PaymentTermId), VehicleValue = Convert.ToInt32(suminsured), YearManufacture = Convert.ToInt32(VehicleYear), InsuranceType = Convert.ToInt32(CoverTypeId), VehicleType = Convert.ToInt32(VehicleUsage), TaxClass = 1, Make = make, Model = model, EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber });
+
+            // obj.Add(new VehicleObject { VRN = RegistrationNo, DurationMonths = paymentTermId , VehicleValue = Convert.ToInt32(suminsured), YearManufacture = Convert.ToInt32(VehicleYear), InsuranceType = Convert.ToInt32(CoverTypeId), VehicleType = Convert.ToInt32(VehicleUsage), TaxClass = 1, Make = make, Model = model, EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber });
+
+
 
             //}
 
@@ -414,8 +426,6 @@ namespace Insurance.Service
                     }
                 }
             }
-
-
             return json;
         }
 
@@ -454,6 +464,9 @@ namespace Insurance.Service
             {
                 paymentMethod = 1;
             }
+
+
+            // 
 
             // obj.Add(new VehicleObject { VRN = item.RegistrationNo, DurationMonths = (item.PaymentTermId == 1 ? 12 : item.PaymentTermId), VehicleValue = 0, YearManufacture = 0, InsuranceType = 0, VehicleType = 0, TaxClass = 0, Make = "", Model = "", EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = "01" + CustomerInfo.PhoneNumber });
 
@@ -518,6 +531,59 @@ namespace Insurance.Service
 
             return json;
         }
+
+
+
+        public int GetMonthKey(int monthId)
+        {
+
+            int licFreequency = 0;
+
+            switch (monthId)
+            {
+                case 1: // represent to 12 month
+                    licFreequency = 3;
+                    break;
+                case 2:
+                    Console.WriteLine("Case 2");
+                    break;
+                case 3:
+                    Console.WriteLine("Case 1");
+                    break;
+                case 4:
+                    licFreequency = 1;
+                    break;
+                case 5:
+                    licFreequency = 4;
+                    break;
+                case 6:
+                    licFreequency = 2;
+                    break;
+                case 7:
+                    licFreequency = 5;
+                    break;
+                case 8:
+                    licFreequency = 6;
+                    break;
+                case 9:
+                    licFreequency = 7;
+                    break;
+                case 10:
+                    licFreequency = 8;
+                    break;
+                case 11:
+                    licFreequency = 9;
+                    break;
+                default:
+                    licFreequency = 3;
+                    break;
+            }
+
+            return licFreequency;
+        }
+
+
+
 
         public static ResultRootObject TPIPolicy(VehicleDetail vehicleDetail, string PartnerToken)
         {
@@ -672,7 +738,7 @@ namespace Insurance.Service
 
         }
 
-        public static ResultRootObject TPILICUpdate( string registrationNum, string PartnerToken)
+        public static ResultRootObject TPILICUpdate(string registrationNum, string PartnerToken)
         {
             //string PSK = "127782435202916376850511";
             string _json = "";
@@ -1074,7 +1140,7 @@ namespace Insurance.Service
     }
 
 
-    
+
 
     public class LICQuoteFunctionObject
     {

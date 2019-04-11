@@ -98,7 +98,7 @@ namespace InsuranceClaim.Controllers
             ViewBag.Sources = new SelectList(listdata, "Value", "Text");
             //ViewBag.Sources = InsuranceContext.BusinessSources.All();
 
-            ViewBag.Currencies = InsuranceContext.Currencies.All();
+            ViewBag.Currencies = InsuranceContext.Currencies.All(where: $"IsActive = 'True'");
 
             ViewBag.Makers = makers;
             viewModel.isUpdate = false;

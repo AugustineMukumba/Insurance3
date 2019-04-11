@@ -109,8 +109,6 @@ namespace InsuranceClaim.Controllers
                         custdata.EmailAddress = dbUser.Email;
                     }
 
-
-
                 }
             }
             else
@@ -567,7 +565,7 @@ namespace InsuranceClaim.Controllers
 
 
 
-            ViewBag.Currencies = InsuranceContext.Currencies.All();
+            ViewBag.Currencies = InsuranceContext.Currencies.All(where: $"IsActive = 'True'");
 
             ViewBag.Makers = makers;
             viewModels.isUpdate = false;
@@ -2724,6 +2722,14 @@ namespace InsuranceClaim.Controllers
             //objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo });
             objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo, PaymentTermId = Convert.ToInt32(PaymentTerm) });
 
+
+
+          //  objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo, PaymentTermId = Convert.ToInt32(PaymentTerm), CoverTypeId = Convert.ToInt32(CoverTypeId), ProductId = Convert.ToInt32(ProductId), MakeId = MakeId, ModelId = ModelId, TaxClassId = Convert.ToInt32(TaxClassId), VehicleYear = Convert.ToInt32(VehicleYear) });
+
+
+
+
+
             if (tokenObject.Response.PartnerToken != "")
             {
                 ResultRootObject quoteresponse = ICEcashService.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
@@ -2902,7 +2908,9 @@ namespace InsuranceClaim.Controllers
 
                 List<RiskDetailModel> objVehicles = new List<RiskDetailModel>();
                 //objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo });
-                objVehicles.Add(new RiskDetailModel { RegistrationNo = vichelDetails.RegistrationNo, PaymentTermId = Convert.ToInt32(vichelDetails.PaymentTermId) });
+                objVehicles.Add(new RiskDetailModel { RegistrationNo = vichelDetails.RegistrationNo,       PaymentTermId = Convert.ToInt32(vichelDetails.PaymentTermId), CoverTypeId= vichelDetails.CoverTypeId, ProductId= vichelDetails.ProductId, MakeId= vichelDetails.MakeId, ModelId= vichelDetails.ModelId, TaxClassId= vichelDetails.TaxClassId, VehicleYear= vichelDetails.VehicleYear });
+
+                
 
 
                 ResultRootObject VehicalQuoteresponse = iceCash.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
@@ -2930,7 +2938,7 @@ namespace InsuranceClaim.Controllers
 
                     // if partern token expire
 
-                    if (quoteresponse.Response.Quotes != null && quoteresponse.Response.Message.Contains("Partner Token has expired"))
+                    if (quoteresponse.Response != null && quoteresponse.Response.Message.Contains("Partner Token has expired"))
                     {
                         //  log.WriteLog(quoteresponse.Response.Quotes[0].Message + " reg no: " + vichelDetails.RegistrationNo);
                         iceCash.getToken();

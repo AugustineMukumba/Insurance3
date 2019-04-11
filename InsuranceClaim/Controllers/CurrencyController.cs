@@ -13,8 +13,9 @@ namespace InsuranceClaim.Controllers
         // GET: Currency
         public ActionResult Index()
         {
-            var currencyList = (from currency in InsuranceContext.Currencies.All()
-                                select new CurrencyModel { CurrencyName = currency.Name, Description = currency.Description, CreatedOn = currency.CreatedOn, Id = currency.Id }).ToList();
+          
+            var currencyList = (from currency in InsuranceContext.Currencies.All().ToList()
+                                select new CurrencyModel { CurrencyName = currency.Name, Description = currency.Description, CreatedOn = currency.CreatedOn, Id = currency.Id,IsActive=currency.IsActive }).ToList();
             return View(currencyList);
         }
 

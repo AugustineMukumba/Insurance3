@@ -61,24 +61,23 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            <td>@item.CurrencyName</td>
-                            <td>@item.Description</td>
-                            <td>@item.CreatedOn</td>
-                            <td>
-                                <div class="tbl-btn-list">
-                                    <ul class="list-inline">
-                                     
-                                        <li>@Html.ActionLink("Edit", "Edit", "Currency", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
+                        if (item.IsActive == true)
+                        {
+                            <tr>
+                                <td>@item.CurrencyName</td>
+                                <td>@item.Description</td>
+                                <td>@item.CreatedOn</td>
+                                <td>
+                                    <div class="tbl-btn-list">
+                                        <ul class="list-inline">
 
+                                            <li>@Html.ActionLink("Edit", "Edit", "Currency", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
 
-
-                                    </ul>
-                                </div>
-
-
-                            </td>
-                        </tr>
                     }
                 </tbody>
             </table>
