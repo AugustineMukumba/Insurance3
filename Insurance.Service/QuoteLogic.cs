@@ -483,40 +483,33 @@ namespace Insurance.Service
             this.StamDuty = Math.Round(stampDuty, 2);
             this.ZtscLevy = Math.Round(ztscLevy, 2);
 
-            if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive) && totalPremium == Convert.ToDecimal(BasicPremiumICEcash))
+            // if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive) && totalPremium == Convert.ToDecimal(BasicPremiumICEcash)) // by ash 11 apr 2019
+
+            if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive))
             {
                 this.StamDuty = Math.Round(Convert.ToDecimal(StampDutyICEcash), 2);
                 this.ZtscLevy = Math.Round(Convert.ToDecimal(ZTSCLevyICEcash), 2);
             }
-
-
-            if (!string.IsNullOrEmpty(StampDutyICEcash) && Convert.ToDecimal(StampDutyICEcash) > 100000)
+            else
             {
-                this.StamDuty = 100000;
-            }
 
-            // if product "Private car"
-
-
-
-
-            double maxZTSC = 10.80; // default ProductId=1;
-            if (ProductId == 3 || ProductId==11) // Commercial Commuter Omnibus and Commercial Vehicle
-            {
-                maxZTSC = 22.00;
-            }
+                double maxZTSC = 10.80; // default ProductId=1;
+                if (ProductId == 3 || ProductId == 11) // Commercial Commuter Omnibus and Commercial Vehicle
+                {
+                    maxZTSC = 22.00;
+                }
 
 
                 switch (PaymentTermid)
-                {                 
+                {
                     case 1:
 
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
-                        {                   
+                        {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
                         }
                         break;
-             
+
 
                     case 3:
                         maxZTSC = maxZTSC / 4;
@@ -583,6 +576,22 @@ namespace Insurance.Service
                         }
                         break;
                 }
+            }
+
+
+            if (!string.IsNullOrEmpty(StampDutyICEcash) && Convert.ToDecimal(StampDutyICEcash) > 100000)
+            {
+                this.StamDuty = 100000;
+            }
+
+            // if product "Private car"
+
+
+
+
+           
+
+
             return this;
         }
 

@@ -71,7 +71,17 @@ namespace Insurance.Domain
     }
 
 
-
+    public partial class QRCode : Entity<QRCode>
+    {
+        public QRCode() { }
+        public QRCode(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public string PolicyNumber { get; set; }
+        public string qrcode { get; set; }
+        public string ReadBy { get; set; }
+        public string Deliverto { get; set; }
+        public DateTime Createon { get; set; }
+    }
 
 
     public partial class CoverType : Entity<CoverType>

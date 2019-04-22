@@ -48,7 +48,7 @@ namespace Insurance.Domain
 
         public static ReceiptModuleHistorys ReceiptHistorys { get { return new ReceiptModuleHistorys(); } }
 
-
+        public static QRCodes QRCodes { get { return new QRCodes(); } }
         public static Reinsurances Reinsurances { get { return new Reinsurances(); } }
         public static ReinsuranceBrokers ReinsuranceBrokers { get { return new ReinsuranceBrokers(); } }
         public static ReinsuranceTransactions ReinsuranceTransactions { get { return new ReinsuranceTransactions(); } }
