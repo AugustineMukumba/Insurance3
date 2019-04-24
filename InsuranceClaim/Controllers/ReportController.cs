@@ -1660,11 +1660,8 @@ namespace InsuranceClaim.Controllers
             _LoyaltyPt.LoyaltyPoints = new List<LoyaltyPointsModel>();
             LoyaltyPointsReportSeachModels model = new LoyaltyPointsReportSeachModels();
 
+
             var VehicleDetails = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList().Take(500);
-
-            
-
-
             var currencyList = _summaryDetailService.GetAllCurrency();
 
             if (VehicleDetails != null)
