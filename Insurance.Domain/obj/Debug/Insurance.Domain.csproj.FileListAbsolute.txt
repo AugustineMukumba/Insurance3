@@ -246,3 +246,4 @@ F:\ANKIT DHIMAN\Insurance Claim 4 September\Insurance.Domain\bin\Debug\WebMatrix
 F:\ANKIT DHIMAN\Insurance Claim 4 September\Insurance.Domain\bin\Debug\WebMatrix.WebData.xml
 F:\ANKIT DHIMAN\Insurance Claim 4 September\Insurance.Domain\obj\Debug\Insurance.Domain.dll
 F:\ANKIT DHIMAN\Insurance Claim 4 September\Insurance.Domain\obj\Debug\Insurance.Domain.pdb
+F:\ANKIT DHIMAN\Insurance Claim 4 September\Insurance.Domain\obj\Debug\Insurance.Domain.csprojResolveAssemblyReference.cache
