@@ -1660,7 +1660,10 @@ namespace InsuranceClaim.Controllers
             _LoyaltyPt.LoyaltyPoints = new List<LoyaltyPointsModel>();
             LoyaltyPointsReportSeachModels model = new LoyaltyPointsReportSeachModels();
 
-            var VehicleDetails = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
+            var VehicleDetails = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList().Take(500);
+
+            
+
 
             var currencyList = _summaryDetailService.GetAllCurrency();
 
@@ -1703,6 +1706,7 @@ namespace InsuranceClaim.Controllers
                                             LoyaltyPoints = Convert.ToString(loyalityDetail),
                                             PolicyId = item.PolicyId,
                                             Currency = _summaryDetailService.GetCurrencyName(currencyList, item.CurrencyId),
+                                            TransactionDate = item.TransactionDate==null? DateTime.MinValue : item.TransactionDate.Value
 
                                         });
                                     }
@@ -1730,6 +1734,12 @@ namespace InsuranceClaim.Controllers
             _LoyaltyPointsReport.LoyaltyPoints = new List<LoyaltyPointsModel>();
             LoyaltyPointsReportSeachModels _model = new LoyaltyPointsReportSeachModels();
             var VehicleDetails = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
+
+
+            var Vehicledetail = VehicleDetails.Where(c => c.TransactionDate >=  Convert.ToDateTime(Model.FromDate) && c.TransactionDate <= Convert.ToDateTime(Model.EndDate)).ToList();
+
+
+
             #region
             DateTime fromDate = DateTime.Now.AddDays(-1);
             DateTime endDate = DateTime.Now;
@@ -1780,7 +1790,7 @@ namespace InsuranceClaim.Controllers
                                             LoyaltyPoints = Convert.ToString(loyalityDetail),
                                             PolicyId = item.PolicyId,
                                             Currency = _summaryDetailService.GetCurrencyName(currencyList, item.CurrencyId),
-
+                                            TransactionDate = item.TransactionDate==null ? DateTime.MinValue : item.TransactionDate.Value
                                         });
                                     }
 

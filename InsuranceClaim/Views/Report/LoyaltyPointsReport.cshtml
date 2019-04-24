@@ -99,12 +99,12 @@
                     <th>Sum Insured</th>
                     <th>Premium Paid</th>
                     <th>Loyalty Points</th>
+                    <th>Transaction Date</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model.LoyaltyPoints.ToList())
                 {
-
                     <tr>
                         <td>@item.CustomerName</td>
                         <td>@item.Address</td>
@@ -114,6 +114,7 @@
                         <td>@item.SumInsured</td>
                         <td>@item.PremiumPaid</td>
                         <td>@item.LoyaltyPoints</td>
+                        <td>@item.TransactionDate.ToShortDateString() </td>
                     </tr>
                 }
             </tbody>

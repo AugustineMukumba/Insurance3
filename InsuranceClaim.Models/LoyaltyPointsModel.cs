@@ -21,7 +21,8 @@ namespace InsuranceClaim.Models
 
         public string Currency { get; set; }
 
-
+        public DateTime TransactionDate { get; set; }
+             
         
 
     }
