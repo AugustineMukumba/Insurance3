@@ -1539,6 +1539,10 @@ namespace InsuranceClaim.Controllers
             var _User = UserManager.FindById(User.Identity.GetUserId().ToString());
             var role = UserManager.GetRoles(_User.Id.ToString()).FirstOrDefault();
 
+            //var RoleId= UserManager
+
+            var cutomerList = InsuranceContext.Customers.All();
+
             var customerID = InsuranceContext.Customers.Single(where: $"userid='{User.Identity.GetUserId().ToString()}'").Id;
 
 
@@ -1587,8 +1591,17 @@ namespace InsuranceClaim.Controllers
                         if (_vehicle != null && _vehicle.RenewalDate.Value.Year == DateTime.Now.Year && _vehicle.RenewalDate.Value.Month == DateTime.Now.Month && _vehicle.RenewalDate.Value.Day <= DateTime.Now.Day && _vehicle.IsActive != false)
                         {
                             var policy = InsuranceContext.PolicyDetails.Single(_vehicle.PolicyId);
-                            var customerDetails = InsuranceContext.Customers.Single(_vehicle.CustomerId);
+                            //var customerDetails = InsuranceContext.Customers.Single(_vehicle.CustomerId);
 
+                            var customerDetails = cutomerList.FirstOrDefault(c=>c.Id==_vehicle.CustomerId);
+
+                            var agentDetails = cutomerList.FirstOrDefault(c => c.Id == item.CreatedBy);
+
+                            //Added on 24th April
+                            //var StaffDetails = InsuranceContext.Customers.Single(_vehicle.CustomerId);
+
+                            //End
+                            policylistviewmodel.AgentName = agentDetails == null ? "" : agentDetails.FirstName + " " + agentDetails.LastName;
                             policylistviewmodel.CustomerName = customerDetails.FirstName + " " + customerDetails.LastName;
                             policylistviewmodel.CustomerContactNumber = customerDetails.PhoneNumber;
 

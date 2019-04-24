@@ -23,6 +23,8 @@ namespace InsuranceClaim.Models
         public string PolicyStatus { get; set; }
         public string CustomerName { get; set; }
 
+        public string AgentName { get; set; }
+
         public string CustomerContactNumber { get; set; }
 
         public string CoverTypeName { get; set; }
