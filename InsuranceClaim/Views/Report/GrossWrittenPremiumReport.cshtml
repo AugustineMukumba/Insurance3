@@ -18,9 +18,6 @@
                     @*<button type="button" class="btn btn-primary">Add</button>*@
                     @*<input class="btn btn-primary" type="button" value="Generate PDF" id="generatePdf" />*@
                     <input class="btn btn-primary" type="button" value="Generate Excel" id="generateExcel" />
-
-
-
                 </div>
             </div>
         </div>
@@ -103,6 +100,7 @@
                             <th>Radio Licence Cost</th>
                             <th>Zinara License Fee</th>
                             <th>Status</th>
+                            <th>Policy Status</th>
 
                         </tr>
                     </thead>
@@ -177,7 +175,14 @@
                                 {
                                     <td>In Force</td>
                                 }
-
+                                @if (Convert.ToBoolean(item.IsLapsed))
+                                {
+                                    <td>Renewals</td>
+                                }
+                                else
+                                {
+                                    <td>New Business</td>
+                                }
                             </tr>
                         }
                     </tbody>
@@ -201,6 +206,7 @@
                             </td>
                             <td><strong>@radioLicenseCostTotal</strong></td>
                             <td><strong> @ZinaraLicenseFee </strong> </td>
+                            <td></td>
                             <td></td>
                         </tr>
                     </tfoot>

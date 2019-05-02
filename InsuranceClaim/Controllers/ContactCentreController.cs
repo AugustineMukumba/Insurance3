@@ -98,7 +98,10 @@ namespace InsuranceClaim.Controllers
             ViewBag.Sources = new SelectList(listdata, "Value", "Text");
             //ViewBag.Sources = InsuranceContext.BusinessSources.All();
 
-            ViewBag.Currencies = InsuranceContext.Currencies.All(where: $"IsActive = 'True'");
+            ViewBag.Currencies = InsuranceContext.Currencies.All(where: $"IsActive = 'True'" );
+
+            viewModel.CurrencyId = 7; // default "RTGS$" selected
+
 
             ViewBag.Makers = makers;
             viewModel.isUpdate = false;

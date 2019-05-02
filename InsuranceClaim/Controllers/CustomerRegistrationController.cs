@@ -459,6 +459,7 @@ namespace InsuranceClaim.Controllers
 
 
             ViewBag.Currencies = InsuranceContext.Currencies.All(where: $"IsActive = 'True'");
+            viewModel.CurrencyId = 7; // default "RTGS$" selected
 
             ViewBag.Makers = makers;
             viewModel.isUpdate = false;

@@ -40,6 +40,23 @@ namespace InsuranceClaim.Models
 
         public string Currency { get; set; }
 
+        public string PaymentMethod { get; set; }
+
+        public string VehicleName { get; set; }
+
+        public decimal VehicleSumInsured { get; set; }
+
+        public int VehicleDetailId { get; set; }
+
+        public int SummaryDetailId { get; set; }
+
+        public DateTime CoverStartDate { get; set; }
+
+        public DateTime CoverEndDate { get; set; }
+
+        public DateTime RenewalDate1 { get; set; }
+
+        public bool isLapsed { get; set; }
 
     }
 
@@ -86,6 +103,8 @@ namespace InsuranceClaim.Models
         public string PaymentTerm { get; set; }
 
         public string currency { get; set; }
+
+        public string Vehicle { get; set; }
 
     }
 }

@@ -81,13 +81,13 @@
                             <th>Total Premium</th>
                             <th>Created On</th>
                             <th>Action(s)</th>
-
-
                         </tr>
                         <tr class="policynumber-tr">
                             <td>@item.PolicyNumber</td>
-                            <td>@MiscellaneousService.GetCustomerNamebyID(item.CustomerId)</td>
-                            <td>@MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId)</td>
+                            @*<td>@MiscellaneousService.GetCustomerNamebyID(item.CustomerId)</td>*@
+                            <td>@item.CustomerName</td>
+                            @*<td>@MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId)</td>*@
+                            <td>@item.PaymentMethod </td>
                             <td>@item.TotalSumInsured</td>
                             <td>@item.TotalPremium</td>
                             <td>@item.createdOn.ToString("dd-MMM-yyyy")</td>
@@ -122,7 +122,8 @@
                                     {
                                         <tr>
                                             <td>@_item.RegistrationNo</td>
-                                            <td>@MiscellaneousService.GetMakeNamebyMakeCode(_item.MakeId)/@MiscellaneousService.GetModelNamebyModelCode(_item.ModelId)</td>
+                                            @*<td>@MiscellaneousService.GetMakeNamebyMakeCode(_item.MakeId)/@MiscellaneousService.GetModelNamebyModelCode(_item.ModelId)</td>*@
+                                            <td>@_item.Make/@_item.Model</td>
                                             <td>@_item.currency</td>
                                             <td>@_item.SumInsured</td>
                                             <td>@_item.AutoFacReinsuranceAmount</td>
