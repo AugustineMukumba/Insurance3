@@ -1805,7 +1805,7 @@ namespace InsuranceClaim.Controllers
             var product = InsuranceContext.Products.Single(Convert.ToInt32(endorsevehicle.ProductId));
             SummaryDetailService detailDervice = new SummaryDetailService();
             var currencyList = detailDervice.GetAllCurrency();
-            var currency = detailDervice.GetCurrencyName(currencyList, endorsepolicy.CurrencyId);
+            var currency = detailDervice.GetCurrencyName(currencyList, endorsevehicle.CurrencyId);
 
             // var currency = InsuranceContext.Currencies.Single(endorsepolicy.CurrencyId);
             var paymentInformations = InsuranceContext.PaymentInformations.SingleCustome(id);
@@ -1860,7 +1860,7 @@ namespace InsuranceClaim.Controllers
             //ApproveVRNToIceCash(id);
             string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/EndorsementUserPayment.cshtml";
             string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
-            var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("##path##", filepath).Replace("#FirstName#", endorsementCustomer.FirstName).Replace("#LastName#", endorsementCustomer.LastName).Replace("#AccountName#", endorsementCustomer.FirstName + ", " + endorsementCustomer.LastName).Replace("#Address1#", endorsementCustomer.AddressLine1).Replace("#Address2#", endorsementCustomer.AddressLine2).Replace("#Amount#", Convert.ToString(endorsementsummay.AmountPaid)).Replace("#PaymentDetails#", "Endorsement Premium").Replace("#ReceiptNumber#", endorsepolicy.PolicyNumber).Replace("#PaymentType#", (endorsementsummay.PaymentMethodId == 1 ? "Cash" : (endorsementsummay.PaymentMethodId == 2 ? "PayPal" : "PayNow")));
+            var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("##path##", filepath).Replace("#FirstName#", endorsementCustomer.FirstName).Replace("#Currency#", currency).Replace("#LastName#", endorsementCustomer.LastName).Replace("#AccountName#", endorsementCustomer.FirstName + ", " + endorsementCustomer.LastName).Replace("#Address1#", endorsementCustomer.AddressLine1).Replace("#Address2#", endorsementCustomer.AddressLine2).Replace("#Amount#", Convert.ToString(endorsementsummay.AmountPaid)).Replace("#PaymentDetails#", "Endorsement Premium").Replace("#ReceiptNumber#", endorsepolicy.PolicyNumber).Replace("#PaymentType#", (endorsementsummay.PaymentMethodId == 1 ? "Cash" : (endorsementsummay.PaymentMethodId == 2 ? "PayPal" : "PayNow")));
 
           //  var attachementFile = MiscellaneousService.EmailPdf(Body2, Convert.ToInt32(endorsepolicy.EndorsementCustomerId), endorsepolicy.PolicyNumber, "Reciept Payment");
 
@@ -1920,7 +1920,7 @@ namespace InsuranceClaim.Controllers
 
 
                 string policyPeriod = item.CoverStartDate.Value.ToString("dd/MM/yyyy") + " - " + item.CoverEndDate.Value.ToString("dd/MM/yyyy");
-                Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td> <td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + vehicledescription + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>$" + item.SumInsured + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + (item.CoverTypeId == 4 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + policyPeriod + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>$" + paymentTermsName + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>$" + Convert.ToString(item.Premium) + "</font></td></tr>";
+                Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td> <td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + vehicledescription + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + currency + item.SumInsured + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + (item.CoverTypeId == 4 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + policyPeriod + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + paymentTermsName + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + currency + Convert.ToString(item.Premium) + "</font></td></tr>";
 
             }
             var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == endorsevehicle.PaymentTermId);

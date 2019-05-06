@@ -660,6 +660,10 @@
 
                         </div>
 
+                       <input type="button" id="btnDefault" hidden />
+
+
+
                     }
 
 
@@ -702,6 +706,10 @@
         }
 
     });
+
+
+
+
 
 
     $("#inputcheckbox").click(function(){
@@ -836,10 +844,10 @@
             }
         });
     }
- 
-    
+
+
     function Policyenddate(){
-       
+
         debugger;
         var selectedTerm = $("#PaymentTermId option:selected").val();
         switch (parseInt(selectedTerm)) {
@@ -942,8 +950,24 @@
         }
     }
 
+
+    $( "#btnDefault" ).click(function() {
+        if ($("#PaymentTermId").val() != "" && $("#ProductId").val() != "" && $("#RegistrationNo").val() != "") {
+            checkVRNwithICEcash();
+        }
+
+
+
+
+    });
+
+
+
+
     $(document).ready(function () {
         debugger;
+
+
         $("#datetimepicker2").datetimepicker({
             format: 'MM/D/YYYY',
             minDate: new Date()
@@ -958,7 +982,7 @@
             $('#datetimepicker2').data('DateTimePicker').minDate(incrementDay);
             $(this).data("DateTimePicker").hide();
             updateEndDate();
-           
+
 
         });
         //updateStarEndDate();
@@ -1113,7 +1137,6 @@
             else {
                 $("#validationSumIns").css("display", "none");
             }
-
         });
 
 
@@ -1257,6 +1280,10 @@
             }
         });
 
+
+      
+
+
         $("#SumInsured").blur(function () {
 
             var coverselected = $("#CoverTypeId option:selected").val();
@@ -1361,6 +1388,9 @@
     }
 
     function checkVRNwithICEcash() {
+
+  
+
         $(".loading-area").show();
         $.ajax({
             type: "POST",

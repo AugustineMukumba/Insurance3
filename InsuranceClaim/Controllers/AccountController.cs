@@ -2116,10 +2116,10 @@ namespace InsuranceClaim.Controllers
 
                     SummaryList = SummaryList.Where(c => c.CreatedBy == customerID && c.isQuotation == false).OrderByDescending(c => c.Id).ToList();
                 }
-                else if (role == "Administrator")
+                else if (role == "Administrator" || role== "Renewals")
                 {
                     //  SummaryList = InsuranceContext.SummaryDetails.All(where: $"isQuotation = '0'  ").OrderByDescending(x => x.Id).ToList();
-                    SummaryList = SummaryList.Where(c => c.isQuotation == false).OrderByDescending(c => c.Id).ToList();
+                    SummaryList = SummaryList.Where(c => c.isQuotation == false).OrderByDescending(c => c.Id).Take(200).ToList();
                 }
                 else
                 {
@@ -2143,10 +2143,17 @@ namespace InsuranceClaim.Controllers
                         policylistviewmodel.CustomerId = Convert.ToInt32(item.CustomerId);
                         policylistviewmodel.SummaryId = item.Id;
 
+                        policylistviewmodel.PaymentMethod = MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId.Value);
+
+
+
                         var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={item.Id}").ToList();
                         var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
                         if (vehicle != null)
                         {
+                            policylistviewmodel.CustomerName = MiscellaneousService.GetCustomerNamebyID(vehicle.CustomerId.Value);
+                           
+
                             if (vehicle.PolicyId != 0)
                             {
                                 var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
@@ -2181,6 +2188,11 @@ namespace InsuranceClaim.Controllers
                                     obj.isReinsurance = (_vehicle.SumInsured > 100000 ? true : false);
                                     obj.MakeId = _vehicle.MakeId;
                                     obj.ModelId = _vehicle.ModelId;
+
+                                    obj.Make = MiscellaneousService.GetMakeNamebyMakeCode(_vehicle.MakeId);
+                                    obj.Model = MiscellaneousService.GetModelNamebyModelCode(_vehicle.ModelId);
+                                  
+
                                     //obj.Premium = Convert.ToDecimal(_vehicle.Premium);
                                     obj.RegistrationNo = _vehicle.RegistrationNo;
                                     obj.SumInsured = Convert.ToDecimal(_vehicle.SumInsured);
@@ -2551,7 +2563,7 @@ namespace InsuranceClaim.Controllers
             var vehiclelist = InsuranceContext.VehicleDetails.All().ToList();
             var policy_list = InsuranceContext.PolicyDetails.All().ToList();
 
-            foreach (var item in SummaryList.Take(50))
+            foreach (var item in SummaryList.Take(100))
             {
                 PolicyListViewModel policylistviewmodel = new PolicyListViewModel();
 
@@ -3477,7 +3489,8 @@ namespace InsuranceClaim.Controllers
                         obj.make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{item.MakeId}'").ShortDescription;
                         obj.model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ShortDescription;
                         obj.covertype = InsuranceContext.CoverTypes.Single(item.CoverTypeId).Name;
-                        obj.premium = item.Premium.ToString();
+                        obj.excess = item.Premium.ToString();
+                        obj.premium= Convert.ToString(list.Sum(items => items.Premium + items.ZTSCLevy + items.StampDuty + items.VehicleLicenceFee + (items.IncludeRadioLicenseCost ? items.RadioLicenseCost : 0.00m)));
                         obj.suminsured = item.SumInsured == null ? "0" : item.SumInsured.ToString();
                         obj.CurrencyName = detailService.GetCurrencyName(currencyList, item.CurrencyId);
                         obj.ZTSCLevy = item.ZTSCLevy == null ? "0" : item.ZTSCLevy.ToString();

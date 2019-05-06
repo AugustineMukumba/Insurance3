@@ -1942,6 +1942,30 @@ namespace InsuranceClaim.Controllers
                                     Vehicledata.QuaterlyRiskPremium = item.QuaterlyRiskPremium;
                                     Vehicledata.TransactionDate = DateTime.Now;
 
+
+                                    if (Vehicledata.ExcessBuyBack == true)
+                                    {
+                                        Vehicledata.ExcessBuyBackAmount = item.ExcessBuyBackAmount;
+                                    }
+
+                                    if (Vehicledata.PassengerAccidentCover == true)
+                                    {
+                                        Vehicledata.PassengerAccidentCoverAmount = item.PassengerAccidentCoverAmount;
+                                    }
+                                    if (Vehicledata.ExcessBuyBack == true)
+                                    {
+                                        Vehicledata.ExcessBuyBackAmount = item.ExcessBuyBackAmount;
+                                    }
+
+                                    if (Vehicledata.PassengerAccidentCover == true)
+                                    {
+                                        Vehicledata.PassengerAccidentCoverAmount = item.PassengerAccidentCoverAmount;
+                                    }
+
+
+
+
+
                                     Vehicledata.CustomerId = customer.Id;
                                     // Vehicledata.InsuranceId = model.InsuranceId;
 
@@ -1995,13 +2019,8 @@ namespace InsuranceClaim.Controllers
                         var DbEntry = Mapper.Map<SummaryDetailModel, SummaryDetail>(model);
 
 
-
-
-
-
                         if (summary != null)
                         {
-
                             if (summary.Id == 0)
                             {
                                 if (Session["VehicleDetails"] != null) // forcelly check because in some case summary details id is comming 0
@@ -2016,14 +2035,8 @@ namespace InsuranceClaim.Controllers
                                             summary.Id = SummaryVehicalDetails[0].SummaryDetailId;
                                         }
                                     }
-
                                 }
                             }
-
-
-
-
-
 
                             if (summary.Id == null || summary.Id == 0)
                             {

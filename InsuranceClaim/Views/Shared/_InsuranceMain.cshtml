@@ -42,7 +42,10 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 
-    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    @*<script src="~/Scripts/jquery-1.10.2.js"></script>*@
+
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+   
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
@@ -197,6 +200,13 @@
                                 }
 
 
+                                @if (User.IsInRole("Claim"))
+                                {
+                                    <li><a href="/Claimant/ClaimantList">Claim Management</a></li>
+                                }
+
+
+
                                 @*<li><a href="#">Contact</a></li>*@
 
                                 @if (User.IsInRole("Administrator"))
@@ -228,10 +238,10 @@
                                                 <li><a href="/Account/MyPolicies">My Policies</a></li>
                                                 <li><a href="/Account/QuotationList">My Quotation</a></li>
                                                 @*if (User.IsInRole("Staff"))
-                                                {
-                                                    <li><a href="/Endorsement/EndorsementDetail">Endorsement View</a></li>
+                                                    {
+                                                        <li><a href="/Endorsement/EndorsementDetail">Endorsement View</a></li>
 
-                                                }*@
+                                                    }*@
                                                 <li><a href="/Account/ChangePassword">Change Password</a></li>
                                             }
 

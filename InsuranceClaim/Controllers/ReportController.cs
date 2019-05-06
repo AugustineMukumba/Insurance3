@@ -69,11 +69,11 @@ namespace InsuranceClaim.Controllers
                                Premium_due = x.PREMIUMDUE,
                                Transaction_date = Convert.ToDateTime(x.TransactionDate).ToString("dd/MM/yyy"),
                                ZTSCLevy = Convert.ToDecimal(x.ZTSCLevy),
-                               Currency = x.CURRENCY==null? "USD" : x.CURRENCY,
+                               Currency = x.CURRENCY == null ? "USD" : x.CURRENCY,
                            }).ToList();
             listZTSCLevyreport = vehicledetails;
             model.ListZTSCreportdata = listZTSCLevyreport.OrderByDescending(x => x.Transaction_date).ToList();
-       
+
             return View(model);
         }
 
@@ -294,7 +294,7 @@ namespace InsuranceClaim.Controllers
             var currenyList = InsuranceContext.Currencies.All();
 
 
-            var query = "select Customer.FirstName + ' ' + Customer.LastName as FullName, Customer.PhoneNumber , PolicyDetail.PolicyNumber,  VehicleDetail.MakeId, VehicleDetail.ModelId, ";
+            var query = "select  VehicleDetail.RegistrationNo, Customer.FirstName + ' ' + Customer.LastName as FullName, Customer.PhoneNumber , PolicyDetail.PolicyNumber,  VehicleDetail.MakeId, VehicleDetail.ModelId, ";
             query += "  VehicleDetail.CoverStartDate, VehicleDetail.CoverEndDate, VehicleDetail.SumInsured, VehicleDetail.TransactionDate, VehicleDetail.Premium, VehicleDetail.CurrencyId from VehicleDetail ";
             query += " join PolicyDetail on VehicleDetail.PolicyId = PolicyDetail.Id ";
             query += " join Customer on VehicleDetail.CustomerId = Customer.Id ";
@@ -313,7 +313,8 @@ namespace InsuranceClaim.Controllers
             Premium_due = x.Premium,
             Transaction_date = x.TransactionDate.ToShortDateString(),
             Sum_Insured = x.SumInsured == null ? 0 : x.SumInsured,
-            Currency = currenyList.FirstOrDefault(c => c.Id == x.CurrencyId) == null ? "USD" : currenyList.FirstOrDefault(c => c.Id == x.CurrencyId).Name
+            Currency = currenyList.FirstOrDefault(c => c.Id == x.CurrencyId) == null ? "USD" : currenyList.FirstOrDefault(c => c.Id == x.CurrencyId).Name,
+            RegistrationNumber= x.RegistrationNo
         }).ToList();
 
 
@@ -440,7 +441,9 @@ namespace InsuranceClaim.Controllers
 
 
             GrossWrittenPremiumReportSearchModels Model = new GrossWrittenPremiumReportSearchModels();
-            var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive='1'").ToList().Take(200);
+            //   var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive='1'").ToList().Take(200);
+
+            var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c=>c.Id).ToList().Take(200);
 
             var currenyList = _summaryDetailService.GetAllCurrency();
 
@@ -581,7 +584,10 @@ namespace InsuranceClaim.Controllers
             GrossWrittenPremiumReportSearchModels Model = new GrossWrittenPremiumReportSearchModels();
 
             //  var vehicledetail = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
-            var vehicledetail = InsuranceContext.VehicleDetails.All(where: "IsActive=1").ToList();
+            //  var vehicledetail = InsuranceContext.VehicleDetails.All(where: "IsActive=1").ToList();
+
+            var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c=>c.Id).ToList();
+
 
 
             DateTime fromDate = DateTime.Now.AddDays(-1);
@@ -636,7 +642,11 @@ namespace InsuranceClaim.Controllers
                             obj.Policy_Number = policy.PolicyNumber;
                             obj.Policy_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("dd/MM/yyy");
                             obj.Policy_endate = Convert.ToDateTime(item.CoverEndDate).ToString("dd/MM/yyy");
-                            obj.Vehicle_makeandmodel = make.MakeDescription + "/" + model.ModelDescription;
+
+                            var makeDesc = make == null ? "" : make.MakeDescription;
+                            var modelDes = model == null ? "" : model.ModelDescription;
+
+                            obj.Vehicle_makeandmodel = makeDesc + "/" + modelDes;
                             obj.Stamp_duty = Convert.ToDecimal(item.StampDuty);
                             obj.ZTSC_Levy = Convert.ToDecimal(item.ZTSCLevy);
                             obj.Sum_Insured = Convert.ToDecimal(item.SumInsured);

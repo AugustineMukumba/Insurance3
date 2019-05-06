@@ -19,6 +19,8 @@ namespace InsuranceClaim.Models
         public decimal Premium_due { get; set; }
         public decimal Sum_Insured { get; set; }
         public string Currency { get; set; }
+        public string RegistrationNumber { get; set; }
+
     }
     public class ListVehicleRiskAboutExpireModels
     {

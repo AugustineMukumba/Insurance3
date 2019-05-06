@@ -618,7 +618,7 @@ namespace InsuranceClaim.Controllers
                         fname = "/RegistrationDocument/" + RegisteredId + "/" + fname;
                         file.SaveAs(Server.MapPath(fname));
 
-                      
+
 
                         RegistrationDocument doc = new RegistrationDocument();
                         doc.Name = FileName;
@@ -1033,7 +1033,7 @@ namespace InsuranceClaim.Controllers
                               PolicyId = Vehicle.PolicyId,
                               CustomerName = customer.FirstName + " " + customer.LastName
 
-                          }).ToList().OrderBy(x => x.PolicyId).Take(30);
+                          }).ToList().OrderByDescending(x => x.PolicyId).Take(30);
             //NotificationList = Policylist.Select(p => new ClaimNotificationModel()  //// get data from table using loop and added in model.
             //{
             //    PolicyNumber = p.PolicyNumber
@@ -1048,41 +1048,54 @@ namespace InsuranceClaim.Controllers
         }
         public JsonResult GetCustomername(string txtvalue)
         {
-            var customerName = "";
-            var policyNumber = "";
-            var vrn = "";
-            var policyAndRegistrationNumber = txtvalue; //Policy Number,VRN Number,Customer Name 
-            var policyAndRegistrationNumberArray = policyAndRegistrationNumber.Split(',');
-            if (policyAndRegistrationNumberArray.Length > 1)
-            {
-                policyNumber = policyAndRegistrationNumberArray[0]; //Policy Number
-                vrn = policyAndRegistrationNumberArray[1];//VRN Number
-            }
-            else
-            {
-                policyNumber = policyAndRegistrationNumberArray[0];
-            }
-
             ClaimNotificationModel model = new ClaimNotificationModel();
-
-            var detail = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{policyNumber}'");
-            if (detail != null)
+            try
             {
-                var vehicle = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}'");
-                var customerdetail = InsuranceContext.Customers.Single(where: $"Id='{detail.CustomerId}'");
-                customerName = customerdetail.FirstName + " " + customerdetail.LastName;
 
-                model.CustomerName = customerName;
-                model.RegistrationNo = vrn;
-                model.PolicyNumber = policyNumber;
+                var customerName = "";
+                var policyNumber = "";
+                var vrn = "";
+                var policyAndRegistrationNumber = txtvalue; //Policy Number,VRN Number,Customer Name 
+                var policyAndRegistrationNumberArray = policyAndRegistrationNumber.Split(',');
+                if (policyAndRegistrationNumberArray.Length > 1)
+                {
+                    policyNumber = policyAndRegistrationNumberArray[0]; //Policy Number
+                    vrn = policyAndRegistrationNumberArray[1];//VRN Number
+                }
+                else
+                {
+                    policyNumber = policyAndRegistrationNumberArray[0];
+                }
 
-                model.CoverStartDate = Convert.ToDateTime(vehicle.CoverStartDate);
-                model.CoverEndDate = Convert.ToDateTime(vehicle.CoverEndDate);
-                //model.CoverStartDate =Convert.ToDateTime(vehicle.CoverStartDate).ToShortDateString();
-                //model.CoverEndDate =Convert.ToDateTime(vehicle.CoverEndDate).ToShortDateString();
 
-                return Json(model, JsonRequestBehavior.AllowGet);
+
+                var detail = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{policyNumber}'");
+                if (detail != null)
+                {
+                    var vehicle = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}'");
+                    var customerdetail = InsuranceContext.Customers.Single(where: $"Id='{detail.CustomerId}'");
+                    customerName = customerdetail.FirstName + " " + customerdetail.LastName;
+
+                    model.CustomerName = customerName;
+                    model.RegistrationNo = vrn;
+                    model.PolicyNumber = policyNumber;
+
+                    model.CoverStartDate = Convert.ToDateTime(vehicle.CoverStartDate);
+                    model.CoverEndDate = Convert.ToDateTime(vehicle.CoverEndDate);
+                    //model.CoverStartDate =Convert.ToDateTime(vehicle.CoverStartDate).ToShortDateString();
+                    //model.CoverEndDate =Convert.ToDateTime(vehicle.CoverEndDate).ToShortDateString();
+
+                    return Json(model, JsonRequestBehavior.AllowGet);
+                }
+
+
             }
+            catch (Exception ex)
+            {
+
+            }
+
+
             return Json(model, JsonRequestBehavior.AllowGet);
 
         }
@@ -1185,7 +1198,7 @@ namespace InsuranceClaim.Controllers
 
 
                     RegisterClaimViewModel VehicleDetailVM = new RegisterClaimViewModel();
-                    
+
 
                     List<RiskViewModel> VehicleData = new List<RiskViewModel>();
                     List<ChecklistModel> ChecklistModel = new List<ChecklistModel>();
