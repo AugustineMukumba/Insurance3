@@ -76,11 +76,12 @@ namespace Insurance.Domain
         public QRCode() { }
         public QRCode(bool defaults) : base(defaults) { }
         public int Id { get; set; }
-        public string PolicyNumber { get; set; }
-        public string qrcode { get; set; }
+        public string PolicyNo { get; set; }
+        public string Qrcode { get; set; }
         public string ReadBy { get; set; }
         public string Deliverto { get; set; }
-        public DateTime Createon { get; set; }
+        public DateTime Createdon { get; set; }
+        public string Comment { get; set; }
     }
 
 
