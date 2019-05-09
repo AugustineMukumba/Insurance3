@@ -264,6 +264,15 @@ namespace InsuranceClaim.Controllers
 
             }
 
+
+            //06_june_2019
+            claimAdjustment.PhoneNumber = model.PhoneNumber; 
+            claimAdjustment.PayeeBankDetails = model.PayeeBankDetails;
+            InsuranceContext.ClaimAdjustments.Update(claimAdjustment);
+
+
+
+
             var ePaymentDetail = from ePayeeBankDetails e in Enum.GetValues(typeof(ePayeeBankDetails))
                                  select new
                                  {

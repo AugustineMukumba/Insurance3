@@ -44,6 +44,46 @@ namespace InsuranceClaim.Controllers
             return View();
         }
 
+
+        public ActionResult IceCashPayment()
+        {
+
+           var iceCashPaymentUrl =   System.Configuration.ConfigurationManager.AppSettings["IceCash"];
+
+            IceCashModel model = new IceCashModel();
+
+            model.partner_id = "20523588";
+            model.amount = 125;
+            model.client_reference = Guid.NewGuid();
+            model.success_url = iceCashPaymentUrl+ "/Paypal/success_url";
+            model.failed_url = iceCashPaymentUrl+"/Paypal/failed_url";
+            model.results_url = iceCashPaymentUrl+"/Paypal/results_url";
+            model.details = "Trasaction details";
+
+            ICEcashService service = new ICEcashService();           
+            model.check_hash = service.check_hash(model);
+
+            return View(model);
+        }
+
+
+        public ActionResult success_url()
+        {
+            return View();
+        }
+
+        public ActionResult failed_url()
+        {
+            return View();
+        }
+
+        public ActionResult results_url()
+        {
+            return View();
+        }
+
+
+
         public ActionResult PaymentWithCreditCard(CardDetailModel model)
         {
             if (!isValid(model.ExpiryDate))
@@ -1361,6 +1401,13 @@ namespace InsuranceClaim.Controllers
             return View();
         }
     }
+
+   
+
+
+
+
+
 }
 
 

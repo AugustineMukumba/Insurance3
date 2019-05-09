@@ -205,6 +205,54 @@ namespace Insurance.Service
         //    return json;
         //}
 
+        public string check_hash(IceCashModel model)
+        {
+
+            string _json = "";//"{'PartnerReference':'" + Convert.ToString(Guid.NewGuid()) + "','Date':'" + DateTime.Now.ToString("yyyyMMddhhmmss") + "','Version':'2.0','Request':{'Function':'PartnerToken'}}";
+            //Arguments objArg = new Arguments();
+
+            PaymentArugument objArg = new PaymentArugument();
+
+            objArg.partner_id = model.partner_id;
+            objArg.amount = model.amount;
+            objArg.client_reference = model.client_reference;
+            objArg.success_url = model.success_url;
+            objArg.failed_url = model.failed_url;
+            objArg.results_url = model.results_url;
+            objArg.details = model.details;
+
+            _json = Newtonsoft.Json.JsonConvert.SerializeObject(objArg);
+
+            //string  = json.Reverse()
+            string reversejsonString = new string(_json.ToArray());
+           
+
+            string concatinatedString = reversejsonString ;
+
+            byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(concatinatedString);
+
+            string returnValue = System.Convert.ToBase64String(toEncodeAsBytes);
+
+            //string GetSHA512encrypted = SHA512(returnValue);
+
+            //string MAC = "";
+
+            //for (int i = 0; i < 16; i++)
+            //{
+            //    MAC += GetSHA512encrypted.Substring((i * 8), 1);
+            //}
+
+            //MAC = MAC.ToUpper();
+
+
+            //ICERootObject objroot = new ICERootObject();
+            //objroot.Arguments = objArg;
+            //objroot.MAC = MAC;
+            //objroot.Mode = "SH";
+
+            return returnValue;
+        }
+
 
 
         public ResultRootObject checkVehicleExists(List<RiskDetailModel> listofvehicles, string PartnerToken, string PartnerReference)
@@ -300,7 +348,7 @@ namespace Insurance.Service
 
 
 
-        public ResultRootObject RequestQuote(string PartnerToken, string RegistrationNo, string suminsured, string make, string model, int PaymentTermId, int VehicleYear, int CoverTypeId, int VehicleUsage, string PartnerReference)
+        public ResultRootObject RequestQuote(string PartnerToken, string RegistrationNo, string suminsured, string make, string model, int PaymentTermId, int VehicleYear, int CoverTypeId, int VehicleUsage, string PartnerReference, DateTime CoverStartDate, DateTime CoverEndDate)
         {
             //string PSK = "127782435202916376850511";
             string _json = "";
@@ -321,11 +369,9 @@ namespace Insurance.Service
             //foreach (var item in listofvehicles)
             //{
 
-            obj.Add(new VehicleObject { VRN = RegistrationNo, DurationMonths = (PaymentTermId == 1 ? 12 : PaymentTermId), VehicleValue = Convert.ToInt32(suminsured), YearManufacture = Convert.ToInt32(VehicleYear), InsuranceType = Convert.ToInt32(CoverTypeId), VehicleType = Convert.ToInt32(VehicleUsage), TaxClass = 1, Make = make, Model = model, EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber });
+            obj.Add(new VehicleObject { VRN = RegistrationNo, DurationMonths = (PaymentTermId == 1 ? 12 : PaymentTermId), VehicleValue = Convert.ToInt32(suminsured), YearManufacture = Convert.ToInt32(VehicleYear), InsuranceType = Convert.ToInt32(CoverTypeId), VehicleType = Convert.ToInt32(VehicleUsage), TaxClass = 1, Make = make, Model = model, EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber, StartDate= CoverStartDate, EndDate=CoverEndDate });
 
             // obj.Add(new VehicleObject { VRN = RegistrationNo, DurationMonths = paymentTermId , VehicleValue = Convert.ToInt32(suminsured), YearManufacture = Convert.ToInt32(VehicleYear), InsuranceType = Convert.ToInt32(CoverTypeId), VehicleType = Convert.ToInt32(VehicleUsage), TaxClass = 1, Make = make, Model = model, EntityType = "", Town = CustomerInfo.City, Address1 = CustomerInfo.AddressLine1, Address2 = CustomerInfo.AddressLine2, CompanyName = "", FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, IDNumber = CustomerInfo.NationalIdentificationNumber, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber });
-
-
 
             //}
 
@@ -837,6 +883,31 @@ namespace Insurance.Service
         public string Version { get; set; }
         public FunctionObject Request { get; set; }
     }
+
+    public class PaymentArugument
+    {
+        public string partner_id { get; set; }
+
+        public decimal amount { get; set; }
+
+        public Guid client_reference { get; set; }
+
+        public string success_url { get; set; }
+
+        public string failed_url { get; set; }
+
+        public string results_url { get; set; }
+
+        public string details { get; set; }
+    }
+
+
+
+
+
+
+
+
     public class FunctionObject
     {
         public string Function { get; set; }
@@ -867,6 +938,10 @@ namespace Insurance.Service
         public string Model { get; set; }
         public int TaxClass { get; set; }
         public int YearManufacture { get; set; }
+
+        public DateTime StartDate { get; set; }
+
+        public DateTime EndDate { get; set; }
     }
 
 

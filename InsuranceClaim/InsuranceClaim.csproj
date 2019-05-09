@@ -1059,6 +1059,8 @@
     <Content Include="Views\Renew\makepayment.cshtml" />
     <Content Include="Views\Renew\PaymentFailure.cshtml" />
     <Content Include="Views\Account\RenewPolicyList.cshtml" />
+    <Content Include="Views\Paypal\IceCashPayment.cshtml" />
+    <Content Include="Views\Paypal\success_url.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
