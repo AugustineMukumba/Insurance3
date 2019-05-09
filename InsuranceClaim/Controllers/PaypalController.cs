@@ -13,6 +13,10 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using Insurance.Service;
 using System.Globalization;
+using System.IO;
+using QRCoder;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace InsuranceClaim.Controllers
 {
@@ -701,6 +705,77 @@ namespace InsuranceClaim.Controllers
 
         }
         //public async Task<ActionResult> SaveDetailList(Int32 id, string invoiceNumber = "")
+        public string SaveQRCode(string Policyno)
+        {
+
+            QRCode Codes = new QRCode();
+            string path;
+
+
+            //var Policy =Convert.ToString (TempData["Registrationno"]);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+
+                QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                QRCodeGenerator.QRCode QrCode = qrGenerator.CreateQrCode(Policyno, QRCodeGenerator.ECCLevel.Q);
+                using (Bitmap bitMap = QrCode.GetGraphic(6))
+                {
+                    bitMap.Save(ms, ImageFormat.Png);
+                    Base64ToImage(Convert.ToBase64String(ms.ToArray())).Save(Server.MapPath("~/QRCode/" + Policyno + ".jpg"));
+
+                    //path = "/QRCode/" + Policyno + ".jpg";
+                    path = Request.Url.Authority + "/QRCode/" + Policyno + ".jpg";
+                }
+
+                //path = Request.Url.Scheme + System.Uri.SchemeDelimiter + "/" + Request.Url.Host + "/QRCode/" + Policyno + ".jpg";
+
+
+                //LinkedResource lr = new LinkedResource("path",MediaTypeNames.Image.Jpeg);
+                //lr.ContentId = "qrImage";
+                //path = Server.MapPath("~/QRCode/" + Policyno + ".jpg");
+                //LinkedResource lr = new LinkedResource(path, MediaTypeNames.Image.Jpeg);
+                //lr.ContentId = "image1";
+                //AlternateView av = AlternateView.CreateAlternateViewFromString(str, null, MediaTypeNames.Text.Html);
+                //lr.ContentId = "image1";
+                //av.LinkedResources.Add(lr);
+                //message.AlternateViews.Add(av);
+
+
+                // path = "https://gene.co.zw/QRCode/" + Policyno + ".jpg";
+                // path = Url.ss "http://geneinsureclaim.kindlebit.com/QRCode"  + Policyno + ".jpg";
+
+                //path = Request.Url.Authority+"/QRCode/" + Policyno + ".jpg";
+
+                // path = "/QRCode/" + Policyno + ".jpg";
+
+
+
+
+                Codes.PolicyNo = Policyno;
+                Codes.Qrcode = Policyno;
+                Codes.ReadBy = "";
+                Codes.Deliverto = "";
+                Codes.Createdon = DateTime.Now;
+                Codes.Comment = "";
+
+                var QRCodedata = Mapper.Map<QRCode, QRCode>(Codes);
+                InsuranceContext.QRCodes.Insert(QRCodedata);
+            }
+            return path;
+        }
+
+
+        public System.Drawing.Image Base64ToImage(string base64String)
+        {
+
+            byte[] imageBytes = Convert.FromBase64String(base64String.ToString());
+            MemoryStream ms = new MemoryStream(imageBytes, 0, imageBytes.Length);
+            ms.Write(imageBytes, 0, imageBytes.Length);
+            System.Drawing.Image image = System.Drawing.Image.FromStream(ms, true);
+            return image;
+        }
+
         public async Task<ActionResult> SaveDetailList(Int32 id, string invoiceNumber = "", string Paymentid = "")
         {
             //var PaymentId = Session["PaymentId"];
@@ -744,6 +819,9 @@ namespace InsuranceClaim.Controllers
             var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
 
             var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
+            //Generate QR Code
+            var path = SaveQRCode(policy.PolicyNumber);
+
             var customer = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
             var product = InsuranceContext.Products.Single(Convert.ToInt32(vehicle.ProductId));
             // var currency = InsuranceContext.Currencies.Single(policy.CurrencyId);
@@ -858,6 +936,7 @@ namespace InsuranceClaim.Controllers
                 .Replace("#AccountName#", customer.FirstName + ", " + customer.LastName)
                 .Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2)
                 .Replace("#currencyName#", currencyName)
+                .Replace("#QRpath#", path)
                 .Replace("#Amount#", Convert.ToString(summaryDetail.AmountPaid)).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Cash" : (summaryDetail.PaymentMethodId == 2 ? "PayPal" : "PayNow")));
 
             #region Payment Email
@@ -1003,7 +1082,19 @@ namespace InsuranceClaim.Controllers
             var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).
                 Replace("##paht##", filepath).Replace("##Cellnumber##", user.PhoneNumber)
                 .Replace("##currencyName##", currencyName)
-                .Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (vehicle.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + vehicle.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(summaryDetail.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty)).Replace("##MotorLevy##", Convert.ToString(summaryDetail.TotalZTSCLevies)).Replace("##PremiumDue##", Convert.ToString(summaryDetail.TotalPremium - summaryDetail.TotalStampDuty - summaryDetail.TotalZTSCLevies - summaryDetail.TotalRadioLicenseCost - ListOfVehicles.Sum(x => x.VehicleLicenceFee) + ListOfVehicles.Sum(x => x.Discount))).Replace("##PostalAddress##", customer.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount)).Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount)).Replace("##RadioLicence##", Convert.ToString(summaryDetail.TotalRadioLicenseCost)).Replace("##Discount##", Convert.ToString(ListOfVehicles.Sum(x => x.Discount))).Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).Replace("##NINumber##", customer.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(ListOfVehicles.Sum(x => x.VehicleLicenceFee)));
+                .Replace("##QRpath##", path)
+                .Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email)
+                .Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy"))
+                .Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy"))
+                .Replace("##InceptionDate##", vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover)
+                .Replace("##PaymentTerm##", (vehicle.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + vehicle.PaymentTermId.ToString() + "Months)"))
+                .Replace("##TotalPremiumDue##", Convert.ToString(summaryDetail.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty))
+                .Replace("##MotorLevy##", Convert.ToString(summaryDetail.TotalZTSCLevies))
+                .Replace("##PremiumDue##", Convert.ToString(summaryDetail.TotalPremium - summaryDetail.TotalStampDuty - summaryDetail.TotalZTSCLevies - summaryDetail.TotalRadioLicenseCost - ListOfVehicles.Sum(x => x.VehicleLicenceFee) + ListOfVehicles.Sum(x => x.Discount)))
+                .Replace("##PostalAddress##", customer.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount))
+                .Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount)).Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount))
+                .Replace("##RadioLicence##", Convert.ToString(summaryDetail.TotalRadioLicenseCost)).Replace("##Discount##", Convert.ToString(ListOfVehicles.Sum(x => x.Discount)))
+                .Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).Replace("##NINumber##", customer.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(ListOfVehicles.Sum(x => x.VehicleLicenceFee)));
 
             //var attachementFile = MiscellaneousService.EmailPdf(Body2, policy.CustomerId, policy.PolicyNumber, "Reciept Payment");
 

@@ -79,6 +79,8 @@ namespace InsuranceClaim
                 //30Jan D
 
                 cfg.CreateMap<EndorsementCustomerModel, Customer>().ReverseMap();
+                //08/May D
+                cfg.CreateMap<QRCode, QRCode>().ReverseMap();
 
             });
         }

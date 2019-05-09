@@ -157,6 +157,7 @@
     <Compile Include="Domain\PolicyRenewReminderSetting.cs" />
     <Compile Include="Domain\PolicyStatus.cs" />
     <Compile Include="Domain\Product.cs" />
+    <Compile Include="Domain\QRCode.cs" />
     <Compile Include="Domain\ReceiptModuleHistory.cs" />
     <Compile Include="Domain\RegistrationDocument.cs" />
     <Compile Include="Domain\Reinsurance.cs" />
