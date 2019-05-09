@@ -414,6 +414,9 @@ namespace InsuranceClaim.Controllers
             query += " join ClaimRegistration on ClaimRegistrationProviderDetial.ClaimRegistrationId = ClaimRegistration.id ";
             query += " join ServiceProvider on ClaimRegistrationProviderDetial.ServiceProviderId = ServiceProvider.Id ";
             query += " join ServiceProviderType on ClaimRegistrationProviderDetial.ServiceProviderTypeId = ServiceProviderType.Id ";
+            //Ds
+            query += " where ClaimRegistrationProviderDetial.IsActive = 1";
+
             query += " order by ClaimRegistrationProviderDetial.Id desc";
 
             var ClaimDetailsProviderList = InsuranceContext.Query(query).Select(c => new ClaimDetailsProviderModel
@@ -515,8 +518,8 @@ namespace InsuranceClaim.Controllers
         public ActionResult DeteteClaimDetailsProvider(int id)
         {
 
-            string query = $"update ClaimDetailsProvider set IsActive = 0 where Id={id}";
-            InsuranceContext.ClaimDetailsProviders.Execute(query);
+            string query = $"update ClaimRegistrationProviderDetial set IsActive = 0 where Id={id}";
+            InsuranceContext.ClaimRegistrationProviderDetials.Execute(query);
 
             return RedirectToAction("ClaimDetailsList");
         }

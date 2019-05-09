@@ -2921,7 +2921,7 @@ namespace InsuranceClaim.Controllers
         }
 
         [HttpPost]
-        public JsonResult getPolicyDetailsFromICEcash(string regNo, string PaymentTerm, string SumInsured, string make, string model, string VehicleYear, int CoverTypeId, int VehicleUsage)
+        public JsonResult getPolicyDetailsFromICEcash(string regNo, string PaymentTerm, string SumInsured, string make, string model, string VehicleYear, int CoverTypeId, int VehicleUsage, string CoverStartDate, string CoverEndDate)
         {
             checkVRNwithICEcashResponse response = new checkVRNwithICEcashResponse();
             JsonResult json = new JsonResult();
@@ -2988,8 +2988,11 @@ namespace InsuranceClaim.Controllers
                         VehicleYear = "1900";
                     }
 
+                    DateTime Cover_StartDate = CoverStartDate==null? DateTime.Now : Convert.ToDateTime(CoverStartDate);
+                    DateTime Cover_EndDate = CoverEndDate==null ? DateTime.Now: Convert.ToDateTime(CoverEndDate);
 
-                    ResultRootObject quoteresponse = ICEcashService.RequestQuote(tokenObject.Response.PartnerToken, regNo, SumInsured, make, model, Convert.ToInt32(PaymentTerm), Convert.ToInt32(VehicleYear), CoverTypeId, VehicleUsage, tokenObject.PartnerReference);
+
+                    ResultRootObject quoteresponse = ICEcashService.RequestQuote(tokenObject.Response.PartnerToken, regNo, SumInsured, make, model, Convert.ToInt32(PaymentTerm), Convert.ToInt32(VehicleYear), CoverTypeId, VehicleUsage, tokenObject.PartnerReference, Cover_StartDate, Cover_EndDate);
                     response.result = quoteresponse.Response.Result;
                     if (response.result == 0)
                     {

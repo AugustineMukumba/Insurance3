@@ -50,7 +50,7 @@
                                     <div class="col-sm-6 col-md-6 form-group-text">
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.PolicyholderName, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.PolicyholderName, new { @class = "form-control", @name = "PolicyholderName", @autocomplete = "off", @id = "PolicyholderName", @placeholder = "Enter Policy Holder Name" })
+                                            @Html.TextBoxFor(x => x.PolicyholderName, new { @class = "form-control", @name = "PolicyholderName", @autocomplete = "off", @id = "PolicyholderName", @placeholder = "Enter Policy Holder Name",@readonly = "readonly" })
                                             @Html.ValidationMessageFor(x => x.PolicyholderName, "", new { @class = "text-danger" })
                                         </div>
 
@@ -60,7 +60,7 @@
                                         <div class="form-group">
 
                                             @Html.LabelFor(x => x.PayeeName, new { @class = "gender-label" })
-                                            @Html.TextBoxFor(x => x.PayeeName, new { @class = "form-control", @name = "PayeeName", @autocomplete = "off", @id = "PayeeName", @placeholder = "Enter Payee Name" })
+                                            @Html.TextBoxFor(x => x.PayeeName, new { @class = "form-control", @name = "PayeeName", @autocomplete = "off", @id = "PayeeName", @placeholder = "Enter Payee Name", @readonly = "readonly" })
                                             @Html.ValidationMessageFor(x => x.PayeeName, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -90,7 +90,7 @@
                                             <div class="form-group">
                                                 <label class="gender-label">Amount:</label>
 
-                                                <input type="text" class="form-control" value="@item.ServiceProviderFee" />
+                                                <input type="text" class="form-control" value="@item.ServiceProviderFee" readonly/>
 
                                             </div>
 

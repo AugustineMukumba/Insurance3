@@ -1512,7 +1512,7 @@
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("getPolicyDetailsFromICEcash", "CustomerRegistration")",
-                data: { regNo: $("#RegistrationNo").val(), PaymentTerm : $("#PaymentTermId").val(), suminsured : $("#SumInsured").val(), make: $("#MakeId option:selected").text(), model : $("#ModelId option:selected").text(), VehicleYear : $("#VehicleYear").val(), CoverTypeId : $("#CoverTypeId").val(), VehicleUsage : $("#VehicleUsage").val() },
+                data: { regNo: $("#RegistrationNo").val(), PaymentTerm : $("#PaymentTermId").val(), suminsured : $("#SumInsured").val(), make: $("#MakeId option:selected").text(), model : $("#ModelId option:selected").text(), VehicleYear : $("#VehicleYear").val(), CoverTypeId : $("#CoverTypeId").val(), VehicleUsage : $("#VehicleUsage").val(), CoverStartDate: $("#CoverStartDate").val() , CoverEndDate : $("#CoverEndDate").val() },
                 success: function (data) {
                     debugger;
                     if (data.result == 0) {
