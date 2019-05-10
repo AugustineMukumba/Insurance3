@@ -260,6 +260,7 @@ namespace Insurance.Service
 
         public static string AddLoyaltyPoints(int CustomerId, int PolicyId, RiskDetailModel vehicle, string email = "", string filepath = "")
         {
+            string CurrencyName = "";
             var loaltyPointsSettings = InsuranceContext.Settings.Single(where: $"keyname='Points On Renewal'");
             var loyaltyPoint = 0.00m;
             switch (vehicle.PaymentTermId)
@@ -308,6 +309,12 @@ namespace Insurance.Service
 
             Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            //08 May D
+            
+            SummaryDetailService detailService = new SummaryDetailService();
+            var currencylist = detailService.GetAllCurrency();
+            CurrencyName = detailService.GetCurrencyName(currencylist, vehicle.CurrencyId);
+
             var policy = InsuranceContext.PolicyDetails.Single(PolicyId);
             var customer = InsuranceContext.Customers.Single(CustomerId);
 
@@ -317,7 +324,9 @@ namespace Insurance.Service
             var TotalLoyaltyPoints = InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={CustomerId}").Sum(x => x.PointsEarned);
             string ReminderEmailPath = "/Views/Shared/EmaiTemplates/LoyaltyPoints.cshtml";
             string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(ReminderEmailPath));
-            var body = EmailBody2.Replace("##FirstName##", customer.FirstName).Replace("##path##", filepath).Replace("##LastName##", customer.LastName).Replace("##CreditedWalletAmount##", Convert.ToString(loyaltyPoint)).Replace("##TotalWalletBalance##", Convert.ToString(TotalLoyaltyPoints));
+            var body = EmailBody2.Replace("##FirstName##", customer.FirstName).Replace("##path##", filepath).Replace("##LastName##", customer.LastName)
+                 .Replace("##currencyName##", CurrencyName)
+                .Replace("##CreditedWalletAmount##", Convert.ToString(loyaltyPoint)).Replace("##TotalWalletBalance##", Convert.ToString(TotalLoyaltyPoints));
             // var yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
             var attacheMentPath = MiscellaneousService.EmailPdf(body, policy.CustomerId, policy.PolicyNumber, "LoyaltyPoints");
 

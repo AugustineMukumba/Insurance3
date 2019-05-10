@@ -212,6 +212,7 @@ namespace Insurance.Domain
         public int SummaryDetailId { get; set; }
 
         public int CreatedBy { get; set; }
+        public bool IsMobile { get; set; }
     }
     public partial class PaymentTerm : Entity<PaymentTerm>
     {
