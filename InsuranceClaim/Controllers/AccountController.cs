@@ -481,7 +481,8 @@ namespace InsuranceClaim.Controllers
         [HttpPost]
         public JsonResult ResendPolicy(string summaryId)
         {
-
+            SummaryDetailService detailService = new SummaryDetailService();
+            string CurrencyName = "";
             List<VehicleDetail> ListOfVehicles = new List<VehicleDetail>();
             var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={summaryId}").ToList();
             foreach (var itemSummaryVehicleDetails in SummaryVehicleDetails)
@@ -531,6 +532,10 @@ namespace InsuranceClaim.Controllers
                 PassengerAccidentCoverAmount = PassengerAccidentCoverAmount + Convert.ToDecimal(item.PassengerAccidentCoverAmount);
                 ExcessAmount = ExcessAmount + Convert.ToDecimal(item.ExcessAmount);
 
+                
+                var currencylist = detailService.GetAllCurrency();
+                CurrencyName = detailService.GetCurrencyName(currencylist, item.CurrencyId);
+
 
                 string converType = "";
 
@@ -562,7 +567,7 @@ namespace InsuranceClaim.Controllers
 
 
                 string policyPeriod = item.CoverStartDate.Value.ToString("dd/MM/yyyy") + " - " + item.CoverEndDate.Value.ToString("dd/MM/yyyy");
-                Summeryofcover += "<tr> <td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td>  <td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>" + policyPeriod + "</td><td style='padding: 7px 10px; font - size:15px;'>" + paymentTermsName + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
+                Summeryofcover += "<tr> <td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td>  <td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>"+ CurrencyName + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>" + policyPeriod + "</td><td style='padding: 7px 10px; font - size:15px;'>" + paymentTermsName + "</td><td style='padding: 7px 10px; font - size:15px;'>"+ CurrencyName + Convert.ToString(item.Premium) + "</td></tr>";
             }
 
             Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
@@ -581,7 +586,8 @@ namespace InsuranceClaim.Controllers
                 Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount)).
                 Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount)).Replace("##RadioLicence##", Convert.ToString(summaryDetail.TotalRadioLicenseCost)).
                 Replace("##Discount##", Convert.ToString(ListOfVehicles.Sum(x => x.Discount))).Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).
-                Replace("##NINumber##", customerDetails.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(ListOfVehicles.Sum(x => x.VehicleLicenceFee)));
+                 Replace("##currencyName##", CurrencyName)
+                .Replace("##NINumber##", customerDetails.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(ListOfVehicles.Sum(x => x.VehicleLicenceFee)));
 
             #region Invoice PDF
             var attacehmetn_File = MiscellaneousService.EmailPdf(Bodyy, policyDetials.CustomerId, policyDetials.PolicyNumber, "Policy schedule");
@@ -734,7 +740,21 @@ namespace InsuranceClaim.Controllers
 
 
 
-                    var Bodyy = MotorBody.Replace("##PolicyNo##", policyinfo.PolicyNumber).Replace("##currencyName##", currencyName).Replace("##paht##", filepath).Replace("##Cellnumber##", userinfo.PhoneNumber).Replace("##FirstName##", customerinfo.FirstName).Replace("##LastName##", customerinfo.LastName).Replace("##Email##", userinfo.Email).Replace("##BirthDate##", customerinfo.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customerinfo.AddressLine1).Replace("##Address2##", customerinfo.AddressLine2).Replace("##Renewal##", vehicledetail.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", vehicledetail.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (vehicledetail.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + vehicledetail.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(summaydetails.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summaydetails.TotalStampDuty)).Replace("##MotorLevy##", Convert.ToString(summaydetails.TotalZTSCLevies)).Replace("##PremiumDue##", Convert.ToString(summaydetails.TotalPremium - summaydetails.TotalStampDuty - summaydetails.TotalZTSCLevies - summaydetails.TotalRadioLicenseCost - vehicledetail.VehicleLicenceFee + vehicledetail.Discount)).Replace("##PostalAddress##", customerinfo.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount)).Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount)).Replace("##RadioLicence##", Convert.ToString(summaydetails.TotalRadioLicenseCost)).Replace("##Discount##", Convert.ToString(vehicledetail.Discount)).Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).Replace("##NINumber##", customerinfo.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(vehicledetail.VehicleLicenceFee));
+                    var Bodyy = MotorBody.Replace("##PolicyNo##", policyinfo.PolicyNumber).Replace("##currencyName##", currencyName)
+                        .Replace("##paht##", filepath).Replace("##Cellnumber##", userinfo.PhoneNumber).Replace("##FirstName##", customerinfo.FirstName)
+                        .Replace("##LastName##", customerinfo.LastName).Replace("##Email##", userinfo.Email).Replace("##BirthDate##", customerinfo.DateOfBirth.Value.ToString("dd/MM/yyyy"))
+                        .Replace("##Address1##", customerinfo.AddressLine1).Replace("##Address2##", customerinfo.AddressLine2).Replace("##Renewal##", vehicledetail.RenewalDate.Value.ToString("dd/MM/yyyy"))
+                        .Replace("##InceptionDate##", vehicledetail.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name)
+                        .Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (vehicledetail.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + vehicledetail.PaymentTermId.ToString() + "Months)"))
+                        .Replace("##TotalPremiumDue##", Convert.ToString(summaydetails.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summaydetails.TotalStampDuty))
+                        .Replace("##MotorLevy##", Convert.ToString(summaydetails.TotalZTSCLevies))
+                        .Replace("##PremiumDue##", Convert.ToString(summaydetails.TotalPremium - summaydetails.TotalStampDuty - summaydetails.TotalZTSCLevies - summaydetails.TotalRadioLicenseCost - vehicledetail.VehicleLicenceFee + vehicledetail.Discount))
+                        .Replace("##PostalAddress##", customerinfo.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(ExcessBuyBackAmount))
+                        .Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount))
+                        .Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount)).Replace("##RadioLicence##", Convert.ToString(summaydetails.TotalRadioLicenseCost))
+                        .Replace("##Discount##", Convert.ToString(vehicledetail.Discount)).Replace("##ExcessAmount##", Convert.ToString(ExcessAmount))
+                         .Replace("##currencyName##", currencyName)
+                        .Replace("##NINumber##", customerinfo.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(vehicledetail.VehicleLicenceFee));
                     #region Invoice PDF
                     var attacehmetnFile = MiscellaneousService.EmailPdf(Bodyy, policyinfo.CustomerId, policyinfo.PolicyNumber, "Schedule-motor");
                     var Atter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
@@ -917,7 +937,26 @@ namespace InsuranceClaim.Controllers
                 return View(new RoleViewModel());
             }
         }
+        public ActionResult Summary()
+        {
+            ViewBag.data = InsuranceContext.SummaryDetails.All().ToList().OrderByDescending(x => x.Id).Take(50);
+            return View();
+        }
 
+        public JsonResult UpdateSummary(int? SummartId,int? Amount)
+        {
+            var output = 0;
+            var summarydetail = InsuranceContext.SummaryDetails.All(where: $"Id = {SummartId}").FirstOrDefault();
+            if (summarydetail!=null)
+            {
+                summarydetail.TotalPremium = Amount;
+                InsuranceContext.SummaryDetails.Update(summarydetail);
+                output = 1;
+                return Json(output, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(output, JsonRequestBehavior.AllowGet);
+        }
 
         [HttpPost]
         public ActionResult AddRole(RoleViewModel model)
@@ -3137,6 +3176,8 @@ namespace InsuranceClaim.Controllers
             return View(custModel);
 
         }
+          
+       
 
 
 
@@ -3583,7 +3624,9 @@ namespace InsuranceClaim.Controllers
 
                 string DeActivePolicyPath = "/Views/Shared/EmaiTemplates/PolicyDeActivation.cshtml";
                 string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(DeActivePolicyPath));
-                var body = EmailBody2.Replace("##RenewDate##", _vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##path##", filepath).Replace("##FirstName##", _customer.FirstName).Replace("##LastName##", _customer.LastName).Replace("##Address1##", _customer.AddressLine1).Replace("##Address2##", _customer.AddressLine2).Replace("##PolicyNumber##", policylist.PolicyNumber).Replace("##RegistrationNo##", _vehicle.RegistrationNo);
+                var body = EmailBody2.Replace("##RenewDate##", _vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##path##", filepath).Replace("##FirstName##", _customer.FirstName)
+                    .Replace("##LastName##", _customer.LastName).Replace("##Address1##", _customer.AddressLine1).Replace("##Address2##", _customer.AddressLine2)
+                    .Replace("##PolicyNumber##", policylist.PolicyNumber).Replace("##RegistrationNo##", _vehicle.RegistrationNo);
 
                 objEmailService.SendEmail(_user.Email, "", "", "Policy DeActivation", body, null);
 
@@ -3633,7 +3676,9 @@ namespace InsuranceClaim.Controllers
 
                 string ActivePolicyPath = "/Views/Shared/EmaiTemplates/PolicyActivation.cshtml";
                 string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(ActivePolicyPath));
-                var body = EmailBody2.Replace("##RenewDate##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##path##", filepath).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##PolicyNumber##", policylist.PolicyNumber).Replace("##RegistrationNo##", vehicle.RegistrationNo);
+                var body = EmailBody2.Replace("##RenewDate##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##path##", filepath).Replace("##FirstName##", customer.FirstName)
+                    .Replace("##LastName##", customer.LastName).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2)
+                    .Replace("##PolicyNumber##", policylist.PolicyNumber).Replace("##RegistrationNo##", vehicle.RegistrationNo);
                 objEmailService.SendEmail(user.Email, "", "", "Policy Activation", body, null);
 
 
@@ -3785,7 +3830,10 @@ namespace InsuranceClaim.Controllers
 
                     string ReminderEmailPath = "/Views/Shared/EmaiTemplates/RenewReminderEmail.cshtml";
                     string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(ReminderEmailPath));
-                    var body = EmailBody2.Replace("##RenewDate##", _item.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##path##", filepath).Replace("##FirstName##", customerData.FirstName).Replace("##LastName##", customerData.LastName).Replace("##Address1##", customerData.AddressLine1).Replace("##Address2##", customerData.AddressLine2).Replace("##numberofDays##", item.NoOfDays.ToString()).Replace("##PolicyNumber##", policylist.PolicyNumber).Replace("##Make##", make).Replace("##Model##", model);
+                    var body = EmailBody2.Replace("##RenewDate##", _item.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##path##", filepath)
+                        .Replace("##FirstName##", customerData.FirstName).Replace("##LastName##", customerData.LastName).Replace("##Address1##", customerData.AddressLine1)
+                        .Replace("##Address2##", customerData.AddressLine2).Replace("##numberofDays##", item.NoOfDays.ToString()).Replace("##PolicyNumber##", policylist.PolicyNumber)
+                        .Replace("##Make##", make).Replace("##Model##", model);
                     try
                     {
                         objEmailService.SendEmail(user.Email, "", "", "Renew/Repay Next Term Premium of Your Policy | 21 Days Left", body, null);
@@ -3843,7 +3891,8 @@ namespace InsuranceClaim.Controllers
 
                 string ReminderEmailPath = "/Views/Shared/EmaiTemplates/LicenceDiskReminder.cshtml";
                 string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(ReminderEmailPath));
-                var body = EmailBody2.Replace("##PolicyNumber##", policylist.PolicyNumber).Replace("##path##", filepath).Replace("##Make##", make).Replace("##Model##", model).Replace("##TransactionDate##", vehicle.TransactionDate.Value.ToString("dd/MM/yyyy"));
+                var body = EmailBody2.Replace("##PolicyNumber##", policylist.PolicyNumber).Replace("##path##", filepath).Replace("##Make##", make).Replace("##Model##", model)
+                    .Replace("##TransactionDate##", vehicle.TransactionDate.Value.ToString("dd/MM/yyyy"));
                 try
                 {
                     objEmailService.SendEmail(AdminEmail, "", "", "Licence Disk Not Delivered | Policy NUmber - " + _item.PolicyNumber, body, null);
