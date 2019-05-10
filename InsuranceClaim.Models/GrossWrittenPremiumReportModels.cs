@@ -9,6 +9,7 @@ namespace InsuranceClaim.Models
 {
   public  class GrossWrittenPremiumReportModels
     {
+        public int? Id { get; set; }
         public string Customer_Name { get; set; }
         public string Policy_Number { get; set; }
         public string Policy_endate { get; set; }

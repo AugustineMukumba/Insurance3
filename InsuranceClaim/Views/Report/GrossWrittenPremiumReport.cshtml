@@ -177,7 +177,7 @@
                                 }
 
 
-                                @if (Convert.ToBoolean(item.IsLapsed))
+                                @if (Convert.ToBoolean(item.IsLapsed) && item.IsActive == false)
                                 {
                                     <td>Renewals</td>
                                 }

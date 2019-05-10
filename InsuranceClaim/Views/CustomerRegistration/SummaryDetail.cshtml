@@ -1,16 +1,14 @@
 ﻿@model InsuranceClaim.Models.SummaryDetailModel
+
+
+
 @{
     ViewBag.Title = "SummaryDetail";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
     var vehicleList = (List<InsuranceClaim.Models.RiskDetailModel>)Session["VehicleDetails"];
 
     var customerDetail = (InsuranceClaim.Models.CustomerModel)Session["CustomerDataModal"];
-
-
-
     bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-
-
 
     var isUserStaff = false;
     if ((User.Identity.IsAuthenticated && User.IsInRole("Staff")))
@@ -23,11 +21,26 @@
     var checkIsCustomer = false;
     var ClassForHide = "";
 
-  
-
-
-
+ 
 }
+
+
+
+@*<script type="text/javascript" src="http://test.api.ice.cash/assets/js/jquery.blockUI.2.7.js"></script>
+
+<form method="post" id="checkout-form" action="http://test.api.ice.cash/payments/test_send_request" class="form-horizontal">
+    <input id="hddebug" type="hidden" name="hddebug" value="0" />
+    <input type="hidden" class="form-control" name="partner_id" value="@Model.partner_id"  />
+    <input type="hidden"  class="form-control" name="amount" value="@Model.amount" />
+    <input type="hidden"   class="form-control" name="client_reference" value="@Model.client_reference" />
+    <input type="hidden" class="form-control" name="success_url" value="@Model.success_url" />
+    <input type="hidden" class="form-control" name="failed_url" value="@Model.failed_url" >
+    <input type="hidden"  name="results_url" value="@Model.results_url" />
+    <input type="hidden"  class="form-control" name="results_url" value="@Model.details" />
+    <input type="hidden" class="form-control" name="encoded_html" value="@Model.check_hash" />
+    <button id="btnSubmit" type="button" class="btn btn-success btn-md btn-block"></button>
+</form>*@
+
 
 
 <div class="top-banner-section">
@@ -37,6 +50,8 @@
         </div>
     </div>
 </div>
+
+
 <div class="body-content-section">
     <div class="Process-step-section">
         <div class="container">
@@ -398,6 +413,9 @@
 
                                                         <li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"><img style="width:65px;" src="~/Images/Paynow-logo.png" /></li>
 
+                                                        @*<li id="payment_4" class="payment_type" onclick="PaymentMethod(4)">IceCash Payment </li>*@
+
+
                                                     </ul>
                                                 </div>
 
@@ -664,6 +682,12 @@
 
 </div>
 @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
+
+
+
+@*<script type="text/javascript" src="http://test.api.ice.cash/assets/js/jquery.mask-1.7.7.js"></script>
+<script type="text/javascript" src="http://test.api.ice.cash/assets/js/validator.js"></script>*@
+
 <script>
 
 
@@ -833,6 +857,21 @@
     }
 
     $(document).ready(function () {
+
+
+        // IceCash payment
+        //$('#btnSubmit').click(function() {
+        //    $('#checkout-form').submit();
+        //});
+
+        //$('#btnDebug').click(function() {
+        //    $('#hddebug').val('1');
+        //    $('#checkout-form').submit();
+        //});
+
+
+
+
         var isUserStaff = '@User.IsInRole("Staff")';
 
 

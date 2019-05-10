@@ -183,6 +183,11 @@ namespace InsuranceClaim.Controllers
         }
 
 
+
+    
+
+
+
         public void SetCustomerValueIntoSession(int summaryId)
         {
             Session["ICEcashToken"] = null;
@@ -1246,6 +1251,8 @@ namespace InsuranceClaim.Controllers
                 WriteLog(ex.Message);
                 return View(model);
             }
+
+         //   model.IceCashModel = 
 
             return View(model);
         }

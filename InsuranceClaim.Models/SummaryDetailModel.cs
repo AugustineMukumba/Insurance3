@@ -9,6 +9,11 @@ namespace InsuranceClaim.Models
 {
     public class SummaryDetailModel
     {
+        //public SummaryDetailModel()
+        //{
+        //    IceCashModel = new IceCashModel();
+        //}
+
         public int Id { get; set; }
         public int? PaymentTermId { get; set; }
         public int? PaymentMethodId { get; set; }
@@ -33,7 +38,7 @@ namespace InsuranceClaim.Models
         public decimal? Discount { get; set; }
         [Required(ErrorMessage = "Please Enter Amount to be paid")]
         public decimal AmountPaid { get; set; }
-        public decimal? MaxAmounttoPaid { get; set; }        
+        public decimal? MaxAmounttoPaid { get; set; }
         public decimal? MinAmounttoPaid { get; set; }
         public DateTime BalancePaidDate { get; set; }
         public string Notes { get; set; }
@@ -43,9 +48,11 @@ namespace InsuranceClaim.Models
 
         public string InsuranceId { get; set; }
 
-     
         public string InvoiceNumber { get; set; }
 
         public string Currency { get; set; }
+
+      //  public IceCashModel IceCashModel { get; set; }
+
     }
 }

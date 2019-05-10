@@ -482,6 +482,8 @@ namespace InsuranceClaim.Controllers
 
                             if (customer != null)
                                 obj.Customer_Name = customer.FirstName + " " + customer.LastName;
+                            //10MAy D
+                            obj.Id = item.Id;
 
                             obj.Policy_Number = policy.PolicyNumber;
                             obj.Policy_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("dd/MM/yyy");
@@ -569,7 +571,7 @@ namespace InsuranceClaim.Controllers
 
             }
             //_ListGrossWrittenPremiumReport.ListGrossWrittenPremiumReportdata = ListGrossWrittenPremiumReport.OrderBy(p => p.Customer_Name).ThenBy(p => p.Payment_Term).ThenBy(p => p.Payment_Mode).ToList();
-            Model.ListGrossWrittenPremiumReportdata = ListGrossWrittenPremiumReport.OrderBy(p => p.Customer_Name).ThenBy(p => p.Payment_Term).ThenBy(p => p.Payment_Mode).ToList();
+            Model.ListGrossWrittenPremiumReportdata = ListGrossWrittenPremiumReport.OrderBy(p => p.Id).ThenBy(p => p.Customer_Name).ThenBy(p => p.Payment_Term).ThenBy(p => p.Payment_Mode).ToList();
             return View(Model);
         }
 
@@ -651,6 +653,8 @@ namespace InsuranceClaim.Controllers
                             obj.ZTSC_Levy = Convert.ToDecimal(item.ZTSCLevy);
                             obj.Sum_Insured = Convert.ToDecimal(item.SumInsured);
 
+                            //10 May D
+                            obj.Id = item.Id;
                             //8 Feb
                             obj.IsLapsed = item.isLapsed;
                             obj.PolicyRenewalDate = Convert.ToDateTime(item.RenewalDate);
@@ -718,7 +722,7 @@ namespace InsuranceClaim.Controllers
 
             }
             //_ListGrossWrittenPremiumReport.ListGrossWrittenPremiumReportdata = ListGrossWrittenPremiumReport.OrderBy(p => p.Customer_Name).ThenBy(p => p.Payment_Term).ThenBy(p => p.Payment_Mode).ToList();
-            Model.ListGrossWrittenPremiumReportdata = ListGrossWrittenPremiumReport.OrderBy(p => p.Customer_Name).ThenBy(c => c.Policy_Number).ThenBy(c => c.Policy_Number).ThenBy(p => p.Payment_Term).ThenBy(p => p.Payment_Mode).ToList();
+            Model.ListGrossWrittenPremiumReportdata = ListGrossWrittenPremiumReport.OrderBy(p => p.Id).ThenBy(p => p.Customer_Name).ThenBy(c => c.Policy_Number).ThenBy(c => c.Policy_Number).ThenBy(p => p.Payment_Term).ThenBy(p => p.Payment_Mode).ToList();
             return View("GrossWrittenPremiumReport", Model);
 
         }
@@ -1457,7 +1461,6 @@ namespace InsuranceClaim.Controllers
             query += " join SummaryDetail on ReceiptModuleHistory.SummaryDetailId = SummaryDetail.id ";
             //query += " join Customer on SummaryDetail.CreatedBy = Customer.Id";
             query += "Left join Customer  on ReceiptModuleHistory.CreatedBy = Customer.Id ";
-
 
 
             var list = InsuranceContext.Query(query)

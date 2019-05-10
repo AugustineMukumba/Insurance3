@@ -211,6 +211,20 @@
 
                                 @*<li><a href="#">Contact</a></li>*@
 
+
+                                @if (User.IsInRole("Administrator"))
+                                {
+                                    @*<li><a class="DashboardButton" href="@Url.Action("UserManagement","Account")">Claim User</a></li>*@
+
+                                    <li><a href="/Account/UserManagement?id=0&Claim=1">Claim User</a></li>
+                                }
+
+                                @if (User.IsInRole("Administrator"))
+                                {
+                                    <li><a class="DashboardButton" href="@Url.Action("LicenceTickets","Account")">LicenceTickets</a></li>
+                                }
+
+
                                 @if (User.IsInRole("Administrator"))
                                 {
                                     <li><a class="DashboardButton" href="@Url.Action("Dashboard","Account")">Dashboard</a></li>

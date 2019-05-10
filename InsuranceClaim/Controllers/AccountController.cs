@@ -35,7 +35,7 @@ namespace InsuranceClaim.Controllers
 
         public AccountController()
         {
-            
+
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -532,7 +532,7 @@ namespace InsuranceClaim.Controllers
                 PassengerAccidentCoverAmount = PassengerAccidentCoverAmount + Convert.ToDecimal(item.PassengerAccidentCoverAmount);
                 ExcessAmount = ExcessAmount + Convert.ToDecimal(item.ExcessAmount);
 
-                
+
                 var currencylist = detailService.GetAllCurrency();
                 CurrencyName = detailService.GetCurrencyName(currencylist, item.CurrencyId);
 
@@ -567,7 +567,7 @@ namespace InsuranceClaim.Controllers
 
 
                 string policyPeriod = item.CoverStartDate.Value.ToString("dd/MM/yyyy") + " - " + item.CoverEndDate.Value.ToString("dd/MM/yyyy");
-                Summeryofcover += "<tr> <td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td>  <td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>"+ CurrencyName + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>" + policyPeriod + "</td><td style='padding: 7px 10px; font - size:15px;'>" + paymentTermsName + "</td><td style='padding: 7px 10px; font - size:15px;'>"+ CurrencyName + Convert.ToString(item.Premium) + "</td></tr>";
+                Summeryofcover += "<tr> <td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td>  <td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>" + CurrencyName + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>" + policyPeriod + "</td><td style='padding: 7px 10px; font - size:15px;'>" + paymentTermsName + "</td><td style='padding: 7px 10px; font - size:15px;'>" + CurrencyName + Convert.ToString(item.Premium) + "</td></tr>";
             }
 
             Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
@@ -943,11 +943,11 @@ namespace InsuranceClaim.Controllers
             return View();
         }
 
-        public JsonResult UpdateSummary(int? SummartId,int? Amount)
+        public JsonResult UpdateSummary(int? SummartId, int? Amount)
         {
             var output = 0;
             var summarydetail = InsuranceContext.SummaryDetails.All(where: $"Id = {SummartId}").FirstOrDefault();
-            if (summarydetail!=null)
+            if (summarydetail != null)
             {
                 summarydetail.TotalPremium = Amount;
                 InsuranceContext.SummaryDetails.Update(summarydetail);
@@ -1022,7 +1022,6 @@ namespace InsuranceClaim.Controllers
             }
 
 
-
             List<IdentityRole> roles = roleManager.Roles.ToList();
 
             InsuranceClaim.Models.RoleManagementListViewModel _roles = new RoleManagementListViewModel();
@@ -1048,7 +1047,7 @@ namespace InsuranceClaim.Controllers
         }
 
 
-        public ActionResult UserManagement(int id = 0)
+        public ActionResult UserManagement(int id = 0, string Claim = "")
         {
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             string path = Server.MapPath("~/Content/Countries.txt");
@@ -1068,7 +1067,7 @@ namespace InsuranceClaim.Controllers
             if (userLoggedin)
             {
                 var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                var role = UserManager.GetRoles(userid).FirstOrDefault();
+               // var role = UserManager.GetRoles(userid).FirstOrDefault();
                 //if (role != "SuperAdmin")
                 //{
                 //    return RedirectToAction("Index", "CustomerRegistration");
@@ -1081,6 +1080,12 @@ namespace InsuranceClaim.Controllers
 
             CustomerModel obj = new CustomerModel();
             List<IdentityRole> roles = roleManager.Roles.ToList();
+
+            if(Claim!="")
+            {
+                roles = roles.Where(c => c.Id == "4e19c887-f8a9-4353-939f-65e19afe0D2h").ToList();
+            }
+
             InsuranceClaim.Models.RoleManagementListViewModel _roles = new RoleManagementListViewModel();
 
             _roles.RoleList = roles;
@@ -2155,7 +2160,7 @@ namespace InsuranceClaim.Controllers
 
                     SummaryList = SummaryList.Where(c => c.CreatedBy == customerID && c.isQuotation == false).OrderByDescending(c => c.Id).ToList();
                 }
-                else if (role == "Administrator" || role== "Renewals")
+                else if (role == "Administrator" || role == "Renewals")
                 {
                     //  SummaryList = InsuranceContext.SummaryDetails.All(where: $"isQuotation = '0'  ").OrderByDescending(x => x.Id).ToList();
                     SummaryList = SummaryList.Where(c => c.isQuotation == false).OrderByDescending(c => c.Id).Take(200).ToList();
@@ -2191,7 +2196,7 @@ namespace InsuranceClaim.Controllers
                         if (vehicle != null)
                         {
                             policylistviewmodel.CustomerName = MiscellaneousService.GetCustomerNamebyID(vehicle.CustomerId.Value);
-                           
+
 
                             if (vehicle.PolicyId != 0)
                             {
@@ -2230,7 +2235,7 @@ namespace InsuranceClaim.Controllers
 
                                     obj.Make = MiscellaneousService.GetMakeNamebyMakeCode(_vehicle.MakeId);
                                     obj.Model = MiscellaneousService.GetModelNamebyModelCode(_vehicle.ModelId);
-                                  
+
 
                                     //obj.Premium = Convert.ToDecimal(_vehicle.Premium);
                                     obj.RegistrationNo = _vehicle.RegistrationNo;
@@ -3176,8 +3181,8 @@ namespace InsuranceClaim.Controllers
             return View(custModel);
 
         }
-          
-       
+
+
 
 
 
@@ -3531,7 +3536,7 @@ namespace InsuranceClaim.Controllers
                         obj.model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ShortDescription;
                         obj.covertype = InsuranceContext.CoverTypes.Single(item.CoverTypeId).Name;
                         obj.excess = item.Premium.ToString();
-                        obj.premium= Convert.ToString(list.Sum(items => items.Premium + items.ZTSCLevy + items.StampDuty + items.VehicleLicenceFee + (items.IncludeRadioLicenseCost ? items.RadioLicenseCost : 0.00m)));
+                        obj.premium = Convert.ToString(list.Sum(items => items.Premium + items.ZTSCLevy + items.StampDuty + items.VehicleLicenceFee + (items.IncludeRadioLicenseCost ? items.RadioLicenseCost : 0.00m)));
                         obj.suminsured = item.SumInsured == null ? "0" : item.SumInsured.ToString();
                         obj.CurrencyName = detailService.GetCurrencyName(currencyList, item.CurrencyId);
                         obj.ZTSCLevy = item.ZTSCLevy == null ? "0" : item.ZTSCLevy.ToString();
