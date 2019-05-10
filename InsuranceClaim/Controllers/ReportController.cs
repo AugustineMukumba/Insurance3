@@ -1099,7 +1099,7 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult CustomerListingReport()
         {
-            var ListCustomerListingReport = new List<CustomerListingReportModel>();
+           List <CustomerListingReportModel> ListCustomerListingReport = new List<CustomerListingReportModel>();
             ListCustomerListingReport _CustomerListingReport = new ListCustomerListingReport();
 
             _CustomerListingReport.CustomerListingReport = new List<CustomerListingReportModel>();
@@ -1107,8 +1107,10 @@ namespace InsuranceClaim.Controllers
             CustomerListingSearchReportModel model = new CustomerListingSearchReportModel();
             var VehicleDetails = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
 
+            var userList = UserManager.Users.ToList();
 
-            foreach (var item in VehicleDetails)
+
+            foreach (var item in VehicleDetails.Take(100))
             {
                 var Policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
                 var Customer = InsuranceContext.Customers.Single(item.CustomerId);
@@ -1121,7 +1123,9 @@ namespace InsuranceClaim.Controllers
 
                     var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
 
-                    var _User = UserManager.FindById(Customer.UserID.ToString());
+                    //var _User = UserManager.FindById(Customer.UserID.ToString());
+
+                    var _User = userList.FirstOrDefault(c=>c.Id== Customer.UserID.ToString());
 
 
                     ListCustomerListingReport.Add(new CustomerListingReportModel()
@@ -1138,9 +1142,9 @@ namespace InsuranceClaim.Controllers
                         Product = InsuranceContext.Products.Single(item.ProductId) == null ? "" : InsuranceContext.Products.Single(item.ProductId).ProductName,
                         VehicleMake = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'") == null ? "" : InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'").MakeDescription,
                         VehicleModel = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'") == null ? "" : InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription,
-                        VehicleUsage = InsuranceContext.VehicleUsages.Single(item.VehicleUsage) == null ? "" : InsuranceContext.VehicleUsages.Single(item.VehicleUsage).VehUsage,
+                        VehicleUsage = InsuranceContext.VehicleUsages.Single(item.VehicleUsage==null? 0 : item.VehicleUsage) == null ? "" : InsuranceContext.VehicleUsages.Single(item.VehicleUsage).VehUsage,
                         PaymentTerm = InsuranceContext.PaymentTerms.Single(item.PaymentTermId) == null ? "" : InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name,
-                        PaymentType = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name,
+                        PaymentType = InsuranceContext.PaymentMethods.Single(summary==null?0: summary.PaymentMethodId) ==null ? "Cash" : InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name,
 
 
 
@@ -1175,6 +1179,45 @@ namespace InsuranceClaim.Controllers
 
             VehicleDetails = VehicleDetails.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
 
+            var userList = UserManager.Users.ToList();
+
+
+            //foreach (var item in VehicleDetails)
+            //{
+            //    var Policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
+            //    var Customer = InsuranceContext.Customers.Single(item.CustomerId);
+            //    // var Vehicle = InsuranceContext.VehicleDetails.Single(item.Id);
+
+            //    var vehicleSummarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
+
+            //    if (vehicleSummarydetail != null)
+            //    {
+
+            //        var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
+            //        var _User = UserManager.FindById(Customer.UserID.ToString());
+
+            //        ListCustomerListingReport.Add(new CustomerListingReportModel()
+            //        {
+            //            FirstName = Customer.FirstName,
+            //            LastName = Customer.LastName,
+            //            Gender = Customer.Gender,
+            //            EmailAddress = _User.Email,
+            //            ContactNumber = Customer.Countrycode + "-" + Customer.PhoneNumber,
+            //            Dateofbirth = Convert.ToDateTime(Customer.DateOfBirth),
+            //            NationalIdentificationNumber = Customer.NationalIdentificationNumber,
+            //            City = Customer.City,
+            //            Product = InsuranceContext.Products.Single(item.ProductId).ProductName,
+            //            VehicleMake = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'").MakeDescription,
+            //            VehicleModel = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription,
+            //            VehicleUsage = InsuranceContext.VehicleUsages.Single(item.VehicleUsage).VehUsage,
+            //            PaymentTerm = InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name,
+            //            PaymentType = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name,
+            //        });
+            //    }
+            //}
+
+
+
 
             foreach (var item in VehicleDetails)
             {
@@ -1188,27 +1231,43 @@ namespace InsuranceClaim.Controllers
                 {
 
                     var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
-                    var _User = UserManager.FindById(Customer.UserID.ToString());
+
+                    //var _User = UserManager.FindById(Customer.UserID.ToString());
+
+                    var _User = userList.FirstOrDefault(c => c.Id == Customer.UserID.ToString());
+
 
                     ListCustomerListingReport.Add(new CustomerListingReportModel()
                     {
-                        FirstName = Customer.FirstName,
-                        LastName = Customer.LastName,
-                        Gender = Customer.Gender,
-                        EmailAddress = _User.Email,
-                        ContactNumber = Customer.Countrycode + "-" + Customer.PhoneNumber,
+
+                        FirstName = Customer.FirstName == null ? "" : Customer.FirstName,
+                        LastName = Customer.LastName == null ? "" : Customer.LastName,
+                        Gender = Customer.Gender == null ? "" : Customer.Gender,
+                        EmailAddress = _User.Email == null ? "" : _User.Email,
+                        ContactNumber = Customer.Countrycode == null ? "" : Customer.Countrycode + "-" + Customer.PhoneNumber == null ? "" : Customer.PhoneNumber,
                         Dateofbirth = Convert.ToDateTime(Customer.DateOfBirth),
-                        NationalIdentificationNumber = Customer.NationalIdentificationNumber,
-                        City = Customer.City,
-                        Product = InsuranceContext.Products.Single(item.ProductId).ProductName,
-                        VehicleMake = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'").MakeDescription,
-                        VehicleModel = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription,
-                        VehicleUsage = InsuranceContext.VehicleUsages.Single(item.VehicleUsage).VehUsage,
-                        PaymentTerm = InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name,
-                        PaymentType = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name,
+                        NationalIdentificationNumber = Customer.NationalIdentificationNumber == null ? "" : Customer.NationalIdentificationNumber,
+                        City = Customer.City == null ? "" : Customer.City,
+                        Product = InsuranceContext.Products.Single(item.ProductId) == null ? "" : InsuranceContext.Products.Single(item.ProductId).ProductName,
+                        VehicleMake = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'") == null ? "" : InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'").MakeDescription,
+                        VehicleModel = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'") == null ? "" : InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription,
+                        VehicleUsage = InsuranceContext.VehicleUsages.Single(item.VehicleUsage == null ? 0 : item.VehicleUsage) == null ? "" : InsuranceContext.VehicleUsages.Single(item.VehicleUsage).VehUsage,
+                        PaymentTerm = InsuranceContext.PaymentTerms.Single(item.PaymentTermId) == null ? "" : InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name,
+                        PaymentType = InsuranceContext.PaymentMethods.Single(summary == null ? 0 : summary.PaymentMethodId) == null ? "Cash" : InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name,
+
+
+
                     });
+
                 }
             }
+
+
+
+
+
+
+
             model.CustomerListingReport = ListCustomerListingReport.OrderBy(x => x.FirstName).ToList();
 
 

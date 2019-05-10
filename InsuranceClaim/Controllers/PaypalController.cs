@@ -40,7 +40,7 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult Index(int id)
         {
-           //  ApproveVRNToIceCash(7839);
+            //  ApproveVRNToIceCash(7839);
             return View();
         }
 
@@ -48,19 +48,19 @@ namespace InsuranceClaim.Controllers
         public ActionResult IceCashPayment()
         {
 
-           var iceCashPaymentUrl =   System.Configuration.ConfigurationManager.AppSettings["IceCash"];
+            var iceCashPaymentUrl = System.Configuration.ConfigurationManager.AppSettings["IceCash"];
 
             IceCashModel model = new IceCashModel();
 
             model.partner_id = "20523588";
             model.amount = 125;
             model.client_reference = Guid.NewGuid();
-            model.success_url = iceCashPaymentUrl+ "/Paypal/success_url";
-            model.failed_url = iceCashPaymentUrl+"/Paypal/failed_url";
-            model.results_url = iceCashPaymentUrl+"/Paypal/results_url";
+            model.success_url = iceCashPaymentUrl + "/Paypal/success_url";
+            model.failed_url = iceCashPaymentUrl + "/Paypal/failed_url";
+            model.results_url = iceCashPaymentUrl + "/Paypal/results_url";
             model.details = "Trasaction details";
 
-            ICEcashService service = new ICEcashService();           
+            ICEcashService service = new ICEcashService();
             model.check_hash = service.check_hash(model);
 
             return View(model);
@@ -707,61 +707,74 @@ namespace InsuranceClaim.Controllers
         //public async Task<ActionResult> SaveDetailList(Int32 id, string invoiceNumber = "")
         public string SaveQRCode(string Policyno)
         {
-
-            QRCode Codes = new QRCode();
-            string path;
-
-
-            //var Policy =Convert.ToString (TempData["Registrationno"]);
-
-            using (MemoryStream ms = new MemoryStream())
+            string path="";
+            try
             {
 
-                QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                QRCodeGenerator.QRCode QrCode = qrGenerator.CreateQrCode(Policyno, QRCodeGenerator.ECCLevel.Q);
-                using (Bitmap bitMap = QrCode.GetGraphic(6))
-                {
-                    bitMap.Save(ms, ImageFormat.Png);
-                    Base64ToImage(Convert.ToBase64String(ms.ToArray())).Save(Server.MapPath("~/QRCode/" + Policyno + ".jpg"));
+                
+              var urlPath = System.Configuration.ConfigurationManager.AppSettings["urlPath"];
 
-                    //path = "/QRCode/" + Policyno + ".jpg";
-                    path = Request.Url.Authority + "/QRCode/" + Policyno + ".jpg";
+                QRCode Codes = new QRCode();
+               
+
+
+                //var Policy =Convert.ToString (TempData["Registrationno"]);
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+
+                    QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                    QRCodeGenerator.QRCode QrCode = qrGenerator.CreateQrCode(Policyno, QRCodeGenerator.ECCLevel.Q);
+                    using (Bitmap bitMap = QrCode.GetGraphic(6))
+                    {
+                        bitMap.Save(ms, ImageFormat.Png);
+                        Base64ToImage(Convert.ToBase64String(ms.ToArray())).Save(Server.MapPath("~/QRCode/" + Policyno + ".jpg"));
+
+                        //path = "/QRCode/" + Policyno + ".jpg";
+                        path = urlPath + "/QRCode/" + Policyno + ".jpg";
+                    }
+
+                    //path = Request.Url.Scheme + System.Uri.SchemeDelimiter + "/" + Request.Url.Host + "/QRCode/" + Policyno + ".jpg";
+
+
+                    //LinkedResource lr = new LinkedResource("path",MediaTypeNames.Image.Jpeg);
+                    //lr.ContentId = "qrImage";
+                    //path = Server.MapPath("~/QRCode/" + Policyno + ".jpg");
+                    //LinkedResource lr = new LinkedResource(path, MediaTypeNames.Image.Jpeg);
+                    //lr.ContentId = "image1";
+                    //AlternateView av = AlternateView.CreateAlternateViewFromString(str, null, MediaTypeNames.Text.Html);
+                    //lr.ContentId = "image1";
+                    //av.LinkedResources.Add(lr);
+                    //message.AlternateViews.Add(av);
+
+
+                    // path = "https://gene.co.zw/QRCode/" + Policyno + ".jpg";
+                    // path = Url.ss "http://geneinsureclaim.kindlebit.com/QRCode"  + Policyno + ".jpg";
+
+                    //path = Request.Url.Authority+"/QRCode/" + Policyno + ".jpg";
+
+                    // path = "/QRCode/" + Policyno + ".jpg";
+
+
+
+
+                    Codes.PolicyNo = Policyno;
+                    Codes.Qrcode = Policyno;
+                    Codes.ReadBy = "";
+                    Codes.Deliverto = "";
+                    Codes.Createdon = DateTime.Now;
+                    Codes.Comment = "";
+
+                    var QRCodedata = Mapper.Map<QRCode, QRCode>(Codes);
+                    InsuranceContext.QRCodes.Insert(QRCodedata);
                 }
 
-                //path = Request.Url.Scheme + System.Uri.SchemeDelimiter + "/" + Request.Url.Host + "/QRCode/" + Policyno + ".jpg";
-
-
-                //LinkedResource lr = new LinkedResource("path",MediaTypeNames.Image.Jpeg);
-                //lr.ContentId = "qrImage";
-                //path = Server.MapPath("~/QRCode/" + Policyno + ".jpg");
-                //LinkedResource lr = new LinkedResource(path, MediaTypeNames.Image.Jpeg);
-                //lr.ContentId = "image1";
-                //AlternateView av = AlternateView.CreateAlternateViewFromString(str, null, MediaTypeNames.Text.Html);
-                //lr.ContentId = "image1";
-                //av.LinkedResources.Add(lr);
-                //message.AlternateViews.Add(av);
-
-
-                // path = "https://gene.co.zw/QRCode/" + Policyno + ".jpg";
-                // path = Url.ss "http://geneinsureclaim.kindlebit.com/QRCode"  + Policyno + ".jpg";
-
-                //path = Request.Url.Authority+"/QRCode/" + Policyno + ".jpg";
-
-                // path = "/QRCode/" + Policyno + ".jpg";
-
-
-
-
-                Codes.PolicyNo = Policyno;
-                Codes.Qrcode = Policyno;
-                Codes.ReadBy = "";
-                Codes.Deliverto = "";
-                Codes.Createdon = DateTime.Now;
-                Codes.Comment = "";
-
-                var QRCodedata = Mapper.Map<QRCode, QRCode>(Codes);
-                InsuranceContext.QRCodes.Insert(QRCodedata);
             }
+            catch (Exception ex)
+            {
+
+            }
+
             return path;
         }
 
@@ -922,10 +935,10 @@ namespace InsuranceClaim.Controllers
             //var currencyDetails = currencylist.FirstOrDefault(c => c.Id == vehicle.CurrencyId);
             //if(currencyDetails!=null)
 
-           
 
-                currencyName = detailService.GetCurrencyName(currencylist, vehicle.CurrencyId);
-            
+
+            currencyName = detailService.GetCurrencyName(currencylist, vehicle.CurrencyId);
+
 
 
             string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/Reciept.cshtml";
@@ -1022,7 +1035,7 @@ namespace InsuranceClaim.Controllers
             var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
 
 
-        
+
 
             foreach (var item in ListOfVehicles)
             {
@@ -1053,13 +1066,13 @@ namespace InsuranceClaim.Controllers
 
                 string policyPeriod = item.CoverStartDate.Value.ToString("dd/MM/yyyy") + " - " + item.CoverEndDate.Value.ToString("dd/MM/yyyy");
 
-              //   currencyDetails = currencylist.FirstOrDefault(c => c.Id == item.CurrencyId);
+                //   currencyDetails = currencylist.FirstOrDefault(c => c.Id == item.CurrencyId);
 
 
 
 
                 currencyName = detailService.GetCurrencyName(currencylist, item.CurrencyId);
-                
+
 
                 //Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + (item.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>$0.00</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Excess) + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
                 Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td> <td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + vehicledescription + "</font></td> <td> " + item.CoverNote + " </td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + currencyName + item.SumInsured + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + (item.CoverTypeId == 4 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + policyPeriod + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + paymentTermsName + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + currencyName + Convert.ToString(item.Premium) + "</font></td></tr>";
@@ -1402,7 +1415,7 @@ namespace InsuranceClaim.Controllers
         }
     }
 
-   
+
 
 
 
