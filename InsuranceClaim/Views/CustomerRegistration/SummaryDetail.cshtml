@@ -402,7 +402,7 @@
                                                 <div class="payment-card">
                                                     <ul class="list-inline">
 
-                                                        @if (User.IsInRole("Staff"))
+                                                        @if (User.IsInRole("Staff")|| User.IsInRole("Renewals"))
                                                         {
                                                             <li id="payment_1" class="payment_type active" onclick="PaymentMethod(1)">  Cash   </li>
                                                         }
@@ -711,6 +711,7 @@
 
     function PaymentMethod(paymentMethod)
     {
+        debugger;
         $("li").removeClass("active");
         $("#payment_"+paymentMethod).addClass("active");
         $("#PaymentMethodId").val(paymentMethod);
@@ -779,10 +780,10 @@
                 var bodyHTML = "";
                 var count = 0;
                 var totalpremium = 0.00;
-                $.each(list, function (index, value) {                           
+                $.each(list, function (index, value) {
                     debugger;
                     count++;
-                  
+
                     bodyHTML += "<tr><td>" + value.make + " "+ value.model+"(" + value.RegistrationNo+" )" + "</td><td>" + value.CurrencyName + "</td><td>" +  value.suminsured + "</td><td>" + value.premium + "</td><td>" + value.radio_license_fee + "</td><td>" +  value.ZTSCLevy + "</td><td>" +  value.vehicle_license_fee+ "</td> <td>" +  value.stampDuty+ "</td><td>" + value.total+ "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >Edit</button></li><li><button type='button' onclick='DeleteVehicleDetails(" + count + ")' class='btn-sm btn-danger' >Delete</button></li></ul></div></td></tr>"
                     totalpremium += parseFloat(value.premium);
                 });
@@ -873,6 +874,7 @@
 
 
         var isUserStaff = '@User.IsInRole("Staff")';
+        var isRenewals = '@User.IsInRole("Renewals")';
 
 
         if('@Model.CustomSumarryDetilId'!="")
@@ -880,7 +882,12 @@
             $("#invoiceNumberDiv").hide();
         }
 
-        if(isUserStaff == "False")
+        if(isRenewals)
+        {
+            $("#payment_1").addClass("active");
+            $("#invoiceNumberDiv").show();
+        }
+      else  if(isUserStaff == "False")
         {
             $("#payment_2").addClass("active");
             $("#invoiceNumberDiv").hide();

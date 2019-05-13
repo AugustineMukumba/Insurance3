@@ -2180,6 +2180,14 @@ namespace InsuranceClaim.Controllers
                         endorsementsummary.Add(endorsementssummryinfo);
                     }
                 }
+                else if (role == "Renewals")
+                {
+                    var endorsementssummryinfo = InsuranceContext.EndorsementSummaryDetails.Single(where: $"CreatedBy ='{custome}'and IsCompleted = 'true'and EndorsementPolicyId = '{item.Id}'");
+                    if (endorsementssummryinfo != null)
+                    {
+                        endorsementsummary.Add(endorsementssummryinfo);
+                    }
+                }
             }
 
             foreach (var item in endorsementsummary)
