@@ -70,7 +70,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="QRCoder">
-      <HintPath>..\..\chandan\08_may\bin\QRCoder.dll</HintPath>
+      <HintPath>F:\Deepak\RituCode\24-April\InsuranceClaim\bin\QRCoder.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=106.3.1.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
