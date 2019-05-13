@@ -108,6 +108,10 @@ namespace Insurance.Domain
 
         public static VehicleTaxClasses VehicleTaxClasses { get { return new VehicleTaxClasses(); } }
 
+        public static Branches Branches { get { return new Branches(); } }
+
+        public static MachineBranches MachineBranches { get { return new MachineBranches(); } }
+
         // UniqeTransactions
 
         // general purpose operations

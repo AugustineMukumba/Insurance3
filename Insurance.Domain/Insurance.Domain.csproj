@@ -123,6 +123,7 @@
     <Compile Include="Domain\AspNetUsersUpdate.cs" />
     <Compile Include="Domain\BasicExcess.cs" />
     <Compile Include="Domain\BirthdayMessage.cs" />
+    <Compile Include="Domain\Branches.cs" />
     <Compile Include="Domain\BusinessSource.cs" />
     <Compile Include="Domain\Checklist.cs" />
     <Compile Include="Domain\ClaimAdjustment.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Domain\LicenceTicket.cs" />
     <Compile Include="Domain\LicenseDelivery.cs" />
     <Compile Include="Domain\LoyaltyDetail.cs" />
+    <Compile Include="Domain\MachineBranches.cs" />
     <Compile Include="Domain\PaymentInformation.cs" />
     <Compile Include="Domain\PaymentMethod.cs" />
     <Compile Include="Domain\PaymentTerm.cs" />

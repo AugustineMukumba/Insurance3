@@ -183,22 +183,14 @@ namespace InsuranceClaim.Controllers
         }
 
 
-
-    
-
-
-
         public void SetCustomerValueIntoSession(int summaryId)
         {
             Session["ICEcashToken"] = null;
             Session["issummaryformvisited"] = true;
-
             Session["SummaryDetailId"] = summaryId;
 
             var summaryDetail = InsuranceContext.SummaryDetails.Single(summaryId);
-
             var Cusotmer = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
-
             CustomerModel custModel = AutoMapper.Mapper.Map<Customer, CustomerModel>(Cusotmer);
 
             if (Cusotmer != null)
@@ -209,7 +201,6 @@ namespace InsuranceClaim.Controllers
                     custModel.EmailAddress = dbUser.Email; ;
                 }
             }
-
             Session["CustomerDataModal"] = custModel;
         }
 
@@ -464,7 +455,9 @@ namespace InsuranceClaim.Controllers
 
 
             ViewBag.Currencies = InsuranceContext.Currencies.All(where: $"IsActive = 'True'");
-            viewModel.CurrencyId = 7; // default "RTGS$" selected
+            // viewModel.CurrencyId = 7; // default "RTGS$" selected
+
+            viewModel.CurrencyId = 6; // default "RTGS$" selected
 
             ViewBag.Makers = makers;
             viewModel.isUpdate = false;
