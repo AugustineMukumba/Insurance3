@@ -141,6 +141,10 @@ namespace Insurance.Domain
         public string CompanyBusinessId { get; set; }
         public bool IsCorporate { get; set; }
 
+        public int BranchId { get; set; }
+
+        public string ALMId { get; set; }
+
 
     }
 
@@ -416,6 +420,30 @@ namespace Insurance.Domain
         public int? ModifiedBy { get; set; }
 
     }
+
+
+    public partial class Branch : Entity<Branch>
+    {
+        public Branch() { }
+        public Branch(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public string BranchName { get; set; }
+
+    }
+
+
+    public partial class MachineBranch : Entity<MachineBranch>
+    {
+        public MachineBranch() { }
+        public MachineBranch(bool defaults) : base(defaults) { }
+        public int Id { get; set; }
+        public int BranchId { get; set; }
+        public string IpAddress { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
+
+    }
+
 
 
     public partial class VehicleTaxClass : Entity<VehicleTaxClass>
