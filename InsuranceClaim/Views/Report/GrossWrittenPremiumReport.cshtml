@@ -101,6 +101,7 @@
                             <th>Zinara License Fee</th>
                             <th>Status</th>
                             <th>Policy Status</th>
+                        
 
                         </tr>
                     </thead>
@@ -155,17 +156,12 @@
                                 <td>@item.RadioLicenseCost</td>
                                 <td> @item.Zinara_License_Fee </td>
 
+                            
+
 
                                 @if (DateTime.Now > item.PolicyRenewalDate)
                                 {
-                                    if (Convert.ToBoolean(item.IsLapsed) && item.IsActive == false)
-                                    {
-                                        <td>Renewed</td>
-                                    }
-                                    else
-                                    {
-                                        <td>Lapsed</td>
-                                    }
+                                    <td>Lapsed</td>
                                 }
                                 else if (Convert.ToBoolean(!item.IsActive))
                                 {
@@ -177,14 +173,22 @@
                                 }
 
 
-                                @if (Convert.ToBoolean(item.IsLapsed) && item.IsActive == false)
-                                {
-                                    <td>Renewals</td>
-                                }
-                                else
-                                {
-                                    <td>New Business</td>
-                                }
+                             @if (item.RenewPolicyNumber == null)
+                             {
+                                <td>New Business</td>
+                             }
+
+                             else if (Convert.ToInt16(item.RenewPolicyNumber.Split('-')[1]) > 1)
+                             {
+                                <td>Renewals</td>
+                             }
+                             else
+                             {
+                                <td>New Business</td>
+                             }
+
+
+
 
 
                             </tr>

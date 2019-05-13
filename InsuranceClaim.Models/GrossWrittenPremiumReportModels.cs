@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace InsuranceClaim.Models
 {
-  public  class GrossWrittenPremiumReportModels
+    public class GrossWrittenPremiumReportModels
     {
         public int? Id { get; set; }
         public string Customer_Name { get; set; }
@@ -18,7 +18,7 @@ namespace InsuranceClaim.Models
         public string Vehicle_makeandmodel { get; set; }
         public string Payment_Mode { get; set; }
         public string Payment_Term { get; set; }
-        public decimal Annual_Premium { get; set;}
+        public decimal Annual_Premium { get; set; }
         public decimal Stamp_duty { get; set; }
         public decimal ZTSC_Levy { get; set; }
         public decimal? Net_Premium { get; set; }
@@ -38,6 +38,8 @@ namespace InsuranceClaim.Models
         public bool? IsLapsed { get; set; }
         public bool? IsActive { get; set; }
         public string Currency { get; set; }
+
+        public string RenewPolicyNumber {get; set;}
 
 
     }

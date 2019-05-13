@@ -459,6 +459,7 @@ namespace InsuranceClaim.Controllers
                 //var model = modelList.Single(c => c.ModelCode == item.ModelId);
 
 
+                obj.RenewPolicyNumber = item.RenewPolicyNumber;
 
 
                 var customer = InsuranceContext.Customers.Single(item.CustomerId);
@@ -627,7 +628,7 @@ namespace InsuranceClaim.Controllers
                 var make = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'");
                 var model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
 
-
+                obj.RenewPolicyNumber = item.RenewPolicyNumber;
 
                 var vehicleSUmmarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
                 if (vehicleSUmmarydetail != null)
