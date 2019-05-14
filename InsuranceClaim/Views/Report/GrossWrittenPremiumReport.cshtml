@@ -1,6 +1,6 @@
 ﻿@model InsuranceClaim.Models.GrossWrittenPremiumReportSearchModels
 @{
-    ViewBag.Title = "GrossWrittenPremiumReport";
+    ViewBag.Title = "Gross Written Premium Report";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
 
@@ -81,7 +81,47 @@
         <div class="product-table-grid">
             <div class="table-responsive">
                 <table width="1785" class="table table-striped tablesorter" style="width:1785px" id="report2excel">
+                 
+                    <thead style='display:none;'>
+
+
+                        <tr>
+                            <td>
+                                <p><b><u>Report Generated Date:</u></b> <span id="datetime"></span></p>
+
+                                <script>
+                                var dt = new Date();
+                                document.getElementById("datetime").innerHTML = dt.toLocaleString();
+                                </script>
+                            </td>
+                            <td></td>
+                            <td>
+                                <h3><u>@ViewBag.Title</u></h3>
+                                <strong></strong>
+                                <strong></strong>
+
+                            </td>
+                            <td></td>
+                            <td colspan="2" rowspan="2"><center><strong>Start Date :</strong></center></td>
+
+                            <td><label for="FromDate">@ViewBag.fromdate</label><br></td>
+                            <td></td>
+                            <td colspan="2" rowspan="2"><center><strong>End Date :</strong></center></td>
+                            <td><label for="EndDate">@ViewBag.enddate</label></td>
+                        </tr>
+
+                    </thead>
                     <thead>
+
+
+                    <thead>
+                        <tr>
+                            <td rowspan="6"></td>
+                        </tr>
+                    </thead>
+                    
+                    
+                       <thead>
                         <tr>
                             <th style="width: 170px;">User/Call center agent</th>
                             <th style="width: 170px;">Customer Name</th>
@@ -117,10 +157,41 @@
                             decimal commissionAmountTotal = 0;
                             decimal radioLicenseCostTotal = 0;
                             decimal ZinaraLicenseFee = 0;
+                            decimal TotalUs = 0;
+                            decimal TotalRTGS = 0;
+                            decimal TotalUSD = 0;
+                            decimal TotalINR = 0;
+                            int count = 0;
+                            int count1 = 0;
+                            int count2 = 0;
+                            int count3 = 0;
+
+
                         }
 
                         @foreach (var item in Model.ListGrossWrittenPremiumReportdata.ToList())
                         {
+                            if (item.Currency == "US$ FCA")
+                            {
+                                TotalUs += item.Premium_due;
+                                count = count + 1;
+                            }
+                            if (item.Currency == "RTGS$")
+                            {
+                                TotalRTGS += item.Premium_due;
+                                count1 = count1 + 1;
+                            }
+                            if (item.Currency == "USD" || item.Currency == null)
+                            {
+                                TotalUSD += item.Premium_due;
+                                count2 = count2 + 1;
+                            }
+                            if (item.Currency == "INR")
+                            {
+                                TotalINR += item.Premium_due;
+                                count3 = count3 + 1;
+                            }
+
                             sumInsuredTotal += item.Sum_Insured;
                             annualPremiumTotal += item.Annual_Premium;
                             premiumDueTotal += item.Premium_due;
@@ -201,9 +272,6 @@
                              }
 
 
-
-
-
                             </tr>
                         }
                     </tbody>
@@ -227,6 +295,24 @@
                             </td>
                             <td><strong>@radioLicenseCostTotal</strong></td>
                             <td><strong> @ZinaraLicenseFee </strong> </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Currency Total:</strong></td>
+                            <td></td>
+                            <td><strong>Us$ Total:</strong></td>
+                            <td>@TotalUs</td>
+                            <td>Us$ Total Count:@count</td>
+                            <td><strong>RTGS$ Total:</strong></td>
+                            <td>@TotalRTGS</td>
+                            <td>RTGS$ Total Count:@count1</td>
+                            <td><strong>USD Total:</strong></td>
+                            <td>@TotalUSD</td>
+                            <td>USD Total:@count2</td>
+                            <td><strong>INR Total:</strong></td>
+                            <td>@TotalINR</td>
+                            <td>INR Total Count:@count3</td>
                             <td></td>
                             <td></td>
                         </tr>
