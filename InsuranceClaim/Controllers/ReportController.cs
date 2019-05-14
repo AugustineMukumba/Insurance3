@@ -475,6 +475,7 @@ namespace InsuranceClaim.Controllers
                     {
                         if (summary.isQuotation != true)
                         {
+                            obj.ALMId = customer.ALMId;
 
                             obj.Payment_Term = InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name;
                             var paymentMethod = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId);
@@ -606,6 +607,7 @@ namespace InsuranceClaim.Controllers
             vehicledetail = vehicledetail.Where(c => Convert.ToDateTime(c.TransactionDate.Value.ToShortDateString()) >= fromDate && Convert.ToDateTime(c.TransactionDate.Value.ToShortDateString()) <= endDate).ToList();
 
 
+           
 
 
             var currencyList = _summaryDetailService.GetAllCurrency();
@@ -624,6 +626,8 @@ namespace InsuranceClaim.Controllers
                 GrossWrittenPremiumReportModels obj = new GrossWrittenPremiumReportModels();
                 var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
 
+               
+
                 var customer = InsuranceContext.Customers.Single(item.CustomerId);
                 var make = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'");
                 var model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
@@ -639,6 +643,8 @@ namespace InsuranceClaim.Controllers
 
                         if (summary.isQuotation != true)
                         {
+                            obj.ALMId = customer.ALMId;
+
                             obj.Payment_Term = InsuranceContext.PaymentTerms.Single(item.PaymentTermId)?.Name;
                             obj.Payment_Mode = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId)?.Name;
                             obj.Customer_Name = customer.FirstName + " " + customer.LastName;

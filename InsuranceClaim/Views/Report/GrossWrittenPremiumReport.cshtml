@@ -131,7 +131,20 @@
                             radioLicenseCostTotal += Convert.ToDecimal(item.RadioLicenseCost);
                             ZinaraLicenseFee += Convert.ToDecimal(item.Zinara_License_Fee);
                             <tr>
-                                <td>@item.PolicyCreatedBy</td>
+                                <td>
+
+                                    @if (item.ALMId != null)
+                                    {
+                                        @item.ALMId
+                                    }
+                                    else
+                                    {
+                                        @item.PolicyCreatedBy
+                                    }
+                               
+                                
+                                
+                                </td>
                                 <td>@item.Customer_Name</td>
                                 <td>@item.Policy_Number</td>
                                 <td>

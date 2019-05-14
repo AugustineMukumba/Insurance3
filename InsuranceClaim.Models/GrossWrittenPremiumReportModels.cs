@@ -41,6 +41,8 @@ namespace InsuranceClaim.Models
 
         public string RenewPolicyNumber {get; set;}
 
+        public string ALMId { get; set; }
+
 
     }
     public class ListGrossWrittenPremiumReportModels

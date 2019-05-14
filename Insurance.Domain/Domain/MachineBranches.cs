@@ -8,7 +8,7 @@ namespace Insurance.Domain
 {
 
 
-    public partial class MachineBranches : Entity<MachineBranch>
+    public partial class MachineBranches : Repository<MachineBranch>
     {
     }
 
