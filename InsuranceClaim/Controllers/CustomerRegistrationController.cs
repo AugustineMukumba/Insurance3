@@ -1147,7 +1147,7 @@ namespace InsuranceClaim.Controllers
                 model.DebitNote = "INV" + Convert.ToString(SummaryDetailServiceObj.getNewDebitNote());
 
                 //default selection 
-                if (User.IsInRole("Staff"))
+                if (User.IsInRole("Staff")|| User.IsInRole("Renewals"))
                 {
                     model.PaymentMethodId = 1;
                 }
