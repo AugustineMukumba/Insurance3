@@ -45,16 +45,30 @@ namespace InsuranceClaim.Controllers
         }
 
 
-        public ActionResult IceCashPayment()
+        public ActionResult IceCashPayment(int id = 0, string amount = "0")
         {
 
-            var iceCashPaymentUrl = System.Configuration.ConfigurationManager.AppSettings["IceCash"];
+            int paymentMehtod = 0;
+            if (TempData["PaymentMethodId"]!=null)
+            {
+                 paymentMehtod = Convert.ToInt32(TempData["PaymentMethodId"]);
+            }
+
+
+            IceCashCardDetailModel iceCashmodel = new IceCashCardDetailModel { SummaryId = id, Amount = Convert.ToDecimal(amount), PaymentMethod = paymentMehtod };
+
+            Session["IceCashPayment"] = iceCashmodel;
+
+
+              var iceCashPaymentUrl = System.Configuration.ConfigurationManager.AppSettings["IceCash"];
 
             IceCashModel model = new IceCashModel();
 
             model.partner_id = "20523588";
-            model.amount = 125;
+            var amounts = Convert.ToDecimal(amount);
+            model.amount = amounts * 100;
             model.client_reference = Guid.NewGuid();
+            model.IceCashRequestUrl = "http://test.api.ice.cash/payments/test_send_request";
             model.success_url = iceCashPaymentUrl + "/Paypal/success_url";
             model.failed_url = iceCashPaymentUrl + "/Paypal/failed_url";
             model.results_url = iceCashPaymentUrl + "/Paypal/results_url";
@@ -69,6 +83,18 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult success_url()
         {
+
+            if(Session["IceCashPayment"]!=null)
+            {
+
+                var IceCashPaymentDetails = (IceCashCardDetailModel)Session["IceCashPayment"];
+
+                SaveDetailList(IceCashPaymentDetails.SummaryId, "",  Convert.ToString(IceCashPaymentDetails.PaymentMethod));
+            }
+
+          
+
+
             return View();
         }
 
@@ -714,7 +740,7 @@ namespace InsuranceClaim.Controllers
                 
               var urlPath = System.Configuration.ConfigurationManager.AppSettings["urlPath"];
 
-                QRCode Codes = new QRCode();
+               QRCode Codes = new QRCode();
                
 
 

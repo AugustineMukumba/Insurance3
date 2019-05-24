@@ -314,7 +314,7 @@ namespace InsuranceClaim.Controllers
             Transaction_date = x.TransactionDate.ToShortDateString(),
             Sum_Insured = x.SumInsured == null ? 0 : x.SumInsured,
             Currency = currenyList.FirstOrDefault(c => c.Id == x.CurrencyId) == null ? "USD" : currenyList.FirstOrDefault(c => c.Id == x.CurrencyId).Name,
-            RegistrationNumber= x.RegistrationNo
+            RegistrationNumber = x.RegistrationNo
         }).ToList();
 
 
@@ -443,7 +443,7 @@ namespace InsuranceClaim.Controllers
             GrossWrittenPremiumReportSearchModels Model = new GrossWrittenPremiumReportSearchModels();
             //   var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive='1'").ToList().Take(200);
 
-            var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c=>c.Id).ToList().Take(200);
+            var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c => c.Id).ToList().Take(200);
 
             var currenyList = _summaryDetailService.GetAllCurrency();
 
@@ -515,7 +515,6 @@ namespace InsuranceClaim.Controllers
 
                             if (customerDetails != null)
                                 obj.PolicyCreatedBy = customerDetails.FirstName + " " + customerDetails.LastName;
-
 
 
                             obj.Comission_percentage = 30;
@@ -592,7 +591,7 @@ namespace InsuranceClaim.Controllers
             //  var vehicledetail = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
             //  var vehicledetail = InsuranceContext.VehicleDetails.All(where: "IsActive=1").ToList();
 
-            var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c=>c.Id).ToList();
+            var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c => c.Id).ToList();
 
 
 
@@ -614,7 +613,7 @@ namespace InsuranceClaim.Controllers
             vehicledetail = vehicledetail.Where(c => Convert.ToDateTime(c.TransactionDate.Value.ToShortDateString()) >= fromDate && Convert.ToDateTime(c.TransactionDate.Value.ToShortDateString()) <= endDate).ToList();
 
 
-           
+
 
 
             var currencyList = _summaryDetailService.GetAllCurrency();
@@ -633,7 +632,7 @@ namespace InsuranceClaim.Controllers
                 GrossWrittenPremiumReportModels obj = new GrossWrittenPremiumReportModels();
                 var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
 
-               
+
 
                 var customer = InsuranceContext.Customers.Single(item.CustomerId);
                 var make = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'");
@@ -1117,7 +1116,7 @@ namespace InsuranceClaim.Controllers
         }
         public ActionResult CustomerListingReport()
         {
-           List <CustomerListingReportModel> ListCustomerListingReport = new List<CustomerListingReportModel>();
+            List<CustomerListingReportModel> ListCustomerListingReport = new List<CustomerListingReportModel>();
             ListCustomerListingReport _CustomerListingReport = new ListCustomerListingReport();
 
             _CustomerListingReport.CustomerListingReport = new List<CustomerListingReportModel>();
@@ -1143,7 +1142,7 @@ namespace InsuranceClaim.Controllers
 
                     //var _User = UserManager.FindById(Customer.UserID.ToString());
 
-                    var _User = userList.FirstOrDefault(c=>c.Id== Customer.UserID.ToString());
+                    var _User = userList.FirstOrDefault(c => c.Id == Customer.UserID.ToString());
 
 
                     ListCustomerListingReport.Add(new CustomerListingReportModel()
@@ -1160,9 +1159,9 @@ namespace InsuranceClaim.Controllers
                         Product = InsuranceContext.Products.Single(item.ProductId) == null ? "" : InsuranceContext.Products.Single(item.ProductId).ProductName,
                         VehicleMake = InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'") == null ? "" : InsuranceContext.VehicleMakes.Single(where: $"MakeCode='{item.MakeId}'").MakeDescription,
                         VehicleModel = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'") == null ? "" : InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'").ModelDescription,
-                        VehicleUsage = InsuranceContext.VehicleUsages.Single(item.VehicleUsage==null? 0 : item.VehicleUsage) == null ? "" : InsuranceContext.VehicleUsages.Single(item.VehicleUsage).VehUsage,
+                        VehicleUsage = InsuranceContext.VehicleUsages.Single(item.VehicleUsage == null ? 0 : item.VehicleUsage) == null ? "" : InsuranceContext.VehicleUsages.Single(item.VehicleUsage).VehUsage,
                         PaymentTerm = InsuranceContext.PaymentTerms.Single(item.PaymentTermId) == null ? "" : InsuranceContext.PaymentTerms.Single(item.PaymentTermId).Name,
-                        PaymentType = InsuranceContext.PaymentMethods.Single(summary==null?0: summary.PaymentMethodId) ==null ? "Cash" : InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name,
+                        PaymentType = InsuranceContext.PaymentMethods.Single(summary == null ? 0 : summary.PaymentMethodId) == null ? "Cash" : InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId).Name,
 
 
 
@@ -1596,13 +1595,20 @@ namespace InsuranceClaim.Controllers
             ListProductiviyReportModel _listListProductiviyReport = new ListProductiviyReportModel();
             _listListProductiviyReport.ListProductiviyReport = new List<ProductiviyReportModel>();
             ProductiviySearchReportModel model = new ProductiviySearchReportModel();
-            var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive = 'True'or IsActive is null").ToList();
+            //   var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive = 'True'or IsActive is null").OrderByDescending(c=>c.Id).ToList();
+
+            var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c => c.Id).ToList();
 
             var currencyList = _summaryDetailService.GetAllCurrency();
 
 
-            foreach (var item in vehicledetail)
+            foreach (var item in vehicledetail.Take(200))
             {
+
+                if (item.IsActive == false && !item.isLapsed) // for disable vehicle
+                    continue;
+
+
                 var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
 
 
@@ -1631,27 +1637,28 @@ namespace InsuranceClaim.Controllers
                  }).FirstOrDefault();
 
 
-                                if (roles != null && roles.UserRoleName.ToString() == "Staff")
-                                {
-                                    ProductiviyReportModel obj = new ProductiviyReportModel();
-                                    obj.CustomerName = customer.FirstName + " " + customer.LastName;
-                                    obj.PolicyNumber = policy.PolicyNumber;
-                                    obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy");
-                                    obj.PremiumDue = Convert.ToDecimal(item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost);
-                                    obj.SumInsured = Convert.ToDecimal(item.SumInsured);
-                                    obj.UserName = userDetials.Email;
-                                    obj.Product = InsuranceContext.Products.Single(item.ProductId).ProductName;
-                                    obj.Currency = _summaryDetailService.GetCurrencyName(currencyList, item.CurrencyId);
+                                //if (roles != null && roles.UserRoleName.ToString() == "Staff")
+                                //{
+                                ProductiviyReportModel obj = new ProductiviyReportModel();
+                                obj.CustomerName = customer.FirstName + " " + customer.LastName;
+                                obj.PolicyNumber = policy.PolicyNumber;
+                                obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy");
+                                obj.PremiumDue = Convert.ToDecimal(item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost);
+                                obj.SumInsured = Convert.ToDecimal(item.SumInsured);
+                                obj.UserName = userDetials.Email;
+                                obj.Product = InsuranceContext.Products.Single(item.ProductId).ProductName;
+                                obj.Currency = _summaryDetailService.GetCurrencyName(currencyList, item.CurrencyId);
 
-                                    //if (summary.isQuotation)
-                                    //    obj.PolicyStatus = "Quotation";
-                                    //else
-                                    //    obj.PolicyStatus = "Policy";
+                                obj.RenewPolicyNumber = item.RenewPolicyNumber;
+                                if (summary.isQuotation)
+                                    obj.PolicyStatus = "Quotation";
+                                else
+                                    obj.PolicyStatus = "Policy";
 
 
 
-                                    listProductiviyReport.Add(obj);
-                                }
+                                listProductiviyReport.Add(obj);
+                                //}
                             }
                         }
 
@@ -1673,7 +1680,7 @@ namespace InsuranceClaim.Controllers
             _listListProductiviyReport.ListProductiviyReport = new List<ProductiviyReportModel>();
             ProductiviySearchReportModel model = new ProductiviySearchReportModel();
 
-            var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive = 'True'or IsActive is null").ToList();
+            var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c=>c.Id).ToList();
 
             var currencyList = _summaryDetailService.GetAllCurrency();
 
@@ -1690,6 +1697,11 @@ namespace InsuranceClaim.Controllers
             #endregion
             foreach (var item in Vehicledetail)
             {
+
+                if (item.IsActive == false && !item.isLapsed) // for disable vehicle
+                    continue;
+
+
                 var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
 
 
@@ -1730,6 +1742,8 @@ namespace InsuranceClaim.Controllers
                                     obj.UserName = userDetials.Email;
                                     obj.Product = InsuranceContext.Products.Single(item.ProductId).ProductName;
                                     obj.Currency = _summaryDetailService.GetCurrencyName(currencyList, item.CurrencyId);
+
+                                    obj.RenewPolicyNumber = item.RenewPolicyNumber;
 
                                     if (summary.isQuotation)
                                         obj.PolicyStatus = "Quotation";

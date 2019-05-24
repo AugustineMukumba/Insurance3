@@ -2154,6 +2154,8 @@ namespace InsuranceClaim.Controllers
                 var customerID = InsuranceContext.Customers.Single(where: $"userid='{User.Identity.GetUserId().ToString()}'").Id;
 
 
+
+
                 if (role == "Staff")
                 {
                     // SummaryList = InsuranceContext.SummaryDetails.All(where: $"CreatedBy={customerID} and isQuotation = '0'  ").OrderByDescending(x => x.Id).ToList();
@@ -2171,13 +2173,23 @@ namespace InsuranceClaim.Controllers
                 }
 
 
-
+                var paymentlList = InsuranceContext.PaymentInformations.All();
 
 
                 if (SummaryList != null && SummaryList.Count > 0)
                 {
                     foreach (var item in SummaryList)
                     {
+
+                        var paymentDetails = paymentlList.FirstOrDefault(c => c.SummaryDetailId == item.Id);
+
+                        if (paymentDetails == null)
+                        {
+                            continue;
+                        }
+
+
+
                         PolicyListViewModel policylistviewmodel = new PolicyListViewModel();
 
                         policylistviewmodel.Vehicles = new List<VehicleReinsuranceViewModel>();

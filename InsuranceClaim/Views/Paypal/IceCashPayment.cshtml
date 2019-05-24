@@ -2,240 +2,152 @@
 
 @using Insurance.Service;
 @model InsuranceClaim.Models.IceCashModel
-      
 
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>ICECash Payment Gateway</title>
-    <link rel="stylesheet" href="">
-    @*<link rel="stylesheet" type="text/css" href="/css/../assets/css/bootstrap-3.7.7.min.css" />*@
-    
-    <link rel="stylesheet" type="text/css" href="http://test.api.ice.cash/assets/css/bootstrap-3.7.7.min.css" />
+@{
+    ViewBag.Title = "IceCash Payment";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
+}
 
 
 
-    @*<link rel="stylesheet" type="text/css" href="/css/payment_gateway.css" />*@
-    <link rel="stylesheet" type="text/css" href="http://test.api.ice.cash/css/payment_gateway.css" />
-    @*<script type="text/javascript" src="/js/../assets/js/jquery-3.2.1.min.js"></script>*@
-    <script type="text/javascript" src="http://test.api.ice.cash/assets/js/jquery-3.2.1.min.js"></script>
+
+<script type="text/javascript" src="http://test.api.ice.cash/assets/js/jquery.blockUI.2.7.js"></script>
 
 
-    @*<script type="text/javascript" src="/js/../assets/js/jquery.blockUI.2.7.js"></script>*@
-
-    <script type="text/javascript" src="http://test.api.ice.cash/assets/js/jquery.blockUI.2.7.js"></script>
-
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-</head>
-
-<body>
-
-    <div id="watermark" class="hide">
-    </div>
-
-    <nav class="navbar navbar-default navbar-fixed-top">
+<div class="body-content-section">
+    <div class="form-section-top">
         <div class="container">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="https://www.icecash.co.zw" target="_blank" style="margin-top:-12px;"><img src="/img/../assets/img/logo.png" title="ICECash" alt="" /></a>
-            </div>
-            <div id="navbar" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav"></ul>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container">
-
-        <div class="row">
-            <div class="col-xs-12 col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h5 class="panel-title pull-left">Required Fields</h5>
-                        <div class="alert alert-danger pull-right">
-                            This is a sample page of the information that needs to be gathered by a client and sent to us in order to process an online transaction.
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-section-col">
+                    <div class="form-group-section">
+                        <div class="form-title">
+                            <h4>IceCash Payment</h4>
                         </div>
-                        <div class="clearfix"></div>
-                    </div>
 
-                    <div class="panel-body form-container active">
+                        <div class="form-group-input">
+                            @*@using (Ajax.BeginForm("SaveCustomerData", "CustomerRegistration", new AjaxOptions { UpdateTargetId = "CustomerResult", OnSuccess = "GoToProductDetail" }))*@
+                            <form method="post" id="checkout-form" action="@Model.IceCashRequestUrl" class="form-horizontal">
+                                <input id="hddebug" type="hidden" name="hddebug" value="0" />
+                                <input type="hidden" class="form-control" name="partner_id" value="@Model.partner_id" />
+                               
 
-                        <form method="post" id="checkout-form" action="http://test.api.ice.cash/payments/test_send_request" class="form-horizontal">
-                            <input id="hddebug" type="hidden" name="hddebug" value="0">
-
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <label for="name">Partner ID</label>
-                                </div>
-                                <div class="col-xs-4">
-                                    <input placeholder="Partner ID" class="form-control" name="partner_id" value="@Model.partner_id" required="" type="text" autocomplete="off" autofocus="">
-                                </div>
-                                <div class="col-xs-8">
-                                    <div class="alert alert-info">
-                                        This is a partner ID provided by ICEcash which is used to verify the partner connecting to us.
+                                <div class="row">
+                                    <div class="col-md-4 form-group-text">
+                                        <div class="form-group">
+                                            @Html.Label("Amount in Cents", new { @class = "gender-label" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8 form-group-text">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="amount" value="@Model.amount" />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <label for="name">Transaction Amount in Cents</label>
-                                </div>
-                                <div class="col-xs-4">
-                                    <input placeholder="Transaction Amount eg; 125 is $1.25" class="form-control" name="amount" value="@Model.amount" requried type="text">
-                                </div>
-                                <div class="col-xs-8">
-                                    <div class="alert alert-info">
-                                        This amount needs to be in cents.
+
+
+
+                                <input type="hidden" class="form-control" name="client_reference" value="@Model.client_reference" />
+                                <input type="hidden" class="form-control" name="success_url" value="@Model.success_url" />
+                                <input type="hidden" class="form-control" name="failed_url" value="@Model.failed_url">
+                                <input type="hidden" name="results_url" value="@Model.results_url" />
+                                <input type="hidden" class="form-control" name="results_url" value="@Model.details" />
+                                <input type="hidden" class="form-control" name="encoded_html" value="@Model.check_hash" />
+
+                                <br />
+
+                                <div class="row">
+
+
+                                    <div class="col-md-12 next-btn">
+                                        <div class="text-center">
+                                            <button id="btnSubmit" type="button" style="font-size:20px;" class="btn-primary">Pay</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <label for="name">Client Reference Number (NB!!! MUST BE UNIQUE PER TRANSACTION)</label>
-                                </div>
-                                <div class="col-xs-4">
-                                    <input placeholder="Reference Number (optional)" class="form-control" name="client_reference" value="@Model.client_reference" required="" type="text" autocomplete="off" autofocus="">
-                                </div>
-                                <div class="col-xs-8">
-                                    <div class="alert alert-info">
-                                        This is a reference number supplied by the client so they can track transaction from their side.
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <label for="name">Successful URL</label>
-                                </div>
-                                <div class="col-xs-5">
-                                    <input placeholder="URL" class="form-control" name="success_url" value="@Model.success_url" required="" type="text" autocomplete="off" autofocus="">
-                                </div>
-                                <div class="col-xs-7">
-                                    <div class="alert alert-info">
-                                        On completion of a <b>successful</b> transaction this is the URL ICEcash will return too.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <label for="name">Failed URL</label>
-                                </div>
-                                <div class="col-xs-5">
-                                    <input placeholder="URL" class="form-control" name="failed_url" value="@Model.failed_url" required="" type="text" autocomplete="off" autofocus="">
-                                </div>
-                                <div class="col-xs-7">
-                                    <div class="alert alert-info">
-                                        On completion of a <b>failed</b> transaction this is the URL ICEcash will return too.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <label for="name">Results URL</label>
-                                </div>
-                                <div class="col-xs-5">
-                                    <input placeholder="URL" class="form-control" name="results_url" value="@Model.results_url" required="" type="text" autocomplete="off" autofocus="">
-                                </div>
-                                <div class="col-xs-7">
-                                    <div class="alert alert-info">
-                                        On completion of a transaction this is the URL ICEcash will POST back to.
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <label for="name">Transaction Details</label><br>
-                                    <div class="alert alert-info">
-                                        This is an open HTML field that can be passed on to the payment gateway to display any information pertaining to the transaction. Eg; A Description of the purchase, or a list of the items purchased, additional information like name, addresses, etc.<br><br>This must be based 64 encoded when passed.
-                                    </div>
-                                </div>
-                                <div class="col-xs-6">
-                                    <label for="name">Raw HTML <small>(Do not post the raw html, just the encoded data)</small></label><br>
-                                    <textarea class="form-control" name="details" rows="5">
-                                        
-                                      @Model.details
-                                    
-                                    </textarea>
-                                </div>
-                                <div class="col-xs-6">
-                                    <label for="name">Base64 Encoded HTML</label><br>
-                                    <textarea class="form-control" name="encoded_html" rows="5" readonly>@Model.check_hash</textarea>
-                                </div>
-                            </div>
-
-                            <br>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <button id="btnSubmit" type="button" class="btn btn-success btn-md btn-block">Submit<span class="glyphicon glyphicon-chevron-right"></span></button>
-                                    <!--<button id="btnDebug" type="button" class="btn btn-warning btn-md btn-block">Submit (Debug Mode)<span class="glyphicon glyphicon-chevron-right"></span></button>-->
-                                </div>
-                            </div>
-                        </form>
 
 
+                            </form>
 
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <script type="text/javascript">
-    $().ready(function() {
+</div>
 
-        $('#watermark').removeClass('hide');
 
-        $('#btnSubmit').click(function() {
+
+
+
+<script type="text/javascript" src="http://test.api.ice.cash/assets/js/jquery.mask-1.7.7.js"></script>
+<script type="text/javascript" src="http://test.api.ice.cash/assets/js/validator.js"></script>
+
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+
+        $('#btnSubmit').click(function () {
             $('#checkout-form').submit();
         });
 
-        $('#btnDebug').click(function() {
+        $('#btnDebug').click(function () {
             $('#hddebug').val('1');
             $('#checkout-form').submit();
         });
 
+
+
     });
-        </script>
-    </div>
-
-    <footer class="footer">
-        <div class="container">
-            <div class="row vertical-center">
-                <div class="col-sm-12 col-md-6">
-                    © 2019 ICECash
-                </div>
-                <div class="col-sm-12 col-md-6 pull-right">
-                    <a href="https://www.icecash.co.zw/online-payment-gateway-t-cs/" target="_blank" class="pull-right">Terms & Conditions</a>
-                    <!--<img class="img-responsive pull-right" src="../assets/img/logo-zimswitch.png" style="height: 40px; margin:5px;">-->
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    @*<script type="text/javascript" src="/js/../assets/js/bootstrap-3.3.7.min.js"></script>*@
-
-    <script type="text/javascript" src="http://test.api.ice.cash/assets/js/bootstrap-3.3.7.min.js"></script>
 
 
 
-    @*<script type="text/javascript" src="/js/../assets/js/jquery.mask-1.7.7.js"></script>*@
-
-    <script type="text/javascript" src="http://test.api.ice.cash/assets/js/jquery.mask-1.7.7.js"></script>
-
-
-
-    @*<script type="text/javascript" src="/js/../assets/js/validator.js"></script>*@
-
-
-    <script type="text/javascript" src="http://test.api.ice.cash/assets/js/validator.js"></script>
+</script>
 
 
 
 
-</body>
-</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

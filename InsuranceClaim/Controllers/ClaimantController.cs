@@ -1060,6 +1060,16 @@ namespace InsuranceClaim.Controllers
                 var vrn = "";
                 var policyAndRegistrationNumber = txtvalue; //Policy Number,VRN Number,Customer Name 
                 var policyAndRegistrationNumberArray = policyAndRegistrationNumber.Split(',');
+
+                var detail = new PolicyDetail();
+                if (policyAndRegistrationNumberArray.Length > 0)
+                {
+                    policyNumber = policyAndRegistrationNumberArray[0]; //Policy Number
+                    detail = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{policyNumber}'");
+                }
+
+
+
                 if (policyAndRegistrationNumberArray.Length > 1)
                 {
                     policyNumber = policyAndRegistrationNumberArray[0]; //Policy Number
@@ -1068,11 +1078,21 @@ namespace InsuranceClaim.Controllers
                 else
                 {
                     policyNumber = policyAndRegistrationNumberArray[0];
+
+                    if (detail != null)
+                    {
+                        var vehicle = InsuranceContext.VehicleDetails.Single(where: $"PolicyId = '{detail.Id}'");
+
+                        vrn = vehicle.RegistrationNo == null ? "" : vehicle.RegistrationNo;
+                    }
                 }
 
 
 
-                var detail = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{policyNumber}'");
+
+
+
+
                 if (detail != null)
                 {
                     var vehicle = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}'");

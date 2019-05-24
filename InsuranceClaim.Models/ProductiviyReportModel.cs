@@ -20,6 +20,10 @@ namespace InsuranceClaim.Models
         public string PolicyStatus { get; set; }
 
         public string Currency { get; set; }
+
+        public string RenewPolicyNumber { get; set; }
+
+       
     }
     public class ListProductiviyReportModel
     {

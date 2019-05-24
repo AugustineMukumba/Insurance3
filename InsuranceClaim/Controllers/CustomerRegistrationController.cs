@@ -999,10 +999,6 @@ namespace InsuranceClaim.Controllers
                     return Json(vehiclelist, JsonRequestBehavior.AllowGet);
                 }
 
-
-
-
-
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
@@ -1384,6 +1380,11 @@ namespace InsuranceClaim.Controllers
 
                                     TempData["PaymentMethodId"] = model.PaymentMethodId;
                                     return RedirectToAction("makepayment", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
+                                }
+                                else if (model.PaymentMethodId == 4)
+                                {
+                                    TempData["PaymentMethodId"] = model.PaymentMethodId;
+                                    return RedirectToAction("IceCashPayment", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
                                 }
                                 else
                                     return RedirectToAction("PaymentDetail", new { id = model.CustomSumarryDetilId });
@@ -2473,6 +2474,12 @@ namespace InsuranceClaim.Controllers
                             TempData["PaymentMethodId"] = model.PaymentMethodId;
                             return RedirectToAction("makepayment", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
                         }
+                        else if (model.PaymentMethodId == 4)
+                        {
+                            TempData["PaymentMethodId"] = model.PaymentMethodId;
+                            return RedirectToAction("IceCashPayment", "Paypal", new { id = model.Id, amount = Convert.ToString(model.AmountPaid) });
+                        }
+
 
                         else
                             return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
