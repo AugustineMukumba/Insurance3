@@ -995,10 +995,6 @@ namespace InsuranceClaim.Controllers
                     return Json(vehiclelist, JsonRequestBehavior.AllowGet);
                 }
 
-
-
-
-
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)

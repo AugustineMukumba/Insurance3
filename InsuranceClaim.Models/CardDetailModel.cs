@@ -21,4 +21,16 @@ namespace InsuranceClaim.Models
         public int SummaryDetailId { get; set; }
         public int? EndorsementSummaryId { get; set; }
     }
+
+
+    public class IceCashCardDetailModel
+    {
+        public int SummaryId { get; set; }
+
+        public decimal Amount { get; set; }
+
+        public int PaymentMethod { get; set; }
+    }
+
+
 }
