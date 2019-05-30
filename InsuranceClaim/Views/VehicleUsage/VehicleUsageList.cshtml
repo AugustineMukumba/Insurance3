@@ -1,12 +1,8 @@
 ﻿@model List<Insurance.Domain.VehicleUsage>
 @{
-    //ViewBag.Title = "VehicalUserList";
+    ViewBag.Title = "VehicalUserList";
     Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
-
-
-
-
 
 
 @using (Html.BeginForm("EditVehicleUsage", "VehicleUsage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
@@ -57,8 +53,8 @@
                                     <div class="tbl-btn-list">
                                         <ul class="list-inline">
                                             <li>@Html.ActionLink("Edit", "EditVehicleUsage", new { id = item.Id }, new { @class = "btn-sm btn-primary" })</li>
-                                            <li><button type="button" class="btn-sm btn-danger" onclick="ShowPopup('@item.Id')">Delete</button></li>    
-                                            
+                                            <li><button type="button" class="btn-sm btn-danger" onclick="ShowPopup('@item.Id')">Delete</button></li>
+
 
                                         </ul>
                                     </div>
@@ -92,7 +88,7 @@
 
 }
 
-    <script>
+<script>
     let vehicleId;
     function ShowPopup(Id) {
         debugger;
@@ -105,4 +101,4 @@
         window.location.href = url.replace("123456", vehicleId);
     }
 
-    </script>
+</script>

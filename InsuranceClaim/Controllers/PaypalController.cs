@@ -45,7 +45,7 @@ namespace InsuranceClaim.Controllers
         }
 
 
-        public ActionResult IceCashPayment()
+        public ActionResult IceCashPayment(int id = 0, string amount = "0")
         {
 
             var iceCashPaymentUrl = System.Configuration.ConfigurationManager.AppSettings["IceCash"];
@@ -53,7 +53,8 @@ namespace InsuranceClaim.Controllers
             IceCashModel model = new IceCashModel();
 
             model.partner_id = "20523588";
-            model.amount = 125;
+            var amounts = Convert.ToDecimal(amount);
+            model.amount = amounts * 100;
             model.client_reference = Guid.NewGuid();
             model.success_url = iceCashPaymentUrl + "/Paypal/success_url";
             model.failed_url = iceCashPaymentUrl + "/Paypal/failed_url";
@@ -930,6 +931,8 @@ namespace InsuranceClaim.Controllers
 
             // string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentEmail.cshtml"; 24_jan_2019
 
+
+       
 
 
             //var currencyDetails = currencylist.FirstOrDefault(c => c.Id == vehicle.CurrencyId);

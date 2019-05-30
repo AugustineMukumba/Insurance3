@@ -41,6 +41,8 @@ namespace InsuranceClaim.Models
 
         public string Currency { get; set; }
 
+        public DateTime? CreatedOn { get; set;}
+
     }
     public class ListReceiptModule
     {

@@ -49,7 +49,7 @@ namespace InsuranceClaim.Controllers
             ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All(where: "IsActive = 'True' or IsActive is Null").ToList();
 
 
-            ViewBag.TaxClass = InsuranceContext.VehicleTaxClasses.All().ToList();
+            ViewBag.TaxClass = InsuranceContext.VehicleTaxClasses.All().ToList().Take(7);
 
             var eExcessTypeData = from eExcessType e in Enum.GetValues(typeof(eExcessType))
                                   select new

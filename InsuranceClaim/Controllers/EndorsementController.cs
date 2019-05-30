@@ -808,6 +808,9 @@ namespace InsuranceClaim.Controllers
             ViewBag.Makers = makers;
             viewModel.isUpdate = false;
             viewModel.VehicleUsage = 0;
+
+            viewModel.CurrencyId = 6; // default "RTGS$" selected
+
             var _list = "";
             //  TempData["Policy"] = service.GetPolicy(id);
             TempData["Policy"] = PolicyData;

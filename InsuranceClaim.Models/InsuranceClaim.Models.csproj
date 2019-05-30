@@ -96,6 +96,7 @@
     <Compile Include="AspNetUsersUpdateModel.cs" />
     <Compile Include="BasicCommissionReportModel.cs" />
     <Compile Include="BirthdayMessageModel.cs" />
+    <Compile Include="BranchModel.cs" />
     <Compile Include="BusinessSourceModel.cs" />
     <Compile Include="CardDetailModel.cs" />
     <Compile Include="CardType.cs" />
@@ -170,6 +171,7 @@
     <Compile Include="VehiclesMakeModel.cs" />
     <Compile Include="VehicleModel.cs" />
     <Compile Include="VehicleRiskAboutExpireModels.cs" />
+    <Compile Include="VehicleTaxClassModel.cs" />
     <Compile Include="VehicleUsageModel.cs" />
     <Compile Include="ZTSCLevyReportModels.cs" />
   </ItemGroup>

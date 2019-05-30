@@ -43,6 +43,8 @@ namespace InsuranceClaim.Models
 
         public string ALMId { get; set; }
 
+        public string CoverNoteNum { get; set; }
+
 
     }
     public class ListGrossWrittenPremiumReportModels

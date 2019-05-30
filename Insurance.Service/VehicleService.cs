@@ -25,6 +25,33 @@ namespace Insurance.Service
             return map;
 
         }
+
+        //VehicleTaxClassModel
+
+
+        public List<VehicleTaxClassModel> GetVehicleTax(string VehicleType)
+        {
+
+            var product = InsuranceContext.Products.Single(where: $"Id='{VehicleType}'");
+
+            int vehicleTypeId = 0;
+
+            if(product!=null)
+            {
+                vehicleTypeId = product.VehicleTypeId;
+            }
+
+            var list = InsuranceContext.VehicleTaxClasses.All(where: $"VehicleType='{vehicleTypeId}'").ToList();
+
+         //  var list = InsuranceContext.VehicleTaxClasses.All(where: $"VehicleUsageId='{VehicleType}'").ToList();
+
+
+            var map = Mapper.Map<List<VehicleTaxClass>, List<VehicleTaxClassModel>>(list);
+            return map;
+
+        }
+
+
         public List<CoverType> GetCoverType()
         {
             var list = InsuranceContext.CoverTypes.All(where: $"IsActive=1").ToList();

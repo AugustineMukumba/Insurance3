@@ -162,7 +162,7 @@
                                         </div>
                                     </div>
 
-                                    
+
 
 
                                     <fieldset @(Model.isUpdate ? "" : "disabled")>
@@ -194,7 +194,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                     
+
 
 
 
@@ -498,9 +498,9 @@
                                                 </div>
                                             </div>
 
-                                          
-                                           
-                                        
+
+
+
 
 
 
@@ -853,6 +853,12 @@
                     $dropdown.append($("<option />").val(this.Id).text(this.VehUsage));
                 });
 
+
+
+              //  GetVehicleTaxClass($("#VehicleUsage").val());
+
+
+
                 //if ($("fieldset").attr("disabled") != "disabled") {
                 //    if ($("#isVehicleRegisteredonICEcash").val() == 1) {
                 //        generateQuotewithICEcash();
@@ -1116,6 +1122,9 @@
         $("#ProductId").change(function () {
             GetVehicleUsage();
 
+            GetVehicleTaxClass($("#ProductId").val());
+
+
             if ($("fieldset").attr("disabled") == "disabled") {
                 if ($("#PaymentTermId").val() != "" && $("#ProductId").val() != "" && $("#RegistrationNo").val() != "") {
                     checkVRNwithICEcash();
@@ -1233,7 +1242,7 @@
 
 
         $("#VehicleYear").blur(function () {
-                  
+
             if($("#RegistrationNo").val()=="TBA" && $("#VehicleYear").val()!="" )
             {
                 checkTBAVRNwithICEcash();
@@ -1331,7 +1340,7 @@
                     $(".loading-area").hide();
                 }
                 if (data.result == 1) {
-                  
+
                     var vehicle = {};
                     vehicle = data.Data.Response.Quotes[0].Vehicle;
 
@@ -1380,7 +1389,7 @@
 
                 if ($("#isVehicleRegisteredonICEcash").val() == 1) {
                     generateQuotewithICEcash();
-                   // GetZinaraLicenseFee();
+                    // GetZinaraLicenseFee();
                 }
                 else{
                     QuoteCalculation();
@@ -1413,57 +1422,57 @@
             type: "POST",
             url: "@Url.Action("checkVRNwithICEcash", "CustomerRegistration")",
             data: { regNo: $("#RegistrationNo").val(), PaymentTerm : $("#PaymentTermId").val(), CoverTypeId:  $("#CoverTypeId").val(),ProductId: $("#ProductId").val(), MakeId: $("#MakeId").val() ,ModelId: $("#ModelId").val(), TaxClassId: $("#TaxClassId").val()  ,  VehicleYear: $("#VehicleYear").val()     },
-        success: function (data) {
+            success: function (data) {
 
-            if (data.result == 0) {
-                toastr.error(data.message);
-                $("fieldset").removeAttr("disabled");
-                //$("#ProductId").removeClass("inputDisabled")
+                if (data.result == 0) {
+                    toastr.error(data.message);
+                    $("fieldset").removeAttr("disabled");
+                    //$("#ProductId").removeClass("inputDisabled")
+                    $(".loading-area").hide();
+                    $("#InsuranceId").val("");
+                }
+                if (data.result == 1) {
+                    var policy = {};
+                    policy = data.Data.Response.Quotes[0].Policy;
+
+                    var StampDuty = policy.StampDuty;
+                    $("#StampDuty").val(parseFloat(StampDuty).toFixed(2));
+                    var GovernmentLevy = policy.GovernmentLevy;
+                    $("#ZTSCLevy").val(parseFloat(GovernmentLevy).toFixed(2));
+                    var CoverAmount = policy.CoverAmount;
+                    //$("#Premium").val(parseFloat(CoverAmount).toFixed(2));
+                    $("#Discount").val(parseFloat(data.Data.LoyaltyDiscount).toFixed(2));
+
+                    var calulatePremium = CoverAmount-data.Data.LoyaltyDiscount;
+
+                    $("#Premium").val(parseFloat(calulatePremium).toFixed(2));
+
+                    $("#InsuranceId").val(data.Data.Response.Quotes[0].InsuranceID);
+
+                    $("#basicPremiumICEcash").val(parseFloat(CoverAmount).toFixed(2));
+
+                    $("#stampDutyICEcash").val(parseFloat(StampDuty).toFixed(2))
+                    $("#LevyICEcash").val(parseFloat(GovernmentLevy).toFixed(2))
+                    QuoteCalculation()
+                    $(".loading-area").hide();
+                }
+
+
+
+
+
+
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
                 $(".loading-area").hide();
-                $("#InsuranceId").val("");
-            }
-            if (data.result == 1) {
-                var policy = {};
-                policy = data.Data.Response.Quotes[0].Policy;
-
-                var StampDuty = policy.StampDuty;
-                $("#StampDuty").val(parseFloat(StampDuty).toFixed(2));
-                var GovernmentLevy = policy.GovernmentLevy;
-                $("#ZTSCLevy").val(parseFloat(GovernmentLevy).toFixed(2));
-                var CoverAmount = policy.CoverAmount;
-                //$("#Premium").val(parseFloat(CoverAmount).toFixed(2));
-                $("#Discount").val(parseFloat(data.Data.LoyaltyDiscount).toFixed(2));
-
-                var calulatePremium = CoverAmount-data.Data.LoyaltyDiscount;
-
-                $("#Premium").val(parseFloat(calulatePremium).toFixed(2));
-
-                $("#InsuranceId").val(data.Data.Response.Quotes[0].InsuranceID);
-
-                $("#basicPremiumICEcash").val(parseFloat(CoverAmount).toFixed(2));
-
-                $("#stampDutyICEcash").val(parseFloat(StampDuty).toFixed(2))
-                $("#LevyICEcash").val(parseFloat(GovernmentLevy).toFixed(2))
-                QuoteCalculation()
-                $(".loading-area").hide();
-            }
-
-
-
-
-
-
-
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            $(".loading-area").hide();
-            if (textStatus == 'timeout') {
-                //doe iets
-            } else if (textStatus == 'error') {
-                //doe iets
-            }
-        } //EINDE error
-    }); //EINDE ajax
+                if (textStatus == 'timeout') {
+                    //doe iets
+                } else if (textStatus == 'error') {
+                    //doe iets
+                }
+            } //EINDE error
+        }); //EINDE ajax
     }
 
 
@@ -1559,33 +1568,33 @@
             type: "POST",
             url: "@Url.Action("GetZinaraLicenseFee", "CustomerRegistration")",
             data: { regNo: $("#RegistrationNo").val() },
-        success: function (data) {
-            debugger;
-            if (data.result == 0) {
-                toastr.error(data.message);
-                $("fieldset").removeAttr("disabled");
-                //$("#ProductId").removeClass("inputDisabled")
+            success: function (data) {
+                debugger;
+                if (data.result == 0) {
+                    toastr.error(data.message);
+                    $("fieldset").removeAttr("disabled");
+                    //$("#ProductId").removeClass("inputDisabled")
+                    $(".loading-area").hide();
+                    $("#InsuranceId").val("");
+                }
+                if (data.result == 1) {
+
+                    var zinaraDetials   = data.Data.Response.Quotes[0];
+
+                    var StampDuty = policy.StampDuty;
+                    $("#VehicleLicenceFee").val(parseFloat(zinaraDetials.TotalAmount).toFixed(2));
+
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
                 $(".loading-area").hide();
-                $("#InsuranceId").val("");
-            }
-            if (data.result == 1) {
-
-              var zinaraDetials   = data.Data.Response.Quotes[0];
-
-                var StampDuty = policy.StampDuty;
-                $("#VehicleLicenceFee").val(parseFloat(zinaraDetials.TotalAmount).toFixed(2));
-
-            }
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            $(".loading-area").hide();
-            if (textStatus == 'timeout') {
-                //doe iets
-            } else if (textStatus == 'error') {
-                //doe iets
-            }
-        } //EINDE error
-    }); //EINDE ajax
+                if (textStatus == 'timeout') {
+                    //doe iets
+                } else if (textStatus == 'error') {
+                    //doe iets
+                }
+            } //EINDE error
+        }); //EINDE ajax
     }
 
 
@@ -1615,6 +1624,36 @@
                     // $("#ProductId").addClass("inputDisabled") // on 04-oct
 
                     //$("#ProductId").attr("readonly","readonly");
+                }
+            }
+        });
+    }
+
+
+
+
+    function GetVehicleTaxClass(productId)
+    {
+
+        $.ajax({
+            url: "@Url.Action("GetVehicleTaxClass", "CustomerRegistration")",
+            type: "POST",
+            data: { vehicleTypeId: productId},
+            dataType: "json",
+            success: function (result) {
+                debugger;
+                var $dropdown = $("#TaxClassId");
+                $dropdown.empty();
+                $.each(result, function () {
+                    $dropdown.append($("<option />").val(this.TaxClassId).text(this.Description));
+                });
+
+
+                @*var taxClassId = @Model.TaxClassId;*@
+
+
+                if (taxClassId != "") {
+                    $('#TaxClassId').val(taxClassId);
                 }
             }
         });
@@ -1884,8 +1923,6 @@
             QuoteCalculation();
         }
     });
-
-
 
 
 

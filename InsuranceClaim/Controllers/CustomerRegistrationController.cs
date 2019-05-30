@@ -221,7 +221,6 @@ namespace InsuranceClaim.Controllers
                     //    return Json(new { IsError = false, error = "Email " + model.EmailAddress + " already exists." }, JsonRequestBehavior.AllowGet);
                     //}
 
-
                     if (User.IsInRole("Staff"))
                     {
                         //if (buttonUpdate != null)
@@ -396,7 +395,7 @@ namespace InsuranceClaim.Controllers
 
             ViewBag.Products = InsuranceContext.Products.All(where: "Active = 'True' or Active is null").ToList();
 
-            ViewBag.TaxClass = InsuranceContext.VehicleTaxClasses.All().ToList();
+            ViewBag.TaxClass = InsuranceContext.VehicleTaxClasses.All().ToList().Take(7);
 
             //var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm))
             //                       select new
@@ -835,10 +834,7 @@ namespace InsuranceClaim.Controllers
                 }
                 catch (Exception ex)
                 {
-
-
                     WriteLog(ex.Message);
-
                     return RedirectToAction("SummaryDetail");
                 }
             }
@@ -1384,6 +1380,11 @@ namespace InsuranceClaim.Controllers
 
                                     TempData["PaymentMethodId"] = model.PaymentMethodId;
                                     return RedirectToAction("makepayment", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
+                                }
+                                else if (model.PaymentMethodId == 4)
+                                {
+                                    TempData["PaymentMethodId"] = model.PaymentMethodId;
+                                    return RedirectToAction("IceCashPayment", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
                                 }
                                 else
                                     return RedirectToAction("PaymentDetail", new { id = model.CustomSumarryDetilId });
@@ -2473,6 +2474,12 @@ namespace InsuranceClaim.Controllers
                             TempData["PaymentMethodId"] = model.PaymentMethodId;
                             return RedirectToAction("makepayment", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
                         }
+                        else if (model.PaymentMethodId == 4)
+                        {
+                            TempData["PaymentMethodId"] = model.PaymentMethodId;
+                            return RedirectToAction("IceCashPayment", "Paypal", new { id = model.Id, amount = Convert.ToString(model.AmountPaid) });
+                        }
+
 
                         else
                             return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
@@ -2695,6 +2702,12 @@ namespace InsuranceClaim.Controllers
 
 
 
+
+            var vehilceType = InsuranceContext.Products.Single(where: $"Id = '" + ProductId + "'");
+            if(vehilceType!=null)
+            {
+                ProductId =Convert.ToString(vehilceType.VehicleTypeId);
+            }
 
 
             try
@@ -3022,11 +3035,6 @@ namespace InsuranceClaim.Controllers
                     }
                 }
 
-
-
-
-
-
                 json.Data = response;
 
             }
@@ -3049,6 +3057,21 @@ namespace InsuranceClaim.Controllers
             jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             return jsonResult;
         }
+
+
+
+        [HttpPost]
+        public JsonResult GetVehicleTaxClass(string vehicleTypeId)
+        {
+            var service = new VehicleService();
+            var model = service.GetVehicleTax(vehicleTypeId);
+            JsonResult jsonResult = new JsonResult();
+            jsonResult.Data = model;
+            jsonResult.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            return jsonResult;
+        }
+
+
 
         public JsonResult GetVehicleUsage(string ProductId)
         {
@@ -3385,6 +3408,8 @@ namespace InsuranceClaim.Controllers
             Receipthistory.PolicyId = model.PolicyId;
             Receipthistory.TransactionReference = model.TransactionReference;
             Receipthistory.SummaryDetailId = model.SummaryDetailId;
+
+            Receipthistory.CreatedOn = DateTime.Now;
 
 
             //Made changes on 08Jan2018

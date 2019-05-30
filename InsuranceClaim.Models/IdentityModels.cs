@@ -29,5 +29,9 @@ namespace InsuranceClaim.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<Insurance.Domain.Branch> Branches { get; set; }
+
+        public System.Data.Entity.DbSet<Insurance.Domain.ServiceProviderType> ServiceProviderTypes { get; set; }
     }
 }

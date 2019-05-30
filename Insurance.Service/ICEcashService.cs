@@ -359,9 +359,14 @@ namespace Insurance.Service
 
             var CustomerInfo = (CustomerModel)HttpContext.Current.Session["CustomerDataModal"];
 
+            if(CustomerInfo==null)
+            {
+                CustomerInfo = (CustomerModel)HttpContext.Current.Session["ReCustomerDataModal"];// if renew
+            }
+
             List<VehicleObject> obj = new List<VehicleObject>();
 
-            int paymentTermId = GetMonthKey(PaymentTermId);
+           // int paymentTermId = GetMonthKey(PaymentTermId);
 
 
 

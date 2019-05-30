@@ -82,6 +82,8 @@
                             <th>Receipt Date</th>
                             <th>Paid(yes/no)</th>
                             <th style="text-align:left;">Balance</th>
+                            <th>Payment Type</th>
+                            <th>Created On</th>
                             @*
                                     <th>Amount Paid</th>
 
@@ -188,16 +190,19 @@
                                     <td> @item.Balance</td>
                                 }
 
-
+                                <td>@item.paymentMethodType</td>
+                                @if (item.CreatedOn == null)
+                                {
+                                    <td>@item.DatePosted.ToString("hh:mm")</td>
+                                }
+                                else
+                                {
+                                    <td>@item.CreatedOn.Value.ToString("hh:mm")</td>
+                                }
 
                                 @*
 
-
-
-
                                     <td>@item.DatePosted</td>
-
-
                                     <td>$ @item.AmountPaid</td>
                                     <td>$@Math.Round(Convert.ToDecimal(item.Balance), 2)</td>
                                     <td> @item.TransactionReference</td>
@@ -222,6 +227,8 @@
                             <td></td>
                             <td></td>
                             <td><strong>@balanceTotal</strong></td>
+                            <td></td>
+                            <td></td>
 
                         </tr>
                     </tfoot>

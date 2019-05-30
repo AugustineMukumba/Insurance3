@@ -216,6 +216,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BirthdayMessageController.cs" />
+    <Compile Include="Controllers\BranchController.cs" />
     <Compile Include="Controllers\BusinessSourceController.cs" />
     <Compile Include="Controllers\CityController.cs" />
     <Compile Include="Controllers\ClaimAdjustmentController.cs" />
@@ -236,6 +237,7 @@
     <Compile Include="Controllers\RenewController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\ServiceProviderController.cs" />
+    <Compile Include="Controllers\ServiceProviderTypeController.cs" />
     <Compile Include="Controllers\SourceDetailController.cs" />
     <Compile Include="Controllers\VehicleMakeController.cs" />
     <Compile Include="Controllers\VehicleModelController.cs" />
@@ -295,6 +297,7 @@
     <Content Include="Images\maestro.png" />
     <Content Include="Images\mastercard.png" />
     <Content Include="Images\mastercard_images.jpg" />
+    <Content Include="Images\MobileAppIcon.png" />
     <Content Include="Images\savers-moloko.jpg" />
     <Content Include="Images\Sort_both_small.png" />
     <Content Include="Images\top-header-bg.png" />
@@ -852,6 +855,8 @@
     <Content Include="Documents\6925\GMCC180001061-1\e8228a89-ab70-4bf5-9992-6fbe351783f0Reciept Payment.pdf" />
     <Content Include="Documents\6925\GMCC180001061-1\eea7a614-b4a7-4298-8f38-e7d2b7233b04Reciept Payment.pdf" />
     <Content Include="Documents\6926\GMCC180001062-1\00946e4f-7ed2-4091-81af-fda83f4ce914Quotation.pdf" />
+    <Content Include="MobileApp\geneinsure_v_1.0.apk" />
+    <None Include="Properties\PublishProfiles\GeneInsure.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\CustomerRegistration\CustomerRegistration.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -962,7 +967,6 @@
     <Content Include="Views\CustomerRegistration\Addvehicle.cshtml" />
     <Content Include="Views\VehicleUsage\EditVehicleUsage.cshtml" />
     <Content Include="Views\VehicleUsage\VehicalUserList.cshtml" />
-    <Content Include="Views\VehicleUsage\VehicleUsageList.cshtml" />
     <Content Include="Views\Report\StampDutyReport.cshtml" />
     <Content Include="Views\Report\ZTSCLevyReport.cshtml" />
     <Content Include="Views\Report\ReinsuranceCommissionReport.cshtml" />
@@ -1062,6 +1066,17 @@
     <Content Include="Views\Paypal\IceCashPayment.cshtml" />
     <Content Include="Views\Paypal\success_url.cshtml" />
     <Content Include="Views\Account\Summary.cshtml" />
+    <Content Include="Views\Branch\Index.cshtml" />
+    <Content Include="Views\Branch\Create.cshtml" />
+    <Content Include="Views\Branch\Edit.cshtml" />
+    <Content Include="Views\VehicleUsage\VehicleUsageList.cshtml" />
+    <Content Include="Views\Branch\Delete.cshtml" />
+    <Content Include="Views\Branch\Details.cshtml" />
+    <Content Include="Views\ServiceProviderType\Create.cshtml" />
+    <Content Include="Views\ServiceProviderType\Delete.cshtml" />
+    <Content Include="Views\ServiceProviderType\Details.cshtml" />
+    <Content Include="Views\ServiceProviderType\Edit.cshtml" />
+    <Content Include="Views\ServiceProviderType\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

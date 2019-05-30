@@ -660,7 +660,7 @@
 
                         </div>
 
-                       <input type="button" id="btnDefault" hidden />
+                        <input type="button" id="btnDefault" hidden />
 
 
 
@@ -955,10 +955,6 @@
         if ($("#PaymentTermId").val() != "" && $("#ProductId").val() != "" && $("#RegistrationNo").val() != "") {
             checkVRNwithICEcash();
         }
-
-
-
-
     });
 
 
@@ -966,6 +962,52 @@
 
     $(document).ready(function () {
         debugger;
+
+
+        if (parseInt($("#NoOfCarsCovered").val()) > 0) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("CheckDuplicateRegisterationNumberExist", "CustomerRegistration")",
+                data: { regNo: $("#RegistrationNo").val() },
+                success: function (data) {
+
+                    debugger;
+                    if (data) {
+                        toastr.warning("Vehicle with same Registeration Number already exist.");
+                        $("#RegistrationNo").focus();
+                    }
+                    else
+                    {
+                        if ($("#PaymentTermId").val() != "" && $("#ProductId").val() != "" && $("#RegistrationNo").val() != "") {
+                            checkVRNwithICEcash();
+                        }
+                        else{
+                            toastr.warning("Please Select Valid Payment Term And Vehicle Type And Vehicle Registeration Number.");
+                        }
+
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    if (textStatus == 'timeout') {
+                        //doe iets
+                    } else if (textStatus == 'error') {
+                        //doe iets
+                    }
+                } //EINDE error
+            }); //EINDE ajax
+        }
+        else
+        {
+            if ($("#PaymentTermId").val() != "" && $("#ProductId").val() != "" && $("#RegistrationNo").val() != "") {
+                checkVRNwithICEcash();
+            }
+            else{
+                toastr.warning("Please Select Valid Payment Term And Vehicle Type And Vehicle Registeration Number.");
+            }
+        }
+
+
+
 
 
         $("#datetimepicker2").datetimepicker({
@@ -1281,7 +1323,7 @@
         });
 
 
-      
+
 
 
         $("#SumInsured").blur(function () {
@@ -1389,7 +1431,7 @@
 
     function checkVRNwithICEcash() {
 
-  
+
 
         $(".loading-area").show();
         $.ajax({
@@ -1527,6 +1569,8 @@
                         policy = data.Data.Response.Quotes[0].Policy;
 
                         var StampDuty = policy.StampDuty;
+
+                      
                         $("#StampDuty").val(parseFloat(StampDuty).toFixed(2));
                         var GovernmentLevy = policy.GovernmentLevy;
                         $("#ZTSCLevy").val(parseFloat(GovernmentLevy).toFixed(2));
@@ -1747,6 +1791,10 @@
     }
 
     function callQuoteCalculation(sumInsured) {
+
+        debugger;
+
+
         if (sumInsured < 1) {
             //return false;
         }

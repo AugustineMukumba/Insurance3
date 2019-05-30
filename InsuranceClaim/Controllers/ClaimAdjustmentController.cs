@@ -14,13 +14,13 @@ namespace InsuranceClaim.Controllers
 {
     public class ClaimAdjustmentController : Controller
     {
+
+        decimal _excessAmount = 0;
         // GET: ClaimAdjustment
         public ActionResult Index(int? id)
         {
 
             //   string PolicyNumber, int? claimnumber
-
-
             var otherserviceprovider = 0.00m;
             var Assessorsprovider = 0.00m;
             var Towingprovider = 0.00m;
@@ -29,6 +29,8 @@ namespace InsuranceClaim.Controllers
 
             var Lawyersprovider = 0.00m;
             var Medicalprovider = 0.00m;
+
+           
 
             var ePaymentDetail = from ePayeeBankDetails e in Enum.GetValues(typeof(ePayeeBankDetails))
                                  select new
@@ -162,15 +164,34 @@ namespace InsuranceClaim.Controllers
             query += " where ClaimRegistrationProviderDetial.ClaimRegistrationId =" + claimAdjustment.ClaimRegisterationId;
 
 
-            model.ServiceProviderList = InsuranceContext.Query(query).Select(c => new ClaimRegistrationProviderModel { Id = c.Id, ServiceProviderName = c.ServiceProviderName, ServiceProviderType = c.ProviderType, ServiceProviderFee = c.ServiceProviderFee }).ToList();
+            model.ServiceProviderList = InsuranceContext.Query(query).Select(c => new ClaimRegistrationProviderModel { Id = c.Id, ServiceProviderName = c.ServiceProviderName, ServiceProviderType = c.ProviderType, ServiceProviderFee = ServiceProviderFee(c.ProviderType, c.ServiceProviderFee, claimAdjustment.ExcessesAmount) }).ToList();
 
             var claimRegistrationProvider = InsuranceContext.ClaimRegistrationProviderDetials.All(where: "ClaimRegistrationId=" + claimAdjustment.ClaimRegisterationId).Select(c => c.ServiceProviderFee).Sum();
 
-            model.TotalAmountLeftToPayed = Convert.ToString(claimRegistrationProvider);
+
+
+
+            model.TotalAmountLeftToPayed = Convert.ToString(claimRegistrationProvider- _excessAmount);
 
             // var providerList = InsuranceContext.ClaimRegistrationProviderDetials.All(where : "ClaimRegistrationId=" + claimAdjustment).ToList();
 
             return View(model);
+        }
+
+
+        public decimal ServiceProviderFee(string providerType, decimal providerFee, decimal excessAmount)
+        {
+
+            decimal fee = providerFee;
+
+            if (providerType== "Repairers")
+            {
+                fee = providerFee - excessAmount;
+                _excessAmount = excessAmount;
+            }
+
+            return fee;
+
         }
 
 

@@ -217,6 +217,8 @@ namespace Insurance.Domain
 
         public int CreatedBy { get; set; }
         public bool IsMobile { get; set; }
+
+        public DateTime CreatedOn { get; set; }
     }
     public partial class PaymentTerm : Entity<PaymentTerm>
     {
@@ -454,7 +456,9 @@ namespace Insurance.Domain
         public int Id { get; set; }
         public int TaxClassId { get; set; }
         public string Description { get; set; }
-        public string VehicleType { get; set; }
+        public int VehicleType { get; set; }
+
+        public int VehicleUsageId { get; set; }
         public string CreatedOn { get; set; }
 
 
@@ -609,6 +613,8 @@ namespace Insurance.Domain
         public int Id { get; set; }
         public string ProductName { get; set; }
         public string ProductCode { get; set; }
+
+        public int VehicleTypeId { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }

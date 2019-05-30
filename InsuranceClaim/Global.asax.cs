@@ -82,6 +82,9 @@ namespace InsuranceClaim
                 //08/May D
                 cfg.CreateMap<QRCode, QRCode>().ReverseMap();
 
+                cfg.CreateMap<VehicleTaxClass, VehicleTaxClassModel>().ReverseMap();
+
+
             });
         }
     }

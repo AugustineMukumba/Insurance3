@@ -76,6 +76,7 @@
                         <th>Sum Insured</th>
                         <th>Premium due</th>
                         <th>Status</th>
+                        <th>Policy Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -99,6 +100,30 @@
                             <td>@item.SumInsured</td>
                             <td>@item.PremiumDue</td>
                             <td>@item.PolicyStatus</td>
+
+                            <td>
+
+                                @if (item.RenewPolicyNumber == null && item.IsActive)
+                                {
+                                  <span> New Business </span>
+                                }
+                                else if (item.IsActive == false && item.isLapsed)
+                                {
+                                    <span> Disabled </span>
+                                }
+
+                                else if (item!=null&&  item.RenewPolicyNumber!=null &&  Convert.ToInt16(item.RenewPolicyNumber.Split('-')[1]) > 1)
+                                {
+                                    <span>Renewals</span>
+                                }
+                                else
+                                {
+                                    <span>New Business</span>
+                                }
+
+                            </td>
+
+
                         </tr>
                     }
                 </tbody>
@@ -112,6 +137,7 @@
                         <td></td>
                         <td><strong>@premiumDueTotal</strong></td>
                         <td><strong>@suminsured</strong></td>
+                        <td></td>
                         <td></td>
                     </tr>
                 </tfoot>
