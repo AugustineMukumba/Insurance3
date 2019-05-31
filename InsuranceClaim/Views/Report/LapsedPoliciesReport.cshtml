@@ -73,58 +73,88 @@
         <div class="product-table-grid">
 
             <table class="table table-striped tablesorter" id="report2excel">
-                <thead>
-                    <tr>
-                        <th>Customer Name</th>
-                        <th>Contact Detail</th>
-                        <th>Vehicle Make</th>
-                        <th>Vehicle Model</th>  
-                        <th>Currency</th>                   
-                        <th>Sum Insured</th>
-                        <th>Premium</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{ 
-                        decimal sumInsuredTotal = 0;
-                        decimal premiumTotal = 0;
-                    }
+                <table class="table table-striped tablesorter" id="report2excel">
+                    <thead style='display:none;'>
 
-                    @foreach (var item in Model.LapsedPoliciesReport.ToList())
-                    {
-                        sumInsuredTotal += Convert.ToDecimal(item.sumInsured);
-                        premiumTotal += Convert.ToDecimal(item.Premium);
-                       
+
                         <tr>
-                            <td>@item.customerName</td>
-                            <td>@item.contactDetails</td>
-                            <td>@item.vehicleMake</td>
-                            <td>@item.vehicleModel</td>
-                            <td>@item.Currency</td>
-                            <td>@item.sumInsured</td>
-                            <td>@item.Premium</td>
-                            <td>@item.startDate</td>
-                            <td>@item.endDate</td>
-                            
+                            <td>
+                                <p><b><u>Report Generated Date:</u></b> <span id="datetime"></span></p>
+
+                                <script>
+                                var dt = new Date();
+                                document.getElementById("datetime").innerHTML = dt.toLocaleString();
+                                </script>
+                            </td>
+                            <td></td>
+                            <td>
+                                <h3><u>@ViewBag.Title</u></h3>
+                                <strong></strong>
+                                <strong></strong>
+
+                            </td>
+                            <td></td>
+                            <td colspan="2" rowspan="2"><center><strong>Start Date :</strong></center></td>
+
+                            <td><label for="FromDate">@ViewBag.fromdate</label><br></td>
+                            <td></td>
+                            <td colspan="2" rowspan="2"><center><strong>End Date :</strong></center></td>
+                            <td><label for="EndDate">@ViewBag.enddate</label></td>
                         </tr>
-                    }
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td><strong>Total:</strong></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td><strong>@sumInsuredTotal</strong></td>
-                        <td><strong>@premiumTotal</strong></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tfoot>
-            </table>
+
+                    </thead>
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Contact Detail</th>
+                            <th>Vehicle Make</th>
+                            <th>Vehicle Model</th>
+                            <th>Currency</th>
+                            <th>Sum Insured</th>
+                            <th>Premium</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            decimal sumInsuredTotal = 0;
+                            decimal premiumTotal = 0;
+                        }
+
+                        @foreach (var item in Model.LapsedPoliciesReport.ToList())
+                        {
+                            sumInsuredTotal += Convert.ToDecimal(item.sumInsured);
+                            premiumTotal += Convert.ToDecimal(item.Premium);
+
+                            <tr>
+                                <td>@item.customerName</td>
+                                <td>@item.contactDetails</td>
+                                <td>@item.vehicleMake</td>
+                                <td>@item.vehicleModel</td>
+                                <td>@item.Currency</td>
+                                <td>@item.sumInsured</td>
+                                <td>@item.Premium</td>
+                                <td>@item.startDate</td>
+                                <td>@item.endDate</td>
+
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td><strong>Total:</strong></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong>@sumInsuredTotal</strong></td>
+                            <td><strong>@premiumTotal</strong></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
         </div>
     </div>
 </div>

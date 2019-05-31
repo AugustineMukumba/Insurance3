@@ -167,6 +167,8 @@ namespace InsuranceClaim.Controllers
             {
                 fromDate = Convert.ToDateTime(Model.FromDate);
                 endDate = Convert.ToDateTime(Model.EndDate);
+                ViewBag.fromdate = fromDate.ToString("dd/MM/yyyy");
+                ViewBag.enddate = endDate.ToString("dd/MM/yyyy");
             }
 
             var currencyList = _summaryDetailService.GetAllCurrency();
@@ -251,6 +253,8 @@ namespace InsuranceClaim.Controllers
             {
                 fromDate = Convert.ToDateTime(Model.FromDate);
                 endDate = Convert.ToDateTime(Model.EndDate);
+                ViewBag.fromdate = fromDate.ToString("dd/MM/yyyy");
+                ViewBag.enddate = endDate.ToString("dd/MM/yyyy");
             }
 
             vehicledetail = vehicledetail.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
@@ -376,6 +380,8 @@ namespace InsuranceClaim.Controllers
             {
                 fromDate = Convert.ToDateTime(_Model.FromDate);
                 endDate = Convert.ToDateTime(_Model.EndDate);
+                ViewBag.fromdate = fromDate.ToString("dd/MM/yyyy");
+                ViewBag.enddate = endDate.ToString("dd/MM/yyyy");
             }
 
             //vehicledetail = vehicledetail.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
@@ -810,6 +816,8 @@ namespace InsuranceClaim.Controllers
             {
                 fromDate = Convert.ToDateTime(Model.FromDate);
                 endDate = Convert.ToDateTime(Model.EndDate);
+                ViewBag.fromdate = fromDate.ToString("dd/MM/yyyy");
+                ViewBag.enddate = endDate.ToString("dd/MM/yyyy");
             }
             VehicleDetails = VehicleDetails.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
             foreach (var item in VehicleDetails)
@@ -896,6 +904,8 @@ namespace InsuranceClaim.Controllers
             {
                 fromDate = Convert.ToDateTime(Model.FromDate);
                 endDate = Convert.ToDateTime(Model.EndDate);
+                ViewBag.fromdate = fromDate.ToString("dd/MM/yyyy");
+                ViewBag.enddate = endDate.ToString("dd/MM/yyyy");
             }
 
 
@@ -997,6 +1007,8 @@ namespace InsuranceClaim.Controllers
             {
                 fromDate = Convert.ToDateTime(Model.FromDate);
                 endDate = Convert.ToDateTime(Model.EndDate);
+                ViewBag.fromdate = fromDate.ToString("dd/MM/yyyy");
+                ViewBag.enddate = endDate.ToString("dd/MM/yyyy");
             }
 
 
@@ -1087,6 +1099,8 @@ namespace InsuranceClaim.Controllers
             {
                 fromDate = Convert.ToDateTime(Model.FromDate);
                 endDate = Convert.ToDateTime(Model.EndDate);
+                ViewBag.fromdate = fromDate.ToString("dd/MM/yyyy");
+                ViewBag.enddate = endDate.ToString("dd/MM/yyyy");
             }
 
 
@@ -1192,6 +1206,8 @@ namespace InsuranceClaim.Controllers
             {
                 fromDate = Convert.ToDateTime(Model.FromDate);
                 endDate = Convert.ToDateTime(Model.EndDate);
+                ViewBag.fromdate = fromDate.ToString("dd/MM/yyyy");
+                ViewBag.enddate = endDate.ToString("dd/MM/yyyy");
             }
 
             VehicleDetails = VehicleDetails.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
@@ -1396,7 +1412,7 @@ namespace InsuranceClaim.Controllers
                    //PolicyCreatedBy = res.PolicyCreatedBy
                }).ToList();
 
-
+           
 
 
             model.DailyReceiptsReport = list.OrderByDescending(c => c.Id).ToList();
@@ -1457,7 +1473,8 @@ namespace InsuranceClaim.Controllers
                    //PolicyCreatedBy = res.PolicyCreatedBy
                }).ToList();
 
-
+            ViewBag.fromdate = Model.FromDate;
+            ViewBag.enddate = Model.EndDate;
 
             model.DailyReceiptsReport = list.Where(c => Convert.ToDateTime(c.TransactionDate.ToShortDateString()) >= Convert.ToDateTime(Model.FromDate) && Convert.ToDateTime(c.TransactionDate.ToShortDateString()) <= Convert.ToDateTime(Model.EndDate)).OrderByDescending(c => c.TransactionDate).ToList();
 
@@ -1491,7 +1508,8 @@ namespace InsuranceClaim.Controllers
                    PolicyCreatedBy = res.PolicyCreatedBy
                }).ToList();
 
-
+            ViewBag.fromdate = Model.FromDate;
+            ViewBag.enddate = Model.EndDate;
 
             model.DailyReceiptsReport = list.Where(c => c.DatePosted >= Convert.ToDateTime(Model.FromDate) && c.DatePosted <= Convert.ToDateTime(Model.EndDate)).OrderByDescending(c => c.DatePosted).ToList();
 
@@ -1581,6 +1599,10 @@ namespace InsuranceClaim.Controllers
                     });
                 }
             }
+
+            ViewBag.fromdate = Model.FromDate;
+
+            ViewBag.enddate = Model.EndDate;
             _model.LapsedPoliciesReport = ListLapsedPoliciesReport.OrderBy(x => x.customerName).ToList();
 
 
@@ -1679,7 +1701,8 @@ namespace InsuranceClaim.Controllers
             ListProductiviyReportModel _listListProductiviyReport = new ListProductiviyReportModel();
             _listListProductiviyReport.ListProductiviyReport = new List<ProductiviyReportModel>();
             ProductiviySearchReportModel model = new ProductiviySearchReportModel();
-
+            ViewBag.fromdate = Model.FromDate;
+            ViewBag.enddate = Model.EndDate;
             var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c=>c.Id).ToList();
 
             var currencyList = _summaryDetailService.GetAllCurrency();
@@ -1839,7 +1862,8 @@ namespace InsuranceClaim.Controllers
             _LoyaltyPointsReport.LoyaltyPoints = new List<LoyaltyPointsModel>();
             LoyaltyPointsReportSeachModels _model = new LoyaltyPointsReportSeachModels();
             var VehicleDetails = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
-
+            ViewBag.fromdate = Model.FromDate;
+            ViewBag.enddate = Model.EndDate;
 
             var Vehicledetail = VehicleDetails.Where(c => c.TransactionDate >= Convert.ToDateTime(Model.FromDate) && c.TransactionDate <= Convert.ToDateTime(Model.EndDate)).ToList();
 
