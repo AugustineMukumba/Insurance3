@@ -107,6 +107,7 @@
     <Compile Include="ClaimNotificationModel.cs" />
     <Compile Include="ClaimRegistrationModel.cs" />
     <Compile Include="ClaimRegistrationProviderModel.cs" />
+    <Compile Include="ClaimReportModel.cs" />
     <Compile Include="ClaimSettingModel.cs" />
     <Compile Include="ClaimStatusModel.cs" />
     <Compile Include="CltyModel.cs" />

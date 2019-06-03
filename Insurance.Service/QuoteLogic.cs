@@ -36,6 +36,9 @@ namespace Insurance.Service
             var Setting = InsuranceContext.Settings.All();
             var DiscountOnRenewalSettings = Setting.Where(x => x.keyname == "Discount On Renewal").FirstOrDefault();
 
+           
+
+
             var additionalchargeatp = 0.0m;
             var additionalchargepac = 0.0m;
             var additionalchargeebb = 0.0m;
@@ -492,13 +495,11 @@ namespace Insurance.Service
             }
             else
             {
-
                 double maxZTSC = 10.80; // default ProductId=1;
                 if (ProductId == 3 || ProductId == 11) // Commercial Commuter Omnibus and Commercial Vehicle
                 {
                     maxZTSC = 22.00;
                 }
-
 
                 switch (PaymentTermid)
                 {
@@ -582,6 +583,10 @@ namespace Insurance.Service
             if (!string.IsNullOrEmpty(StampDutyICEcash) && Convert.ToDecimal(StampDutyICEcash) > 100000)
             {
                 this.StamDuty = 100000;
+            }
+            else if(StampDutyICEcash=="" ||  Convert.ToDecimal(StampDutyICEcash)<2) // minimum stamp duty
+            {
+                this.StamDuty = 2;
             }
 
             // if product "Private car"

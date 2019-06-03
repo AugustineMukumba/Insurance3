@@ -239,9 +239,6 @@ namespace InsuranceClaim.Controllers
         }
 
 
-        
-
-
         public ActionResult GetRadioLicenseCost(int? id, int productId)
         {
             JsonResult jsonResult = new JsonResult();
@@ -282,19 +279,24 @@ namespace InsuranceClaim.Controllers
                     RadioLicenseCosts = RadioLicenseCosts / 3;
                     break;
                 case 5:
-                    RadioLicenseCosts = RadioLicenseCosts / 3;
-                    break;
                 case 6:
-                    RadioLicenseCosts = RadioLicenseCosts / 3;
-                    break;
                 case 7:
-                    RadioLicenseCosts = RadioLicenseCosts / 3;
-                    break;
                 case 8:
+                    RadioLicenseCosts = (RadioLicenseCosts / 3) * 2;
+                    break;
+                //case 5:
+                //    RadioLicenseCosts = RadioLicenseCosts / 3;
+                //    break;
+                //case 6:
+                //    RadioLicenseCosts = RadioLicenseCosts / 3;
+                //    break;
+                //case 7:
+                //    RadioLicenseCosts = RadioLicenseCosts / 3;
+                //    break;
                 case 9:
                 case 10:
                 case 11:
-                    RadioLicenseCosts = (RadioLicenseCosts / 3) * 2;
+                    RadioLicenseCosts = RadioLicenseCosts;
                     break;        
             }
 

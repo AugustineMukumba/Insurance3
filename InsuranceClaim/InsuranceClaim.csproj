@@ -856,7 +856,6 @@
     <Content Include="Documents\6925\GMCC180001061-1\eea7a614-b4a7-4298-8f38-e7d2b7233b04Reciept Payment.pdf" />
     <Content Include="Documents\6926\GMCC180001062-1\00946e4f-7ed2-4091-81af-fda83f4ce914Quotation.pdf" />
     <Content Include="MobileApp\geneinsure_v_1.0.apk" />
-    <None Include="Properties\PublishProfiles\GeneInsure.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\CustomerRegistration\CustomerRegistration.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -1066,17 +1065,7 @@
     <Content Include="Views\Paypal\IceCashPayment.cshtml" />
     <Content Include="Views\Paypal\success_url.cshtml" />
     <Content Include="Views\Account\Summary.cshtml" />
-    <Content Include="Views\Branch\Index.cshtml" />
-    <Content Include="Views\Branch\Create.cshtml" />
-    <Content Include="Views\Branch\Edit.cshtml" />
-    <Content Include="Views\VehicleUsage\VehicleUsageList.cshtml" />
-    <Content Include="Views\Branch\Delete.cshtml" />
-    <Content Include="Views\Branch\Details.cshtml" />
-    <Content Include="Views\ServiceProviderType\Create.cshtml" />
-    <Content Include="Views\ServiceProviderType\Delete.cshtml" />
-    <Content Include="Views\ServiceProviderType\Details.cshtml" />
-    <Content Include="Views\ServiceProviderType\Edit.cshtml" />
-    <Content Include="Views\ServiceProviderType\Index.cshtml" />
+    <Content Include="Views\Report\ClaimsNotificationReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

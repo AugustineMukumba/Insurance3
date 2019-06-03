@@ -45,6 +45,8 @@ namespace InsuranceClaim.Models
 
         public string CoverNoteNum { get; set; }
 
+        public string BranchName { get; set; }
+
 
     }
     public class ListGrossWrittenPremiumReportModels

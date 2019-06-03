@@ -978,6 +978,8 @@ namespace Insurance.Domain
 
         public decimal TotalProviderFees { get; set; }
 
+        public int ClaimNotificationId { get; set; }
+
 
         //public DateTime? ModifyOn { get; set; }   
     }

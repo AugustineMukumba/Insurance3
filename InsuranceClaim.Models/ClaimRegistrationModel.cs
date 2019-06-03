@@ -45,6 +45,7 @@ namespace InsuranceClaim.Models
         public string ModelDescription { get; set; }
 
         public string MakeDescription { get; set; }
+        public int ClaimNotificationId { get; set; }
 
         public List<ServiceProviderModel> ServiceProviderList { get; set; }
     }

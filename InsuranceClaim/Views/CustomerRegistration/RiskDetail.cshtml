@@ -1126,6 +1126,7 @@
 
         $("#ProductId").change(function () {
             GetVehicleUsage();
+            GetVehicleTaxClass($("#ProductId").val());
 
             if ($("fieldset").attr("disabled") == "disabled") {
                 if ($("#PaymentTermId").val() != "" && $("#ProductId").val() != "" && $("#RegistrationNo").val() != "") {
@@ -1608,7 +1609,7 @@
 
     function GetVehicleTaxClass(productId)
     {
-        @*$.ajax({
+         $.ajax({
             url: "@Url.Action("GetVehicleTaxClass", "CustomerRegistration")",
             type: "POST",
             data: { vehicleTypeId: productId},
@@ -1621,16 +1622,15 @@
                     $dropdown.append($("<option />").val(this.TaxClassId).text(this.Description));
                 });
 
-                var taxClassId = @Model.TaxClassId;
+
+                @*var taxClassId = @Model.TaxClassId;*@
+
 
                 if (taxClassId != "") {
                     $('#TaxClassId').val(taxClassId);
                 }
-
-
-
             }
-        });*@
+        });
     }
 
 

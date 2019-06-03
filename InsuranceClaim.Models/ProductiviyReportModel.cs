@@ -23,11 +23,9 @@ namespace InsuranceClaim.Models
 
         public string RenewPolicyNumber { get; set; }
 
-        public bool IsActive { get; set; }
-
         public bool isLapsed { get; set; }
 
-
+        public bool IsActive { get; set; }
 
     }
     public class ListProductiviyReportModel

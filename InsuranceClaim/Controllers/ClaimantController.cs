@@ -110,7 +110,7 @@ namespace InsuranceClaim.Controllers
                            Currency = _summaryDetailService.GetCurrencyName(currenyList, rt.CurrencyId),
 
                        }
-                     ).ToList();
+                     ).OrderByDescending(c=>c.Id).ToList();
 
             return View(objList);
         }
@@ -203,6 +203,7 @@ namespace InsuranceClaim.Controllers
             model.Claimsatisfaction = true;
             model.ClaimStatus = "1";
             model.CreatedOn = DateTime.Now;
+            model.ClaimNotificationId = id;
             model.ClaimantName = ClaimDetail.ClaimantName;
             model.ThirdPartyInvolvement = ClaimDetail.ThirdPartyInvolvement;
             var dbModel = Mapper.Map<ClaimRegistrationModel, ClaimRegistration>(model);

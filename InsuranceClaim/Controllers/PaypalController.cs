@@ -755,7 +755,6 @@ namespace InsuranceClaim.Controllers
                     {
                         bitMap.Save(ms, ImageFormat.Png);
                         Base64ToImage(Convert.ToBase64String(ms.ToArray())).Save(Server.MapPath("~/QRCode/" + Policyno + ".jpg"));
-
                         //path = "/QRCode/" + Policyno + ".jpg";
                         path = urlPath + "/QRCode/" + Policyno + ".jpg";
                     }
