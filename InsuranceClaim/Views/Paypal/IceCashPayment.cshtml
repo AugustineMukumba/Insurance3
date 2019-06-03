@@ -67,11 +67,19 @@
                                 <br />
 
                                 <div class="row">
-
-
                                     <div class="col-md-12 next-btn">
-                                        <div class="text-center">
-                                            <button id="btnSubmit" type="button" style="font-size:20px;" class="btn-primary">Pay</button>
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="text-left">
+                                                    <div class="back-left"><button type="button" onclick="gotoPeriviouse()" class="btn">Back</button></div>
+                                                    <a style="display:none" id="previouselink" href="/CustomerRegistration/SummaryDetail" class="back"></a>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="text-right">
+                                                    <button id="btnSubmit" type="button" style="font-size:20px;" class="btn-primary">Pay</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -115,7 +123,10 @@
 
     });
 
+    function gotoPeriviouse() {
+        $("#previouselink")[0].click();
 
+    }
 
 </script>
 

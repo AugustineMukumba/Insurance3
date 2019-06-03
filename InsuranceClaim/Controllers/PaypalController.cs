@@ -815,7 +815,7 @@ namespace InsuranceClaim.Controllers
         }
 
         public async Task<ActionResult> SaveDetailList(Int32 id, string invoiceNumber = "", string Paymentid = "")
-        {
+        {        
             //var PaymentId = Session["PaymentId"];
             //var InvoiceId = Session["InvoiceId"];
 
@@ -843,9 +843,9 @@ namespace InsuranceClaim.Controllers
             else if (Paymentid == "")
             {
                 PaymentMethod = "CASH";
-            }
+            }          
 
-            var summaryDetail = InsuranceContext.SummaryDetails.Single(id);
+                var summaryDetail = InsuranceContext.SummaryDetails.Single(id);        
 
             if (summaryDetail != null && summaryDetail.isQuotation)
             {

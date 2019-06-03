@@ -2000,6 +2000,9 @@ namespace InsuranceClaim.Controllers
                             policylistviewmodel.createdOn = Convert.ToDateTime(item.CreatedOn);
                             policylistviewmodel.PolicyNumber = policy.PolicyNumber;
 
+                            ViewBag.fromdate = Model.FromDate;
+                            ViewBag.enddate = Model.EndDate;
+
 
 
                             //obj.RegistrationNo = _vehicle.RegistrationNo;

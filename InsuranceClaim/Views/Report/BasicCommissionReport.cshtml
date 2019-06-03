@@ -78,6 +78,35 @@
 
         <div class="product-table-grid">
             <table class="table table-striped tablesorter" id="report2excel">
+                <thead style='display:none;'>
+
+
+                    <tr>
+                        <td>
+                            <p><b><u>Report Generated Date:</u></b> <span id="datetime"></span></p>
+
+                            <script>
+                                var dt = new Date();
+                                document.getElementById("datetime").innerHTML = dt.toLocaleString();
+                            </script>
+                        </td>
+                        <td></td>
+                        <td>
+                            <h3><u>@ViewBag.Title</u></h3>
+                            <strong></strong>
+                            <strong></strong>
+
+                        </td>
+                        <td></td>
+                        <td colspan="2" rowspan="2"><center><strong>Start Date :</strong></center></td>
+
+                        <td><label for="FromDate">@ViewBag.fromdate</label><br></td>
+                        <td></td>
+                        <td colspan="2" rowspan="2"><center><strong>End Date :</strong></center></td>
+                        <td><label for="EndDate">@ViewBag.enddate</label></td>
+                    </tr>
+
+                </thead>
                 <thead>
                     <tr>
                         <th>Customer Name</th>
