@@ -10,6 +10,7 @@ namespace InsuranceClaim.Models
     public class ClaimReportModel
     {
 
+        public int Id { get; set; }
         public string InsuredName { get; set; }
         public string PolicyNumber { get; set; }
         public string PolicyStartDate { get; set; }

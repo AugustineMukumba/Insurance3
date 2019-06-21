@@ -511,7 +511,13 @@ namespace Insurance.Service
 
             var item = vehicleDetail;
 
-            if (paymentMethod == 2 || paymentMethod == 3) // it's represent to visa
+            if(paymentMethod==null || paymentMethod==0)
+            {
+                paymentMethod = 1;
+            }
+
+
+            if (paymentMethod == 2) // it's represent to visa
             {
                 paymentMethod = 1;
             }
@@ -525,7 +531,7 @@ namespace Insurance.Service
 
             qut.Add(new QuoteDetial { InsuranceID = item.InsuranceId, Status = "1" });
 
-            var quotesDetial = new RequestTPIQuoteUpdate { Function = "TPIQuoteUpdate", PaymentMethod = Convert.ToString(paymentMethod), Identifier = "1", MSISDN = "01" + CustomerInfo.PhoneNumber, Quotes = qut };
+            var quotesDetial = new RequestTPIQuoteUpdate { Function = "TPIQuoteUpdate", PaymentMethod = Convert.ToString(paymentMethod), Identifier = "1", MSISDN =  CustomerInfo.PhoneNumber, Quotes = qut };
 
 
 
@@ -1083,6 +1089,8 @@ namespace Insurance.Service
         public int Result { get; set; }
         public string Message { get; set; }
         public string PolicyNo { get; set; }
+
+        public string Status { get; set; }
         public List<ResultQuote> Quotes { get; set; }
     }
     public class ResultRootObject

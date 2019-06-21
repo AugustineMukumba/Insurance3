@@ -76,5 +76,12 @@ namespace InsuranceClaim.Models
         Rejected = 3
     }
 
+    public enum paymentMethod
+    {
+        ecocash = 3,
+        Zimswitch = 6,
+        Cash = 1
+    }
+
 
 }

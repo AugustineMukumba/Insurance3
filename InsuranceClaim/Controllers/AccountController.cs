@@ -102,7 +102,7 @@ namespace InsuranceClaim.Controllers
                     var role = UserManager.GetRoles(_user.Id.ToString()).FirstOrDefault();
                     Session["LoggedInUserRole"] = role;
 
-                    var customer = InsuranceContext.Customers.All(where: $"UserId ='{_user.Id.ToString()}'").FirstOrDefault();
+                    var customer = InsuranceContext.Customers.All(where: $"UserId ='{_user.Id.ToString()}'").OrderByDescending(c=>c.Id).FirstOrDefault();
                     Session["firstname"] = customer.FirstName;
                     Session["lastname"] = customer.LastName;
 
@@ -567,7 +567,7 @@ namespace InsuranceClaim.Controllers
 
 
                 string policyPeriod = item.CoverStartDate.Value.ToString("dd/MM/yyyy") + " - " + item.CoverEndDate.Value.ToString("dd/MM/yyyy");
-                Summeryofcover += "<tr> <td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td>  <td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>" + CurrencyName + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>" + policyPeriod + "</td><td style='padding: 7px 10px; font - size:15px;'>" + paymentTermsName + "</td><td style='padding: 7px 10px; font - size:15px;'>" + CurrencyName + Convert.ToString(item.Premium) + "</td></tr>";
+                Summeryofcover += "<tr> <td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td>  <td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>" + CurrencyName + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>" + policyPeriod + "</td><td style='padding: 7px 10px; font - size:15px;'>" + paymentTermsName + "</td><td style='padding: 7px 10px; font - size:15px;'>" + CurrencyName + Convert.ToString(item.Premium+item.Discount) + "</td></tr>";
             }
 
             Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
@@ -2168,7 +2168,7 @@ namespace InsuranceClaim.Controllers
                 else if (role == "Administrator" || role == "Renewals")
                 {
                     //  SummaryList = InsuranceContext.SummaryDetails.All(where: $"isQuotation = '0'  ").OrderByDescending(x => x.Id).ToList();
-                    SummaryList = SummaryList.Where(c => c.isQuotation == false).OrderByDescending(c => c.Id).Take(200).ToList();
+                    SummaryList = SummaryList.Where(c => c.isQuotation == false).OrderByDescending(c => c.Id).ToList();
                 }
                 else
                 {
@@ -2277,10 +2277,10 @@ namespace InsuranceClaim.Controllers
 
                             }
 
-                            else
-                            {
-                                return View("PolicyList", policylist);
-                            }
+                            //else
+                            //{
+                            //    return View("PolicyList", policylist);
+                            //}
                         }
 
                         policylist.listpolicy.Add(policylistviewmodel);
@@ -2621,7 +2621,7 @@ namespace InsuranceClaim.Controllers
             }
             else if (role == "Administrator" || role == "Renewals")
             {
-                var query = " Select SD.* from [InsuranceClaim_dev].[dbo].[SummaryDetail] SD Join [InsuranceClaim_dev].[dbo].[PaymentInformation] pa on SD.Id =pa.SummaryDetailId where SD.isQuotation=0 ";
+                var query = " Select SD.* from SummaryDetail SD Join PaymentInformation pa on SD.Id =pa.SummaryDetailId where SD.isQuotation=0 ";
 
                 SummaryList = InsuranceContext.Query(query).Select(x => new SummaryDetail()
                 {
@@ -2644,7 +2644,7 @@ namespace InsuranceClaim.Controllers
             var vehiclelist = InsuranceContext.VehicleDetails.All().ToList();
             var policy_list = InsuranceContext.PolicyDetails.All().ToList();
             var ReinsuranceTransactionslist = InsuranceContext.ReinsuranceTransactions.All().ToList();
-            foreach (var item in SummaryList.Take(200))
+            foreach (var item in SummaryList.Take(100))
             {
                 //var paymentDetails = InsuranceContext.PaymentInformations.Single(where: $"SummaryDetailId =" + item.Id);
                 //if (paymentDetails == null)

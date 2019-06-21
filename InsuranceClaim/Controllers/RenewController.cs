@@ -182,7 +182,7 @@ namespace InsuranceClaim.Controllers
 
                 ViewBag.CurrentUserRole = role;
 
-                if (role != null && role != "Staff")
+                if ((role != null && (role != "Staff" && role != "Renewals")))
                 {
                     if (customerData != null)
                     {
@@ -515,6 +515,12 @@ namespace InsuranceClaim.Controllers
         public ActionResult RiskDetail(int? Id)
         {
 
+            if(Session["RenewVehicleId"]==null)
+            {
+                return RedirectToAction("Index");
+            }
+
+
             var vehicleId = (Int32)Session["RenewVehicleId"];
             CustomerModel custdata = new CustomerModel();
             //get All PolicyDetail in session
@@ -757,7 +763,6 @@ namespace InsuranceClaim.Controllers
 
 
 
-
         [HttpPost]
         public ActionResult GenerateQuote(RiskDetailModel model)
         {
@@ -771,6 +776,10 @@ namespace InsuranceClaim.Controllers
             {
                 model.AddThirdPartyAmount = 0.00m;
             }
+
+
+            ModelState.Remove("SumInsured");
+
             DateTimeFormatInfo usDtfi = new CultureInfo("en-US", false).DateTimeFormat;
             var service = new RiskDetailService();
             var startDate = Request.Form["CoverStartDate"];
@@ -1032,7 +1041,7 @@ namespace InsuranceClaim.Controllers
 
                         //if user staff
 
-                        if (role == "Staff" || role == "Administrator")
+                        if (role == "Staff" || role == "Renewals" || role == "Administrator") 
                         {
                             // check if email id exist in user table
                             var user = UserManager.FindByEmail(customer.EmailAddress);
@@ -1182,7 +1191,7 @@ namespace InsuranceClaim.Controllers
                                 if (number != customer.PhoneNumber)
                                 {
                                     user.PhoneNumber = customer.PhoneNumber;
-                                    UserManager.Update(user);
+                                  //  UserManager.Update(user); // 13 june _ 2019
                                 }
                                 // customer.UserID = User.Identity.GetUserId().ToString();
 
@@ -1190,7 +1199,7 @@ namespace InsuranceClaim.Controllers
 
                                 if (customerDetials != null)
                                 {
-                                    customer.UserID = user.Id;
+                                 //   customer.UserID = user.Id;
                                     customer.CustomerId = customerDetials.CustomerId;
                                     var customerdata = Mapper.Map<CustomerModel, Customer>(customer);
 
@@ -1200,7 +1209,7 @@ namespace InsuranceClaim.Controllers
                                     }
 
 
-                                    InsuranceContext.Customers.Update(customerdata);
+                                    // InsuranceContext.Customers.Update(customerdata);  // 13 june _ 2019
                                 }
 
                             }
@@ -2166,7 +2175,7 @@ namespace InsuranceClaim.Controllers
 
                 var _vehicle = (RiskDetailModel)Session["RenewVehicleDetails"];
 
-                var _Premium = vehicle.Premium - vehicle.PassengerAccidentCoverAmount - vehicle.ExcessAmount - vehicle.ExcessBuyBackAmount - vehicle.MedicalExpensesAmount - vehicle.RoadsideAssistanceAmount;
+                var _Premium = (vehicle.Premium+vehicle.Discount) - vehicle.PassengerAccidentCoverAmount - vehicle.ExcessAmount - vehicle.ExcessBuyBackAmount - vehicle.MedicalExpensesAmount - vehicle.RoadsideAssistanceAmount;
 
 
                 Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
@@ -3069,6 +3078,33 @@ namespace InsuranceClaim.Controllers
 
                 if (userLoggedin)
                 {
+
+
+                    if (User.IsInRole("Staff") || User.IsInRole("Renewals"))
+                    {
+                        //if (buttonUpdate != null)
+                        //{
+                        //    AddOrUpdateCustomerInformation(model);
+
+                        //    return Json(new { IsError = false, error = "Sucessfully update" }, JsonRequestBehavior.AllowGet);
+                        //}
+
+                        var email = LoggedUserEmail();
+
+                        if (email == model.EmailAddress)
+                        {
+                            return Json(new { IsError = false, error = "Staff and customer email can not be same" }, JsonRequestBehavior.AllowGet);
+                        }
+                    }
+
+
+
+
+
+
+
+
+
 
                     Session["CustomModal"] = model;
                     return Json(new { IsError = true, error = "" }, JsonRequestBehavior.AllowGet);

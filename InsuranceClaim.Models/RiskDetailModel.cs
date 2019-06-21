@@ -40,11 +40,13 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please Enter Cover End Date")]
 
         public DateTime? CoverEndDate { get; set; }
-       
 
+       [Range(3500, int.MaxValue, ErrorMessage = "Minimum sum nsured should be 3500.")]
         public decimal? SumInsured { get; set; }
         [Required(ErrorMessage = "Please Enter Basic Premium")]
         public decimal? Premium { get; set; }
+
+        public decimal? PremiumWithDiscount { get; set; }
         public string currency { get; set; }
         public int? AgentCommissionId { get; set; }
         public decimal? Rate { get; set; }

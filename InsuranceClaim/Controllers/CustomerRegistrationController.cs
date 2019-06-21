@@ -100,7 +100,7 @@ namespace InsuranceClaim.Controllers
 
                 ViewBag.CurrentUserRole = role;
 
-                if (role != null && role != "Staff")
+                 if ((role != null && (role != "Staff" && role != "Renewals")))
                 {
                     if (customerData != null)
                     {
@@ -221,7 +221,7 @@ namespace InsuranceClaim.Controllers
                     //    return Json(new { IsError = false, error = "Email " + model.EmailAddress + " already exists." }, JsonRequestBehavior.AllowGet);
                     //}
 
-                    if (User.IsInRole("Staff"))
+                    if (User.IsInRole("Staff") || User.IsInRole("Renewals"))
                     {
                         //if (buttonUpdate != null)
                         //{
@@ -236,9 +236,6 @@ namespace InsuranceClaim.Controllers
                         {
                             return Json(new { IsError = false, error = "Staff and customer email can not be same" }, JsonRequestBehavior.AllowGet);
                         }
-
-
-
                     }
 
                     Session["CustomerDataModal"] = model;
@@ -535,6 +532,8 @@ namespace InsuranceClaim.Controllers
                         viewModel.OptionalCovers = data.OptionalCovers;
                         viewModel.PolicyId = data.PolicyId;
                         viewModel.Premium = data.Premium;
+                        viewModel.PremiumWithDiscount = data.Premium + data.Discount;
+
                         viewModel.RadioLicenseCost = (int)Math.Round(data.RadioLicenseCost == null ? 0 : data.RadioLicenseCost.Value, 0);
                         viewModel.Rate = data.Rate;
                         viewModel.RegistrationNo = data.RegistrationNo;
@@ -646,6 +645,11 @@ namespace InsuranceClaim.Controllers
             // Submit & Add More Vehicle
 
 
+            ModelState.Remove("SumInsured");
+        
+
+
+
             if (model.isUpdate)
             {
                 try
@@ -677,10 +681,11 @@ namespace InsuranceClaim.Controllers
 
                         listriskdetailmodel[model.vehicleindex - 1] = model;
 
-
-
-
                         Session["VehicleDetails"] = listriskdetailmodel;
+                    }
+                    else
+                    {
+
                     }
 
                     if (btnAddVehicle == "")
@@ -953,12 +958,11 @@ namespace InsuranceClaim.Controllers
                         obj.premium = item.Premium.ToString();
                         obj.suminsured = item.SumInsured.ToString();
                         obj.RegistrationNo = item.RegistrationNo;
-
+                        obj.Discount = item.Discount;
 
                         var currency = InsuranceContext.Currencies.Single(where: $" Id='{item.CurrencyId}'");
                         if (currency != null)
                             obj.CurrencyName = currency.Name;
-
 
                         if (item.IncludeRadioLicenseCost == true)
                         {
@@ -1031,8 +1035,12 @@ namespace InsuranceClaim.Controllers
 
         }
 
-        public ActionResult SummaryDetail(int summaryDetailId = 0)
+        public ActionResult SummaryDetail(int summaryDetailId = 0, string paymentError="")
         {
+
+           
+
+
             if (Session["CustomerDataModal"] == null && summaryDetailId == 0)
             {
                 // return RedirectToAction("Index", "CustomerRegistration");
@@ -1047,9 +1055,6 @@ namespace InsuranceClaim.Controllers
             var model = new SummaryDetailModel();
             try
             {
-
-
-
 
                 Session["issummaryformvisited"] = true;
                 var summarydetail = (SummaryDetailModel)Session["SummaryDetailed"];
@@ -1139,7 +1144,7 @@ namespace InsuranceClaim.Controllers
                 model.DebitNote = "INV" + Convert.ToString(SummaryDetailServiceObj.getNewDebitNote());
 
                 //default selection 
-                if (User.IsInRole("Staff")|| User.IsInRole("Renewals"))
+                if (User.IsInRole("Staff") || User.IsInRole("Renewals"))
                 {
                     model.PaymentMethodId = 1;
                 }
@@ -1237,7 +1242,14 @@ namespace InsuranceClaim.Controllers
                 return View(model);
             }
 
-         //   model.IceCashModel = 
+            //   model.IceCashModel = 
+
+            if(paymentError!="")
+            {
+                model.Error = "Error occurd during ecocash payment.";
+                model.PaymentMethodId = (int) paymentMethod.ecocash;
+            }
+           
 
             return View(model);
         }
@@ -1364,31 +1376,50 @@ namespace InsuranceClaim.Controllers
                         var summaryDetial = InsuranceContext.SummaryVehicleDetails.Single(where: $"SummaryDetailId = '" + model.CustomSumarryDetilId + "'");
 
 
+
+
                         if (summaryDetial != null && btnSendQuatation == "") // while user come from qutation email
                         {
                             if (model.CustomSumarryDetilId != 0 && btnSendQuatation == "") // cehck if request is comming from agent email
                             {
                                 if (model.PaymentMethodId == 1)
                                     return RedirectToAction("SaveDetailList", "Paypal", new { id = model.CustomSumarryDetilId, invoiceNumber = model.InvoiceNumber });
-                                if (model.PaymentMethodId == 3)
+                               else if (model.PaymentMethodId == (int)paymentMethod.ecocash)
                                 {
                                     //return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policyNum, Email = customerEmail });
-
                                     TempData["PaymentMethodId"] = model.PaymentMethodId;
-                                    return RedirectToAction("makepayment", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
+                                    // return RedirectToAction("makepayment", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid) }); paynow
+                                    return RedirectToAction("SaveDetailList", "Paypal", new { id = model.CustomSumarryDetilId, invoiceNumer = model.InvoiceNumber, Paymentid = model.PaymentMethodId.Value });
                                 }
-                                else if (model.PaymentMethodId == 4)
+                                //else if (model.PaymentMethodId == 4)
+                                //{
+                                //    TempData["PaymentMethodId"] = model.PaymentMethodId;
+                                //    return RedirectToAction("IceCashPayment", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
+                                //}
+                                else if (model.PaymentMethodId == (int)paymentMethod.Zimswitch)
                                 {
                                     TempData["PaymentMethodId"] = model.PaymentMethodId;
-                                    return RedirectToAction("IceCashPayment", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
-                                }
+                                    return RedirectToAction("IceCashPayment", "Paypal", new { id = model.CustomSumarryDetilId, amount = Convert.ToString(model.AmountPaid), Paymentid = model.PaymentMethodId.Value });
+                                }                          
                                 else
-                                    return RedirectToAction("PaymentDetail", new { id = model.CustomSumarryDetilId });
+                                    return RedirectToAction("PaymentDetail", new { id = model.CustomSumarryDetilId, invoiceNumer = model.InvoiceNumber, Paymentid = model.PaymentMethodId.Value });
                             }
                         }
 
 
                         #endregion
+
+
+
+
+                      
+                       
+
+
+
+
+
+
 
 
 
@@ -1422,7 +1453,7 @@ namespace InsuranceClaim.Controllers
 
                         //if user staff
 
-                        if (role == "Staff" || role == "Administrator")
+                        if (role == "Staff" || role == "Renewals" || role == "Administrator")
                         {
                             // check if email id exist in user table
 
@@ -1574,7 +1605,7 @@ namespace InsuranceClaim.Controllers
                                 if (number != customer.PhoneNumber)
                                 {
                                     user.PhoneNumber = customer.PhoneNumber;
-                                    UserManager.Update(user);
+                                   // UserManager.Update(user);  // 13_june
                                 }
                                 // customer.UserID = User.Identity.GetUserId().ToString();
 
@@ -1582,7 +1613,7 @@ namespace InsuranceClaim.Controllers
 
                                 if (customerDetials != null)
                                 {
-                                    customer.UserID = user.Id;
+                                   // customer.UserID = user.Id;  // 13_june_2019
                                     customer.CustomerId = customerDetials.CustomerId;
                                     var customerdata = Mapper.Map<CustomerModel, Customer>(customer);
 
@@ -1590,11 +1621,8 @@ namespace InsuranceClaim.Controllers
                                     {
                                         customerdata.CustomerId = customerdata.Id;
                                     }
-
-
-                                    InsuranceContext.Customers.Update(customerdata);
+                                 //   InsuranceContext.Customers.Update(customerdata); // 13_june_2019
                                 }
-
                             }
                         }
 
@@ -2233,8 +2261,6 @@ namespace InsuranceClaim.Controllers
 
                                 if (count == listReinsuranceTransaction.Count && !MailSent)
                                 {
-
-
                                     var user = UserManager.FindById(customer.UserID);
                                     Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
                                     var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
@@ -2250,6 +2276,8 @@ namespace InsuranceClaim.Controllers
                                     objEmailService.SendEmail(ZimnatEmail, "", "", "Reinsurance Case: " + policy.PolicyNumber.ToString(), Body, _attachements);
                                     //MiscellaneousService.ScheduleMotorPdf(Body, policy.CustomerId, policy.PolicyNumber, "Reinsurance Case- " + policy.PolicyNumber.ToString(), item.VehicleId);
                                 }
+
+
                             }
                         }
 
@@ -2266,11 +2294,11 @@ namespace InsuranceClaim.Controllers
                                 ListOfVehicles.Add(itemVehicle);
                             }
 
-                           
+
 
                             var currencylist = servicedetail.GetAllCurrency();
                             string CurrencyName = "";
-                           
+
 
 
                             //List<VehicleDetail> ListOfVehicles = new List<VehicleDetail>();
@@ -2330,7 +2358,7 @@ namespace InsuranceClaim.Controllers
                                 CurrencyName = servicedetail.GetCurrencyName(currencylist, vehicledetail.CurrencyId);
                                 string policyPeriod = item.CoverStartDate.Value.ToString("dd/MM/yyyy") + " - " + item.CoverEndDate.Value.ToString("dd/MM/yyyy");
 
-                                Summeryofcover += "<tr> <td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td> <td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>"+ CurrencyName + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td> <td style='padding: 7px 10px; font - size:15px;'>" + policyPeriod + "</td><td style='padding: 7px 10px; font - size:15px;'>" + paymentTermsNmae + "</td><td style='padding: 7px 10px; font - size:15px;'>"+ CurrencyName + Convert.ToString(item.Premium) + "</td></tr>";
+                                Summeryofcover += "<tr> <td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td> <td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>" + CurrencyName + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + converType + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td> <td style='padding: 7px 10px; font - size:15px;'>" + policyPeriod + "</td><td style='padding: 7px 10px; font - size:15px;'>" + paymentTermsNmae + "</td><td style='padding: 7px 10px; font - size:15px;'>" + CurrencyName + Convert.ToString(item.Premium) + "</td></tr>";
 
 
 
@@ -2353,11 +2381,11 @@ namespace InsuranceClaim.Controllers
                             //  var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
                             var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == vehicleQuotation.PaymentTermId);
 
-                         
+
                             Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
 
                             string QuotationEmailPath = "/Views/Shared/EmaiTemplates/QuotationEmail.cshtml";
-                        
+
 
                             string urlPath = WebConfigurationManager.AppSettings["urlPath"];
 
@@ -2429,8 +2457,6 @@ namespace InsuranceClaim.Controllers
                             #endregion
 
 
-
-
                             Session.Remove("CustomerDataModal");
                             Session.Remove("PolicyData");
                             Session.Remove("VehicleDetails");
@@ -2462,23 +2488,26 @@ namespace InsuranceClaim.Controllers
                         // return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
 
                         if (model.PaymentMethodId == 1)
-                            return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id, invoiceNumer = model.InvoiceNumber });
-                        if (model.PaymentMethodId == 3)
+                            return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id, invoiceNumer = model.InvoiceNumber, Paymentid = model.PaymentMethodId.Value });
+                        if (model.PaymentMethodId == (int)paymentMethod.ecocash)
                         {
 
                             //return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
                             TempData["PaymentMethodId"] = model.PaymentMethodId;
-                            return RedirectToAction("makepayment", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
+                            //  return RedirectToAction("makepayment", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), model.PaymentMethodId }); for paynow
+
+                            return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id, invoiceNumer = model.InvoiceNumber, Paymentid= model.PaymentMethodId.Value });
+
                         }
-                        else if (model.PaymentMethodId == 4)
+                        else if (model.PaymentMethodId == (int)paymentMethod.Zimswitch)
                         {
                             TempData["PaymentMethodId"] = model.PaymentMethodId;
-                            return RedirectToAction("IceCashPayment", "Paypal", new { id = model.Id, amount = Convert.ToString(model.AmountPaid) });
+                            return RedirectToAction("IceCashPayment", "Paypal", new { id = model.Id, amount = Convert.ToString(model.AmountPaid), Paymentid = model.PaymentMethodId.Value });
                         }
-
+                       
 
                         else
-                            return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
+                            return RedirectToAction("PaymentDetail", new { id = DbEntry.Id, invoiceNumer = model.InvoiceNumber, Paymentid = model.PaymentMethodId.Value });
                     }
                     else
                     {
@@ -2700,9 +2729,9 @@ namespace InsuranceClaim.Controllers
 
 
             var vehilceType = InsuranceContext.Products.Single(where: $"Id = '" + ProductId + "'");
-            if(vehilceType!=null)
+            if (vehilceType != null)
             {
-                ProductId =Convert.ToString(vehilceType.VehicleTypeId);
+                ProductId = Convert.ToString(vehilceType.VehicleTypeId);
             }
 
 
@@ -3134,6 +3163,14 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult PaymentDetail(int id, string erroMsg = null)
         {
+            if (id != 0)
+            {
+                TempData["PaymentDetail"] = id;
+            }
+            else
+            {
+                id = Convert.ToInt32(TempData["SummaryId"]);
+            }
             var cardDetails = (CardDetailModel)Session["CardDetail"];
             if (cardDetails == null)
             {

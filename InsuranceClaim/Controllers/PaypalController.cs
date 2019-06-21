@@ -40,33 +40,41 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult Index(int id)
         {
-            //  ApproveVRNToIceCash(7839);
+            //  ApproveVRNToIceCash(7839, 1);
             return View();
         }
 
 
         public ActionResult IceCashPayment(int id = 0, string amount = "0")
         {
+            if (id != 0)
+            {
+                TempData["SummaryId"] = id;
+            }
+            else if (id == 0)
+            {
+                if (TempData["PaymentDetail"] != null)
+                    id = Convert.ToInt32(TempData["PaymentDetail"]);
+            }
+
 
             int paymentMehtod = 0;
-            if (TempData["PaymentMethodId"]!=null)
+            if (TempData["PaymentMethodId"] != null)
             {
-                 paymentMehtod = Convert.ToInt32(TempData["PaymentMethodId"]);
+                paymentMehtod = Convert.ToInt32(TempData["PaymentMethodId"]);
             }
 
 
             IceCashCardDetailModel iceCashmodel = new IceCashCardDetailModel { SummaryId = id, Amount = Convert.ToDecimal(amount), PaymentMethod = paymentMehtod };
 
             Session["IceCashPayment"] = iceCashmodel;
-
-
-              var iceCashPaymentUrl = System.Configuration.ConfigurationManager.AppSettings["IceCash"];
+            var iceCashPaymentUrl = System.Configuration.ConfigurationManager.AppSettings["IceCash"];
 
             IceCashModel model = new IceCashModel();
 
-            model.partner_id = "20523588";
-            var amounts = Convert.ToDecimal(amount);
-            model.amount = amounts * 100;
+            model.partner_id = "20045172";
+            var amounts = Math.Round(Convert.ToDecimal(amount), 0); // Output: 1;
+            model.amount = amounts;
             model.client_reference = Guid.NewGuid();
             model.IceCashRequestUrl = "http://test.api.ice.cash/payments/test_send_request";
             model.success_url = iceCashPaymentUrl + "/Paypal/success_url";
@@ -84,18 +92,18 @@ namespace InsuranceClaim.Controllers
         public ActionResult success_url()
         {
 
-            if(Session["IceCashPayment"]!=null)
+            if (Session["IceCashPayment"] != null)
             {
 
                 var IceCashPaymentDetails = (IceCashCardDetailModel)Session["IceCashPayment"];
 
-                SaveDetailList(IceCashPaymentDetails.SummaryId, "",  Convert.ToString(IceCashPaymentDetails.PaymentMethod));
+                SaveDetailList(IceCashPaymentDetails.SummaryId, "", Convert.ToString(IceCashPaymentDetails.PaymentMethod));
             }
 
-          
 
 
-            return View();
+
+            return RedirectToAction("ThankYou");
         }
 
         public ActionResult failed_url()
@@ -427,7 +435,6 @@ namespace InsuranceClaim.Controllers
                             amount = Convert.ToDecimal(item.amount.total);
                             break;
                         }
-
                     }
 
                     if (amount < 1)
@@ -733,16 +740,13 @@ namespace InsuranceClaim.Controllers
         //public async Task<ActionResult> SaveDetailList(Int32 id, string invoiceNumber = "")
         public string SaveQRCode(string Policyno)
         {
-            string path="";
+            string path = "";
             try
             {
 
-                
-              var urlPath = System.Configuration.ConfigurationManager.AppSettings["urlPath"];
+                var urlPath = System.Configuration.ConfigurationManager.AppSettings["urlPath"];
 
-               QRCode Codes = new QRCode();
-               
-
+                QRCode Codes = new QRCode();
 
                 //var Policy =Convert.ToString (TempData["Registrationno"]);
 
@@ -815,9 +819,17 @@ namespace InsuranceClaim.Controllers
         }
 
         public async Task<ActionResult> SaveDetailList(Int32 id, string invoiceNumber = "", string Paymentid = "")
-        {        
+        {
             //var PaymentId = Session["PaymentId"];
             //var InvoiceId = Session["InvoiceId"];
+            if (id == 0)
+            {
+                id = Convert.ToInt32(TempData["SummaryId"]);
+                if (id == 0)
+                {
+                    id = Convert.ToInt32(TempData["PaymentDetail"]);
+                }
+            }
 
             SummaryDetailService detailService = new SummaryDetailService();
 
@@ -843,9 +855,24 @@ namespace InsuranceClaim.Controllers
             else if (Paymentid == "")
             {
                 PaymentMethod = "CASH";
-            }          
+            }
 
-                var summaryDetail = InsuranceContext.SummaryDetails.Single(id);        
+
+            if (Paymentid == Convert.ToString((int)paymentMethod.ecocash))
+            {
+                var result = ApproveVRNToIceCash(id, Convert.ToInt16(Paymentid));
+
+                if (result != "Approved")
+                {
+                    return RedirectToAction("SummaryDetail", "CustomerRegistration", new { summaryDetailId = id, paymentError = result });
+                }
+
+            }
+
+
+
+
+            var summaryDetail = InsuranceContext.SummaryDetails.Single(id);
 
             if (summaryDetail != null && summaryDetail.isQuotation)
             {
@@ -909,7 +936,15 @@ namespace InsuranceClaim.Controllers
 
 
 
-            ApproveVRNToIceCash(id);
+            if (Paymentid != Convert.ToString((int)paymentMethod.ecocash))
+            {
+                if (string.IsNullOrEmpty(Paymentid))
+                    Paymentid = "1";
+
+                string res = ApproveVRNToIceCash(id, Convert.ToInt16(Paymentid));
+            }
+
+
 
 
             if (!userLoggedin)
@@ -954,10 +989,6 @@ namespace InsuranceClaim.Controllers
             //var totalprem = data.Sum(x => Convert.ToDecimal(x.price));
 
             // string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentEmail.cshtml"; 24_jan_2019
-
-
-       
-
 
             //var currencyDetails = currencylist.FirstOrDefault(c => c.Id == vehicle.CurrencyId);
             //if(currencyDetails!=null)
@@ -1102,7 +1133,7 @@ namespace InsuranceClaim.Controllers
 
 
                 //Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + vehicledescription + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + item.SumInsured + "</td><td style='padding: 7px 10px; font - size:15px;'>" + (item.CoverTypeId == 1 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</td><td style='padding: 7px 10px; font - size:15px;'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</td><td style='padding: 7px 10px; font - size:15px;'>$0.00</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Excess) + "</td><td style='padding: 7px 10px; font - size:15px;'>$" + Convert.ToString(item.Premium) + "</td></tr>";
-                Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td> <td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + vehicledescription + "</font></td> <td> " + item.CoverNote + " </td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + currencyName + item.SumInsured + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + (item.CoverTypeId == 4 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + policyPeriod + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + paymentTermsName + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + currencyName + Convert.ToString(item.Premium) + "</font></td></tr>";
+                Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td> <td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + vehicledescription + "</font></td> <td> " + item.CoverNote + " </td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + currencyName + item.SumInsured + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + (item.CoverTypeId == 4 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + policyPeriod + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + paymentTermsName + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + currencyName + Convert.ToString(item.Premium + item.Discount) + "</font></td></tr>";
 
 
             }
@@ -1212,10 +1243,12 @@ namespace InsuranceClaim.Controllers
             return email;
 
         }
-        public void ApproveVRNToIceCash(int id)
+        public string ApproveVRNToIceCash(int id, int paymentMethod)
         {
             #region update  TPIQuoteUpdate
             Insurance.Service.EmailService log = new Insurance.Service.EmailService();
+
+            string result = "";
 
             try
             {
@@ -1243,7 +1276,10 @@ namespace InsuranceClaim.Controllers
                             if (InsuranceID == null)
                             {
                                 iceCash.getToken();
-                                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+
+                                if (Session["ICEcashToken"] != null)
+                                    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+
 
 
                                 List<RiskDetailModel> objVehicles = new List<RiskDetailModel>();
@@ -1300,14 +1336,14 @@ namespace InsuranceClaim.Controllers
                             //else
                             //{
                             iceCash.getToken();
-                            tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                            tokenObject = (ICEcashTokenResponse)HttpContext.Session["ICEcashToken"];
                             //}
 
 
 
                             PartnerToken = tokenObject.Response.PartnerToken;
 
-                            ResultRootObject quoteresponse = ICEcashService.TPIQuoteUpdate(customerDetails, vichelDetails, PartnerToken, 1);
+                            ResultRootObject quoteresponse = ICEcashService.TPIQuoteUpdate(customerDetails, vichelDetails, PartnerToken, paymentMethod);
 
                             // if partern token expire
                             //if (quoteresponse.Response.Result == 0)
@@ -1320,21 +1356,31 @@ namespace InsuranceClaim.Controllers
                                 iceCash.getToken();
                                 tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
                                 PartnerToken = tokenObject.Response.PartnerToken;
-                                ICEcashService.TPIQuoteUpdate(customerDetails, vichelDetails, PartnerToken, 1);
+                                ICEcashService.TPIQuoteUpdate(customerDetails, vichelDetails, PartnerToken, paymentMethod);
                             }
                             //}
 
                             var res = ICEcashService.TPIPolicy(vichelDetails, PartnerToken);
                             if (res.Response != null && res.Response.Message == "Policy Retrieved")
                             {
-                                vichelDetails.InsuranceStatus = "Approved";
-                                vichelDetails.CoverNote = res.Response.PolicyNo;
-                                //  vichelDetails.CoverNote = res.o
-                                InsuranceContext.VehicleDetails.Update(vichelDetails);
+
+                                if (res.Response.Status == "Approved")
+                                {
+                                    result = res.Response.Status;
+                                    vichelDetails.InsuranceStatus = "Approved";
+                                    vichelDetails.CoverNote = res.Response.PolicyNo;
+                                    //  vichelDetails.CoverNote = res.o
+                                    InsuranceContext.VehicleDetails.Update(vichelDetails);
+                                }
+                                else
+                                {
+                                    result = res.Response.Status;
+                                }
                             }
-
-
-
+                            else
+                            {
+                                result = res.Response.Message;
+                            }
                         }
 
                     }
@@ -1347,7 +1393,7 @@ namespace InsuranceClaim.Controllers
 
             }
 
-
+            return result;
             #endregion
         }
 

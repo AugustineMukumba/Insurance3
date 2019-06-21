@@ -1479,10 +1479,15 @@ table.policy-table-grid {
     width: 40px;
     height: auto;
 }
-
+.payment-card ul li#payment_3,.payment-card ul li#payment_4{
+    padding:0px;
+}
 #payment_3 img {
-    width: 100px;
+    width: 75px;
     height: auto;
+}
+#payment_4 img {
+    width: 75px;
 }
 
 /***/

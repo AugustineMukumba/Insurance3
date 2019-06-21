@@ -219,6 +219,8 @@ namespace Insurance.Domain
         public bool IsMobile { get; set; }
 
         public DateTime CreatedOn { get; set; }
+
+        public string SignaturePath { get; set; }
     }
     public partial class PaymentTerm : Entity<PaymentTerm>
     {
@@ -430,6 +432,8 @@ namespace Insurance.Domain
         public Branch(bool defaults) : base(defaults) { }
         public int Id { get; set; }
         public string BranchName { get; set; }
+
+        public string AlmId { get; set; }
 
     }
 

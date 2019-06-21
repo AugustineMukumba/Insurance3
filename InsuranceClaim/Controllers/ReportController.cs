@@ -599,10 +599,10 @@ namespace InsuranceClaim.Controllers
             GrossWrittenPremiumReportSearchModels Model = new GrossWrittenPremiumReportSearchModels();
             //   var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive='1'").ToList().Take(200);
 
-           // var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c => c.Id).ToList().Take(200);
+            // var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c => c.Id).ToList().Take(200);
             var VehicleList = InsuranceContext.VehicleDetails.All();
 
-            var  vehicledetail = VehicleList.OrderByDescending(c => c.Id).ToList().Take(200);
+            var vehicledetail = VehicleList.OrderByDescending(c => c.Id).ToList().Take(200);
 
             var policyList = InsuranceContext.PolicyDetails.All();
             var customerList = InsuranceContext.Customers.All();
@@ -648,11 +648,13 @@ namespace InsuranceClaim.Controllers
                     {
                         if (summary.isQuotation != true)
                         {
-                            obj.ALMId = customer.ALMId;
-
-                            obj.BranchName = branchList.FirstOrDefault(c => c.Id == customer.BranchId) == null ? "" : branchList.FirstOrDefault(c => c.Id == customer.BranchId).BranchName;
-
-
+                            // obj.ALMId = customer.ALMId;
+                            var branchDetails = branchList.FirstOrDefault(c => c.Id == customer.BranchId);
+                            if (branchDetails != null)
+                            {
+                                obj.ALMId = branchDetails.AlmId;
+                                obj.BranchName = branchDetails.BranchName;
+                            }
 
                             obj.Payment_Term = Payment_TermList.FirstOrDefault(x => x.Id == item.PaymentTermId).Name;
                             var paymentMethod = PaymentMethodsList.FirstOrDefault(x => x.Id == summary.PaymentMethodId);
@@ -828,9 +830,12 @@ namespace InsuranceClaim.Controllers
 
                         if (summary.isQuotation != true)
                         {
-                            obj.ALMId = customer.ALMId;
-
-                            obj.BranchName = branchList.FirstOrDefault(c => c.Id == customer.BranchId) == null ? "" : branchList.FirstOrDefault(c => c.Id == customer.BranchId).BranchName;
+                            var branchDetails = branchList.FirstOrDefault(c => c.Id == customer.BranchId);
+                            if (branchDetails != null)
+                            {
+                                obj.ALMId = branchDetails.AlmId;
+                                obj.BranchName = branchDetails.BranchName;
+                            }
 
                             obj.Payment_Term = InsuranceContext.PaymentTerms.Single(item.PaymentTermId)?.Name;
                             obj.Payment_Mode = InsuranceContext.PaymentMethods.Single(summary.PaymentMethodId)?.Name;
@@ -1227,6 +1232,113 @@ namespace InsuranceClaim.Controllers
 
             return View("ReinsuranceReport", model);
         }
+        public ActionResult InsuranceAndLicenceDeliveryReport()
+
+        {
+
+            List<InsuranceAndLicenceDeliveryReportModel> ListLicenceDeliveryReport = new List<InsuranceAndLicenceDeliveryReportModel>();
+            ListInsuranceAndLicenceDeliveryReport _LicenceDeliveryReport = new ListInsuranceAndLicenceDeliveryReport();
+            _LicenceDeliveryReport.InsuranceAndLicense = new List<InsuranceAndLicenceDeliveryReportModel>();
+            InsuraceAndLicenseSearchReportModel model = new InsuraceAndLicenseSearchReportModel();
+            var Receipthistory = InsuranceContext.ReceiptHistorys.All().ToList().OrderByDescending(c => c.Id);
+            var policydetail = InsuranceContext.PolicyDetails.All().ToList();
+            var customers = InsuranceContext.Customers.All().ToList();
+            var paymentmethod = InsuranceContext.PaymentMethods.All();
+            var userList = UserManager.Users.ToList();
+
+            foreach (var item in Receipthistory)
+            {
+
+                var policy = policydetail.FirstOrDefault(x => x.Id == item.PolicyId);
+                var payment = paymentmethod.FirstOrDefault(x => x.Id == item.PaymentMethodId) == null ? "" : paymentmethod.FirstOrDefault(x => x.Id == item.PaymentMethodId).Name;
+                var customerdetail = customers.FirstOrDefault(x => x.CustomerId == item.CreatedBy);
+                if (customerdetail != null)
+                {
+                    var customerfirstname = customers.FirstOrDefault(x => x.CustomerId == item.CreatedBy) == null ? "" : customers.FirstOrDefault(x => x.CustomerId == item.CreatedBy).FirstName;
+                    var customerlastname = customers.FirstOrDefault(x => x.CustomerId == item.CreatedBy) == null ? "" : customers.FirstOrDefault(x => x.CustomerId == item.CreatedBy).LastName;
+                    var user = UserManager.FindById(customerdetail.UserID);
+                    InsuranceAndLicenceDeliveryReportModel obj = new InsuranceAndLicenceDeliveryReportModel();
+                    obj.CustomerName = item.CustomerName;
+                    obj.Courier = customerfirstname + " " + customerlastname;
+                    obj.PolicyNo = item.PolicyNumber;
+                    obj.PaymentMethod = payment;
+                    obj.TransactionReference = item.TransactionReference;
+                    obj.Receiptno = item.Id;
+                    obj.ReceiptAmount = item.AmountPaid;
+                    obj.DateDeliverd = item.CreatedOn.Date;
+                    obj.TimeofDelivery = item.CreatedOn.ToString("hh:mm");
+                    obj.ContactDetails = user.PhoneNumber + ", " + user.Email;
+                    obj.AddressOfCustomer = customerdetail.AddressLine1 + "," + customerdetail.AddressLine2;
+                    obj.SignaturePath = item.SignaturePath;
+                    ListLicenceDeliveryReport.Add(obj);
+                }
+                else { }
+            }
+
+            model.InsuranceAndLicense = ListLicenceDeliveryReport.OrderBy(x => x.CustomerName).ToList();
+            return View(model);
+        }
+
+
+        public ActionResult InsuranceAndLicenceDeliverySearchReports(InsuraceAndLicenseSearchReportModel _model)
+        {
+            List<InsuranceAndLicenceDeliveryReportModel> ListLicenceDeliveryReport = new List<InsuranceAndLicenceDeliveryReportModel>();
+            ListInsuranceAndLicenceDeliveryReport _LicenceDeliveryReport = new ListInsuranceAndLicenceDeliveryReport();
+            _LicenceDeliveryReport.InsuranceAndLicense = new List<InsuranceAndLicenceDeliveryReportModel>();
+            InsuraceAndLicenseSearchReportModel model = new InsuraceAndLicenseSearchReportModel();
+
+            var receipthistory = InsuranceContext.ReceiptHistorys.All().ToList();
+            DateTime fromDate = DateTime.Now.AddDays(-1);
+            DateTime endDate = DateTime.Now;
+
+            if (!string.IsNullOrEmpty(_model.FromDate) && !string.IsNullOrEmpty(_model.EndDate))
+            {
+                fromDate = Convert.ToDateTime(_model.FromDate);
+                endDate = Convert.ToDateTime(_model.EndDate);
+
+
+                ViewBag.fromdate = fromDate.ToString("dd/MM/yyyy");
+                ViewBag.enddate = endDate.ToString("dd/MM/yyyy");
+
+            }
+
+            receipthistory = receipthistory.Where(c => c.DatePosted >= fromDate && c.DatePosted <= endDate).ToList();
+            var policydetail = InsuranceContext.PolicyDetails.All().ToList();
+            var customers = InsuranceContext.Customers.All().ToList();
+            var paymentmethod = InsuranceContext.PaymentMethods.All();
+            var userList = UserManager.Users.ToList();
+            foreach (var item in receipthistory)
+            {
+
+                var policy = policydetail.FirstOrDefault(x => x.Id == item.PolicyId);
+                var payment = paymentmethod.FirstOrDefault(x => x.Id == item.PaymentMethodId) == null ? "" : paymentmethod.FirstOrDefault(x => x.Id == item.PaymentMethodId).Name;
+                var customerdetail = customers.FirstOrDefault(x => x.CustomerId == item.CreatedBy);
+                if (customerdetail != null)
+                {
+                    var customerfirstname = customers.FirstOrDefault(x => x.CustomerId == item.CreatedBy) == null ? "" : customers.FirstOrDefault(x => x.CustomerId == item.CreatedBy).FirstName;
+                    var customerlastname = customers.FirstOrDefault(x => x.CustomerId == item.CreatedBy) == null ? "" : customers.FirstOrDefault(x => x.CustomerId == item.CreatedBy).LastName;
+                    var user = UserManager.FindById(customerdetail.UserID);
+                    InsuranceAndLicenceDeliveryReportModel obj = new InsuranceAndLicenceDeliveryReportModel();
+                    obj.CustomerName = item.CustomerName;
+                    obj.Courier = customerfirstname + " " + customerlastname;
+                    obj.PolicyNo = item.PolicyNumber;
+                    obj.PaymentMethod = payment;
+                    obj.TransactionReference = item.TransactionReference;
+                    obj.Receiptno = item.Id;
+                    obj.ReceiptAmount = item.AmountPaid;
+                    obj.DateDeliverd = item.CreatedOn.Date;
+                    obj.TimeofDelivery = item.CreatedOn.ToString("hh:mm");
+                    obj.ContactDetails = user.PhoneNumber + ", " + user.Email;
+                    obj.AddressOfCustomer = customerdetail.AddressLine1 + "," + customerdetail.AddressLine2;
+                    ListLicenceDeliveryReport.Add(obj);
+                }
+                else { }
+            }
+            model.InsuranceAndLicense = ListLicenceDeliveryReport.OrderBy(x => x.CustomerName).ToList();
+            return View("InsuranceandLicenceDeliveryReport", model);
+        }
+
+
         public ActionResult RadioLicenceReport()
         {
             var ListRadioLicenceReport = new List<RadioLicenceReportModel>();
@@ -1587,7 +1699,7 @@ namespace InsuranceClaim.Controllers
                    //PolicyCreatedBy = res.PolicyCreatedBy
                }).ToList();
 
-           
+
 
 
             model.DailyReceiptsReport = list.OrderByDescending(c => c.Id).ToList();
@@ -1784,29 +1896,35 @@ namespace InsuranceClaim.Controllers
             return View("LapsedPoliciesReport", _model);
         }
 
+
         public ActionResult ProductivityReport()
         {
 
             //var ListProductiviyReport = new List<ProductiviyReportModel>();
             List<ProductiviyReportModel> listProductiviyReport = new List<ProductiviyReportModel>();
+            List<ProductiviyReportModel> listProductiviyReport_Endorsed = new List<ProductiviyReportModel>();
             ListProductiviyReportModel _listListProductiviyReport = new ListProductiviyReportModel();
             _listListProductiviyReport.ListProductiviyReport = new List<ProductiviyReportModel>();
             ProductiviySearchReportModel model = new ProductiviySearchReportModel();
             //   var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive = 'True'or IsActive is null").OrderByDescending(c=>c.Id).ToList();
 
             var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c => c.Id).ToList();
-
+            var endorsedVehicle = InsuranceContext.EndorsementVehicleDetails.All().OrderByDescending(x => x.PrimaryVehicleId).ToList();
             var currencyList = _summaryDetailService.GetAllCurrency();
-
-
-            foreach (var item in vehicledetail)
+            var endorsePayment = InsuranceContext.EndorsementPaymentInformations.All().ToList();
+            var endorsedPolicy = InsuranceContext.EndorsementPolicyDetails.All();
+            var productlist = InsuranceContext.Products.All().ToList();
+            var endorsed_customer = InsuranceContext.EndorsementCustomers.All();
+            foreach (var item in vehicledetail.Take(100))
             {
-
+                var item_endorsed = endorsedVehicle.FirstOrDefault(x => x.PrimaryVehicleId == item.Id);
+                var endorsepay = endorsePayment.FirstOrDefault(x => x.PrimaryPolicyId == item.PolicyId);
                 //if (item.IsActive == false && !item.isLapsed) // for disable vehicle
                 //    continue;
 
 
                 var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
+                var enfpol = endorsedPolicy.Where(x => x.PrimaryPolicyId == policy.Id);
 
 
                 var vehicleSummarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
@@ -1817,6 +1935,7 @@ namespace InsuranceClaim.Controllers
                     if (summary != null)
                     {
                         var customer = InsuranceContext.Customers.Single(item.CustomerId);
+                        var customer_endorsed = endorsed_customer.FirstOrDefault(x => x.PrimeryCustomerId == item.CustomerId);
                         var customerForRole = InsuranceContext.Customers.Single(summary.CreatedBy);
 
                         if (customerForRole != null)
@@ -1838,13 +1957,16 @@ namespace InsuranceClaim.Controllers
                                 //{
                                 ProductiviyReportModel obj = new ProductiviyReportModel();
                                 obj.CustomerName = customer.FirstName + " " + customer.LastName;
+                                obj.VehicleId = item.Id;
                                 obj.PolicyNumber = policy.PolicyNumber;
                                 obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy");
-                                //obj.PremiumDue = Convert.ToDecimal(item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost); // 28_may_2019
+
                                 obj.PremiumDue = Convert.ToDecimal(item.Premium);
+
                                 obj.SumInsured = Convert.ToDecimal(item.SumInsured);
                                 obj.UserName = userDetials.Email;
-                                obj.Product = InsuranceContext.Products.Single(item.ProductId).ProductName;
+                                obj.Product = productlist.FirstOrDefault(x => x.Id == item.ProductId).ProductName;
+                                //InsuranceContext.Products.Single(item.ProductId).ProductName;
                                 obj.Currency = _summaryDetailService.GetCurrencyName(currencyList, item.CurrencyId);
 
                                 obj.RenewPolicyNumber = item.RenewPolicyNumber;
@@ -1854,11 +1976,42 @@ namespace InsuranceClaim.Controllers
                                     obj.PolicyStatus = "Policy";
 
                                 obj.isLapsed = item.isLapsed;
-                                obj.IsActive = item.IsActive==null? false : item.IsActive.Value;
+                                obj.IsActive = item.IsActive == null ? false : item.IsActive.Value;
+                                obj.IsEndorsed = false;
 
 
 
                                 listProductiviyReport.Add(obj);
+                                if (item_endorsed != null)
+                                {
+                                    if (endorsepay != null)
+                                    {
+
+
+                                        ProductiviyReportModel obj_endorsed = new ProductiviyReportModel();
+                                        if (customer_endorsed != null)
+                                        {
+                                            obj_endorsed.CustomerName = customer_endorsed.FirstName + "" + customer_endorsed.LastName;
+                                        }
+                                        obj_endorsed.VehicleId = item.Id;
+                                        obj_endorsed.PolicyNumber = policy.PolicyNumber;
+                                        obj_endorsed.TransactionDate = item_endorsed.TransactionDate.Value.ToString("dd/MM/yyyy");
+                                        obj_endorsed.PremiumDue = Convert.ToDecimal(item_endorsed.Premium);
+                                        obj_endorsed.SumInsured = Convert.ToDecimal(item_endorsed.SumInsured);
+                                        obj_endorsed.isLapsed = item_endorsed.isLapsed;
+                                        obj_endorsed.IsActive = item_endorsed.IsActive == null ? false : item_endorsed.IsActive.Value;
+                                        obj_endorsed.RenewPolicyNumber = item.RenewPolicyNumber;
+                                        obj_endorsed.UserName = userDetials.Email;
+                                        obj_endorsed.Product = productlist.FirstOrDefault(x => x.Id == item_endorsed.ProductId).ProductName;
+                                        obj_endorsed.Currency = _summaryDetailService.GetCurrencyName(currencyList, item_endorsed.CurrencyId);
+                                        if (summary.isQuotation)
+                                            obj_endorsed.PolicyStatus = "Quotation";
+                                        else
+                                            obj_endorsed.PolicyStatus = "Policy";
+                                        obj_endorsed.IsEndorsed = true;
+                                        listProductiviyReport.Add(obj_endorsed);
+                                    }
+                                }
                                 //}
                             }
                         }
@@ -1869,10 +2022,29 @@ namespace InsuranceClaim.Controllers
                     }
                 }
             }
-            model.ListProductiviyReport = listProductiviyReport.OrderBy(x => x.UserName).ToList();
+            model.ListProductiviyReport = listProductiviyReport.OrderBy(x => x.VehicleId).ToList();
+
+
+
+
+
 
             return View(model);
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         public ActionResult ProductivitySearchReport(ProductiviySearchReportModel Model)
         {
 
@@ -1882,7 +2054,7 @@ namespace InsuranceClaim.Controllers
             ProductiviySearchReportModel model = new ProductiviySearchReportModel();
             ViewBag.fromdate = Model.FromDate;
             ViewBag.enddate = Model.EndDate;
-            var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c=>c.Id).ToList();
+            var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c => c.Id).ToList();
 
             var currencyList = _summaryDetailService.GetAllCurrency();
 
@@ -1896,10 +2068,19 @@ namespace InsuranceClaim.Controllers
             }
             var Vehicledetail = vehicledetail.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
 
+
+            var endorsedVehicle = InsuranceContext.EndorsementVehicleDetails.All().OrderByDescending(x => x.PrimaryVehicleId).ToList();
+
+            var endorsePayment = InsuranceContext.EndorsementPaymentInformations.All().ToList();
+            var endorsedPolicy = InsuranceContext.EndorsementPolicyDetails.All();
+            var productlist = InsuranceContext.Products.All().ToList();
+            var endorsed_customer = InsuranceContext.EndorsementCustomers.All();
+
             #endregion
             foreach (var item in Vehicledetail)
             {
-
+                var item_endorsed = endorsedVehicle.FirstOrDefault(x => x.PrimaryVehicleId == item.Id);
+                var endorsepay = endorsePayment.FirstOrDefault(x => x.PrimaryPolicyId == item.PolicyId);
                 //if (item.IsActive == false && !item.isLapsed) // for disable vehicle
                 //    continue;
 
@@ -1915,6 +2096,7 @@ namespace InsuranceClaim.Controllers
                     if (summary != null)
                     {
                         var customer = InsuranceContext.Customers.Single(item.CustomerId);
+                        var customer_endorsed = endorsed_customer.FirstOrDefault(x => x.PrimeryCustomerId == item.CustomerId);
                         var customerForRole = InsuranceContext.Customers.Single(summary.CreatedBy);
 
                         if (customerForRole != null)
@@ -1937,6 +2119,8 @@ namespace InsuranceClaim.Controllers
                                     ProductiviyReportModel obj = new ProductiviyReportModel();
                                     obj.CustomerName = customer.FirstName + " " + customer.LastName;
                                     obj.PolicyNumber = policy.PolicyNumber;
+
+                                    obj.VehicleId = item.Id;
                                     //obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy");
                                     obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("MM/dd/yyyy");
                                     // obj.PremiumDue = Convert.ToDecimal(item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost); // 28_may_2019
@@ -1955,19 +2139,308 @@ namespace InsuranceClaim.Controllers
 
                                     obj.isLapsed = item.isLapsed;
                                     obj.IsActive = item.IsActive.Value;
-
+                                    obj.IsEndorsed = false;
 
                                     listProductiviyReport.Add(obj);
+
+                                    if (item_endorsed != null)
+                                    {
+                                        if (endorsepay != null)
+                                        {
+
+                                            ProductiviyReportModel obj_endorsed = new ProductiviyReportModel();
+                                            if (customer_endorsed != null)
+                                            {
+                                                obj_endorsed.CustomerName = customer_endorsed.FirstName + "" + customer_endorsed.LastName;
+                                            }
+                                            obj_endorsed.PolicyNumber = policy.PolicyNumber;
+                                            obj_endorsed.VehicleId = item.Id;
+                                            obj_endorsed.TransactionDate = item_endorsed.TransactionDate.Value.ToString("dd/MM/yyyy");
+                                            obj_endorsed.PremiumDue = Convert.ToDecimal(item_endorsed.Premium);
+                                            obj_endorsed.SumInsured = Convert.ToDecimal(item_endorsed.SumInsured);
+                                            obj_endorsed.isLapsed = item_endorsed.isLapsed;
+                                            obj_endorsed.IsActive = item_endorsed.IsActive == null ? false : item_endorsed.IsActive.Value;
+                                            obj_endorsed.RenewPolicyNumber = item.RenewPolicyNumber;
+                                            obj_endorsed.UserName = userDetials.Email;
+                                            obj_endorsed.Product = productlist.FirstOrDefault(x => x.Id == item_endorsed.ProductId).ProductName;
+                                            obj_endorsed.Currency = _summaryDetailService.GetCurrencyName(currencyList, item_endorsed.CurrencyId);
+                                            if (summary.isQuotation)
+                                                obj_endorsed.PolicyStatus = "Quotation";
+                                            else
+                                                obj_endorsed.PolicyStatus = "Policy";
+                                            obj_endorsed.IsEndorsed = true;
+                                            listProductiviyReport.Add(obj_endorsed);
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-            model.ListProductiviyReport = listProductiviyReport.OrderByDescending(x => x.UserName).ToList();
+            model.ListProductiviyReport = listProductiviyReport.OrderByDescending(x => x.VehicleId).ToList();
             return View("ProductivityReport", model);
         }
 
+
+
+
+
+
+
+        //public ActionResult ProductivityReport()
+        //{
+
+        //    //var ListProductiviyReport = new List<ProductiviyReportModel>();
+        //    List<ProductiviyReportModel> listProductiviyReport = new List<ProductiviyReportModel>();
+        //    ListProductiviyReportModel _listListProductiviyReport = new ListProductiviyReportModel();
+        //    _listListProductiviyReport.ListProductiviyReport = new List<ProductiviyReportModel>();
+        //    ProductiviySearchReportModel model = new ProductiviySearchReportModel();
+        //    //   var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive = 'True'or IsActive is null").OrderByDescending(c=>c.Id).ToList();
+
+        //    var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c => c.Id).ToList();
+
+        //    var currencyList = _summaryDetailService.GetAllCurrency();
+
+
+        //    foreach (var item in vehicledetail)
+        //    {
+
+        //        //if (item.IsActive == false && !item.isLapsed) // for disable vehicle
+        //        //    continue;
+
+
+        //        var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
+
+
+        //        var vehicleSummarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
+        //        if (vehicleSummarydetail != null)
+        //        {
+        //            var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
+
+        //            if (summary != null)
+        //            {
+        //                var customer = InsuranceContext.Customers.Single(item.CustomerId);
+        //                var customerForRole = InsuranceContext.Customers.Single(summary.CreatedBy);
+
+        //                if (customerForRole != null)
+        //                {
+
+        //                    var userDetials = UserManager.FindById(customerForRole.UserID);
+
+        //                    if (userDetials != null)
+        //                    {
+
+        //                        var roles = InsuranceContext.Query("select Name from AspNetUserRoles join AspNetRoles on AspNetUserRoles.RoleId = AspNetRoles.Id where UserId='" + userDetials.Id + "'  ")
+        //         .Select(x => new CustomerModel()
+        //         {
+        //             UserRoleName = x.Name,
+        //         }).FirstOrDefault();
+
+
+        //                        //if (roles != null && roles.UserRoleName.ToString() == "Staff")
+        //                        //{
+        //                        ProductiviyReportModel obj = new ProductiviyReportModel();
+        //                        obj.CustomerName = customer.FirstName + " " + customer.LastName;
+        //                        obj.PolicyNumber = policy.PolicyNumber;
+        //                        obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy");
+        //                        //obj.PremiumDue = Convert.ToDecimal(item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost); // 28_may_2019
+        //                        obj.PremiumDue = Convert.ToDecimal(item.Premium);
+        //                        obj.SumInsured = Convert.ToDecimal(item.SumInsured);
+        //                        obj.UserName = userDetials.Email;
+        //                        obj.Product = InsuranceContext.Products.Single(item.ProductId).ProductName;
+        //                        obj.Currency = _summaryDetailService.GetCurrencyName(currencyList, item.CurrencyId);
+
+        //                        obj.RenewPolicyNumber = item.RenewPolicyNumber;
+        //                        if (summary.isQuotation)
+        //                            obj.PolicyStatus = "Quotation";
+        //                        else
+        //                            obj.PolicyStatus = "Policy";
+
+        //                        obj.isLapsed = item.isLapsed;
+        //                        obj.IsActive = item.IsActive == null ? false : item.IsActive.Value;
+
+
+
+        //                        listProductiviyReport.Add(obj);
+        //                        //}
+        //                    }
+        //                }
+
+
+
+
+        //            }
+        //        }
+        //    }
+        //    model.ListProductiviyReport = listProductiviyReport.OrderBy(x => x.UserName).ToList();
+
+        //    return View(model);
+        //}
+        //public ActionResult ProductivitySearchReport(ProductiviySearchReportModel Model)
+        //{
+
+        //    List<ProductiviyReportModel> listProductiviyReport = new List<ProductiviyReportModel>();
+        //    ListProductiviyReportModel _listListProductiviyReport = new ListProductiviyReportModel();
+        //    _listListProductiviyReport.ListProductiviyReport = new List<ProductiviyReportModel>();
+        //    ProductiviySearchReportModel model = new ProductiviySearchReportModel();
+        //    ViewBag.fromdate = Model.FromDate;
+        //    ViewBag.enddate = Model.EndDate;
+        //    var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c => c.Id).ToList();
+
+        //    var currencyList = _summaryDetailService.GetAllCurrency();
+
+        //    #region
+        //    DateTime fromDate = DateTime.Now.AddDays(-1);
+        //    DateTime endDate = DateTime.Now;
+        //    if (!string.IsNullOrEmpty(Model.FromDate) && !string.IsNullOrEmpty(Model.EndDate))
+        //    {
+        //        fromDate = Convert.ToDateTime(Model.FromDate);
+        //        endDate = Convert.ToDateTime(Model.EndDate);
+        //    }
+        //    var Vehicledetail = vehicledetail.Where(c => c.TransactionDate >= fromDate && c.TransactionDate <= endDate).ToList();
+
+        //    #endregion
+        //    foreach (var item in Vehicledetail)
+        //    {
+
+        //        //if (item.IsActive == false && !item.isLapsed) // for disable vehicle
+        //        //    continue;
+
+
+        //        var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
+
+
+        //        var vehicleSummarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
+        //        if (vehicleSummarydetail != null)
+        //        {
+        //            var summary = InsuranceContext.SummaryDetails.Single(vehicleSummarydetail.SummaryDetailId);
+
+        //            if (summary != null)
+        //            {
+        //                var customer = InsuranceContext.Customers.Single(item.CustomerId);
+        //                var customerForRole = InsuranceContext.Customers.Single(summary.CreatedBy);
+
+        //                if (customerForRole != null)
+        //                {
+
+        //                    var userDetials = UserManager.FindById(customerForRole.UserID);
+
+        //                    if (userDetials != null)
+        //                    {
+
+        //                        var roles = InsuranceContext.Query("select Name from AspNetUserRoles join AspNetRoles on AspNetUserRoles.RoleId = AspNetRoles.Id where UserId='" + userDetials.Id + "'  ")
+        //         .Select(x => new CustomerModel()
+        //         {
+        //             UserRoleName = x.Name,
+        //         }).FirstOrDefault();
+
+
+        //                        if (roles != null && roles.UserRoleName.ToString() == "Staff")
+        //                        {
+        //                            ProductiviyReportModel obj = new ProductiviyReportModel();
+        //                            obj.CustomerName = customer.FirstName + " " + customer.LastName;
+        //                            obj.PolicyNumber = policy.PolicyNumber;
+        //                            //obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("dd/MM/yyyy");
+        //                            obj.TransactionDate = item.TransactionDate == null ? null : item.TransactionDate.Value.ToString("MM/dd/yyyy");
+        //                            // obj.PremiumDue = Convert.ToDecimal(item.Premium + item.StampDuty + item.ZTSCLevy + item.RadioLicenseCost); // 28_may_2019
+        //                            obj.PremiumDue = Convert.ToDecimal(item.Premium);
+        //                            obj.SumInsured = Convert.ToDecimal(item.SumInsured);
+        //                            obj.UserName = userDetials.Email;
+        //                            obj.Product = InsuranceContext.Products.Single(item.ProductId).ProductName;
+        //                            obj.Currency = _summaryDetailService.GetCurrencyName(currencyList, item.CurrencyId);
+
+        //                            obj.RenewPolicyNumber = item.RenewPolicyNumber;
+
+        //                            if (summary.isQuotation)
+        //                                obj.PolicyStatus = "Quotation";
+        //                            else
+        //                                obj.PolicyStatus = "Policy";
+
+        //                            obj.isLapsed = item.isLapsed;
+        //                            obj.IsActive = item.IsActive.Value;
+
+
+        //                            listProductiviyReport.Add(obj);
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    model.ListProductiviyReport = listProductiviyReport.OrderByDescending(x => x.UserName).ToList();
+        //    return View("ProductivityReport", model);
+        //}
+        public ActionResult ClaimsPaymentReport()
+        {
+            var results = new List<ClaimRegistrationProviderModel>();
+            try
+            {
+                //results = (from vehicalDetials in InsuranceContext.VehicleDetails.All()
+                //           join customer in InsuranceContext.Customers.All()
+                //           on vehicalDetials.CustomerId equals customer.Id
+                //           join make in InsuranceContext.VehicleMakes.All()
+                //           on vehicalDetials.MakeId equals make.MakeCode
+                //           join vehicalModel in InsuranceContext.VehicleModels.All()
+                //           on vehicalDetials.ModelId equals vehicalModel.ModelCode
+                //           join coverType in InsuranceContext.CoverTypes.All().ToList()
+                //           on vehicalDetials.CoverTypeId equals coverType.Id
+                //           join user in UserManager.Users
+                //           on customer.UserID equals user.Id
+
+                //           select new RiskDetailModel
+                //           {
+                //               PolicyExpireDate = vehicalDetials.CoverEndDate.Value.ToShortDateString(),
+                //               CoverTypeName = coverType.Name,
+                //               SumInsured = vehicalDetials.SumInsured,
+                //               VechicalMake = make.MakeDescription,
+                //               VechicalModel = vehicalModel.ModelDescription,
+                //               VehicleYear = vehicalDetials.VehicleYear,
+                //               CustomerDetails = new CustomerModel { FirstName = customer.FirstName, LastName = customer.LastName, PhoneNumber = customer.PhoneNumber, EmailAddress = user.Email }
+
+
+                //           }).ToList();
+
+
+
+                var query = "select ClaimRegistrationProviderDetial.Id,ClaimRegistrationId,RegistrationNo,PolicyNumber,ClaimantName, ProviderType, ServiceProviderName,ClaimRegistrationProviderDetial.CreatedOn, ServiceProviderFee from ClaimRegistrationProviderDetial";
+                query += " join ServiceProvider on ClaimRegistrationProviderDetial.ServiceProviderId = ServiceProvider.Id ";
+                query += " left join ClaimRegistration on ClaimRegistration.Id=ClaimRegistrationProviderDetial.ClaimRegistrationId";
+
+
+                query += " join ServiceProviderType on ClaimRegistrationProviderDetial.ServiceProviderTypeId = ServiceProviderType.id  where ClaimRegistrationProviderDetial.IsActive=1 ";
+
+
+                results = InsuranceContext.Query(query)
+.Select(x => new ClaimRegistrationProviderModel()
+{
+    Id = x.Id,
+    ClaimRegistrationId = x.ClaimRegistrationId,
+    ServiceProviderType = x.ProviderType,
+    ServiceProviderName = x.ServiceProviderName,
+    CreatedOn = x.CreatedOn,
+    ServiceProviderFee = x.ServiceProviderFee,
+    RegistrationNo = x.RegistrationNo,
+    PolicyNumber = x.PolicyNumber,
+    ClaimantName = x.ClaimantName
+
+
+
+}).ToList();
+
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+
+            return View(results);
+        }
         public ActionResult LoyaltyPointsReport()
         {
             var ListDailyReceiptsReport = new List<LoyaltyPointsModel>();
@@ -2124,6 +2597,187 @@ namespace InsuranceClaim.Controllers
             return View("LoyaltyPointsReport", _model);
         }
 
+
+
+        public ActionResult ClaimsRegistrationReport()
+        {
+            try
+            {
+                ClaimSearchReport model = new ClaimSearchReport();
+                List<ClaimReportModel> ListClaimReport = new List<ClaimReportModel>();
+
+                // Claim Register report
+                // var query = "Select a.PolicyNumber as Policyno,a.ClaimNumber as ClaimNo,a.ClaimStatus as Claimstatus,a.DateOfLoss as LossOfDate,
+                //b.ClaimantName as INsuredName,a.DateOfNotifications as DateNotifications,a.DescriptionOfLoss as LossofDescriptiom,a.RegistrationNo as registrationno ,
+                //a.MakeId,a.ModelId,a.EstimatedValueOfLoss as EstimatedLoss,b.ClaimantName as Name,b.CoverStartDate as PStartDate,b.CoverEndDate as PEndDate,v.SumInsured as suminsured ,
+                //c.Name as CoverType,make.MakeDescription as CoverMake,model.ModelDescription as covermodel from ClaimRegistration as a inner join ClaimNotification as b on a.ClaimNotificationId = b.Id 
+                //left join VehicleDetail as v on b.VehicleId = v.Id inner join CoverType as c on v.CoverTypeId = c.Id inner join VehicleMake as make on a.MakeId = make.MakeCode inner join VehicleModel as 
+                //model on a.ModelId = model.ModelCode";
+
+
+                var query = "select PolicyDetail.Id, Customer.FirstName + ' ' + Customer.LastName as InsuredName, PolicyDetail.PolicyNumber, ";
+                query += "VehicleDetail.CoverStartDate, VehicleDetail.CoverEndDate, ClaimRegistration.ClaimNumber, ClaimRegistration.ClaimantName, ClaimStatus.Status, ";
+                query += "ClaimRegistration.DateOfLoss, ClaimRegistration.CreatedOn, ClaimRegistration.DescriptionOfLoss, Product.ProductName, ";
+                query += "CoverType.Name,VehicleDetail.SumInsured, VehicleMake.MakeDescription + ' ' + VehicleModel.ModelDescription as VehicleDesc, ";
+                query += " VehicleDetail.RegistrationNo , ClaimRegistration.EstimatedValueOfLoss from ClaimRegistration ";
+                query += " join PolicyDetail on ClaimRegistration.PolicyNumber= PolicyDetail.PolicyNumber ";
+                query += " join VehicleDetail on PolicyDetail.Id= VehicleDetail.PolicyId ";
+                query += " join Customer on PolicyDetail.CustomerId = Customer.Id ";
+                query += " join ClaimNotification on ClaimNotification.id= ClaimRegistration.ClaimNotificationId ";
+                query += " join ClaimStatus on ClaimRegistration.ClaimStatus= ClaimStatus.Id ";
+                query += " join Product on VehicleDetail.ProductId = Product.Id ";
+                query += " join CoverType on VehicleDetail.CoverTypeId = CoverType.Id ";
+                query += " join VehicleMake on VehicleMake.MakeCode =VehicleDetail.MakeId ";
+                query += " join VehicleModel on VehicleModel.ModelCode = VehicleDetail.ModelId order by ClaimRegistration.Id desc";
+
+                var Claimdetail = InsuranceContext.Query(query)
+                .Select(x => new ClaimReportModel
+                {
+                    Id = x.Id,
+                    InsuredName = x.InsuredName,
+                    PolicyNumber = x.PolicyNumber,
+                    PolicyStartDate = x.CoverStartDate.ToShortDateString(),
+                    PolicyEndDate = x.CoverEndDate.ToShortDateString(),
+                    ClaimNumber = x.ClaimNumber,
+                    ClaimantName = x.ClaimantName,
+                    ProductName = x.ProductName,
+                    ClaimStatus = x.Status,
+                    DateOfLoss = x.DateOfLoss.ToShortDateString(),
+                    DateOfNotification = x.CreatedOn.ToShortDateString(),
+                    DescripationOfLoss = x.DescriptionOfLoss,
+                    CoverType = x.Name,
+                    SumInsured = x.SumInsured,
+                    VehicleDescription = x.VehicleDesc,
+                    VRN = x.RegistrationNo,
+                    EstimatedLoss = x.EstimatedValueOfLoss
+                }).ToList();
+
+
+                var distinctClaimList = new List<ClaimReportModel>();
+
+
+                foreach (var item in Claimdetail)
+                {
+
+                    if (distinctClaimList.FirstOrDefault(c => c.Id == item.Id) == null)
+                    {
+                        distinctClaimList.Add(item);
+                    }
+
+
+                }
+
+
+
+
+                ListClaimReport = distinctClaimList;
+                model.ClaimReportModelData = ListClaimReport;
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+        public ActionResult SearchClaimRegisterReport(ClaimSearchReport model)
+        {
+            try
+            {
+
+                ClaimSearchReport _model = new ClaimSearchReport();
+                List<ClaimReportModel> ListClaimReport = new List<ClaimReportModel>();
+                DateTime fromDate = DateTime.Now.AddDays(-1);
+                DateTime endDate = DateTime.Now;
+
+                if (!string.IsNullOrEmpty(model.FromDate) && !string.IsNullOrEmpty(model.EndDate))
+                {
+                    fromDate = Convert.ToDateTime(model.FromDate);
+                    endDate = Convert.ToDateTime(model.EndDate);
+
+
+                    ViewBag.fromdate = fromDate.ToString("dd/MM/yyyy");
+                    ViewBag.enddate = endDate.ToString("dd/MM/yyyy");
+
+                }
+
+
+
+                var query = "select PolicyDetail.Id, Customer.FirstName + ' ' + Customer.LastName as InsuredName, PolicyDetail.PolicyNumber, ";
+                query += "VehicleDetail.CoverStartDate, VehicleDetail.CoverEndDate, ClaimRegistration.ClaimNumber, ClaimRegistration.ClaimantName, ClaimStatus.Status, ";
+                query += "ClaimRegistration.DateOfLoss, ClaimRegistration.CreatedOn, ClaimRegistration.DescriptionOfLoss, Product.ProductName, ";
+                query += "CoverType.Name,VehicleDetail.SumInsured, VehicleMake.MakeDescription + ' ' + VehicleModel.ModelDescription as VehicleDesc, ";
+                query += " VehicleDetail.RegistrationNo , ClaimRegistration.EstimatedValueOfLoss from ClaimRegistration ";
+                query += " join PolicyDetail on ClaimRegistration.PolicyNumber= PolicyDetail.PolicyNumber ";
+                query += " join VehicleDetail on PolicyDetail.Id= VehicleDetail.PolicyId ";
+                query += " join Customer on PolicyDetail.CustomerId = Customer.Id ";
+                query += " join ClaimNotification on ClaimNotification.id= ClaimRegistration.ClaimNotificationId ";
+                query += " join ClaimStatus on ClaimRegistration.ClaimStatus= ClaimStatus.Id ";
+                query += " join Product on VehicleDetail.ProductId = Product.Id ";
+                query += " join CoverType on VehicleDetail.CoverTypeId = CoverType.Id ";
+                query += " join VehicleMake on VehicleMake.MakeCode =VehicleDetail.MakeId ";
+                query += " join VehicleModel on VehicleModel.ModelCode = VehicleDetail.ModelId Where ClaimRegistration.CreatedOn>= '" + fromDate + "' And ClaimRegistration.CreatedOn<='" + endDate + "'" + "order by ClaimRegistration.Id desc";
+
+
+                var Claimdetail = InsuranceContext.Query(query)
+                .Select(x => new ClaimReportModel
+                {
+                    Id = x.Id,
+                    InsuredName = x.InsuredName,
+                    PolicyNumber = x.PolicyNumber,
+                    PolicyStartDate = x.CoverStartDate.ToShortDateString(),
+                    PolicyEndDate = x.CoverEndDate.ToShortDateString(),
+                    ClaimNumber = x.ClaimNumber,
+                    ClaimantName = x.ClaimantName,
+                    ProductName = x.ProductName,
+                    ClaimStatus = x.Status,
+                    DateOfLoss = x.DateOfLoss.ToShortDateString(),
+                    DateOfNotification = x.CreatedOn.ToShortDateString(),
+                    DescripationOfLoss = x.DescriptionOfLoss,
+                    CoverType = x.Name,
+                    SumInsured = x.SumInsured,
+                    VehicleDescription = x.VehicleDesc,
+                    VRN = x.RegistrationNo,
+                    EstimatedLoss = x.EstimatedValueOfLoss
+
+                }).Distinct().ToList();
+
+
+                var distinctClaimList = new List<ClaimReportModel>();
+
+
+                foreach (var item in Claimdetail)
+                {
+
+                    if (distinctClaimList.FirstOrDefault(c => c.Id == item.Id) == null)
+                    {
+                        distinctClaimList.Add(item);
+                    }
+
+
+                }
+
+
+
+
+
+                ListClaimReport = distinctClaimList;
+                model.ClaimReportModelData = ListClaimReport.OrderBy(x => x.DateOfNotification).ToList();
+
+
+
+                return View("ClaimsRegistrationReport", model);
+
+            }
+            catch (Exception ex)
+            {
+                return View("ClaimsRegistrationReport");
+            }
+
+
+        }
+
+
         public ActionResult ClaimsNotificationReport()
         {
             try
@@ -2140,7 +2794,7 @@ namespace InsuranceClaim.Controllers
                 //model on a.ModelId = model.ModelCode";
 
 
-                var query = "select Customer.FirstName + ' ' + Customer.LastName as InsuredName, PolicyDetail.PolicyNumber, ";
+                var query = "select PolicyDetail.Id, Customer.FirstName + ' ' + Customer.LastName as InsuredName, PolicyDetail.PolicyNumber, ";
                 query += "VehicleDetail.CoverStartDate, VehicleDetail.CoverEndDate, ClaimRegistration.ClaimNumber, ClaimNotification.ClaimantName, ClaimStatus.Status, ";
                 query += "ClaimNotification.DateOfLoss, ClaimNotification.CreatedOn, ClaimNotification.DescriptionOfLoss, Product.ProductName, ";
                 query += "CoverType.Name,VehicleDetail.SumInsured, VehicleMake.MakeDescription + ' ' + VehicleModel.ModelDescription as VehicleDesc, ";
@@ -2158,7 +2812,7 @@ namespace InsuranceClaim.Controllers
                 var Claimdetail = InsuranceContext.Query(query)
                           .Select(x => new ClaimReportModel
                           {
-
+                              Id = x.Id,
                               InsuredName = x.InsuredName,
                               PolicyNumber = x.PolicyNumber,
                               PolicyStartDate = x.CoverStartDate.ToShortDateString(),
@@ -2178,7 +2832,24 @@ namespace InsuranceClaim.Controllers
                           }).ToList();
 
 
-                ListClaimReport = Claimdetail;
+                var distinctClaimList = new List<ClaimReportModel>();
+
+
+                foreach (var item in Claimdetail)
+                {
+
+                    if (distinctClaimList.FirstOrDefault(c => c.Id == item.Id) == null)
+                    {
+                        distinctClaimList.Add(item);
+                    }
+
+
+                }
+
+
+
+
+                ListClaimReport = distinctClaimList;
                 model.ClaimReportModelData = ListClaimReport;
                 return View(model);
             }
@@ -2212,7 +2883,7 @@ namespace InsuranceClaim.Controllers
 
 
 
-                var query = "select Customer.FirstName + ' ' + Customer.LastName as InsuredName, PolicyDetail.PolicyNumber, ";
+                var query = "select PolicyDetail.Id, Customer.FirstName + ' ' + Customer.LastName as InsuredName, PolicyDetail.PolicyNumber, ";
                 query += "VehicleDetail.CoverStartDate, VehicleDetail.CoverEndDate, ClaimRegistration.ClaimNumber, ClaimNotification.ClaimantName, ClaimStatus.Status, ";
                 query += "ClaimNotification.DateOfLoss, ClaimNotification.CreatedOn, ClaimNotification.DescriptionOfLoss, Product.ProductName, ";
                 query += "CoverType.Name,VehicleDetail.SumInsured, VehicleMake.MakeDescription + ' ' + VehicleModel.ModelDescription as VehicleDesc, ";
@@ -2232,7 +2903,7 @@ namespace InsuranceClaim.Controllers
                 var Claimdetail = InsuranceContext.Query(query)
                            .Select(x => new ClaimReportModel
                            {
-                             
+                               Id = x.Id,
                                InsuredName = x.InsuredName,
                                PolicyNumber = x.PolicyNumber,
                                PolicyStartDate = x.CoverStartDate.ToShortDateString(),
@@ -2250,11 +2921,28 @@ namespace InsuranceClaim.Controllers
                                VRN = x.RegistrationNo,
                                EstimatedLoss = x.EstimatedValueOfLoss
 
-                           }).ToList();
+                           }).Distinct().ToList();
+
+
+                var distinctClaimList = new List<ClaimReportModel>();
+
+
+                foreach (var item in Claimdetail)
+                {
+
+                    if (distinctClaimList.FirstOrDefault(c => c.Id == item.Id) == null)
+                    {
+                        distinctClaimList.Add(item);
+                    }
+
+
+                }
 
 
 
-                ListClaimReport = Claimdetail;
+
+
+                ListClaimReport = distinctClaimList;
                 model.ClaimReportModelData = ListClaimReport.OrderBy(x => x.DateOfNotification).ToList();
 
 

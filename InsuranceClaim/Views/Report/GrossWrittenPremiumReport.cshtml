@@ -124,6 +124,7 @@
                     <thead>
                         <tr>
                             <th style="width: 170px;">User/Call center agent</th>
+                            <th>Branch</th>
                             <th style="width: 170px;">Customer Name</th>
                             <th style="width: 180px;">Policy Number</th>
                             <th>Cover Note</th>
@@ -142,8 +143,6 @@
                             <th>Zinara License Fee</th>
                             <th>Status</th>
                             <th>Policy Status</th>
-
-
                         </tr>
                     </thead>
                     <tbody>
@@ -267,9 +266,8 @@
                                         @item.PolicyCreatedBy
                                     }
 
-
-
                                 </td>
+                                <td>@item.BranchName</td>
                                 <td>@item.Customer_Name</td>
                                 <td>@item.Policy_Number</td>
                                 <td>@item.CoverNoteNum</td>
@@ -375,12 +373,10 @@
 
                         <tr>
                           
-                            <td colspan="8"></td>
-                           
+                            <td colspan="8"></td>                       
                             <td colspan="3"><strong>Currency</strong></td>
                             <td colspan="3"><strong>Amount</strong></td>
-                            <td colspan="3"><strong>Count</strong></td>
-                            
+                            <td colspan="3"><strong>Count</strong></td>               
                         </tr>
 
                         <tr>

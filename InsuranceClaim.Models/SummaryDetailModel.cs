@@ -52,6 +52,9 @@ namespace InsuranceClaim.Models
 
         public string Currency { get; set; }
 
+
+        public string Error { get; set; }
+
       //  public IceCashModel IceCashModel { get; set; }
 
     }

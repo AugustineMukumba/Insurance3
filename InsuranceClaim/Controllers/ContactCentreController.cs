@@ -149,6 +149,8 @@ namespace InsuranceClaim.Controllers
                         viewModel.OptionalCovers = data.OptionalCovers;
                         viewModel.PolicyId = data.PolicyId;
                         viewModel.Premium = data.Premium;
+                        viewModel.PremiumWithDiscount = data.Premium + data.Discount;
+
                         viewModel.RadioLicenseCost = (int)Math.Round(data.RadioLicenseCost == null ? 0 : data.RadioLicenseCost.Value, 0);
                         viewModel.Rate = data.Rate;
                         viewModel.RegistrationNo = data.RegistrationNo;

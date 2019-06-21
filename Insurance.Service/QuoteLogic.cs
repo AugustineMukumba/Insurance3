@@ -343,15 +343,15 @@ namespace Insurance.Service
                     this.AnnualRiskPremium = premium+ discountField;
                     if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive))
                     {
-                        this.AnnualRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);
+                        this.AnnualRiskPremium =  Convert.ToDecimal(BasicPremiumICEcash);
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
                     {
-                        this.Discount = ((this.AnnualRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
+                        this.Discount = Math.Round( ((this.AnnualRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100),2);
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
                     {
-                        this.Discount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
+                        this.Discount = Math.Round( Convert.ToDecimal(DiscountOnRenewalSettings.value),2);
                     }
                     break;
                 case 3:
@@ -362,11 +362,11 @@ namespace Insurance.Service
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
                     {
-                        this.Discount = ((this.QuaterlyRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
+                        this.Discount = Math.Round( ((this.QuaterlyRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100),2);
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
                     {
-                        this.Discount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
+                        this.Discount = Math.Round( Convert.ToDecimal(DiscountOnRenewalSettings.value),2);
                     }
                     break;
                 case 4:
@@ -377,11 +377,11 @@ namespace Insurance.Service
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
                     {
-                        this.Discount = ((this.TermlyRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
+                        this.Discount = Math.Round( ((this.TermlyRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100),2);
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
                     {
-                        this.Discount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
+                        this.Discount = Math.Round( Convert.ToDecimal(DiscountOnRenewalSettings.value),2);
                     }
                     break;
                 case 5:
@@ -398,11 +398,11 @@ namespace Insurance.Service
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
                     {
-                        this.Discount = ((this.AnnualRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100);
+                        this.Discount = Math.Round( ((this.AnnualRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100),2);
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
                     {
-                        this.Discount = Convert.ToDecimal(DiscountOnRenewalSettings.value);
+                        this.Discount = Math.Round( Convert.ToDecimal(DiscountOnRenewalSettings.value),2);
                     }
                     break;
                     
@@ -414,7 +414,6 @@ namespace Insurance.Service
             if (coverType == eCoverType.Comprehensive)
             {
                 totalPremium = (this.Premium + discountField) - this.Discount;
-
             }
             else
             {
@@ -463,11 +462,13 @@ namespace Insurance.Service
 
             if (coverType == eCoverType.Comprehensive)
             {
-                totalPremiumForZtscLevy = (this.Premium + discountField);
+                // totalPremiumForZtscLevy = (this.Premium + discountField);
+                totalPremiumForZtscLevy = (this.Premium + discountField + this.Discount);
             }
             else
             {
-                totalPremiumForZtscLevy = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + discountField;
+                // totalPremiumForZtscLevy = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + discountField;
+                totalPremiumForZtscLevy = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + discountField + this.Discount;
             }
 
 
@@ -487,6 +488,13 @@ namespace Insurance.Service
             this.ZtscLevy = Math.Round(ztscLevy, 2);
 
             // if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive) && totalPremium == Convert.ToDecimal(BasicPremiumICEcash)) // by ash 11 apr 2019
+
+
+            if(StampDutyICEcash=="") // if iceCash is not working
+            {
+                this.StamDuty = Math.Round(stampDuty, 2);
+                StampDutyICEcash = Math.Round(stampDuty, 2).ToString();
+            }
 
             if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive))
             {
@@ -513,7 +521,7 @@ namespace Insurance.Service
 
 
                     case 3:
-                        maxZTSC = maxZTSC / 4;
+                        maxZTSC = maxZTSC * 4/12;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
@@ -521,56 +529,56 @@ namespace Insurance.Service
 
                         break;
                     case 4:
-                        maxZTSC = maxZTSC / 3;
+                        maxZTSC = maxZTSC / 3  ;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
                         }
                         break;
                     case 5:
-                        maxZTSC = maxZTSC / 5;
+                        maxZTSC = maxZTSC * 5/12;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
                         }
                         break;
                     case 6:
-                        maxZTSC = maxZTSC / 6;
+                        maxZTSC = maxZTSC * 6/12;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
                         }
                         break;
                     case 7:
-                        maxZTSC = maxZTSC / 7;
+                        maxZTSC = maxZTSC * 7/12;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
                         }
                         break;
                     case 8:
-                        maxZTSC = maxZTSC / 8;
+                        maxZTSC = maxZTSC * 8/12;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
                         }
                         break;
                     case 9:
-                        maxZTSC = maxZTSC / 9;
+                        maxZTSC = maxZTSC * 9/12;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
                         }
                         break;
                     case 10:
-                        maxZTSC = maxZTSC / 10;
+                        maxZTSC = maxZTSC * 10/12;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
                         }
                         break;
                     case 11:
-                        maxZTSC = maxZTSC / 11;
+                        maxZTSC = maxZTSC * 11/12;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
@@ -584,7 +592,7 @@ namespace Insurance.Service
             {
                 this.StamDuty = 100000;
             }
-            else if(StampDutyICEcash=="" ||  Convert.ToDecimal(StampDutyICEcash)<2) // minimum stamp duty
+            else if (Convert.ToDecimal(StampDutyICEcash) < 2) // minimum stamp duty
             {
                 this.StamDuty = 2;
             }
@@ -594,7 +602,7 @@ namespace Insurance.Service
 
 
 
-           
+
 
 
             return this;

@@ -27,6 +27,9 @@ namespace InsuranceClaim.Models
         public string ServiceProviderName { get; set; }
 
         public string ServiceProviderType { get; set; }
+        public string RegistrationNo { get; set; }
+        public string  PolicyNumber{get; set;}
+    public string ClaimantName { get; set; }
 
     }
 }

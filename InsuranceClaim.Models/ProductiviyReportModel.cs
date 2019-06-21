@@ -25,7 +25,12 @@ namespace InsuranceClaim.Models
 
         public bool isLapsed { get; set; }
 
+        public bool IsEndorsed { get; set; }
+
         public bool IsActive { get; set; }
+        public int? EndorsementPolicyId { get; set; }
+
+        public int VehicleId { get; set; }
 
     }
     public class ListProductiviyReportModel

@@ -46,12 +46,53 @@ namespace InsuranceClaim.Controllers
         {
             if (ModelState.IsValid)
             {
+                branch.AlmId = GetALMId();
                 InsuranceContext.Branches.Insert(branch);
                 return RedirectToAction("Index");
             }
 
             return View(branch);
         }
+
+
+
+        public string GetALMId()
+        {
+
+            string almId = "";
+
+            var getcustomerdetail = InsuranceContext.Query(" select top 1 AlmId  from [dbo].[Branch] where AlmId is not null order by id desc ")
+         .Select(x => new Customer()
+         {
+             ALMId = x.AlmId
+         }).ToList().FirstOrDefault();
+
+
+            if (getcustomerdetail != null && getcustomerdetail.ALMId != null)
+            {
+                string number = getcustomerdetail.ALMId.Split('K')[1];
+                long pernumer = Convert.ToInt64(number) + 1;
+                string policyNumbera = string.Empty;
+                int lengths = 3;
+                lengths = lengths - pernumer.ToString().Length;
+                for (int i = 0; i < lengths; i++)
+                {
+                    policyNumbera += "0";
+                }
+                policyNumbera += pernumer;
+                //  customer.ALMId = "GENE-SSK" + policyNumbera;
+                almId = "GENE-SSK" + policyNumbera;
+            }
+            else
+            {
+                almId = "GENE-SSK003";
+            }
+
+            return almId;
+        }
+
+
+
 
         // GET: Home/Edit/5
         public ActionResult Edit(int? id)
@@ -77,7 +118,7 @@ namespace InsuranceClaim.Controllers
         {
             if (ModelState.IsValid)
             {
-
+              //  branch.AlmId = GetALMId();
                 InsuranceContext.Branches.Update(branch);
 
                 return RedirectToAction("Index");

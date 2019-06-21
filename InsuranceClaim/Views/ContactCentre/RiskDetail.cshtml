@@ -203,17 +203,16 @@
                                                 <div class="form-group">
                                                     @Html.Label("Suggested Value", new { @class = "gender-label" })
                                                     @Html.TextBoxFor(m => m.SuggestedValue, new { @class = "form-control", @autocomplete = "off", @placeholder = "Suggested Value", @maxlength = "5" })
-                                                    @*@Html.ValidatiVehicleSumInsuresonMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
-                                                    @* @Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
+                                              
 
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6 col-md-6 form-group-text">
+                                            <div class="col-sm-6 col-md-6 form-group-text" id="divSumInsured" >
                                                 <div class="form-group">
                                                     @Html.Label("Sum Insured", new { @class = "gender-label" })
                                                     @Html.TextBoxFor(m => m.SumInsured, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Sum Insured", @maxlength = "11" })
                                                     <span class="text-danger" id="validationSumIns">Please Enter Sum Insured</span>
-                                                    @*@Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
+                                                    @Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })
                                                     @*@Html.ValidationMessageFor(m => m.SumInsured, "", new { @class = "text-danger" })*@
                                                 </div>
                                             </div>
@@ -436,7 +435,8 @@
                                             <div class="col-sm-6 col-md-6 form-group-text">
                                                 <div class="form-group">
                                                     @Html.Label("Basic Premium", new { @class = "gender-label" })
-                                                    @Html.TextBoxFor(m => m.Premium, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Basic Premium", @readonly = "readonly" })
+                                                    @Html.HiddenFor(m => m.Premium, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Basic Premium", @readonly = "readonly" })
+                                                    @Html.TextBoxFor(m => m.PremiumWithDiscount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Basic Premium", @readonly = "readonly" })
                                                 </div>
                                             </div>
 
@@ -781,7 +781,10 @@
                 var totalpremium = 0.00;
                 $.each(list, function (index, value) {
                     count++;
-                    bodyHTML += "<tr><td>" + value.make + "</td><td>" + value.model + "</td><td>" + value.covertype + "</td><td>" + value.CurrencyName + "</td><td>"  + value.suminsured + "</td><td>" + value.premium + "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >Edit</button></li><li><button type='button' onclick='DeleteVehicleDetails(" + count + ")' class='btn-sm btn-danger' >Delete</button></li></ul></div></td></tr>"
+
+                    var premiumWithDiscount=  parseFloat(value.premium) + parseFloat(value.Discount) ;
+
+                    bodyHTML += "<tr><td>" + value.make + "</td><td>" + value.model + "</td><td>" + value.covertype + "</td><td>" + value.CurrencyName + "</td><td>"  + value.suminsured + "</td><td>" + premiumWithDiscount + "</td><td><div class='tbl-btn-list'><ul class='list-inline'><li><button type='button' onclick='EditVehicleDetails(" + count + ")' class = 'btn-sm btn-primary' >Edit</button></li><li><button type='button' onclick='DeleteVehicleDetails(" + count + ")' class='btn-sm btn-danger' >Delete</button></li></ul></div></td></tr>"
                     totalpremium += parseFloat(value.premium);
                 });
 
@@ -1082,6 +1085,7 @@
         $("#btnGenerateQuote").click(function () {
 
             var coverselected = $("#CoverTypeId option:selected").val();
+
             if (coverselected == "1" && $("#SumInsured").val() == "") {
                 $("#validationSumIns").css("display", "block");
                 return false;
@@ -1090,7 +1094,21 @@
                 $("#validationSumIns").css("display", "none");
             }
 
+
+
         });
+
+
+      
+        if ($('#CoverTypeId option:selected').val() != 4) {
+            $("#divSumInsured").hide();
+        }
+        else {
+            $("#divSumInsured").show();
+        }
+
+
+
 
 
     });
@@ -1434,6 +1452,7 @@
                     var calulatePremium = CoverAmount-data.Data.LoyaltyDiscount;
 
                     $("#Premium").val(parseFloat(calulatePremium).toFixed(2));
+                    $("#PremiumWithDiscount").val(parseFloat(CoverAmount).toFixed(2)); // 19_june_2019
 
                     $("#InsuranceId").val(data.Data.Response.Quotes[0].InsuranceID);
 
@@ -1444,10 +1463,6 @@
                     QuoteCalculation()
                     $(".loading-area").hide();
                 }
-
-
-
-
 
 
 
@@ -1486,7 +1501,7 @@
             toastr.warning("Please Select A Payment Term !!");
         }
 
-
+         
         debugger;
 
 
@@ -1520,6 +1535,7 @@
                         var calulatePremium = CoverAmount-data.Data.LoyaltyDiscount;
 
                         $("#Premium").val(parseFloat(calulatePremium).toFixed(2));
+                        $("#PremiumWithDiscount").val(parseFloat(CoverAmount).toFixed(2));
 
                         $("#InsuranceId").val(data.Data.Response.Quotes[0].InsuranceID);
 
@@ -1857,6 +1873,8 @@
             success: function (data) {
                 debugger;
                 $("#Premium").val(parseFloat(data.Premium).toFixed(2));
+                $("#PremiumWithDiscount").val(parseFloat(data.Premium+data.Discount).toFixed(2));
+
                 $("#StampDuty").val(parseFloat(data.StamDuty).toFixed(2));
                 $("#ZTSCLevy").val(parseFloat(data.ZtscLevy).toFixed(2));
                 $("#PassengerAccidentCoverAmount").val(parseFloat(data.PassengerAccidentCoverAmount).toFixed(2));
@@ -1899,10 +1917,16 @@
         var coverytype = $('#CoverTypeId option:selected').val();
         if (coverytype != 4) {
             $("#thridparty").hide();
+            $("#divSumInsured").hide();
         }
         else {
             $("#thridparty").show();
+            $("#divSumInsured").show();
         }
+
+
+
+
 
         if ($("#isVehicleRegisteredonICEcash").val() == "1") {
             generateQuotewithICEcash();

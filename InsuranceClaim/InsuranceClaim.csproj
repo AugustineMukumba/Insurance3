@@ -282,6 +282,7 @@
     <Content Include="Images\desc.gif" />
     <Content Include="Images\diners.png" />
     <Content Include="Images\discover.png" />
+    <Content Include="Images\ecocash.jpg" />
     <Content Include="Images\eft_pay.png" />
     <Content Include="Images\geneinsure-logo.jpeg" />
     <Content Include="Images\geneinsure-logo1.png" />
@@ -294,6 +295,7 @@
     <Content Include="Images\icon-4.png" />
     <Content Include="Images\icon-5.png" />
     <Content Include="Images\jcb.png" />
+    <Content Include="Images\zimswitch.png" />
     <Content Include="Images\maestro.png" />
     <Content Include="Images\mastercard.png" />
     <Content Include="Images\mastercard_images.jpg" />
@@ -877,6 +879,7 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\select2.js" />
     <Content Include="Scripts\toastr.js" />
+    <Content Include="Signature\Signature.jpg.jpg" />
     <Content Include="testChat.html" />
     <Content Include="Views\Account\EndorsementDetials.cshtml" />
     <Content Include="Views\Renew\Index.cshtml" />
@@ -935,8 +938,6 @@
     <Content Include="Views\Covertype\CoverList.cshtml" />
     <Content Include="Views\Covertype\EditCovertype.cshtml" />
     <Content Include="Views\VehicleUsage\Index.cshtml" />
-    <Content Include="Views\VehicleUsage\VehicalUsageList.cshtml" />
-    <Content Include="Views\VehicleUsage\EditVehicalUsege.cshtml" />
     <Content Include="Views\Paypal\SaveDetailList.cshtml" />
     <Content Include="Views\Shared\EmaiTemplates\UserRegisteration.cshtml" />
     <Content Include="Views\Shared\EmaiTemplates\UserPaymentReceipt.cshtml" />
@@ -1066,6 +1067,16 @@
     <Content Include="Views\Paypal\success_url.cshtml" />
     <Content Include="Views\Account\Summary.cshtml" />
     <Content Include="Views\Report\ClaimsNotificationReport.cshtml" />
+    <Content Include="Views\Paypal\failed_url.cshtml" />
+    <Content Include="Views\VehicleUsage\VehicleUsageList.cshtml" />
+    <Content Include="Views\Report\ClaimsRegistrationReport.cshtml" />
+    <Content Include="Views\Report\ClaimsPaymentReport.cshtml" />
+    <Content Include="Views\Branch\Create.cshtml" />
+    <Content Include="Views\Branch\Delete.cshtml" />
+    <Content Include="Views\Branch\Details.cshtml" />
+    <Content Include="Views\Branch\Edit.cshtml" />
+    <Content Include="Views\Branch\Index.cshtml" />
+    <Content Include="Views\Report\InsuranceAndLicenceDeliveryReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
