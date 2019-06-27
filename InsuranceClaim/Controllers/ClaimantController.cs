@@ -1028,7 +1028,7 @@ namespace InsuranceClaim.Controllers
                           on Vehicle.PolicyId equals Policylist.Id
                           join customer in InsuranceContext.Customers.All()
                           on Vehicle.CustomerId equals customer.Id
-                          where Vehicle.IsActive == true
+                          where Vehicle.IsActive == true && Vehicle.CoverEndDate<=DateTime.Now
                           select new ClaimNotificationModel
                           {
                               PolicyNumber = Policylist.PolicyNumber,

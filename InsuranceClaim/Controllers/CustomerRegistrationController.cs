@@ -635,10 +635,10 @@ namespace InsuranceClaim.Controllers
 
             // if policy id is not null it mean's it will be update
 
-            if (model.chkAddVehicles == false && model.PolicyId != 0)
-                model.isUpdate = true;
-            else if (model.chkAddVehicles)
-                model.isUpdate = false;
+            //if (model.chkAddVehicles == false && model.PolicyId != 0)
+            //    model.isUpdate = true;
+            //else if (model.chkAddVehicles)
+            //    model.isUpdate = false;
 
             int selectedIndex = 0;
 
@@ -1038,8 +1038,6 @@ namespace InsuranceClaim.Controllers
         public ActionResult SummaryDetail(int summaryDetailId = 0, string paymentError="")
         {
 
-           
-
 
             if (Session["CustomerDataModal"] == null && summaryDetailId == 0)
             {
@@ -1133,11 +1131,7 @@ namespace InsuranceClaim.Controllers
                     }
                     vehicle = vehicleList;
                     Session["VehicleDetails"] = vehicle;
-
                 }
-
-
-
 
                 var DiscountSettings = InsuranceContext.Settings.Single(where: $"keyname='Discount On Renewal'");
                 model.CarInsuredCount = vehicle.Count;

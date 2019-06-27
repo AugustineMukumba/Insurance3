@@ -1,6 +1,7 @@
 ﻿@model Insurance.Domain.Branch
 @{
     ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
 
 <div class="productsave-section">
@@ -21,7 +22,7 @@
                 @Html.AntiForgeryToken()
 
                 <div class="form-horizontal">
-                    <h4>Branch</h4>
+
                     <hr />
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                     <div class="form-group">

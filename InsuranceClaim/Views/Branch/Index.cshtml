@@ -1,18 +1,13 @@
 ﻿@model  IEnumerable<Insurance.Domain.Branch>
 @{
     ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_InsuranceMain.cshtml";
 }
 
 
 <div class="productsave-section">
     <div class="container">
-        <div class="row">
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 products-top">
-                <div class="head-title">
-                    <h2>Branch List</h2>
-                </div>
-            </div>
-        </div>
+        
 
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 add-btn">
@@ -40,7 +35,7 @@
                             @Html.DisplayFor(modelItem => item.BranchName)
                         </td>
                         <td>@Html.DisplayFor(modelItem => item.AlmId)  </td>
-                        <td>
+                        <td align="center">
                             @Html.ActionLink("Edit", "Edit", new { id = item.Id }) 
                             @*@Html.ActionLink("Details", "Details", new { id = item.Id })*@ 
                             @*@Html.ActionLink("Delete", "Delete", new { id = item.Id })*@

@@ -79,6 +79,8 @@ namespace InsuranceClaim.Controllers
         public ActionResult Index(int? vehicleid)
         {
 
+
+
             Session["RenewVehicleId"] = vehicleid;
             CustomerModel custdata = new CustomerModel();
             var GetUpdatedCustData = (CustomerModel)Session["ReCustomerDataModal"];

@@ -8,6 +8,7 @@ using Insurance.Domain;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNet.Identity;
 using Insurance.Service;
+using System.Configuration;
 
 namespace InsuranceClaim.Controllers
 {
@@ -724,24 +725,39 @@ namespace InsuranceClaim.Controllers
                             obj.Net_Premium = item.Premium;
                             obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("dd/MM/yyy");
 
-                            if (item.PaymentTermId == 1)
-                            {
-                                obj.Annual_Premium = Convert.ToDecimal(item.Premium);
 
-                                obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
-                            }
-                            if (item.PaymentTermId == 3)
-                            {
-                                obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
-                                obj.Annual_Premium = obj.Premium_due * 4;
 
-                            }
-                            if (item.PaymentTermId == 4)
-                            {
-                                obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
-                                obj.Annual_Premium = obj.Premium_due * 3;
+                            obj.Annual_Premium = Convert.ToDecimal(item.Premium);
 
+                            decimal radioLicenseCost = 0;
+                            if(item.IncludeRadioLicenseCost.Value)
+                            {
+                                radioLicenseCost = Convert.ToDecimal(item.RadioLicenseCost);
                             }
+
+                            obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.VehicleLicenceFee) + radioLicenseCost;
+
+
+
+
+                            //if (item.PaymentTermId == 1)
+                            //{
+                            //    obj.Annual_Premium = Convert.ToDecimal(item.Premium);
+
+                            //    obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
+                            //}
+                            //if (item.PaymentTermId == 3)
+                            //{
+                            //    obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
+                            //    obj.Annual_Premium = obj.Premium_due * 4;
+
+                            //}
+                            //if (item.PaymentTermId == 4)
+                            //{
+                            //    obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
+                            //    obj.Annual_Premium = obj.Premium_due * 3;
+
+                            //}
 
                             obj.RadioLicenseCost = item.RadioLicenseCost;
                             ListGrossWrittenPremiumReport.Add(obj);
@@ -894,24 +910,38 @@ namespace InsuranceClaim.Controllers
                             obj.Net_Premium = item.Premium;
                             obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("dd/MM/yyy");
 
-                            if (item.PaymentTermId == 1)
-                            {
-                                obj.Annual_Premium = Convert.ToDecimal(item.Premium);
 
-                                obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
-                            }
-                            if (item.PaymentTermId == 3)
+                            decimal radioLicenseCost = 0;
+                            if (item.IncludeRadioLicenseCost.Value)
                             {
-                                obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
-                                obj.Annual_Premium = obj.Premium_due * 4;
-
+                                radioLicenseCost = Convert.ToDecimal(item.RadioLicenseCost);
                             }
-                            if (item.PaymentTermId == 4)
-                            {
-                                obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
-                                obj.Annual_Premium = obj.Premium_due * 3;
 
-                            }
+                            //obj.Annual_Premium = Convert.ToDecimal(item.Premium);
+
+                            obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.VehicleLicenceFee) + radioLicenseCost;
+                         
+
+
+
+                            //if (item.PaymentTermId == 1)
+                            //{
+                            //    obj.Annual_Premium = Convert.ToDecimal(item.Premium);
+
+                            //    obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
+                            //}
+                            //if (item.PaymentTermId == 3)
+                            //{
+                            //    obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
+                            //    obj.Annual_Premium = obj.Premium_due * 4;
+
+                            //}
+                            //if (item.PaymentTermId == 4)
+                            //{
+                            //    obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.RadioLicenseCost);
+                            //    obj.Annual_Premium = obj.Premium_due * 3;
+
+                            //}
 
                             obj.RadioLicenseCost = item.RadioLicenseCost;
                             ListGrossWrittenPremiumReport.Add(obj);
@@ -1269,7 +1299,8 @@ namespace InsuranceClaim.Controllers
                     obj.TimeofDelivery = item.CreatedOn.ToString("hh:mm");
                     obj.ContactDetails = user.PhoneNumber + ", " + user.Email;
                     obj.AddressOfCustomer = customerdetail.AddressLine1 + "," + customerdetail.AddressLine2;
-                    obj.SignaturePath = item.SignaturePath;
+                    obj.SignaturePath = ConfigurationManager.AppSettings["SignaturePath"] + item.SignaturePath;
+
                     ListLicenceDeliveryReport.Add(obj);
                 }
                 else { }
