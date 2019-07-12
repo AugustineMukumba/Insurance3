@@ -114,13 +114,12 @@ namespace InsuranceClaim.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,BranchName")] Branch branch)
+        public ActionResult Edit( Branch branch)
         {
             if (ModelState.IsValid)
             {
               //  branch.AlmId = GetALMId();
                 InsuranceContext.Branches.Update(branch);
-
                 return RedirectToAction("Index");
             }
             return View(branch);

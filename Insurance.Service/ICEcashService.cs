@@ -714,6 +714,11 @@ namespace Insurance.Service
 
             ResultRootObject json = JsonConvert.DeserializeObject<ResultRootObject>(response.Content);
 
+
+            Insurance.Service.EmailService log = new Insurance.Service.EmailService();
+            log.WriteLog("TPIPolicy :" + response.Content);
+
+
             return json;
         }
 

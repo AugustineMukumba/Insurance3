@@ -608,30 +608,21 @@ namespace InsuranceClaim.Controllers
             {
                 objEmailService.SendEmail(user.Email, "", "", "Policy schedule", Bodyy, _attachementss);
             }
-
-
             return Json(true, JsonRequestBehavior.AllowGet);
         }
-
 
 
         public async Task<JsonResult> RenewResendPolicy(string vehicleId)
         {
             try
             {
-
                 SummaryDetailService detailService = new SummaryDetailService();
-
                 var currencyList = detailService.GetAllCurrency();
-
                 var vehicledetail = InsuranceContext.VehicleDetails.Single(where: $"Id = '{vehicleId}'");
                 Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
                 if (vehicledetail != null)
                 {
-
                     var currencyName = detailService.GetCurrencyName(currencyList, vehicledetail.CurrencyId);
-
-
                     var customerinfo = InsuranceContext.Customers.Single(where: $"Id = '{vehicledetail.CustomerId}'");
                     var userinfo = UserManager.FindById(customerinfo.UserID);
 
@@ -660,12 +651,9 @@ namespace InsuranceClaim.Controllers
                     }
                     else
                     {
-
                         objEmailService.SendEmail(userinfo.Email, "", "", "Account Creation", Body, _attachements);
-
                         //objEmailService.SendEmail("deepak.s@kindlebit.com", "", "", "Account Creation", Body, _attachements);
                     }
-
                     #endregion
 
                     #region
@@ -1062,6 +1050,8 @@ namespace InsuranceClaim.Controllers
             //ViewBag.Cities = resultts.cities;
 
             ViewBag.Cities = InsuranceContext.Cities.All();
+            ViewBag.Branches = InsuranceContext.Branches.All();
+
 
 
             if (userLoggedin)
@@ -1096,6 +1086,7 @@ namespace InsuranceClaim.Controllers
             if (id != 0)
             {
                 var data = InsuranceContext.Customers.Single(id);
+                var branchs = InsuranceContext.Branches.Single(data.BranchId) == null ? "" : InsuranceContext.Branches.Single(data.BranchId).BranchName;
                 var user = UserManager.FindById(data.UserID);
                 var email = user.Email;
                 var phone = user.PhoneNumber;
@@ -1109,6 +1100,7 @@ namespace InsuranceClaim.Controllers
                 obj.AddressLine1 = data.AddressLine1;
                 obj.AddressLine2 = data.AddressLine2;
                 obj.City = data.City;
+                obj.Branch = Convert.ToString(data.BranchId);
                 obj.CountryCode = data.Countrycode;
                 obj.Gender = data.Gender;
                 obj.Id = data.Id;
@@ -1185,6 +1177,7 @@ namespace InsuranceClaim.Controllers
                         cstmr.AddressLine1 = model.AddressLine1;
                         cstmr.AddressLine2 = model.AddressLine2;
                         cstmr.City = model.City;
+                        cstmr.BranchId = Convert.ToInt32(model.Branch);
                         cstmr.Countrycode = model.CountryCode;
                         cstmr.DateOfBirth = model.DateOfBirth;
                         cstmr.FirstName = model.FirstName;
@@ -1215,7 +1208,6 @@ namespace InsuranceClaim.Controllers
 
 
                 Customer ctems = InsuranceContext.Customers.Single(model.Id);
-
                 var user = UserManager.FindById(ctems.UserID);
                 var role = UserManager.GetRoles(ctems.UserID).FirstOrDefault();
                 user.PhoneNumber = model.PhoneNumber;
@@ -1237,6 +1229,7 @@ namespace InsuranceClaim.Controllers
                 ctems.AddressLine1 = model.AddressLine1;
                 ctems.AddressLine2 = model.AddressLine2;
                 ctems.City = model.City;
+                ctems.BranchId = Convert.ToInt32(model.Branch);
                 ctems.Countrycode = model.CountryCode;
                 ctems.DateOfBirth = model.DateOfBirth;
                 ctems.FirstName = model.FirstName;
@@ -1251,8 +1244,6 @@ namespace InsuranceClaim.Controllers
                 ctems.IsPolicyDocSent = model.IsPolicyDocSent;
                 ctems.IsWelcomeNoteSent = model.IsWelcomeNoteSent;
                 ctems.PhoneNumber = model.PhoneNumber;
-
-
 
                 InsuranceContext.Customers.Update(ctems);
                 UserManager.Update(user);
@@ -1287,6 +1278,8 @@ namespace InsuranceClaim.Controllers
             List<CustomerModel> ListUserViewModel = new List<CustomerModel>();
             var user = InsuranceContext.Customers.All(where: "IsActive = 'True' or IsActive is null").OrderByDescending(x => x.Id).ToList().Take(50);
 
+            var branchList = InsuranceContext.Branches.All();
+
 
             foreach (var item in user)
             {
@@ -1314,6 +1307,8 @@ namespace InsuranceClaim.Controllers
                 cstmrModel.EmailAddress = UserManager.GetEmail(item.UserID);
                 cstmrModel.role = Convert.ToString(UserManager.GetRoles(item.UserID).Count > 0 ? Convert.ToString(UserManager.GetRoles(item.UserID)[0]) : "");
 
+                cstmrModel.Branch = branchList.FirstOrDefault(c => c.Id == item.BranchId) == null ? "" : branchList.FirstOrDefault(c => c.Id == item.BranchId).BranchName;
+
                 ListUserViewModel.Add(cstmrModel);
             }
 
@@ -1332,6 +1327,8 @@ namespace InsuranceClaim.Controllers
             List<CustomerModel> ListUserViewModel = new List<CustomerModel>();
             //ListPolicy policylist = new ListPolicy();
             //policylist.listpolicy = new List<PolicyListViewModel>();
+
+            var branchList = InsuranceContext.Branches.All();
             if (searchText != null && searchText != "")
             {
                 var custom = searchText.Split(' ');
@@ -1378,6 +1375,9 @@ namespace InsuranceClaim.Controllers
                         cstmrModel.EmailAddress = UserManager.GetEmail(item.UserID);
                         cstmrModel.role = Convert.ToString(UserManager.GetRoles(item.UserID).Count > 0 ? Convert.ToString(UserManager.GetRoles(item.UserID)[0]) : "");
 
+
+                        cstmrModel.Branch = branchList.FirstOrDefault(c => c.Id == item.BranchId) == null ? "" : branchList.FirstOrDefault(c => c.Id == item.BranchId).BranchName;
+
                         ListUserViewModel.Add(cstmrModel);
 
                     }
@@ -1418,6 +1418,10 @@ namespace InsuranceClaim.Controllers
                                 cstmrModel.PhoneNumber = (item.PhoneNumber);
                                 cstmrModel.EmailAddress = item.Email;
                                 cstmrModel.role = Convert.ToString(UserManager.GetRoles(item.Id).Count > 0 ? Convert.ToString(UserManager.GetRoles(item.Id)[0]) : "");
+
+
+                                cstmrModel.Branch = branchList.FirstOrDefault(c => c.Id == customer.BranchId) == null ? "" : branchList.FirstOrDefault(c => c.Id == customer.BranchId).BranchName;
+
                                 ListUserViewModel.Add(cstmrModel);
                             }
                         }
@@ -2087,6 +2091,12 @@ namespace InsuranceClaim.Controllers
         public ActionResult SearchPolicy(string searchText)
         {
             ListPolicy policylist = new ListPolicy();
+
+            try
+            {
+
+           
+
             policylist.listpolicy = new List<PolicyListViewModel>();
             if (searchText != null && searchText != "")
             {
@@ -2202,7 +2212,7 @@ namespace InsuranceClaim.Controllers
                         policylistviewmodel.CustomerId = Convert.ToInt32(item.CustomerId);
                         policylistviewmodel.SummaryId = item.Id;
 
-                        policylistviewmodel.PaymentMethod = MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId.Value);
+                        policylistviewmodel.PaymentMethod = MiscellaneousService.GetPaymentMethodNamebyID(item.PaymentMethodId==null? 1 : item.PaymentMethodId.Value);
 
 
 
@@ -2288,6 +2298,11 @@ namespace InsuranceClaim.Controllers
                 }
             }
 
+            }
+            catch (Exception ex)
+            {
+
+            }
             return View("PolicyList", policylist);
         }
 
@@ -3117,13 +3132,20 @@ namespace InsuranceClaim.Controllers
                     list.Add(obj);
                 }
 
+                string baseUrl = Request.Url.Scheme + "://" + Request.Url.Authority +
+      Request.ApplicationPath.TrimEnd('/') + "/";
+
+
+                var customerDetails = InsuranceContext.Customers.Single(where: "id="+ CustomerId);
+
+                if(customerDetails!=null && customerDetails.BranchId!=0)
+                {
+                    baseUrl = System.Configuration.ConfigurationManager.AppSettings["SignaturePath"];
+                }
+
 
                 string path = "/Documents/" + CustomerId + "/" + PolicyNumber + "/";
                 string filePath = Server.MapPath(path);
-
-
-                string baseUrl = Request.Url.Scheme + "://" + Request.Url.Authority +
-        Request.ApplicationPath.TrimEnd('/') + "/";
 
 
                 foreach (var files in Directory.GetFiles(filePath))

@@ -116,5 +116,7 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please Select Tax Class.")]
         public int TaxClassId { get; set; }
 
+        public bool IsPolicyExpire { get; set; }
+
     }
 }

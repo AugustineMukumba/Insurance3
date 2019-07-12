@@ -120,7 +120,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-7">
-                                                        <label>@Html.CheckBoxFor(m => m.IsCustomEmail, new { @onclick = "SetCustomerEmail();", @disabled = "disabled" }) No email address</label>
+                                                        <label>@Html.CheckBoxFor(m => m.IsCustomEmail, new { @onclick = "return false", @readonly = "readonly" }) No email address</label>
                                                     </div>
                                                     <div class="col-md-12">
                                                         @*@if (email != "")
@@ -147,7 +147,7 @@
                                                 @Html.LabelFor(x => x.PhoneNumber, new { @class = "gender-label" })
                                                 @*@Html.TextBoxFor(x => x.CountryCode, new { @class = "form-control countrycode", @name = "CountryCode", @autocomplete = "off", @id = "CountryCode", @placeholder = "Code", @maxlength = "4" })*@
                                                 @Html.DropDownListFor(x => x.CountryCode, new SelectList(ViewBag.Countries, "code", "DisplayName", "+263"), new { @class = "form-control countrycode" })
-                                                @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control phonenumber", @name = "PhoneNumber", @autocomplete = "off", @id = "PhoneNumber", @placeholder = "Phone Number", @maxlength = "10", onkeypress = "return isNumber(event)" })
+                                                @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control phonenumber", @name = "PhoneNumber", @autocomplete = "off", @id = "PhoneNumber", @placeholder = "Phone Number", @maxlength = "9", onkeypress = "return isNumber(event)" })
                                                 @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
                                                 @*@Html.ValidationMessageFor(x => x.CountryCode, "", new { @class = "text-danger" })*@
                                             </div>
@@ -401,7 +401,7 @@
     function SetCustomerEmail() {
 
 
-        if ($("#IsCustomEmail").prop("checked") == true) {
+        @*if ($("#IsCustomEmail").prop("checked") == true) {
             $.ajax({
                 url: "@Url.Action("GetCustomerId", "CustomerRegistration")",
                 type: "POST",
@@ -413,7 +413,7 @@
         }
         else {
             $("#EmailAddress").val('');
-        }
+        }*@
 
 
 

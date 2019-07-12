@@ -47,6 +47,10 @@ namespace InsuranceClaim.Models
 
         public string BranchName { get; set; }
 
+        public string BusinessSourceName { get; set; }
+
+        public string SourceDetailName { get; set; }
+
 
     }
     public class ListGrossWrittenPremiumReportModels
