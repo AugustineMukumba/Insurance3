@@ -601,14 +601,11 @@ namespace InsuranceClaim.Controllers
             //   var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive='1'").ToList().Take(200);
 
             // var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c => c.Id).ToList().Take(200);
-            var VehicleList = InsuranceContext.VehicleDetails.All();
-
+            var VehicleList = InsuranceContext.VehicleDetails.All(where: $"IsActive='1'");
             var vehicledetail = VehicleList.OrderByDescending(c => c.Id).ToList().Take(200);
-
             var policyList = InsuranceContext.PolicyDetails.All();
             var customerList = InsuranceContext.Customers.All();
             var makelist = InsuranceContext.VehicleMakes.All();
-
             var modelList = InsuranceContext.VehicleModels.All();
             var vehicleSUmmarydetaillist = InsuranceContext.SummaryVehicleDetails.All();
             var summarylist = InsuranceContext.SummaryDetails.All();
@@ -616,24 +613,38 @@ namespace InsuranceClaim.Controllers
             var Payment_TermList = InsuranceContext.PaymentTerms.All();
             var PaymentMethodsList = InsuranceContext.PaymentMethods.All();
             var customerDetailsList = InsuranceContext.Customers.All();
-
             var branchList = InsuranceContext.Branches.All();
 
-            foreach (var item in vehicledetail.Take(100))
-            {
+            var businessSourceList = InsuranceContext.BusinessSources.All();
+            var sourceList = InsuranceContext.SourceDetails.All();
 
+
+            foreach (var item in vehicledetail.Take(50))
+            {
                 var Vehicle = VehicleList.FirstOrDefault(x => x.Id == item.Id);
                 GrossWrittenPremiumReportModels obj = new GrossWrittenPremiumReportModels();
-
                 var policy = policyList.FirstOrDefault(x => x.Id == item.PolicyId);
 
                 //var customer = customerList.Single(c=>c.CustomerId==item.CustomerId);
                 //var make = makeList.Single(c=>c.MakeCode==item.MakeId);
                 //var model = modelList.Single(c => c.ModelCode == item.ModelId);
 
-
                 obj.RenewPolicyNumber = item.RenewPolicyNumber;
                 obj.CoverNoteNum = item.CoverNote;
+
+
+                var businessSourceListDetails = sourceList.FirstOrDefault(c => c.Id == item.BusinessSourceDetailId);
+                if (businessSourceListDetails != null)
+                {
+                    obj.BusinessSourceName = businessSourceListDetails.FirstName + " " + businessSourceListDetails.LastName;
+                   
+
+                    var businessSourceDetails = businessSourceList.FirstOrDefault(c => c.Id == businessSourceListDetails.Id);
+                    if (businessSourceListDetails != null)
+                    {
+                        obj.SourceDetailName = businessSourceDetails.Source;
+                    }
+                }
 
 
                 var customer = customerList.FirstOrDefault(x => x.Id == item.CustomerId);
@@ -650,6 +661,9 @@ namespace InsuranceClaim.Controllers
                         if (summary.isQuotation != true)
                         {
                             // obj.ALMId = customer.ALMId;
+
+                            //var customerBranch = customerList.FirstOrDefault(c => c.Id == summary.CreatedBy);
+
                             var branchDetails = branchList.FirstOrDefault(c => c.Id == customer.BranchId);
                             if (branchDetails != null)
                             {
@@ -730,14 +744,14 @@ namespace InsuranceClaim.Controllers
                             obj.Annual_Premium = Convert.ToDecimal(item.Premium);
 
                             decimal radioLicenseCost = 0;
-                            if(item.IncludeRadioLicenseCost.Value)
+                            if (item.IncludeRadioLicenseCost.Value)
                             {
                                 radioLicenseCost = Convert.ToDecimal(item.RadioLicenseCost);
                             }
 
-                            obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.VehicleLicenceFee) + radioLicenseCost;
+                            //   obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.VehicleLicenceFee) + radioLicenseCost;
 
-
+                            obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy);
 
 
                             //if (item.PaymentTermId == 1)
@@ -787,7 +801,7 @@ namespace InsuranceClaim.Controllers
             //  var vehicledetail = InsuranceContext.VehicleDetails.All(where: "IsActive ='True'").ToList();
             //  var vehicledetail = InsuranceContext.VehicleDetails.All(where: "IsActive=1").ToList();
 
-            var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c => c.Id).ToList();
+            var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive='1'").OrderByDescending(c => c.Id).ToList();
             var branchList = InsuranceContext.Branches.All();
 
 
@@ -809,16 +823,16 @@ namespace InsuranceClaim.Controllers
             vehicledetail = vehicledetail.Where(c => Convert.ToDateTime(c.TransactionDate.Value.ToShortDateString()) >= fromDate && Convert.ToDateTime(c.TransactionDate.Value.ToShortDateString()) <= endDate).ToList();
 
 
-
-
-
             var currencyList = _summaryDetailService.GetAllCurrency();
-
-
 
             //var customerList = InsuranceContext.Customers.All().ToList();
             //var makeList = InsuranceContext.VehicleMakes.All().ToList();
             //var modelList = InsuranceContext.VehicleModels.All().ToList();
+
+            var businessSourceList = InsuranceContext.BusinessSources.All();
+            var sourceList = InsuranceContext.SourceDetails.All();
+
+
 
 
 
@@ -836,6 +850,23 @@ namespace InsuranceClaim.Controllers
 
                 obj.RenewPolicyNumber = item.RenewPolicyNumber;
                 obj.CoverNoteNum = item.CoverNote;
+
+
+
+
+                var businessSourceListDetails = sourceList.FirstOrDefault(c => c.Id == item.BusinessSourceDetailId);
+                if (businessSourceListDetails != null)
+                {
+                    obj.BusinessSourceName = businessSourceListDetails.FirstName + " " + businessSourceListDetails.LastName;
+
+
+                    var businessSourceDetails = businessSourceList.FirstOrDefault(c => c.Id == businessSourceListDetails.Id);
+                    if (businessSourceListDetails != null)
+                    {
+                        obj.SourceDetailName = businessSourceDetails.Source;
+                    }
+                }
+
 
                 var vehicleSUmmarydetail = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
                 if (vehicleSUmmarydetail != null)
@@ -919,9 +950,9 @@ namespace InsuranceClaim.Controllers
 
                             //obj.Annual_Premium = Convert.ToDecimal(item.Premium);
 
-                            obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.VehicleLicenceFee) + radioLicenseCost;
-                         
+                            //  obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy) + Convert.ToDecimal(item.VehicleLicenceFee) + radioLicenseCost;
 
+                            obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy);
 
 
                             //if (item.PaymentTermId == 1)

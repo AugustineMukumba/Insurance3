@@ -675,11 +675,14 @@ namespace InsuranceClaim.Controllers
                         model.Id = listriskdetailmodel[model.vehicleindex - 1].Id;
                         model.CustomerId = listriskdetailmodel[model.vehicleindex - 1].CustomerId;
                         model.InsuranceId = listriskdetailmodel[model.vehicleindex - 1].InsuranceId;
+                        model.RegistrationNo = listriskdetailmodel[model.vehicleindex - 1].RegistrationNo;
 
                         if (!model.IncludeRadioLicenseCost)
                             model.RadioLicenseCost = 0;
 
-                        listriskdetailmodel[model.vehicleindex - 1] = model;
+                          listriskdetailmodel[model.vehicleindex - 1] = model;
+
+                  
 
                         Session["VehicleDetails"] = listriskdetailmodel;
                     }
@@ -848,21 +851,21 @@ namespace InsuranceClaim.Controllers
 
         public void WriteLog(string error)
         {
-            string message = string.Format("Error Time: {0}", DateTime.Now);
-            message += error;
-            message += "-----------------------------------------------------------";
+            //string message = string.Format("Error Time: {0}", DateTime.Now);
+            //message += error;
+            //message += "-----------------------------------------------------------";
 
-            message += Environment.NewLine;
-
-
+            //message += Environment.NewLine;
 
 
-            string path = System.Web.HttpContext.Current.Server.MapPath("~/LogFile.txt");
-            using (StreamWriter writer = new StreamWriter(path, true))
-            {
-                writer.WriteLine(message);
-                writer.Close();
-            }
+
+
+            //string path = System.Web.HttpContext.Current.Server.MapPath("~/LogFile.txt");
+            //using (StreamWriter writer = new StreamWriter(path, true))
+            //{
+            //    writer.WriteLine(message);
+            //    writer.Close();
+            //}
         }
 
         [HttpPost]
@@ -1402,21 +1405,6 @@ namespace InsuranceClaim.Controllers
 
 
                         #endregion
-
-
-
-
-                      
-                       
-
-
-
-
-
-
-
-
-
 
 
                         #region Add All info to database

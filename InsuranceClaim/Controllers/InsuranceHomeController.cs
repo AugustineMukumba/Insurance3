@@ -19,7 +19,9 @@ namespace InsuranceClaim.Controllers
             //obj.getToken();
             //obj.RequestQuote(objVehicles);
             //test    
+      
 
+           // objEmailService.SendEmail("chandan.kumar@kindlebit.com", "", "", "Receipt Module", "test mail", attachements);
 
             return View();
         }

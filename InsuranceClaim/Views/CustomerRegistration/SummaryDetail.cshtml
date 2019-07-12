@@ -396,7 +396,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
 
                                     <div class="row">
@@ -421,9 +420,9 @@
 
                                                         @*<li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"><img style="width:65px;" src="~/Images/Paynow-logo.png" /></li>*@
 
-                                                        @*<li id="payment_6" class="payment_type" onclick="PaymentMethod(6)"><img width="75px;" src="~/Images/zimswitch.png" /> </li>
+                                                        <li id="payment_6" class="payment_type" onclick="PaymentMethod(6)"><img width="75px;" src="~/Images/zimswitch.png" /> </li>
 
-                                                        <li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"><img width="75px;" src="~/Images/ecocash.jpg" />   </li>*@
+                                                        <li id="payment_3" class="payment_type" onclick="PaymentMethod(3)"><img width="75px;" src="~/Images/ecocash.jpg" />   </li>
                                                   
                                                     </ul>
                                                 </div>
@@ -435,6 +434,7 @@
                                                 @Html.TextBoxFor(c => c.InvoiceNumber, new { @class = "form-control", @autocomplete = "off", @placeholder = "Enter Invoice number" })
                                             </div>
                                         </div>
+
 
                                     </div>
 
@@ -461,15 +461,8 @@
                                                                 <div class="text-right">
                                                                     <button type="submit" id="btnNext" onclick="return checkAmountPaid();" class="btn">Next</button>
                                                                 </div>
-
-
-
                                                             </li>
-
                                                         </ul>
-
-
-
                                                     </div>
                                                 </div>
 

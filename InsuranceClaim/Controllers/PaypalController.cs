@@ -40,7 +40,7 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult Index(int id)
         {
-            //  ApproveVRNToIceCash(7839, 1);
+         //   ApproveVRNToIceCash(7238, 1);
             return View();
         }
 
@@ -794,8 +794,8 @@ namespace InsuranceClaim.Controllers
                     Codes.Createdon = DateTime.Now;
                     Codes.Comment = "";
 
-                    var QRCodedata = Mapper.Map<QRCode, QRCode>(Codes);
-                    InsuranceContext.QRCodes.Insert(QRCodedata);
+                 //   var QRCodedata = Mapper.Map<QRCode, QRCode>(Codes);
+                    InsuranceContext.QRCodes.Insert(Codes);
                 }
 
             }
@@ -850,7 +850,15 @@ namespace InsuranceClaim.Controllers
             }
             else if (Paymentid == "3")
             {
-                PaymentMethod = "paynow";
+                // PaymentMethod = "paynow";
+
+                PaymentMethod = "EcoCash";
+            }
+            else if (Paymentid == "6")
+            {
+                // PaymentMethod = "paynow";
+
+                PaymentMethod = "Zimswitch";
             }
             else if (Paymentid == "")
             {
@@ -1350,9 +1358,7 @@ namespace InsuranceClaim.Controllers
                             //{
                             if (quoteresponse.Response != null && quoteresponse.Response.Message.Contains("Partner Token has expired"))
                             {
-
                                 //  log.WriteLog(quoteresponse.Response.Quotes[0].Message + " reg no: " + vichelDetails.RegistrationNo);
-
                                 iceCash.getToken();
                                 tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
                                 PartnerToken = tokenObject.Response.PartnerToken;
@@ -1360,7 +1366,18 @@ namespace InsuranceClaim.Controllers
                             }
                             //}
 
+                            System.Threading.Thread.Sleep(10000); // wait for 20 second
+
                             var res = ICEcashService.TPIPolicy(vichelDetails, PartnerToken);
+
+                            if (res.Response != null && res.Response.Message.Contains("Partner Token has expired"))
+                            {
+                                iceCash.getToken();
+                                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                                res = ICEcashService.TPIPolicy(vichelDetails, PartnerToken);
+                            }
+
+
                             if (res.Response != null && res.Response.Message == "Policy Retrieved")
                             {
 

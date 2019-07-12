@@ -37,6 +37,7 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please Enter Address 2.")]
         [MaxLength(100, ErrorMessage = "Address 2 must be less than 100  characters long.")]
         public string AddressLine2 { get; set; }
+        public string Branch { get; set; }
         [Display(Name = "City")]
         [Required(ErrorMessage = "Please Enter City.")]
         [MaxLength(25, ErrorMessage = "City must be less than 25 characters long.")]

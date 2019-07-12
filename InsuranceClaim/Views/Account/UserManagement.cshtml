@@ -118,8 +118,10 @@
                                                 </div>
                                             </div>
                                         </div>*@
+                                
 
                                     <div class="row">
+
                                         <div class="col-sm-6 col-md-6 form-group-select">
                                             <div class="form-group">
                                                 @Html.LabelFor(x => x.City, new { @class = "gender-label" })
@@ -127,6 +129,7 @@
                                                 @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
+
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.LabelFor(x => x.NationalIdentificationNumber, new { @class = "gender-label" })
@@ -150,6 +153,17 @@
                                                 @Html.Label("Role Name", new { @class = "gender-label" })
                                                 @Html.DropDownListFor(x => x.role, new SelectList(ViewBag.Adduser, "Name", "Name"), new { @class = "form-control" })
                                                 @Html.ValidationMessageFor(x => x.role, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                            <div class="form-group">
+
+                                                @Html.LabelFor(x => x.Branch, new { @class = "gender-label" })
+                                                @Html.DropDownListFor(x => x.Branch, new SelectList(ViewBag.Branches, "Id", "BranchName"), "----Select Branch----", new { @class = "form-control " })
+                                                @Html.ValidationMessageFor(x => x.Branch, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
@@ -186,13 +200,13 @@
                                                     {
                                                         <button type="submit" id="buttonNext" class="btn">Add</button>
                                                     }
-                                                    
+
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                            }
-                        </div>
+                                    }
+                                </div>
 
                     </div>
                 </div>

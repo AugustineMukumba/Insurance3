@@ -20,6 +20,7 @@ namespace InsuranceClaim.Models
         [Required(ErrorMessage = "Please enter Country Code and phone number.")]
         [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Not a valid phone number.")]
         public string PhoneNumber { get; set; }
+        public string Branch { get; set; }
         [Display(Name = "First Name")]
         [Required(ErrorMessage = "Please enter first name.")]
         [MaxLength(30, ErrorMessage = "First name must be less than 30 characters long.")]

@@ -143,6 +143,9 @@
                             <th>Zinara License Fee</th>
                             <th>Status</th>
                             <th>Policy Status</th>
+                            <th>
+                                Business Source
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -269,7 +272,19 @@
                                 </td>
                                 <td>@item.BranchName</td>
                                 <td>@item.Customer_Name</td>
-                                <td>@item.Policy_Number</td>
+                                <td>
+
+                                 @if (item.RenewPolicyNumber == null)
+                                 {
+                                    @item.Policy_Number
+                                 }
+                                 else
+                                 {
+                                    @item.RenewPolicyNumber
+                                 }
+
+
+                                </td>
                                 <td>@item.CoverNoteNum</td>
                                 <td>
                                     @item.Transaction_date
@@ -294,8 +309,6 @@
                                 <td> @item.Zinara_License_Fee </td>
 
 
-
-
                                 @if (DateTime.Now > item.PolicyRenewalDate)
                                 {
                                     <td>Lapsed</td>
@@ -308,7 +321,6 @@
                                 {
                                     <td>In Force</td>
                                 }
-
 
                                 @if (item.RenewPolicyNumber == null)
                                 {
@@ -323,6 +335,8 @@
                                 {
                                     <td>New Business</td>
                                 }
+
+                                <td>@item.BusinessSourceName <span>-</span>   @item.SourceDetailName</td>
 
 
                             </tr>
@@ -351,6 +365,8 @@
                             <td><strong> @ZinaraLicenseFee </strong> </td>
                             <td></td>
                             <td></td>
+                            <td colspan="2"></td>
+                            
                         </tr>
                         @*<tr>
                                 <td><strong>Currency Total:</strong></td>
@@ -376,7 +392,10 @@
                             <td colspan="8"></td>                       
                             <td colspan="3"><strong>Currency</strong></td>
                             <td colspan="3"><strong>Amount</strong></td>
-                            <td colspan="3"><strong>Count</strong></td>               
+                            <td colspan="3"><strong>Count</strong></td>   
+                            
+                            <td colspan="2"></td>  
+                                      
                         </tr>
 
                         <tr>
@@ -386,6 +405,7 @@
                             <td colspan="3">US$ FCA</td>
                             <td colspan="3">@ustotal</td>
                             <td colspan="3">@uscount</td>
+                            <td colspan="2"></td>
                             
                         </tr>
                         <tr>
@@ -395,11 +415,13 @@
                             <td colspan="3">RTGS$</td>
                             <td colspan="3">@rtgstotal</td>
                             <td colspan="3">@rtgscount</td>
+                            <td colspan="2"></td>
                           
                         </tr>
 
                         <tr>
                             <td colspan="17"></td>
+                            <td colspan="2"></td>
                         </tr>
                         <tr>
                             <td colspan="8"><strong>Renewals</strong></td>
@@ -407,6 +429,7 @@
                             <td colspan="3">US$ FCA</td>
                             <td colspan="3">@Reustotal</td>
                             <td colspan="3">@Reuscount</td>
+                            <td colspan="2"></td>
                             
                         </tr>
                         <tr>
@@ -417,11 +440,13 @@
                            
                             <td colspan="3" >@Rertgstotal</td>
                             <td colspan="3">@Rertgscount</td>
+                            <td colspan="2"></td>
                        
                         </tr>
 
                         <tr>
                             <td colspan="17"></td>
+                            <td colspan="2"></td>
                         </tr>
 
 
@@ -432,6 +457,7 @@
                             <td colspan="3"> US$ FCA</td>
                             <td colspan="3">@(ustotal + Reustotal)</td>
                             <td colspan="3"> @(uscount + Reuscount) </td>
+                            <td colspan="2"></td>
                            
                         </tr>
                         <tr>
@@ -441,6 +467,7 @@
                             <td colspan="3">RTGS$</td>
                             <td colspan="3">@(rtgstotal + Rertgstotal)</td>
                             <td colspan="3">@(  rtgscount  + Rertgscount)</td>
+                            <td colspan="2"></td>
                            
                         </tr>
                     </tfoot>

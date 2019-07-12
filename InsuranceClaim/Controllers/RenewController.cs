@@ -674,6 +674,9 @@ namespace InsuranceClaim.Controllers
                     viewModels.BusinessSourceDetailId = RiskDetail.BusinessSourceDetailId;
                     viewModels.CurrencyId = RiskDetail.CurrencyId;
 
+
+                    viewModels.IsPolicyExpire = RiskDetail.IsPolicyExpire;
+
                     var ser = new VehicleService();
                     var model = ser.GetModel(RiskDetail.MakeId);
                     ViewBag.Model = model;
@@ -686,7 +689,14 @@ namespace InsuranceClaim.Controllers
                         viewModels.ChasisNumber = data.ChasisNumber;
                         viewModels.CoverEndDate = data.CoverEndDate;
                         viewModels.CoverNoteNo = data.CoverNoteNo;
-                        viewModels.CoverStartDate = data.CoverStartDate;
+                        // viewModels.CoverStartDate = data.CoverStartDate;
+                        viewModels.CoverStartDate = data.CoverEndDate.Value.AddDays(1);
+
+                        if(data.CoverEndDate<DateTime.Now)
+                            viewModels.IsPolicyExpire = true;
+                        
+                       
+
                         viewModels.CoverTypeId = data.CoverTypeId;
                         viewModels.CubicCapacity = data.CubicCapacity==null? 0: (int)Math.Round(data.CubicCapacity.Value, 0);
                         viewModels.CustomerId = data.CustomerId;
@@ -1056,9 +1066,7 @@ namespace InsuranceClaim.Controllers
                                 if (customerDetials != null)
                                 {
                                     customer.Id = customerDetials.Id;
-
                                     CustomerUniquId = customerDetials.Id;
-
 
                                     // need to do work
                                     //if (btnSendQuatation != "" && model.Id != 0)
@@ -1070,10 +1078,7 @@ namespace InsuranceClaim.Controllers
                                     //        return RedirectToAction("SummaryDetail");
                                     //    }
                                     //}
-
-
                                 }
-
                             }
                         }
 
@@ -1314,7 +1319,16 @@ namespace InsuranceClaim.Controllers
                             // Get renew policy number
 
                             int policyLastSequence = 0;
-                            string[] splitPolicyNumber = policy.PolicyNumber.Split('-');
+                            string[] splitPolicyNumber;
+                            if(vehicelDetails.RenewPolicyNumber==null)
+                            {
+                                splitPolicyNumber = policy.PolicyNumber.Split('-');
+                            }
+                            else
+                            {
+                                splitPolicyNumber = InsuranceContext.VehicleDetails.All(where: $"policyid= '{policy.Id}' and RegistrationNo= '{_item.RegistrationNo}'").OrderByDescending(c=>c.Id).FirstOrDefault().RenewPolicyNumber.Split('-');
+                            }
+                           
 
                             if (splitPolicyNumber.Length > 1)
                             {
@@ -2835,7 +2849,6 @@ namespace InsuranceClaim.Controllers
         {
             try
             {
-
                 List<RiskDetailModel> vehicleList = new List<RiskDetailModel>();
                 if (summaryDetailId != 0)
                 {
@@ -2852,9 +2865,7 @@ namespace InsuranceClaim.Controllers
                     }
 
                     Session["RenewVehicleDetails"] = vehicleList;
-
                 }
-
 
 
                 if (Session["RenewVehicleDetails"] != null)
