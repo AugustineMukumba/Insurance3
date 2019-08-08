@@ -32,11 +32,10 @@ namespace InsuranceClaim.Controllers
         Insurance.Service.smsService objsmsService = new Insurance.Service.smsService();
 
         SummaryDetailService _summaryDetailService = new SummaryDetailService();
+        string _superUser = "fe19c887-f8a9-4353-939f-65e19afe0D5L";
 
         public AccountController()
         {
-
-
 
         }
 
@@ -1071,7 +1070,7 @@ namespace InsuranceClaim.Controllers
             }
 
             CustomerModel obj = new CustomerModel();
-            List<IdentityRole> roles = roleManager.Roles.ToList();
+            List<IdentityRole> roles = roleManager.Roles.Where(c=>c.Id!=_superUser).ToList();
 
             if(Claim!="")
             {
@@ -1527,7 +1526,7 @@ namespace InsuranceClaim.Controllers
             var modelList = InsuranceContext.VehicleModels.All();
 
 
-            foreach (var item in SummaryList.Take(100))
+            foreach (var item in SummaryList.Take(50))
             {
                 PolicyListViewModel policylistviewmodel = new PolicyListViewModel();
 

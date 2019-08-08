@@ -15,7 +15,7 @@ namespace InsuranceClaim.Controllers
         public ActionResult Index()
         {
 
-            //   ICEcashService obj = new ICEcashService();
+            //ICEcashService obj = new ICEcashService();
             //obj.getToken();
             //obj.RequestQuote(objVehicles);
             //test    
@@ -23,7 +23,7 @@ namespace InsuranceClaim.Controllers
 
            // objEmailService.SendEmail("chandan.kumar@kindlebit.com", "", "", "Receipt Module", "test mail", attachements);
 
-            return View();
+           return View();
         }
 
 

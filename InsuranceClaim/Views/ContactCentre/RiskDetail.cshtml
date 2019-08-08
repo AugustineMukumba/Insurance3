@@ -1508,6 +1508,7 @@
         if (flag) {
             $(".loading-area").show();
             $.ajax({
+                async: false,
                 type: "POST",
                 url: "@Url.Action("getPolicyDetailsFromICEcash", "CustomerRegistration")",
                 data: { regNo: $("#RegistrationNo").val(), PaymentTerm : $("#PaymentTermId").val(), suminsured : $("#SumInsured").val(), make: $("#MakeId option:selected").text(), model : $("#ModelId option:selected").text(), VehicleYear : $("#VehicleYear").val(), CoverTypeId : $("#CoverTypeId").val(), VehicleUsage : $("#VehicleUsage").val(), CoverStartDate: $("#CoverStartDate").val() , CoverEndDate : $("#CoverEndDate").val() },
@@ -1924,16 +1925,20 @@
             $("#divSumInsured").show();
         }
 
+        //generateQuotewithICEcash();
+        //QuoteCalculation();
 
 
 
-
-        if ($("#isVehicleRegisteredonICEcash").val() == "1") {
+        // 23 july
+        if ($("#isVehicleRegisteredonICEcash").val() == "1") {   
             generateQuotewithICEcash();
         }
         else{
             QuoteCalculation();
         }
+
+
     });
 
 

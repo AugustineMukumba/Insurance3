@@ -24,6 +24,8 @@ namespace InsuranceClaim.Controllers
     {
         private ApplicationUserManager _userManager;
         Insurance.Service.smsService objsmsService = new Insurance.Service.smsService();
+
+
         public ApplicationUserManager UserManager
         {
             get
@@ -40,7 +42,7 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult Index(int id)
         {
-         //   ApproveVRNToIceCash(7238, 1);
+        //    ApproveVRNToIceCash(9794, 1);
             return View();
         }
 
@@ -1366,7 +1368,7 @@ namespace InsuranceClaim.Controllers
                             }
                             //}
 
-                            System.Threading.Thread.Sleep(10000); // wait for 20 second
+                         //   System.Threading.Thread.Sleep(10000); // wait for 20 second
 
                             var res = ICEcashService.TPIPolicy(vichelDetails, PartnerToken);
 
@@ -1381,18 +1383,18 @@ namespace InsuranceClaim.Controllers
                             if (res.Response != null && res.Response.Message == "Policy Retrieved")
                             {
 
-                                if (res.Response.Status == "Approved")
-                                {
+                                //if (res.Response.Status == "Approved")
+                                //{
                                     result = res.Response.Status;
                                     vichelDetails.InsuranceStatus = "Approved";
                                     vichelDetails.CoverNote = res.Response.PolicyNo;
                                     //  vichelDetails.CoverNote = res.o
                                     InsuranceContext.VehicleDetails.Update(vichelDetails);
-                                }
-                                else
-                                {
-                                    result = res.Response.Status;
-                                }
+                                //}
+                                //else
+                                //{
+                                //    result = res.Response.Status;
+                                //}
                             }
                             else
                             {

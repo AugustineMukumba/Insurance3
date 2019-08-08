@@ -236,6 +236,17 @@
                                     <li><a class="DashboardButton" href="@Url.Action("Dashboard","Account")">Dashboard</a></li>
                                 }
 
+                                @if (User.IsInRole("SuperUser"))
+                                {
+                                    <li><a class="DashboardButton" href="@Url.Action("Index","Agent")">Agent</a></li>
+                                }
+
+                                @if (User.IsInRole("Agent"))
+                                {
+                                    <li><a class="DashboardButton" href="@Url.Action("Index","AgentStaff")">Agent Staff</a></li>
+                                }
+
+
 
                             </ul>
                             <ul class="navbar-nav navbar-right login-btn" style="@(userLoggedin ? "display:none;" : "display:inline-block;")">

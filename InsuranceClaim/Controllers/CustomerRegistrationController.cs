@@ -2753,6 +2753,21 @@ namespace InsuranceClaim.Controllers
                 if (tokenObject.Response.PartnerToken != "")
                 {
                     ResultRootObject quoteresponse = ICEcashService.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
+
+
+                    if (quoteresponse.Response.Quotes[0] != null && quoteresponse.Response.Message == "Partner Token has expired.")
+                    {
+
+                        ICEcashService.getToken();
+                        tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                        quoteresponse = ICEcashService.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
+                    }
+
+
+
+
+
+
                     response.result = quoteresponse.Response.Result;
                     if (response.result == 0)
                     {
@@ -2761,7 +2776,7 @@ namespace InsuranceClaim.Controllers
                     else
                     {
                         // Handle excepton token expired
-                        if (quoteresponse.Response.Quotes[0] != null && quoteresponse.Response.Quotes[0].Message == "Partner Token has expired.")
+                        if (quoteresponse.Response != null && quoteresponse.Response.Message == "Partner Token has expired.")
                         {
 
                             ICEcashService.getToken();
