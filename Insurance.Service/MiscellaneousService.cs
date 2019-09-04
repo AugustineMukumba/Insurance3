@@ -344,5 +344,99 @@ namespace Insurance.Service
 
             return "";
         }
+
+
+        public static string AddAgentLoyaltyPoints(int CustomerId, int PolicyId, RiskDetailModel vehicle, string email = "", string filepath = "", Customer agentDetials = null, AgentLogo agentLogo=null, string agentEmail="")
+        {
+            string CurrencyName = "";
+            var loaltyPointsSettings = InsuranceContext.Settings.Single(where: $"keyname='Points On Renewal'");
+            var loyaltyPoint = 0.00m;
+            switch (vehicle.PaymentTermId)
+            {
+                case 1:
+                    if (loaltyPointsSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                    {
+                        loyaltyPoint = ((Convert.ToDecimal(vehicle.AnnualRiskPremium) * Convert.ToDecimal(loaltyPointsSettings.value)) / 100);
+                    }
+                    if (loaltyPointsSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                    {
+                        loyaltyPoint = Convert.ToDecimal(loaltyPointsSettings.value);
+                    }
+                    break;
+                case 3:
+                    if (loaltyPointsSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                    {
+                        loyaltyPoint = ((Convert.ToDecimal(vehicle.QuaterlyRiskPremium) * Convert.ToDecimal(loaltyPointsSettings.value)) / 100);
+                    }
+                    if (loaltyPointsSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                    {
+                        loyaltyPoint = Convert.ToDecimal(loaltyPointsSettings.value);
+                    }
+                    break;
+                case 4:
+                    if (loaltyPointsSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
+                    {
+                        loyaltyPoint = ((Convert.ToDecimal(vehicle.TermlyRiskPremium) * Convert.ToDecimal(loaltyPointsSettings.value)) / 100);
+                    }
+                    if (loaltyPointsSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
+                    {
+                        loyaltyPoint = Convert.ToDecimal(loaltyPointsSettings.value);
+                    }
+                    break;
+            }
+
+            LoyaltyDetail objLoyaltydetails = new LoyaltyDetail();
+            objLoyaltydetails.CustomerId = CustomerId;
+            objLoyaltydetails.IsActive = true;
+            objLoyaltydetails.PolicyId = PolicyId;
+            objLoyaltydetails.PointsEarned = loyaltyPoint;
+            objLoyaltydetails.CreatedBy = CustomerId;
+            objLoyaltydetails.CreatedOn = DateTime.Now;
+
+            InsuranceContext.LoyaltyDetails.Insert(objLoyaltydetails);
+
+            Insurance.Service.EmailService objEmailService = new Insurance.Service.EmailService();
+            bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            //08 May D
+
+            SummaryDetailService detailService = new SummaryDetailService();
+            var currencylist = detailService.GetAllCurrency();
+            CurrencyName = detailService.GetCurrencyName(currencylist, vehicle.CurrencyId);
+
+            var policy = InsuranceContext.PolicyDetails.Single(PolicyId);
+            var customer = InsuranceContext.Customers.Single(CustomerId);
+
+
+
+
+            var TotalLoyaltyPoints = InsuranceContext.LoyaltyDetails.All(where: $"CustomerId={CustomerId}").Sum(x => x.PointsEarned);
+            string ReminderEmailPath = "/Views/Shared/EmaiTemplates/AgentLoyalityPoints.cshtml";
+            string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(ReminderEmailPath));
+            var body = EmailBody2.Replace("##FirstName##", customer.FirstName).Replace("##path##", filepath+ agentLogo.LogoPath).Replace("##LastName##", customer.LastName)
+                 .Replace("##currencyName##", CurrencyName)
+                   .Replace("#AgentFirstName#", agentDetials.FirstName).Replace("#AgentLastName#", agentDetials.LastName)
+                 .Replace("#AgentAddress1#", agentDetials.AddressLine1).Replace("#AgentCity#", agentDetials.City)
+                  .Replace("#AgentPhone#", agentDetials.PhoneNumber).Replace("#AgentWhatsapp#", agentDetials.AgentWhatsapp)
+                  .Replace("#AgentEmail#", agentEmail)
+                .Replace("##CreditedWalletAmount##", Convert.ToString(loyaltyPoint)).Replace("##TotalWalletBalance##", Convert.ToString(TotalLoyaltyPoints));
+            // var yAtter = "~/Pdf/14809 Gene Insure Motor Policy Book.pdf";
+            var attacheMentPath = MiscellaneousService.EmailPdf(body, policy.CustomerId, policy.PolicyNumber, "LoyaltyPoints");
+
+            List<string> attachements = new List<string>();
+            attachements.Add(attacheMentPath);
+            //if (!userLoggedin)
+            //{
+            //    attachements.Add(yAtter);
+            //    objEmailService.SendEmail(email, "", "", "Loyalty Reward | Points Credited to your Wallet", body, attachements);
+
+            //}
+
+            objEmailService.SendEmail(email, "", "", "Loyalty Reward | Points Credited to your Wallet", body, attachements);
+
+
+            return "";
+        }
+
+
     }
 }

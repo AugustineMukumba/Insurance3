@@ -96,14 +96,9 @@ namespace InsuranceClaim.Controllers
 
             if (Session["IceCashPayment"] != null)
             {
-
                 var IceCashPaymentDetails = (IceCashCardDetailModel)Session["IceCashPayment"];
-
                 SaveDetailList(IceCashPaymentDetails.SummaryId, "", Convert.ToString(IceCashPaymentDetails.PaymentMethod));
             }
-
-
-
 
             return RedirectToAction("ThankYou");
         }
@@ -1065,11 +1060,8 @@ namespace InsuranceClaim.Controllers
 
             foreach (var itemSummaryVehicleDetails in SummaryVehicleDetails)
             {
-                var itemVehicle = InsuranceContext.VehicleDetails.Single(itemSummaryVehicleDetails.VehicleDetailsId);
-                //if (itemVehicle.CoverTypeId == Convert.ToInt32(eCoverType.ThirdParty))
-                //{
-                MiscellaneousService.AddLoyaltyPoints(summaryDetail.CustomerId.Value, policy.Id, Mapper.Map<VehicleDetail, RiskDetailModel>(itemVehicle), user.Email, filepath);
-                //}
+                var itemVehicle = InsuranceContext.VehicleDetails.Single(itemSummaryVehicleDetails.VehicleDetailsId);          
+              //  MiscellaneousService.AddLoyaltyPoints(summaryDetail.CustomerId.Value, policy.Id, Mapper.Map<VehicleDetail, RiskDetailModel>(itemVehicle), user.Email, filepath);      disable loyalty on 02_sep_2019
                 ListOfVehicles.Add(itemVehicle);
             }
 

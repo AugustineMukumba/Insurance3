@@ -5,6 +5,7 @@ using System.Text;
 using System.Data;
 using System.Collections.Generic;
 
+
 namespace Insurance.Domain
 {
     // ############################################################################
@@ -112,8 +113,9 @@ namespace Insurance.Domain
 
         public static MachineBranches MachineBranches { get { return new MachineBranches(); } }
 
+        public static AgentLogos AgentLogos { get { return new AgentLogos(); } }
+        
         // UniqeTransactions
-
         // general purpose operations
 
         public static void Execute(string sql, params object[] parms) { db.Execute(sql, parms); }

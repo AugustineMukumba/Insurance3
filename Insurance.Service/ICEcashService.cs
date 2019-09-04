@@ -18,12 +18,12 @@ namespace Insurance.Service
     {
 
         // SendBox
-        public static string PSK = "127782435202916376850511";
-        public static string LiveIceCashApi = "http://api-test.icecash.com/request/20523588";
+        //public static string PSK = "127782435202916376850511";
+        //public static string LiveIceCashApi = "http://api-test.icecash.com/request/20523588";
 
         // Live
-        //public static string PSK = "565205790573235453203546";
-        //public static string LiveIceCashApi = "https://api.icecash.co.zw/request/20350763";
+        public static string PSK = "565205790573235453203546";
+        public static string LiveIceCashApi = "https://api.icecash.co.zw/request/20350763";
 
 
         private static string GetSHA512(string text)
@@ -279,10 +279,18 @@ namespace Insurance.Service
                 else
                     durationMonth = item.PaymentTermId;
                 // durationMonth = GetMonthKey(item.PaymentTermId);
-
                 // do
-                obj.Add(new VehicleObject { VRN = item.RegistrationNo, IDNumber = CustomerInfo.NationalIdentificationNumber, FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber, Address1 = CustomerInfo.AddressLine1, Town = CustomerInfo.AddressLine2, EntityType = "Personal", DurationMonths = durationMonth, InsuranceType = item.CoverTypeId == null ? 0 : item.CoverTypeId.Value, VehicleType = item.ProductId, Make = item.MakeId, Model = item.ModelId, TaxClass = item.TaxClassId, YearManufacture = item.VehicleYear == null ? 0 : item.VehicleYear.Value });
 
+
+                if (item.RegistrationNo == "TBA")
+                {
+                    string MSISDN = "+263" + CustomerInfo.PhoneNumber;
+                    obj.Add(new VehicleObject { VRN = item.RegistrationNo, IDNumber = CustomerInfo.NationalIdentificationNumber, FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, MSISDN = MSISDN, Address1 = CustomerInfo.AddressLine1, Town = CustomerInfo.AddressLine2, EntityType = "Corporate", DurationMonths = durationMonth, InsuranceType = item.CoverTypeId == null ? 0 : item.CoverTypeId.Value, VehicleType = item.ProductId, Make = item.MakeId, Model = item.ModelId, YearManufacture = item.VehicleYear == null ? 0 : item.VehicleYear.Value, TaxClass = item.TaxClassId });
+                }
+                else
+                {
+                    obj.Add(new VehicleObject { VRN = item.RegistrationNo, IDNumber = CustomerInfo.NationalIdentificationNumber, FirstName = CustomerInfo.FirstName, LastName = CustomerInfo.LastName, MSISDN = CustomerInfo.CountryCode + CustomerInfo.PhoneNumber, Address1 = CustomerInfo.AddressLine1, Town = CustomerInfo.AddressLine2, EntityType = "Personal", DurationMonths = durationMonth, InsuranceType = item.CoverTypeId == null ? 0 : item.CoverTypeId.Value, VehicleType = item.ProductId, Make = item.MakeId, Model = item.ModelId, TaxClass = item.TaxClassId, YearManufacture = item.VehicleYear == null ? 0 : item.VehicleYear.Value });
+                }
             }
 
 

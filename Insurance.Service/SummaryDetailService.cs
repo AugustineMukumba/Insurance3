@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Insurance.Domain;
 using AutoMapper;
+using System.IO;
+
 namespace Insurance.Service
 {
     public class SummaryDetailService
@@ -47,6 +49,11 @@ namespace Insurance.Service
             else
                 return  "USD";
         }
+
+
+
+
+
 
 
 

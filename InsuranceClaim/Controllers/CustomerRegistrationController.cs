@@ -100,7 +100,7 @@ namespace InsuranceClaim.Controllers
 
                 ViewBag.CurrentUserRole = role;
 
-                 if ((role != null && (role != "Staff" && role != "Renewals")))
+                if ((role != null && (role != "Staff" && role != "Renewals")))
                 {
                     if (customerData != null)
                     {
@@ -646,7 +646,7 @@ namespace InsuranceClaim.Controllers
 
 
             ModelState.Remove("SumInsured");
-        
+
 
 
 
@@ -680,9 +680,9 @@ namespace InsuranceClaim.Controllers
                         if (!model.IncludeRadioLicenseCost)
                             model.RadioLicenseCost = 0;
 
-                          listriskdetailmodel[model.vehicleindex - 1] = model;
+                        listriskdetailmodel[model.vehicleindex - 1] = model;
 
-                  
+
 
                         Session["VehicleDetails"] = listriskdetailmodel;
                     }
@@ -1038,7 +1038,7 @@ namespace InsuranceClaim.Controllers
 
         }
 
-        public ActionResult SummaryDetail(int summaryDetailId = 0, string paymentError="")
+        public ActionResult SummaryDetail(int summaryDetailId = 0, string paymentError = "")
         {
 
 
@@ -1241,12 +1241,12 @@ namespace InsuranceClaim.Controllers
 
             //   model.IceCashModel = 
 
-            if(paymentError!="")
+            if (paymentError != "")
             {
                 model.Error = "Error occurd during ecocash payment.";
-                model.PaymentMethodId = (int) paymentMethod.ecocash;
+                model.PaymentMethodId = (int)paymentMethod.ecocash;
             }
-           
+
 
             return View(model);
         }
@@ -1381,7 +1381,7 @@ namespace InsuranceClaim.Controllers
                             {
                                 if (model.PaymentMethodId == 1)
                                     return RedirectToAction("SaveDetailList", "Paypal", new { id = model.CustomSumarryDetilId, invoiceNumber = model.InvoiceNumber });
-                               else if (model.PaymentMethodId == (int)paymentMethod.ecocash)
+                                else if (model.PaymentMethodId == (int)paymentMethod.ecocash)
                                 {
                                     //return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = model.CustomSumarryDetilId, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policyNum, Email = customerEmail });
                                     TempData["PaymentMethodId"] = model.PaymentMethodId;
@@ -1397,7 +1397,7 @@ namespace InsuranceClaim.Controllers
                                 {
                                     TempData["PaymentMethodId"] = model.PaymentMethodId;
                                     return RedirectToAction("IceCashPayment", "Paypal", new { id = model.CustomSumarryDetilId, amount = Convert.ToString(model.AmountPaid), Paymentid = model.PaymentMethodId.Value });
-                                }                          
+                                }
                                 else
                                     return RedirectToAction("PaymentDetail", new { id = model.CustomSumarryDetilId, invoiceNumer = model.InvoiceNumber, Paymentid = model.PaymentMethodId.Value });
                             }
@@ -1587,7 +1587,7 @@ namespace InsuranceClaim.Controllers
                                 if (number != customer.PhoneNumber)
                                 {
                                     user.PhoneNumber = customer.PhoneNumber;
-                                   // UserManager.Update(user);  // 13_june
+                                    // UserManager.Update(user);  // 13_june
                                 }
                                 // customer.UserID = User.Identity.GetUserId().ToString();
 
@@ -1595,7 +1595,7 @@ namespace InsuranceClaim.Controllers
 
                                 if (customerDetials != null)
                                 {
-                                   // customer.UserID = user.Id;  // 13_june_2019
+                                    // customer.UserID = user.Id;  // 13_june_2019
                                     customer.CustomerId = customerDetials.CustomerId;
                                     var customerdata = Mapper.Map<CustomerModel, Customer>(customer);
 
@@ -1603,7 +1603,7 @@ namespace InsuranceClaim.Controllers
                                     {
                                         customerdata.CustomerId = customerdata.Id;
                                     }
-                                 //   InsuranceContext.Customers.Update(customerdata); // 13_june_2019
+                                    //   InsuranceContext.Customers.Update(customerdata); // 13_june_2019
                                 }
                             }
                         }
@@ -2478,7 +2478,7 @@ namespace InsuranceClaim.Controllers
                             TempData["PaymentMethodId"] = model.PaymentMethodId;
                             //  return RedirectToAction("makepayment", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), model.PaymentMethodId }); for paynow
 
-                            return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id, invoiceNumer = model.InvoiceNumber, Paymentid= model.PaymentMethodId.Value });
+                            return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id, invoiceNumer = model.InvoiceNumber, Paymentid = model.PaymentMethodId.Value });
 
                         }
                         else if (model.PaymentMethodId == (int)paymentMethod.Zimswitch)
@@ -2486,7 +2486,7 @@ namespace InsuranceClaim.Controllers
                             TempData["PaymentMethodId"] = model.PaymentMethodId;
                             return RedirectToAction("IceCashPayment", "Paypal", new { id = model.Id, amount = Convert.ToString(model.AmountPaid), Paymentid = model.PaymentMethodId.Value });
                         }
-                       
+
 
                         else
                             return RedirectToAction("PaymentDetail", new { id = DbEntry.Id, invoiceNumer = model.InvoiceNumber, Paymentid = model.PaymentMethodId.Value });
@@ -2539,8 +2539,9 @@ namespace InsuranceClaim.Controllers
 
 
         [HttpPost]
-        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost, int policytermid, Boolean isVehicleRegisteredonICEcash, string BasicPremium, string StampDuty, string ZTSCLevy, int ProductId = 0)
+        public JsonResult CalculatePremium(int vehicleUsageId, decimal sumInsured, int coverType, int excessType, decimal excess, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost, int policytermid, Boolean isVehicleRegisteredonICEcash, string BasicPremium, string StampDuty, string ZTSCLevy, int ProductId = 0, string vehicleStartDate = "", string vehicleEndDate = "", string manufacturerYear = "")
         {
+
             //var policytermid = (int)Session["policytermid"];
             JsonResult json = new JsonResult();
             var quote = new QuoteLogic();
@@ -2558,7 +2559,10 @@ namespace InsuranceClaim.Controllers
             {
                 eexcessType = eExcessType.FixedAmount;
             }
-            var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover, eexcessType, excess, policytermid, AddThirdPartyAmount, NumberofPersons, Addthirdparty, PassengerAccidentCover, ExcessBuyBack, RoadsideAssistance, MedicalExpenses, RadioLicenseCost, IncludeRadioLicenseCost, isVehicleRegisteredonICEcash, BasicPremium, StampDuty, ZTSCLevy, ProductId);
+
+            bool isAgentStaff = User.IsInRole("AgentStaff");
+        
+            var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover, eexcessType, excess, policytermid, AddThirdPartyAmount, NumberofPersons, Addthirdparty, PassengerAccidentCover, ExcessBuyBack, RoadsideAssistance, MedicalExpenses, RadioLicenseCost, IncludeRadioLicenseCost, isVehicleRegisteredonICEcash, BasicPremium, StampDuty, ZTSCLevy, ProductId, vehicleStartDate , vehicleEndDate , manufacturerYear, isAgentStaff);
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             json.Data = premium;
             return json;
@@ -3062,12 +3066,8 @@ namespace InsuranceClaim.Controllers
             }
             catch (Exception ex)
             {
-
-
                 response.message = "Error occured.";
             }
-
-
             return json;
         }
         public JsonResult GetVehicleModel(string makeCode)

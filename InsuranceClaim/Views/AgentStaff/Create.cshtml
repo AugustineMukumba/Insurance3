@@ -60,7 +60,7 @@
 
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.PhoneNumber, new { @class = "gender-label" })
-                                            @Html.DropDownListFor(x => x.CountryCode, new SelectList(ViewBag.Countries, "code", "code"), new { @class = "form-control countrycode" })
+                                            @Html.DropDownListFor(x => x.CountryCode, new SelectList(ViewBag.Countries, "code", "code", "+263"), new { @class = "form-control countrycode" })
                                             @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control phonenumber", @name = "PhoneNumber", @autocomplete = "off", @id = "PhoneNumber", @placeholder = "Phone Number", onkeypress = "return isNumber(event)", @maxlength = "10" })
                                             @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
                                             @Html.ValidationMessageFor(x => x.CountryCode, "", new { @class = "text-danger" })
@@ -158,7 +158,7 @@
                                         <div class="col-sm-6 col-md-6 form-group-select">
                                             <div class="form-group">
                                                 @Html.LabelFor(x => x.Branch, new { @class = "gender-label" })
-                                                @Html.DropDownListFor(x => x.Branch, new SelectList(ViewBag.Branches, "Id", "BranchName"), "----Select Branch----", new { @class = "form-control " })
+                                                @Html.DropDownListFor(x => x.Branch, new SelectList(ViewBag.Branches, "Id", "BranchName"), new { @class = "form-control " })
                                                 @Html.ValidationMessageFor(x => x.Branch, "", new { @class = "text-danger" })
                                             </div>
                                         </div>

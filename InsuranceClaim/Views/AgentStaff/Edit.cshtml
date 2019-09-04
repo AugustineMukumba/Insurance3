@@ -156,23 +156,14 @@
                                             </div>
                                         </div>
 
-                                      
-
-
-                                    </div>
-
-
-                                    <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-select">
                                             <div class="form-group">
-
                                                 @Html.LabelFor(x => x.Branch, new { @class = "gender-label" })
                                                 @Html.DropDownListFor(x => x.Branch, new SelectList(ViewBag.Branches, "Id", "BranchName"), "----Select Branch----", new { @class = "form-control " })
                                                 @Html.ValidationMessageFor(x => x.Branch, "", new { @class = "text-danger" })
                                             </div>
-                                        </div>
+                                        </div>                                    
                                     </div>
-
 
 
 

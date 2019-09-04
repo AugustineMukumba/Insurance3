@@ -43,13 +43,9 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-8 col-md-8">
-                        <div class="text-right search-btn">
-                            <button type="submit" class="btn btn-success">Search</button>
-                            <button type="button" onclick="removeSearchBoxText();" class="btn btn-danger">Clear Search</button>
-                        </div>
+                   
 
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -67,6 +63,7 @@
                             <th>Last Name</th>
                             <th>Email Address</th>
                             <th>Phone Number</th>
+                            <th>Branch</th>
                             <th class="action-th">Action</th>
                         </tr>
                     </thead>
@@ -83,11 +80,11 @@
                         @foreach (var item in Model.ListUsers)
                         {
                             <tr>
-
                                 <td>@item.FirstName</td>
                                 <td>@item.LastName</td>
                                 <td>@item.EmailAddress</td>
                                 <td>@item.PhoneNumber</td>
+                                <td>@item.Branch</td>
                           
 
                                 <td>
@@ -155,5 +152,16 @@
         window.location.href = "/Account/UserManagementList";
 
     }
+
+    $(document).ready(function () {
+        $("#searchText").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $(".table>tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+
+
 
 </script>

@@ -216,6 +216,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AgentController.cs" />
+    <Compile Include="Controllers\AgentMotorController.cs" />
     <Compile Include="Controllers\AgentStaffController.cs" />
     <Compile Include="Controllers\BirthdayMessageController.cs" />
     <Compile Include="Controllers\BranchController.cs" />
@@ -1086,8 +1087,18 @@
     <Content Include="Views\AgentStaff\Index.cshtml" />
     <Content Include="Views\AgentStaff\Create.cshtml" />
     <Content Include="Views\AgentStaff\Edit.cshtml" />
+    <Content Include="Views\AgentMotor\CustomerDetail.cshtml" />
+    <Content Include="Views\AgentMotor\RiskDetail.cshtml" />
+    <Content Include="Views\AgentMotor\SummaryDetail.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\AgentUserRegistration.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\AgentReciept.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\AgentScheduleMotor.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\AgentQutationEmail.cshtml" />
+    <Content Include="Views\Shared\EmaiTemplates\AgentLoyalityPoints.cshtml" />
+    <Content Include="Views\AgentMotor\ThankYou.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="AgentLogo\" />
     <Folder Include="App_Data\" />
     <Folder Include="ClaimDocument\GMCC180000003-1\1003\" />
     <Folder Include="QRCode\" />

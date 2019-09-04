@@ -10,6 +10,13 @@ namespace InsuranceClaim.Models
 {
     public class RiskDetailModel
     {  
+
+        public RiskDetailModel()
+        {
+            ManufacturerYear = DateTime.Now.ToShortDateString();
+        }
+           
+
         public bool IncludeRadioLicenseCost { get; set; }
         public int Id { get; set; }
         public int PolicyId { get; set; }
@@ -115,6 +122,9 @@ namespace InsuranceClaim.Models
 
         [Required(ErrorMessage = "Please Select Tax Class.")]
         public int TaxClassId { get; set; }
+
+       // [Required(ErrorMessage = "Please Select Manufacturer Year.")]
+        public string ManufacturerYear { get; set; }
 
         public bool IsPolicyExpire { get; set; }
 

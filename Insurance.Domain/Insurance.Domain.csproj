@@ -120,6 +120,7 @@
     <Compile Include="Data\InsuranceData.cs" />
     <Compile Include="Domain\AgeExcess.cs" />
     <Compile Include="Domain\AgentCommission.cs" />
+    <Compile Include="Domain\AgentLogo.cs" />
     <Compile Include="Domain\AspNetUsersUpdate.cs" />
     <Compile Include="Domain\BasicExcess.cs" />
     <Compile Include="Domain\BirthdayMessage.cs" />
@@ -185,6 +186,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\AgeExcesses.cs" />
     <Compile Include="Repository\AgentCommissions.cs" />
+    <Compile Include="Repository\AgentLogos.cs" />
     <Compile Include="Repository\AspNetUsersUpdates.cs" />
     <Compile Include="Repository\BasicExcesses.cs" />
     <Compile Include="Repository\BirthdayMessages.cs" />

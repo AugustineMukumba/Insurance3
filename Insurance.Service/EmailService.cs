@@ -38,7 +38,7 @@ namespace Insurance.Service
                 _mailMessage.Subject = pSubject;
                 _mailMessage.IsBodyHtml = true;
 
-                if(pAttachments!=null)
+                if(pAttachments.Count>0)
                 {
                     if(pAttachments[0]!="")
                     {             
@@ -50,7 +50,6 @@ namespace Insurance.Service
                     }
 
                     }
-
                 }
       
 
@@ -93,7 +92,6 @@ namespace Insurance.Service
             catch (Exception ex)
             {
 
-
                 WriteLog(ex.Message);
 
             }
@@ -106,11 +104,7 @@ namespace Insurance.Service
             message += error;
             message += "-----------------------------------------------------------";
 
-            message += Environment.NewLine;
-         
-
-
-
+            message += Environment.NewLine;     
             string path = System.Web.HttpContext.Current.Server.MapPath("~/LogFile.txt");
             using (StreamWriter writer = new StreamWriter(path, true))
             {
@@ -118,14 +112,6 @@ namespace Insurance.Service
                 writer.Close();
             }
         }
-
-
-
-
-
-
-
-
 
         private void populateMailAddresses(string pAddresses, MailAddressCollection pObj)
         {

@@ -37,15 +37,7 @@ namespace InsuranceClaim.Controllers
 
 
             ViewBag.Products = InsuranceContext.Products.All(where: "Active = 'True' or Active is Null").ToList();
-            //var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm))
-            //                       select new
-            //                       {
-            //                           ID = (int)e,
-            //                           Name = e.ToString()
-            //                       };
-
-            //ViewBag.ePaymentTermData = new SelectList(ePaymentTermData, "ID", "Name");
-           // ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All().ToList();
+          
             ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All(where: "IsActive = 'True' or IsActive is Null").ToList();
 
 

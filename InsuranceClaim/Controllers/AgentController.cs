@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -83,13 +84,19 @@ namespace InsuranceClaim.Controllers
                 return RedirectToAction("Index", "Agent");
             }
 
+
+            string url = HttpContext.Request.Url.Authority;
+
+            //		Authority	"localhost:49873"	string
+
+
             var branchList = InsuranceContext.Branches.All();
 
 
-            var query = "select Customer. * , AspNetUsers.Email from Customer ";
+            var query = "select Customer. * , AspNetUsers.Email, AgentLogo.LogoPath from Customer ";
             query += "   join AspNetUsers on Customer.UserID = AspNetUsers.Id ";
-            query += "  join AspNetUserRoles  on AspNetUserRoles.UserId = AspNetUsers.Id ";
-            query += " where AspNetUserRoles.RoleId ='" + _agent + "' and (IsActive is null or IsActive=1) ";
+            query += "  join AspNetUserRoles  on AspNetUserRoles.UserId = AspNetUsers.Id  left join  AgentLogo on Customer.Id = AgentLogo.CustomerId ";
+            query += " where AspNetUserRoles.RoleId ='" + _agent + "' and (IsActive is null or IsActive=1) order by Customer.Id desc  ";
 
 
             //      var user1 = InsuranceContext.Query(query).Select
@@ -120,6 +127,8 @@ namespace InsuranceClaim.Controllers
                 PhoneNumber = x.PhoneNumber,
                 IsCustomEmail = x.IsCustomEmail == null ? false : Convert.ToBoolean(x.IsCustomEmail),
                 EmailAddress = x.Email,
+                AgentLogo = x.LogoPath,
+                AgentWhatsapp =x.AgentWhatsapp,
                 // CompanyName = x.CompanyName,
                 // CompanyEmail = x.CompanyEmail,
                 //  CompanyAddress = x.CompanyAddress,
@@ -131,11 +140,8 @@ namespace InsuranceClaim.Controllers
                 //  ALMId = x.ALMId,
                 Id = x.Id,
                 CreatedOn = x.CreatedOn,
-                Branch = branchList.FirstOrDefault(c => c.Id == x.BranchId) == null ? "" : branchList.FirstOrDefault(c => c.Id == x.BranchId).BranchName
+                Branch = GetAgentBranch(x.AgentBranch, branchList),
             }).ToList();
-
-
-
 
 
 
@@ -145,6 +151,37 @@ namespace InsuranceClaim.Controllers
             return View(lstUserModel);
         }
 
+
+        public string GetAgentBranch(string branchIds, IEnumerable<Branch> branches)
+        {
+
+            string branchName = "";
+
+            if(branchIds!=null)
+            {
+                var splitBranch = branchIds.Split(',');
+
+                foreach (var item in splitBranch)
+                {
+                    var branchDetails = branches.FirstOrDefault(c => c.Id == Convert.ToInt32(item));
+                    if (branchDetails != null)
+                    {
+                        if (branchName == "")
+                            branchName = branchDetails.BranchName;
+                        else
+                            branchName += "," + branchDetails.BranchName;
+
+                    }
+
+                }
+            }
+           
+
+            return branchName;
+        }
+
+
+
         // GET: Agent/Details/5
         public ActionResult Details(int id)
         {
@@ -152,14 +189,14 @@ namespace InsuranceClaim.Controllers
         }
 
         // GET: Agent/Create
-        public ActionResult Create(int id=0)
+        public ActionResult Create(int id = 0)
         {
             bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             string path = Server.MapPath("~/Content/Countries.txt");
             var _countries = System.IO.File.ReadAllText(path);
             var resultt = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObject>(_countries);
             ViewBag.Countries = resultt.countries;
-
+            var userid = "";
 
             //string paths = Server.MapPath("~/Content/Cities.txt");
             //var _cities = System.IO.File.ReadAllText(paths);
@@ -173,7 +210,7 @@ namespace InsuranceClaim.Controllers
 
             if (userLoggedin)
             {
-                var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
                 // var role = UserManager.GetRoles(userid).FirstOrDefault();
                 //if (role != "SuperAdmin")
                 //{
@@ -194,49 +231,24 @@ namespace InsuranceClaim.Controllers
             _roles.RoleList = roles;
             ViewBag.Adduser = _roles.RoleList;
 
-
-
-            if (id != 0)
-            {
-                var data = InsuranceContext.Customers.Single(id);
-                var branchs = InsuranceContext.Branches.Single(data.BranchId) == null ? "" : InsuranceContext.Branches.Single(data.BranchId).BranchName;
-                var user = UserManager.FindById(data.UserID);
-                var email = user.Email;
-                var phone = user.PhoneNumber;
-                var role = UserManager.GetRoles(data.UserID).FirstOrDefault();
+            obj.Zipcode = "00263";
 
 
 
-
-                obj.FirstName = data.FirstName;
-                obj.LastName = data.LastName;
-                obj.AddressLine1 = data.AddressLine1;
-                obj.AddressLine2 = data.AddressLine2;
-                obj.City = data.City;
-                obj.Branch = Convert.ToString(data.BranchId);
-                obj.CountryCode = data.Countrycode;
-                obj.Gender = data.Gender;
-                obj.Id = data.Id;
-                obj.DateOfBirth = data.DateOfBirth;
-                obj.NationalIdentificationNumber = data.NationalIdentificationNumber;
-                obj.Zipcode = data.Zipcode;
-                obj.role = role;
-                obj.PhoneNumber = Convert.ToString(phone);
-                obj.EmailAddress = Convert.ToString(email);
+            var data = InsuranceContext.Customers.Single(id);
+            //   var branchs = InsuranceContext.Branches.Single(data.BranchId) == null ? "" : InsuranceContext.Branches.Single(data.BranchId).BranchName;
 
 
 
-            }
             return View(obj);
         }
 
         // POST: Agent/Create
         [HttpPost]
-        public async Task<ActionResult> Create(CustomerModel model)
+        public async Task<ActionResult> Create(CustomerModel model, HttpPostedFileBase file, string Corporate)
         {
             try
             {
-
 
                 string path = Server.MapPath("~/Content/Countries.txt");
                 var _countries = System.IO.File.ReadAllText(path);
@@ -244,6 +256,29 @@ namespace InsuranceClaim.Controllers
                 ViewBag.Countries = resultt.countries;
                 ViewBag.Cities = InsuranceContext.Cities.All();
                 ViewBag.Branches = InsuranceContext.Branches.All();
+
+
+                if(Corporate=="")
+                {
+                    model.IsCorporate = true;
+                    model.EmailAddress = model.CompanyEmail;
+                    model.CompanyEmail = model.CompanyEmail;
+
+                    model.FirstName = model.CompanyName;
+                    model.CompanyName = model.CompanyName;
+
+                    model.AddressLine1 = model.CompanyAddress;
+                    model.CompanyAddress = model.CompanyAddress;
+
+                    model.PhoneNumber = model.CompanyPhone;
+                    model.CompanyPhone = model.CompanyPhone;
+
+                    model.CompanyCity = model.CompanyCity;
+                    model.City = model.CompanyCity;
+
+                    model.CompanyBusinessId = model.CompanyBusinessId;
+                    
+                }
 
 
 
@@ -274,10 +309,10 @@ namespace InsuranceClaim.Controllers
                     cstmr.CustomerId = model.CustomerId;
                     cstmr.AddressLine1 = model.AddressLine1;
                     cstmr.AddressLine2 = model.AddressLine2;
-                    cstmr.City = model.City;
-                    cstmr.BranchId = Convert.ToInt32(model.Branch);
+                    cstmr.City = model.City;           
+                    cstmr.AgentBranch = model.HdnBrach;
                     cstmr.Countrycode = model.CountryCode;
-                    cstmr.DateOfBirth = model.DateOfBirth;
+                    cstmr.DateOfBirth = model.DateOfBirth == null? DateTime.Now : model.DateOfBirth;
                     cstmr.FirstName = model.FirstName;
                     cstmr.LastName = model.LastName;
                     cstmr.NationalIdentificationNumber = model.NationalIdentificationNumber;
@@ -292,15 +327,32 @@ namespace InsuranceClaim.Controllers
                     cstmr.UserID = user.Id;
                     cstmr.PhoneNumber = model.PhoneNumber;
                     cstmr.IsActive = true;
-                    InsuranceContext.Customers.Insert(cstmr);
+                    cstmr.AgentWhatsapp = model.AgentWhatsapp;
 
+
+                    if(model.IsCorporate)
+                    {
+                        cstmr.IsCorporate = true;
+                        cstmr.CompanyName = model.CompanyName;
+                        cstmr.CompanyEmail = model.CompanyEmail;
+                        cstmr.CompanyAddress = model.CompanyAddress;
+                        cstmr.CompanyPhone = model.CompanyPhone;
+                        cstmr.CompanyCity = model.CompanyCity;
+                        cstmr.CompanyBusinessId = model.CompanyBusinessId;
+                        cstmr.LastName = " ";
+                    }
+
+
+                    InsuranceContext.Customers.Insert(cstmr);
+                    string imagePath = SaveAgentLogoPath(file);
+                    SaveAgentLogo(cstmr.Id, imagePath);
                 }
-               
+
             }
             catch (Exception ex)
             {
-               model.ErrorMsg = ex.Message;
-               return View(model);
+                model.ErrorMsg = ex.Message;
+                return View(model);
 
             }
 
@@ -308,6 +360,47 @@ namespace InsuranceClaim.Controllers
             return RedirectToAction("Index");
 
         }
+
+        public void CreateAgent(CustomerModel model)
+        {
+
+        }
+
+
+
+        public string SaveAgentLogoPath(HttpPostedFileBase file)
+        {
+            string path = "";
+            if (file.ContentLength > 0)
+            {
+                string _FileName = Path.GetFileName(file.FileName);
+                string logoPath = Path.Combine(Server.MapPath("~/AgentLogo"), _FileName);
+                path = "/AgentLogo/"+_FileName;
+
+                file.SaveAs(logoPath);
+            }
+            return path;
+        }
+
+        public void SaveAgentLogo(int customerId, string imagePath)
+        {
+
+            var agentLogoDetails = InsuranceContext.AgentLogos.Single(where : "CustomerId=" + customerId);
+
+            if(agentLogoDetails == null)
+            {
+                AgentLogo agentLogo = new AgentLogo { CustomerId = customerId, LogoPath = imagePath, CreatedOn = DateTime.Now };
+                InsuranceContext.AgentLogos.Insert(agentLogo);
+            }
+            else
+            {
+                agentLogoDetails.LogoPath = imagePath;
+                InsuranceContext.AgentLogos.Update(agentLogoDetails);
+            }
+
+
+        }
+
 
         // GET: Agent/Edit/5
         public ActionResult Edit(int id)
@@ -347,7 +440,7 @@ namespace InsuranceClaim.Controllers
             CustomerModel obj = new CustomerModel();
             List<IdentityRole> roles = roleManager.Roles.ToList();
 
-    
+
             InsuranceClaim.Models.RoleManagementListViewModel _roles = new RoleManagementListViewModel();
 
             _roles.RoleList = roles;
@@ -372,7 +465,9 @@ namespace InsuranceClaim.Controllers
                 obj.AddressLine1 = data.AddressLine1;
                 obj.AddressLine2 = data.AddressLine2;
                 obj.City = data.City;
-                obj.Branch = Convert.ToString(data.BranchId);
+                //  obj.Branch = Convert.ToString(data.BranchId);
+
+                obj.AgentBranch = data.AgentBranch;
                 obj.CountryCode = data.Countrycode;
                 obj.Gender = data.Gender;
                 obj.Id = data.Id;
@@ -383,7 +478,7 @@ namespace InsuranceClaim.Controllers
                 obj.PhoneNumber = Convert.ToString(phone);
                 obj.EmailAddress = Convert.ToString(email);
                 obj.IsActive = data.IsActive;
-
+                obj.AgentWhatsapp = data.AgentWhatsapp;
 
             }
             return View(obj);
@@ -394,13 +489,11 @@ namespace InsuranceClaim.Controllers
 
         // POST: Agent/Edit/5
         [HttpPost]
-        public ActionResult Edit(CustomerModel model)
+        public ActionResult Edit(CustomerModel model, HttpPostedFileBase file)
         {
             try
             {
                 // TODO: Add update logic here
-
-
 
                 string path = Server.MapPath("~/Content/Countries.txt");
                 var _countries = System.IO.File.ReadAllText(path);
@@ -435,7 +528,7 @@ namespace InsuranceClaim.Controllers
                 ctems.AddressLine1 = model.AddressLine1;
                 ctems.AddressLine2 = model.AddressLine2;
                 ctems.City = model.City;
-                ctems.BranchId = Convert.ToInt32(model.Branch);
+                ctems.AgentBranch = model.HdnBrach;
                 ctems.Countrycode = model.CountryCode;
                 ctems.DateOfBirth = model.DateOfBirth;
                 ctems.FirstName = model.FirstName;
@@ -451,8 +544,18 @@ namespace InsuranceClaim.Controllers
                 ctems.IsWelcomeNoteSent = model.IsWelcomeNoteSent;
                 ctems.PhoneNumber = model.PhoneNumber;
 
+                ctems.AgentWhatsapp = model.AgentWhatsapp;
                 InsuranceContext.Customers.Update(ctems);
-               // UserManager.Update(user);
+                // UserManager.Update(user);
+
+                if(file!=null)
+                {
+                    string imagePath = SaveAgentLogoPath(file);
+                    SaveAgentLogo(ctems.Id, imagePath);
+                }
+              
+
+
             }
             catch (Exception ex)
             {

@@ -30,7 +30,7 @@
                     <div class="row">
                         <div class="col-sm-4 col-md-4">
                             <div class="text-left">
-                                @Html.TextBox("searchText", null, new { @class = "form-control", @placeholder = "Policy Number / Customer Name" })
+                                @Html.TextBox("searchText", null, new { @class = "form-control", @placeholder = "Policy Number / Customer Name / Registration Number" })
                             </div>
                         </div>
                         @*<div class="col-sm-4 col-md-4">
@@ -344,11 +344,9 @@
     }
 
     $(document).ready(function () {
-
         $("#tblfileListing").hide();
         $("#documnet").click(function () {
             debugger;
-
             uploadFile();
         })
     })

@@ -27,8 +27,8 @@ namespace InsuranceClaim.Controllers
         SummaryDetailService _summaryDetailService = new SummaryDetailService();
 
 
-        string _staff = "bbbeffe0-94fa-41b7-bd8b-72d9ddc7f8f0";
-        string _agentStaff = "Staff";
+        string _staff = "bbbeffe0-94fa-41b7-bd8b-72d9ddc7HGTR";
+        string _agentStaff = "AgentStaff";
 
 
 
@@ -181,6 +181,8 @@ namespace InsuranceClaim.Controllers
             var resultt = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObject>(_countries);
             ViewBag.Countries = resultt.countries;
 
+            var userid = "";
+
 
             //string paths = Server.MapPath("~/Content/Cities.txt");
             //var _cities = System.IO.File.ReadAllText(paths);
@@ -194,7 +196,7 @@ namespace InsuranceClaim.Controllers
 
             if (userLoggedin)
             {
-                var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                 userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
                 // var role = UserManager.GetRoles(userid).FirstOrDefault();
                 //if (role != "SuperAdmin")
                 //{
@@ -207,18 +209,27 @@ namespace InsuranceClaim.Controllers
             }
 
             CustomerModel obj = new CustomerModel();
-            List<IdentityRole> roles = roleManager.Roles.ToList();
-
-
-     
-
-
-       
-               
+         //   List<IdentityRole> roles = roleManager.Roles.ToList();
 
 
 
-      
+            var customer = InsuranceContext.Customers.Single(where: "UserID='" + userid + "'");
+
+            if (customer != null)
+            {
+                ViewBag.Branches = InsuranceContext.Branches.All(where: "id in ("+customer.AgentBranch+")");
+            }
+            else
+            {
+                ViewBag.Branches = InsuranceContext.Branches.All();
+            }
+
+
+
+            obj.Zipcode = "00263";
+
+
+
             return View(obj);
         }
 
@@ -331,13 +342,13 @@ namespace InsuranceClaim.Controllers
             //ViewBag.Cities = resultts.cities;
 
             ViewBag.Cities = InsuranceContext.Cities.All();
-            ViewBag.Branches = InsuranceContext.Branches.All();
+            //  ViewBag.Branches = InsuranceContext.Branches.All();
 
-
+            var userid = "";
 
             if (userLoggedin)
             {
-                var userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                 userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
                 // var role = UserManager.GetRoles(userid).FirstOrDefault();
                 //if (role != "SuperAdmin")
                 //{
@@ -363,14 +374,33 @@ namespace InsuranceClaim.Controllers
             if (id != 0)
             {
                 var data = InsuranceContext.Customers.Single(id);
-                var branchs = InsuranceContext.Branches.Single(data.BranchId) == null ? "" : InsuranceContext.Branches.Single(data.BranchId).BranchName;
+                //  var branchs = InsuranceContext.Branches.Single(data.BranchId) == null ? "" : InsuranceContext.Branches.Single(data.BranchId).BranchName;
+
+                //   userid = System.Web.HttpContext.Current.User.Identity.GetUserId();
+
+                //    var branchs = InsuranceContext.Branches.Single(data.BranchId) == null ? "" : InsuranceContext.Branches.Single(data.BranchId).BranchName;
+
+
+               // ViewBag.Branches= InsuranceContext.Branches.All(where: "Id=" + data.BranchId);
+
+
+                var customer = InsuranceContext.Customers.Single(where: "UserID='" + userid + "'");
+
+                if (customer != null)
+                {
+                    ViewBag.Branches = InsuranceContext.Branches.All(where: "id in (" + customer.AgentBranch + ")");
+                }
+                
+
+
+
+
+
+
                 var user = UserManager.FindById(data.UserID);
                 var email = user.Email;
                 var phone = user.PhoneNumber;
                 var role = UserManager.GetRoles(data.UserID).FirstOrDefault();
-
-
-
 
                 obj.FirstName = data.FirstName;
                 obj.LastName = data.LastName;
@@ -388,9 +418,13 @@ namespace InsuranceClaim.Controllers
                 obj.PhoneNumber = Convert.ToString(phone);
                 obj.EmailAddress = Convert.ToString(email);
                 obj.IsActive = data.IsActive;
-
-
             }
+
+
+          
+
+
+
             return View(obj);
 
 
@@ -415,6 +449,8 @@ namespace InsuranceClaim.Controllers
                 ViewBag.Cities = InsuranceContext.Cities.All();
                 ViewBag.Branches = InsuranceContext.Branches.All();
 
+
+               
 
 
 

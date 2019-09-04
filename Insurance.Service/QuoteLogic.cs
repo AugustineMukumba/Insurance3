@@ -7,8 +7,10 @@ using Insurance.Domain;
 using InsuranceClaim.Models;
 using System.Configuration;
 
+
 namespace Insurance.Service
 {
+
     public class QuoteLogic
     {
         public decimal Premium { get; set; }
@@ -30,13 +32,13 @@ namespace Insurance.Service
         public decimal QuaterlyRiskPremium { get; set; }
         public decimal Discount { get; set; }
 
-        public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType, eExcessType excessType, decimal excess, int PaymentTermid, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost, Boolean isVehicleRegisteredonICEcash, string BasicPremiumICEcash, string StampDutyICEcash, string ZTSCLevyICEcash, int ProductId = 0)
+        public QuoteLogic CalculatePremium(int vehicleUsageId, decimal sumInsured, eCoverType coverType, eExcessType excessType, decimal excess, int PaymentTermid, decimal? AddThirdPartyAmount, int NumberofPersons, Boolean Addthirdparty, Boolean PassengerAccidentCover, Boolean ExcessBuyBack, Boolean RoadsideAssistance, Boolean MedicalExpenses, decimal? RadioLicenseCost, Boolean IncludeRadioLicenseCost, Boolean isVehicleRegisteredonICEcash, string BasicPremiumICEcash, string StampDutyICEcash, string ZTSCLevyICEcash, int ProductId = 0, string vehicleStartDate = "", string vehicleEndDate = "", string manufacturerYear = "", bool isAgentStaff = false)
         {
             var vehicleUsage = InsuranceContext.VehicleUsages.Single(vehicleUsageId);
             var Setting = InsuranceContext.Settings.All();
             var DiscountOnRenewalSettings = Setting.Where(x => x.keyname == "Discount On Renewal").FirstOrDefault();
 
-           
+            decimal ratingPremium = 0;
 
 
             var additionalchargeatp = 0.0m;
@@ -84,6 +86,43 @@ namespace Insurance.Service
                 premium = (sumInsured * Convert.ToDecimal(InsuranceRate)) / 100;
             }
 
+
+            // For ratinglist for AgentMotor
+            // Session["CustomerDataModal"]
+
+           if (isAgentStaff==true  && coverType == eCoverType.Comprehensive && vehicleStartDate!="" && vehicleEndDate!="" && manufacturerYear!="")
+            {
+                if (System.Web.HttpContext.Current.Session["CustomerDataModal"] != null)
+                {
+                    var customer = (CustomerModel)System.Web.HttpContext.Current.Session["CustomerDataModal"];
+
+                   // var customerAge = (DateTime.Now - customer.DateOfBirth);
+                   var customerAge= CalculateInYear(customer.DateOfBirth.Value, DateTime.Now);
+
+                    //  var AgeOfLicense = DateTime.Now - Convert.ToDateTime(manufacturerYear);
+
+                    //  var AgeOfLicense = DateTime.Now - Convert.ToDateTime(manufacturerYear);
+
+                    if (manufacturerYear == "")
+                        manufacturerYear = DateTime.Now.ToShortDateString();
+
+                     var AgeOfLicense=   CalculateInYear(Convert.ToDateTime(manufacturerYear), DateTime.Now);
+
+                    // var AgeOfVehicle = Convert.ToDateTime(vehicleEndDate) - Convert.ToDateTime(vehicleStartDate);
+
+                    var AgeOfVehicle=   CalculateInYear(Convert.ToDateTime(vehicleStartDate), Convert.ToDateTime(vehicleEndDate));
+
+                    ratingPremium= RatingListCalcualation(premium, ProductId, customer.Gender, customerAge, AgeOfLicense, AgeOfVehicle);
+
+
+                }
+            }
+
+
+
+
+
+
             if (premium < InsuranceMinAmount && coverType == eCoverType.Comprehensive)
             {
                 Status = false;
@@ -119,12 +158,12 @@ namespace Insurance.Service
                     premium = premium / 3;
                     break;
                 case 5:
-                     day = 5*30;
+                    day = 5 * 30;
                     premium = Math.Round(Convert.ToDecimal((double)day / 365) * premium, 2);
                     break;
                 case 6:
                     day = 6 * 30;
-                    premium = Math.Round( Convert.ToDecimal((double)day / 365) * premium, 2);
+                    premium = Math.Round(Convert.ToDecimal((double)day / 365) * premium, 2);
                     break;
                 case 7:
                     day = 7 * 30;
@@ -149,7 +188,7 @@ namespace Insurance.Service
             }
 
 
-           
+
 
             decimal PassengerAccidentCoverAmountPerPerson = Convert.ToInt32(Setting.Where(x => x.keyname == "PassengerAccidentCover").Select(x => x.value).FirstOrDefault());
             decimal ExcessBuyBackPercentage = Convert.ToInt32(Setting.Where(x => x.keyname == "ExcessBuyBack").Select(x => x.value).FirstOrDefault());
@@ -158,7 +197,7 @@ namespace Insurance.Service
             var StampDutySetting = Setting.Where(x => x.keyname == "Stamp Duty").FirstOrDefault();
             var ZTSCLevySetting = Setting.Where(x => x.keyname == "ZTSC Levy").FirstOrDefault();
 
-           
+
 
 
             if (PassengerAccidentCover)
@@ -182,7 +221,7 @@ namespace Insurance.Service
                         additionalchargersa = Math.Round(Convert.ToDecimal(roadsideAssistanceDetails.value), 2);
                     }
                 }
-                else if ((coverType == eCoverType.ThirdParty || coverType == eCoverType.FullThirdParty) && ProductId == 3) // Commercial vehicles
+                else if ((coverType == eCoverType.ThirdParty || coverType == eCoverType.FullThirdParty) && (ProductId == 3 || ProductId == 11)) // Commercial vehicles
                 {
                     var roadsideAssistanceDetails = Setting.Where(x => x.keyname == "third party commercial vehicle roadside assistance").FirstOrDefault();
                     if (roadsideAssistanceDetails != null)
@@ -296,7 +335,7 @@ namespace Insurance.Service
             //}
 
 
-            var discountField= this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount;
+            var discountField = this.PassengerAccidentCoverAmount + this.RoadsideAssistanceAmount + this.MedicalExpensesAmount + this.ExcessBuyBackAmount + this.ExcessAmount;
 
             switch (PaymentTermid)
             {
@@ -340,48 +379,48 @@ namespace Insurance.Service
             switch (PaymentTermid)
             {
                 case 1:
-                    this.AnnualRiskPremium = premium+ discountField;
+                    this.AnnualRiskPremium = premium + discountField;
                     if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive))
                     {
-                        this.AnnualRiskPremium =  Convert.ToDecimal(BasicPremiumICEcash);
+                        this.AnnualRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
                     {
-                        this.Discount = Math.Round( ((this.AnnualRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100),2);
+                        this.Discount = Math.Round(((this.AnnualRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100), 2);
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
                     {
-                        this.Discount = Math.Round( Convert.ToDecimal(DiscountOnRenewalSettings.value),2);
+                        this.Discount = Math.Round(Convert.ToDecimal(DiscountOnRenewalSettings.value), 2);
                     }
                     break;
                 case 3:
-                    this.QuaterlyRiskPremium = premium+ discountField;
+                    this.QuaterlyRiskPremium = premium + discountField;
                     if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive))
                     {
                         this.QuaterlyRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
                     {
-                        this.Discount = Math.Round( ((this.QuaterlyRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100),2);
+                        this.Discount = Math.Round(((this.QuaterlyRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100), 2);
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
                     {
-                        this.Discount = Math.Round( Convert.ToDecimal(DiscountOnRenewalSettings.value),2);
+                        this.Discount = Math.Round(Convert.ToDecimal(DiscountOnRenewalSettings.value), 2);
                     }
                     break;
                 case 4:
-                    this.TermlyRiskPremium = premium+ discountField;
+                    this.TermlyRiskPremium = premium + discountField;
                     if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive))
                     {
                         this.TermlyRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
                     {
-                        this.Discount = Math.Round( ((this.TermlyRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100),2);
+                        this.Discount = Math.Round(((this.TermlyRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100), 2);
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
                     {
-                        this.Discount = Math.Round( Convert.ToDecimal(DiscountOnRenewalSettings.value),2);
+                        this.Discount = Math.Round(Convert.ToDecimal(DiscountOnRenewalSettings.value), 2);
                     }
                     break;
                 case 5:
@@ -398,14 +437,14 @@ namespace Insurance.Service
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
                     {
-                        this.Discount = Math.Round( ((this.AnnualRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100),2);
+                        this.Discount = Math.Round(((this.AnnualRiskPremium * Convert.ToDecimal(DiscountOnRenewalSettings.value)) / 100), 2);
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.amount))
                     {
-                        this.Discount = Math.Round( Convert.ToDecimal(DiscountOnRenewalSettings.value),2);
+                        this.Discount = Math.Round(Convert.ToDecimal(DiscountOnRenewalSettings.value), 2);
                     }
                     break;
-                    
+
             }
 
             // totalPremium = premium - this.Discount;
@@ -417,7 +456,7 @@ namespace Insurance.Service
             }
             else
             {
-                totalPremium = ((isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium)+ discountField) - this.Discount;
+                totalPremium = ((isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + discountField) - this.Discount;
             }
 
 
@@ -468,7 +507,7 @@ namespace Insurance.Service
             else
             {
                 // totalPremiumForZtscLevy = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + discountField;
-                totalPremiumForZtscLevy = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + discountField + this.Discount;
+                totalPremiumForZtscLevy = (isVehicleRegisteredonICEcash ? Convert.ToDecimal(BasicPremiumICEcash) : this.Premium) + discountField + this.Discount;  // need to discuss BasicPremiumICEcash with Client
             }
 
 
@@ -490,7 +529,7 @@ namespace Insurance.Service
             // if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive) && totalPremium == Convert.ToDecimal(BasicPremiumICEcash)) // by ash 11 apr 2019
 
 
-            if(StampDutyICEcash=="") // if iceCash is not working
+            if (StampDutyICEcash == "") // if iceCash is not working
             {
                 this.StamDuty = Math.Round(stampDuty, 2);
                 StampDutyICEcash = Math.Round(stampDuty, 2).ToString();
@@ -521,7 +560,7 @@ namespace Insurance.Service
 
 
                     case 3:
-                        maxZTSC = maxZTSC * 4/12;
+                        maxZTSC = maxZTSC * 4 / 12;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
@@ -529,56 +568,56 @@ namespace Insurance.Service
 
                         break;
                     case 4:
-                        maxZTSC = maxZTSC / 3  ;
+                        maxZTSC = maxZTSC / 3;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
                         }
                         break;
                     case 5:
-                        maxZTSC = maxZTSC * 5/12;
+                        maxZTSC = maxZTSC * 5 / 12;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
                         }
                         break;
                     case 6:
-                        maxZTSC = maxZTSC * 6/12;
+                        maxZTSC = maxZTSC * 6 / 12;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
                         }
                         break;
                     case 7:
-                        maxZTSC = maxZTSC * 7/12;
+                        maxZTSC = maxZTSC * 7 / 12;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
                         }
                         break;
                     case 8:
-                        maxZTSC = maxZTSC * 8/12;
+                        maxZTSC = maxZTSC * 8 / 12;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
                         }
                         break;
                     case 9:
-                        maxZTSC = maxZTSC * 9/12;
+                        maxZTSC = maxZTSC * 9 / 12;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
                         }
                         break;
                     case 10:
-                        maxZTSC = maxZTSC * 10/12;
+                        maxZTSC = maxZTSC * 10 / 12;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
                         }
                         break;
                     case 11:
-                        maxZTSC = maxZTSC * 11/12;
+                        maxZTSC = maxZTSC * 11 / 12;
                         if (Convert.ToDouble(this.ZtscLevy) > maxZTSC)
                         {
                             this.ZtscLevy = Math.Round(Convert.ToDecimal(maxZTSC), 2);
@@ -597,16 +636,141 @@ namespace Insurance.Service
                 this.StamDuty = 2;
             }
 
-            // if product "Private car"
 
-
-
-
-
-
+            this.Premium = this.Premium + ratingPremium;
 
             return this;
         }
+
+
+        public int CalculateInYear(DateTime startDate, DateTime endDate)
+        {
+            DateTime zeroTime = new DateTime(1, 1, 1);
+
+            DateTime a = new DateTime(2007, 1, 1);
+            DateTime b = new DateTime(2008, 1, 1);
+
+            TimeSpan span = b - a;
+            // Because we start at year 1 for the Gregorian
+            // calendar, we must subtract a year here.
+            int years = (zeroTime + span).Year - 1;
+            return years;
+        }
+
+
+        public decimal RatingListCalcualation(decimal baseRate, int prodcutId, string Gender, int DriverAge, int AgeOfLicense, int AgeOfVehicle)
+        {
+            decimal calcuateRatingListPremium = 0 ;
+
+            // Usage Presonal
+            decimal businessLoadig = 50;
+
+            // Driver Gender
+            decimal femalDriverLoading = 10;
+
+            // Driver Age
+            decimal driverAgeBelow25Loading = 20;
+            decimal driverAgeBelow25to35Loading = 10;
+            decimal driverAgeAbove35Discount = 10;
+
+            // Age of license
+            decimal ageOfLicense0to3Loading = 20;
+            decimal ageOfLicense3to5Loading = 10;
+            decimal ageOfLicenseAbove5Discount = 10;
+
+            // Age Of Vehicle
+            decimal ageOfVehicle0to5Discount = 10;
+            decimal ageOfVehicle5to10Loading = 10;
+            decimal ageOfVehileAbove10Loading = 20;
+
+            // decimal 
+
+            decimal usageAmount = 0;
+            decimal genderAmount = 0;
+            decimal driverAgeAmount = 0;
+            decimal driverAgeOfLicenseAmount = 0;
+            decimal AgeOfVehicleAmount = 0;
+
+            // USAGE
+            if (prodcutId == 3 && prodcutId == 11) // for comercial vehicle
+            {
+                usageAmount = baseRate * businessLoadig / 100;
+                calcuateRatingListPremium = calcuateRatingListPremium + usageAmount;
+            }
+                
+
+
+            // Driver Gender
+            if (Gender == "Female")
+            {
+                genderAmount = baseRate * femalDriverLoading / 100;
+                calcuateRatingListPremium = calcuateRatingListPremium + genderAmount;
+            }
+                
+
+            // Driver Age
+            if (DriverAge < 25)
+            {
+                driverAgeAmount = baseRate * driverAgeBelow25Loading / 100;
+                calcuateRatingListPremium = calcuateRatingListPremium + driverAgeAmount;
+            }
+            else if (DriverAge > 25 && DriverAge < 35)
+            {
+                driverAgeAmount = baseRate * driverAgeBelow25to35Loading / 100;
+                calcuateRatingListPremium = calcuateRatingListPremium + driverAgeAmount;
+            }
+            else if (DriverAge > 35)
+            {
+                // discount
+                driverAgeAmount = baseRate * driverAgeAbove35Discount / 100;
+                calcuateRatingListPremium = calcuateRatingListPremium - driverAgeAmount;
+
+            }
+
+            // Age Of License
+            if(AgeOfLicense>0 && AgeOfLicense<3)
+            {
+                driverAgeOfLicenseAmount =    baseRate* ageOfLicense0to3Loading / 100;
+                calcuateRatingListPremium = calcuateRatingListPremium + driverAgeOfLicenseAmount;
+            }
+            else if(AgeOfLicense > 3 && AgeOfLicense < 5)
+            {
+                driverAgeOfLicenseAmount = baseRate * ageOfLicense3to5Loading / 100;
+                calcuateRatingListPremium = calcuateRatingListPremium + driverAgeOfLicenseAmount;
+            }
+            else if(AgeOfLicense>5)
+            {
+                // discount
+                driverAgeOfLicenseAmount = baseRate * ageOfLicenseAbove5Discount / 100;
+                calcuateRatingListPremium = calcuateRatingListPremium - driverAgeOfLicenseAmount;
+            }
+
+            // Age of Vehicle
+
+
+            if (AgeOfVehicle > 0 && AgeOfVehicle < 5)
+            {
+                //discount
+                AgeOfVehicleAmount = baseRate * ageOfVehicle0to5Discount / 100;
+                calcuateRatingListPremium = calcuateRatingListPremium - AgeOfVehicleAmount;
+            }
+            else if (AgeOfLicense > 5 && AgeOfLicense < 10)
+            {
+                AgeOfVehicleAmount = baseRate * ageOfVehicle5to10Loading / 100;
+                calcuateRatingListPremium = calcuateRatingListPremium + AgeOfVehicleAmount;
+            }
+            else if (AgeOfLicense > 10)
+            {
+                // discount
+                AgeOfVehicleAmount = baseRate * ageOfVehileAbove10Loading / 100;
+                calcuateRatingListPremium = calcuateRatingListPremium + AgeOfVehicleAmount;
+            }
+
+            return calcuateRatingListPremium;
+        }
+
+
+
 
 
 

@@ -196,10 +196,18 @@
 
                                 @*<li><a href="/Paypal/IceCashPayment">IceCash</a></li>*@
 
-                                @if (User.IsInRole("Staff") || User.IsInRole("Renewals"))
+                                @if (User.IsInRole("Staff") || User.IsInRole("Renewals") || User.IsInRole("AgentStaff"))
                                 {
                                     <li><a href="/Account/PolicyList">Policy Management</a></li>
                                 }
+
+
+
+                                @if (User.IsInRole("Agent"))
+                                {
+                                    <li><a href="/AgentStaff/Index">Agent Staff</a></li>                              
+                                }
+
 
 
                                 @if (User.IsInRole("Claim"))
@@ -236,16 +244,22 @@
                                     <li><a class="DashboardButton" href="@Url.Action("Dashboard","Account")">Dashboard</a></li>
                                 }
 
+                               
+                                @if (User.IsInRole("Finance"))
+                                {
+                                    <li><a class="DashboardButton" href="@Url.Action("Dashboard","Account")">Dashboard</a></li>
+                                }
+
+                                    @if (User.IsInRole("AgentStaff"))
+                                    {
+                                        <li><a class="DashboardButton" href="@Url.Action("CustomerDetail","AgentMotor")">Create Policy</a></li>
+                                    }
+
+
                                 @if (User.IsInRole("SuperUser"))
                                 {
                                     <li><a class="DashboardButton" href="@Url.Action("Index","Agent")">Agent</a></li>
                                 }
-
-                                @if (User.IsInRole("Agent"))
-                                {
-                                    <li><a class="DashboardButton" href="@Url.Action("Index","AgentStaff")">Agent Staff</a></li>
-                                }
-
 
 
                             </ul>

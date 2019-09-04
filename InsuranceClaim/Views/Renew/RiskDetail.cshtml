@@ -424,7 +424,6 @@
                                         </div>
 
 
-
                                         <div class="col-sm-6 col-md-6 form-group-select" style="display:none;">
                                             <div class="form-group">
                                                 @Html.Label("Agent Commission", new { @class = "gender-label" })
@@ -474,8 +473,6 @@
                                     </div>
 
                                     <div class="row">
-
-
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
                                                 @Html.Label("Vehicle Licence Fee", new { @class = "gender-label" })
@@ -1872,6 +1869,9 @@
             success: function (data) {
                 debugger;
                 $("#Premium").val(parseFloat(data.Premium).toFixed(2));
+
+
+               
 
                 $("#PremiumWithDiscount").val(parseFloat(data.Premium+data.Discount).toFixed(2));
 

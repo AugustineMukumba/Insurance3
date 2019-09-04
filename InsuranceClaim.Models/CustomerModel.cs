@@ -38,13 +38,14 @@ namespace InsuranceClaim.Models
         [MaxLength(100, ErrorMessage = "Address 2 must be less than 100  characters long.")]
         public string AddressLine2 { get; set; }
         public string Branch { get; set; }
+        public string HdnBrach { get; set; }
         [Display(Name = "City")]
         [Required(ErrorMessage = "Please Enter City.")]
         [MaxLength(25, ErrorMessage = "City must be less than 25 characters long.")]
         public string City { get; set; }
         [Display(Name = "National Identification Number")]
         [Required(ErrorMessage = " Please Enter National Identification Number")]
-       // [RegularExpression(@"^([0-9]{2}-[0-9]{6,7}[a-zA-Z]{1}[0-9]{2})$", ErrorMessage = "Not a Valid Identification Number")]        
+        // [RegularExpression(@"^([0-9]{2}-[0-9]{6,7}[a-zA-Z]{1}[0-9]{2})$", ErrorMessage = "Not a Valid Identification Number")]        
         public string NationalIdentificationNumber { get; set; }
         [Display(Name = "Zip Code")]
         //[Required(ErrorMessage = "Please enter zip code.")]
@@ -75,6 +76,27 @@ namespace InsuranceClaim.Models
         public bool IsCustomEmail { get; set; }
         public string UserRoleName { get; set; }
         public string ErrorMsg { get; set; }
+
+        public string AgentLogo { get; set; }
+
+        public string AgentWhatsapp {get; set;}
+
+        public string AgentBranch { get; set; }
+
+        public string Profile { get; set; }
+
+        /// <summary>
+        /// corporate opttion to agent
+        /// </summary>
+        public string CompanyName { get; set; }
+        public string CompanyEmail { get; set; }
+        public string CompanyAddress { get; set; }
+        public string CompanyPhone { get; set; }
+        public string CompanyCity { get; set; }
+        public string CompanyBusinessId { get; set; }
+        public bool IsCorporate { get; set; }
+
+        public string Corporate { get; set; }
 
     }
 }

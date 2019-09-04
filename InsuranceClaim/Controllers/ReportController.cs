@@ -60,9 +60,12 @@ namespace InsuranceClaim.Controllers
 
             //model.ListZTSCreportdata = listZTSCLevyreport.OrderByDescending(x => x.Transaction_date).ToList();
 
+            var query = "SELECT top 100 PolicyNumber, VEHICLEDETAIL.TransactionDate,Premium AS PREMIUMDUE,ZTSCLevy, FirstName AS CUSTOMERNAME,Name AS CURRENCY FROM VEHICLEDETAIL left JOIN CUSTOMER ON CUSTOMER.ID = VehicleDetail.CUSTOMERID left  JOIN POLICYDETAIL ON POLICYDETAIL.ID = VehicleDetail.POLICYID left JOIN CURRENCY ON CURRENCY.ID = VehicleDetail.CurrencyId WHERE VEHICLEDETAIL.IsActive = 1";
+
+
             ZTSCLevyReportSeachModels model = new ZTSCLevyReportSeachModels();
             List<ZTSCLevyReportModels> listZTSCLevyreport = new List<ZTSCLevyReportModels>();
-            var vehicledetails = InsuranceContext.Query("SELECT VEHICLEDETAIL.TransactionDate,Premium AS PREMIUMDUE,ZTSCLevy, FirstName AS CUSTOMERNAME,PolicyNumber,Name AS CURRENCY FROM VEHICLEDETAIL left JOIN CUSTOMER ON CUSTOMER.ID = VehicleDetail.CUSTOMERID left  JOIN POLICYDETAIL ON POLICYDETAIL.ID = VehicleDetail.POLICYID left JOIN CURRENCY ON CURRENCY.ID = VehicleDetail.CurrencyId WHERE VEHICLEDETAIL.IsActive = 1")
+            var vehicledetails = InsuranceContext.Query(query)
                            .Select(x => new ZTSCLevyReportModels
                            {
                                Policy_Number = x.PolicyNumber,
@@ -217,7 +220,7 @@ namespace InsuranceClaim.Controllers
             var currenyList = _summaryDetailService.GetAllCurrency();
 
 
-            foreach (var item in vehicledetail)
+            foreach (var item in vehicledetail.Take(100))
             {
                 StampDutyReportModels obj = new StampDutyReportModels();
                 var policy = InsuranceContext.PolicyDetails.Single(item.PolicyId);
@@ -299,10 +302,10 @@ namespace InsuranceClaim.Controllers
             var currenyList = InsuranceContext.Currencies.All();
 
 
-            var query = "select  VehicleDetail.RegistrationNo, Customer.FirstName + ' ' + Customer.LastName as FullName, Customer.PhoneNumber , PolicyDetail.PolicyNumber,  VehicleDetail.MakeId, VehicleDetail.ModelId, ";
+            var query = "select top 100 VehicleDetail.Id,   VehicleDetail.RegistrationNo, Customer.FirstName + ' ' + Customer.LastName as FullName, Customer.PhoneNumber , PolicyDetail.PolicyNumber,  VehicleDetail.MakeId, VehicleDetail.ModelId, ";
             query += "  VehicleDetail.CoverStartDate, VehicleDetail.CoverEndDate, VehicleDetail.SumInsured, VehicleDetail.TransactionDate, VehicleDetail.Premium, VehicleDetail.CurrencyId from VehicleDetail ";
             query += " join PolicyDetail on VehicleDetail.PolicyId = PolicyDetail.Id ";
-            query += " join Customer on VehicleDetail.CustomerId = Customer.Id ";
+            query += " join Customer on VehicleDetail.CustomerId = Customer.Id order by  VehicleDetail.Id desc";
 
 
 
@@ -312,7 +315,7 @@ namespace InsuranceClaim.Controllers
             Customer_Name = x.FullName,
             Policy_Number = x.PhoneNumber,
             phone_number = x.PolicyNumber,
-            Vehicle_makeandmodel = makeList.FirstOrDefault(c => c.MakeCode == x.MakeId).MakeDescription + " " + modelList.FirstOrDefault(c => c.ModelCode == x.ModelId).ModelDescription,
+            Vehicle_makeandmodel = makeList.FirstOrDefault(c => c.MakeCode == x.MakeId)==null? "":   makeList.FirstOrDefault(c => c.MakeCode == x.MakeId).MakeDescription + " " + modelList.FirstOrDefault(c => c.ModelCode == x.ModelId)==null ? "" : modelList.FirstOrDefault(c => c.ModelCode == x.ModelId).ModelDescription,
             Vehicle_startdate = x.CoverStartDate.ToShortDateString(),
             Vehicle_enddate = x.CoverEndDate.ToShortDateString(),
             Premium_due = x.Premium,
@@ -593,212 +596,212 @@ namespace InsuranceClaim.Controllers
             _ListGrossWrittenPremiumReport.ListGrossWrittenPremiumReportdata = new List<GrossWrittenPremiumReportModels>();
 
 
-            //var query = " select top 100 PolicyDetail.PolicyNumber as Policy_Number, Customer.ALMId, case when Customer.ALMId is null  then  [dbo].fn_GetUserCallCenterAgent(SummaryDetail.CreatedBy) else Customer.ALMId end  as PolicyCreatedBy, Customer.FirstName + ' ' + Customer.LastName as Customer_Name,VehicleDetail.TransactionDate as Transaction_date, ";
-            //query += "  case when AspNetUserRoles.RoleId='bbbeffe0-94fa-41b7-bd8b-72d9ddc7f8f0' then [dbo].fn_GetUserBranch(SummaryDetail.CreatedBy) else [dbo].fn_GetUserBranch(Customer.id) end as BranchName, ";
-            //query += " VehicleDetail.CoverNote as CoverNoteNum, PaymentMethod.Name as Payment_Mode, PaymentTerm.Name as Payment_Term,CoverType.Name as CoverType, Currency.Name as Currency, ";
-            //query += " VehicleDetail.Premium + VehicleDetail.StampDuty + VehicleDetail.ZTSCLevy as Premium_due, VehicleDetail.StampDuty as Stamp_duty, VehicleDetail.ZTSCLevy as ZTSC_Levy, ";
-            //query += " cast(VehicleDetail.Premium * 30 / 100 as decimal(10, 2))    as Comission_Amount, VehicleDetail.IncludeRadioLicenseCost, ";
-            //query += " CASE WHEN IncludeRadioLicenseCost = 1 THEN VehicleDetail.RadioLicenseCost else 0 end as RadioLicenseCost, VehicleDetail.VehicleLicenceFee as Zinara_License_Fee, ";
-            //query += " VehicleDetail.RenewalDate as PolicyRenewalDate, VehicleDetail.IsActive, VehicleDetail.RenewPolicyNumber as RenewPolicyNumber, ";
-            //query += " VehicleDetail.BusinessSourceDetailId, BusinessSource.Source as BusinessSourceName, SourceDetail.FirstName + ' ' + SourceDetail.LastName as SourceDetailName from PolicyDetail ";
-            //query += " join Customer on PolicyDetail.CustomerId = Customer.Id ";
-            //query += " join VehicleDetail on PolicyDetail.Id = VehicleDetail.PolicyId ";
-            //query += "join SummaryVehicleDetail on VehicleDetail.id = SummaryVehicleDetail.SummaryDetailId ";
-            //query += " join SummaryDetail on SummaryDetail.id = SummaryVehicleDetail.SummaryDetailId ";
-            //query += " join PaymentMethod on SummaryDetail.PaymentMethodId = PaymentMethod.Id ";
-            //query += "join PaymentTerm on VehicleDetail.PaymentTermId = PaymentTerm.Id ";
-            //query += " join CoverType on VehicleDetail.CoverTypeId = CoverType.Id ";
-            //query += " join Currency on VehicleDetail.CurrencyId = Currency.Id ";
-            //query += " join BusinessSource on BusinessSource.Id = VehicleDetail.BusinessSourceDetailId ";
-            //query += " left   join SourceDetail on VehicleDetail.BusinessSourceDetailId = SourceDetail.Id join AspNetUsers on AspNetUsers.id=customer.UserID join AspNetUserRoles on AspNetUserRoles.UserId=AspNetUsers.Id ";
-            //query += " where VehicleDetail.IsActive = 1 and SummaryDetail.isQuotation=0  order by  VehicleDetail.Id desc ";
+            var query = " select top 100 PolicyDetail.PolicyNumber as Policy_Number, Customer.ALMId, case when Customer.ALMId is null  then  [dbo].fn_GetUserCallCenterAgent(SummaryDetail.CreatedBy) else Customer.ALMId end  as PolicyCreatedBy, Customer.FirstName + ' ' + Customer.LastName as Customer_Name,VehicleDetail.TransactionDate as Transaction_date, ";
+            query += "  case when Customer.id=SummaryDetail.CreatedBy then [dbo].fn_GetUserBranch(Customer.id) else [dbo].fn_GetUserBranch(SummaryDetail.CreatedBy) end as BranchName, ";
+            query += " VehicleDetail.CoverNote as CoverNoteNum, PaymentMethod.Name as Payment_Mode, PaymentTerm.Name as Payment_Term,CoverType.Name as CoverType, Currency.Name as Currency, ";
+            query += " VehicleDetail.Premium + VehicleDetail.StampDuty + VehicleDetail.ZTSCLevy as Premium_due, VehicleDetail.StampDuty as Stamp_duty, VehicleDetail.ZTSCLevy as ZTSC_Levy, ";
+            query += " cast(VehicleDetail.Premium * 30 / 100 as decimal(10, 2))    as Comission_Amount, VehicleDetail.IncludeRadioLicenseCost, ";
+            query += " CASE WHEN IncludeRadioLicenseCost = 1 THEN VehicleDetail.RadioLicenseCost else 0 end as RadioLicenseCost, VehicleDetail.VehicleLicenceFee as Zinara_License_Fee, ";
+            query += " VehicleDetail.RenewalDate as PolicyRenewalDate, VehicleDetail.IsActive, VehicleDetail.RenewPolicyNumber as RenewPolicyNumber, ";
+            query += " VehicleDetail.BusinessSourceDetailId, BusinessSource.Source as BusinessSourceName, SourceDetail.FirstName + ' ' + SourceDetail.LastName as SourceDetailName from PolicyDetail ";
+            query += " join Customer on PolicyDetail.CustomerId = Customer.Id ";
+            query += " join VehicleDetail on PolicyDetail.Id = VehicleDetail.PolicyId ";
+            query += "join SummaryVehicleDetail on VehicleDetail.id = SummaryVehicleDetail.VehicleDetailsId ";
+            query += " join SummaryDetail on SummaryDetail.id = SummaryVehicleDetail.SummaryDetailId ";
+            query += " join PaymentMethod on SummaryDetail.PaymentMethodId = PaymentMethod.Id ";
+            query += "join PaymentTerm on VehicleDetail.PaymentTermId = PaymentTerm.Id ";
+            query += " join CoverType on VehicleDetail.CoverTypeId = CoverType.Id ";
+            query += " left join Currency on VehicleDetail.CurrencyId = Currency.Id ";
+            query += " left join BusinessSource on BusinessSource.Id = VehicleDetail.BusinessSourceDetailId ";
+            query += " left   join SourceDetail on VehicleDetail.BusinessSourceDetailId = SourceDetail.Id join AspNetUsers on AspNetUsers.id=customer.UserID join AspNetUserRoles on AspNetUserRoles.UserId=AspNetUsers.Id ";
+            query += " where VehicleDetail.IsActive = 1 and SummaryDetail.isQuotation=0  order by  VehicleDetail.Id desc ";
 
-        
 
-            //ListGrossWrittenPremiumReport = InsuranceContext.Query(query).
-            //    Select(x => new GrossWrittenPremiumReportModels()
-            //    {
-                    
-            //        Policy_Number = x.Policy_Number,
-            //        BranchName = x.BranchName,
-            //        PolicyCreatedBy = x.PolicyCreatedBy,
-            //        Customer_Name = x.Customer_Name,
-            //        Transaction_date = x.Transaction_date.ToShortDateString(),
-            //        CoverNoteNum = x.CoverNoteNum,
-            //        Payment_Mode = x.Payment_Mode,
-            //        Payment_Term = x.Payment_Term,
-            //        CoverType = x.CoverType,
-            //        Currency = x.Currency,
-            //        Premium_due = x.Premium_due,
-            //        Stamp_duty = x.Stamp_duty,
-            //        ZTSC_Levy=x.ZTSC_Levy,
-            //        ALMId =x.ALMId,
-            //        Comission_Amount = x.Comission_Amount,
-            //        //IncludeRadioLicenseCost = x.IncludeRadioLicenseCost,
-            //        RadioLicenseCost = x.RadioLicenseCost,
-            //        Zinara_License_Fee = x.Zinara_License_Fee,
-            //        PolicyRenewalDate = x.PolicyRenewalDate,
-            //        IsActive = x.IsActive,
-            //        RenewPolicyNumber = x.RenewPolicyNumber,
-            //        BusinessSourceName = x.BusinessSourceName,
-            //        //IncludeRadioLicenseCost = x.IncludeRadioLicenseCost,
-            //        SourceDetailName = x.SourceDetailName,
-            //    }).ToList();
+
+            ListGrossWrittenPremiumReport = InsuranceContext.Query(query).
+                Select(x => new GrossWrittenPremiumReportModels()
+                {
+
+                    Policy_Number = x.Policy_Number,
+                    BranchName = x.BranchName,
+                    PolicyCreatedBy = x.PolicyCreatedBy,
+                    Customer_Name = x.Customer_Name,
+                    Transaction_date = x.Transaction_date.ToShortDateString(),
+                    CoverNoteNum = x.CoverNoteNum,
+                    Payment_Mode = x.Payment_Mode,
+                    Payment_Term = x.Payment_Term,
+                    CoverType = x.CoverType,
+                    Currency = x.Currency,
+                    Premium_due = x.Premium_due,
+                    Stamp_duty = x.Stamp_duty,
+                    ZTSC_Levy = x.ZTSC_Levy,
+                    ALMId = x.ALMId,
+                    Comission_Amount = x.Comission_Amount,
+                    //IncludeRadioLicenseCost = x.IncludeRadioLicenseCost,
+                    RadioLicenseCost = x.RadioLicenseCost,
+                    Zinara_License_Fee = x.Zinara_License_Fee,
+                    PolicyRenewalDate = x.PolicyRenewalDate,
+                    IsActive = x.IsActive,
+                    RenewPolicyNumber = x.RenewPolicyNumber,
+                    BusinessSourceName = x.BusinessSourceName,
+                    //IncludeRadioLicenseCost = x.IncludeRadioLicenseCost,
+                    SourceDetailName = x.SourceDetailName,
+                }).ToList();
 
 
             GrossWrittenPremiumReportSearchModels Model = new GrossWrittenPremiumReportSearchModels();
-            var VehicleList = InsuranceContext.VehicleDetails.All(where: $"IsActive='1'");
-            var vehicledetail = VehicleList.OrderByDescending(c => c.Id).ToList().Take(200);
-            var policyList = InsuranceContext.PolicyDetails.All();
-            var customerList = InsuranceContext.Customers.All();
-            var makelist = InsuranceContext.VehicleMakes.All();
-            var modelList = InsuranceContext.VehicleModels.All();
-            var vehicleSUmmarydetaillist = InsuranceContext.SummaryVehicleDetails.All();
-            var summarylist = InsuranceContext.SummaryDetails.All();
-            var currenyList = _summaryDetailService.GetAllCurrency();
-            var Payment_TermList = InsuranceContext.PaymentTerms.All();
-            var PaymentMethodsList = InsuranceContext.PaymentMethods.All();
-            var customerDetailsList = InsuranceContext.Customers.All();
-            var branchList = InsuranceContext.Branches.All();
+            //var VehicleList = InsuranceContext.VehicleDetails.All(where: $"IsActive='1'");
+            //var vehicledetail = VehicleList.OrderByDescending(c => c.Id).ToList().Take(200);
+            //var policyList = InsuranceContext.PolicyDetails.All();
+            //var customerList = InsuranceContext.Customers.All();
+            //var makelist = InsuranceContext.VehicleMakes.All();
+            //var modelList = InsuranceContext.VehicleModels.All();
+            //var vehicleSUmmarydetaillist = InsuranceContext.SummaryVehicleDetails.All();
+            //var summarylist = InsuranceContext.SummaryDetails.All();
+            //var currenyList = _summaryDetailService.GetAllCurrency();
+            //var Payment_TermList = InsuranceContext.PaymentTerms.All();
+            //var PaymentMethodsList = InsuranceContext.PaymentMethods.All();
+            //var customerDetailsList = InsuranceContext.Customers.All();
+            //var branchList = InsuranceContext.Branches.All();
 
-            var businessSourceList = InsuranceContext.BusinessSources.All();
-            var sourceList = InsuranceContext.SourceDetails.All();
-
-
-            foreach (var item in vehicledetail.Take(50))
-            {
-                var Vehicle = VehicleList.FirstOrDefault(x => x.Id == item.Id);
-                GrossWrittenPremiumReportModels obj = new GrossWrittenPremiumReportModels();
-                var policy = policyList.FirstOrDefault(x => x.Id == item.PolicyId);
+            //var businessSourceList = InsuranceContext.BusinessSources.All();
+            //var sourceList = InsuranceContext.SourceDetails.All();
 
 
-
-                obj.RenewPolicyNumber = item.RenewPolicyNumber;
-                obj.CoverNoteNum = item.CoverNote;
-
-
-                var businessSourceListDetails = sourceList.FirstOrDefault(c => c.Id == item.BusinessSourceDetailId);
-                if (businessSourceListDetails != null)
-                {
-                    obj.BusinessSourceName = businessSourceListDetails.FirstName + " " + businessSourceListDetails.LastName;
-
-
-                    var businessSourceDetails = businessSourceList.FirstOrDefault(c => c.Id == businessSourceListDetails.Id);
-                    if (businessSourceListDetails != null)
-                    {
-                        obj.SourceDetailName = businessSourceDetails.Source;
-                    }
-                }
-
-
-                var customer = customerList.FirstOrDefault(x => x.Id == item.CustomerId);
-                var make = makelist.FirstOrDefault(x => x.MakeCode == item.MakeId);//  (where: $"MakeCode='{item.MakeId}'");
-                var model = modelList.FirstOrDefault(x => x.ModelCode == item.ModelId);
-
-
-                var vehicleSUmmarydetail = vehicleSUmmarydetaillist.FirstOrDefault(x => x.VehicleDetailsId == item.Id);
-                if (vehicleSUmmarydetail != null)
-                {
-                    var summary = summarylist.FirstOrDefault(x => x.Id == vehicleSUmmarydetail.SummaryDetailId);
-                    if (summary != null)
-                    {
-                        if (summary.isQuotation != true)
-                        {
-
-                            var branchDetails = branchList.FirstOrDefault(c => c.Id == customer.BranchId);
-                            if (branchDetails != null)
-                            {
-                                obj.ALMId = branchDetails.AlmId;
-                                obj.BranchName = branchDetails.BranchName;
-                            }
-
-                            obj.Payment_Term = Payment_TermList.FirstOrDefault(x => x.Id == item.PaymentTermId).Name;
-                            var paymentMethod = PaymentMethodsList.FirstOrDefault(x => x.Id == summary.PaymentMethodId);
-
-                            obj.Payment_Mode = paymentMethod == null ? "" : paymentMethod.Name;
-
-                            if (customer != null)
-                                obj.Customer_Name = customer.FirstName + " " + customer.LastName;
-                            //10MAy D
-                            obj.Id = item.Id;
-
-                            obj.Policy_Number = policy.PolicyNumber;
-                            obj.Policy_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("dd/MM/yyy");
-                            obj.Policy_endate = Convert.ToDateTime(item.CoverEndDate).ToString("dd/MM/yyy");
-
-                            //8 Feb
-                            obj.PolicyRenewalDate = Convert.ToDateTime(item.RenewalDate);
-                            obj.IsActive = item.IsActive;
-                            obj.IsLapsed = item.isLapsed;
-
-
-                            var modelDescription = "";
-
-                            if (model != null && model.ModelDescription != null)
-                                modelDescription = model.ModelDescription;
-
-
-                            obj.Vehicle_makeandmodel = make == null ? "" : make.MakeDescription + "/" + modelDescription;
-                            obj.Stamp_duty = Convert.ToDecimal(item.StampDuty);
-                            obj.ZTSC_Levy = Convert.ToDecimal(item.ZTSCLevy);
-                            obj.Sum_Insured = Convert.ToDecimal(item.SumInsured);
-                            obj.Zinara_License_Fee = Vehicle.VehicleLicenceFee;
-
-
-                            var customerDetails = customerDetailsList.FirstOrDefault(x => x.Id == summary.CreatedBy);
-
-
-                            if (customerDetails != null)
-                                obj.PolicyCreatedBy = customerDetails.FirstName + " " + customerDetails.LastName;
-
-
-                            obj.Comission_percentage = 30;
-
-                            if (Vehicle != null)
-                            {
-                                obj.Comission_Amount = Convert.ToDecimal(Vehicle.Premium * 30 / 100);
-                            }
-
-
-                            obj.Currency = _summaryDetailService.GetCurrencyName(currenyList, Vehicle.CurrencyId);
-
-                            string converType = "";
-
-                            if (item.CoverTypeId == (int)eCoverType.ThirdParty)
-                                converType = eCoverType.ThirdParty.ToString();
-
-                            if (item.CoverTypeId == (int)eCoverType.FullThirdParty)
-                                converType = eCoverType.FullThirdParty.ToString();
-
-                            if (item.CoverTypeId == (int)eCoverType.Comprehensive)
-                                converType = eCoverType.Comprehensive.ToString();
-
-                            obj.CoverType = converType;
-
-                            obj.Net_Premium = item.Premium;
-                            obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("dd/MM/yyy");
-
-                            obj.Annual_Premium = Convert.ToDecimal(item.Premium);
-
-                            decimal radioLicenseCost = 0;
-                            if (item.IncludeRadioLicenseCost.Value)
-                            {
-                                radioLicenseCost = Convert.ToDecimal(item.RadioLicenseCost);
-                            }
-
-
-                            obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy);
+            //foreach (var item in vehicledetail.Take(50))
+            //{
+            //    var Vehicle = VehicleList.FirstOrDefault(x => x.Id == item.Id);
+            //    GrossWrittenPremiumReportModels obj = new GrossWrittenPremiumReportModels();
+            //    var policy = policyList.FirstOrDefault(x => x.Id == item.PolicyId);
 
 
 
+            //    obj.RenewPolicyNumber = item.RenewPolicyNumber;
+            //    obj.CoverNoteNum = item.CoverNote;
 
-                            obj.RadioLicenseCost = item.RadioLicenseCost;
-                            ListGrossWrittenPremiumReport.Add(obj);
 
-                        }
-                    }
-                }
-            }
+            //    var businessSourceListDetails = sourceList.FirstOrDefault(c => c.Id == item.BusinessSourceDetailId);
+            //    if (businessSourceListDetails != null)
+            //    {
+            //        obj.BusinessSourceName = businessSourceListDetails.FirstName + " " + businessSourceListDetails.LastName;
+
+
+            //        var businessSourceDetails = businessSourceList.FirstOrDefault(c => c.Id == businessSourceListDetails.Id);
+            //        if (businessSourceListDetails != null)
+            //        {
+            //            obj.SourceDetailName = businessSourceDetails.Source;
+            //        }
+            //    }
+
+
+            //    var customer = customerList.FirstOrDefault(x => x.Id == item.CustomerId);
+            //    var make = makelist.FirstOrDefault(x => x.MakeCode == item.MakeId);//  (where: $"MakeCode='{item.MakeId}'");
+            //    var model = modelList.FirstOrDefault(x => x.ModelCode == item.ModelId);
+
+
+            //    var vehicleSUmmarydetail = vehicleSUmmarydetaillist.FirstOrDefault(x => x.VehicleDetailsId == item.Id);
+            //    if (vehicleSUmmarydetail != null)
+            //    {
+            //        var summary = summarylist.FirstOrDefault(x => x.Id == vehicleSUmmarydetail.SummaryDetailId);
+            //        if (summary != null)
+            //        {
+            //            if (summary.isQuotation != true)
+            //            {
+
+            //                var branchDetails = branchList.FirstOrDefault(c => c.Id == customer.BranchId);
+            //                if (branchDetails != null)
+            //                {
+            //                    obj.ALMId = branchDetails.AlmId;
+            //                    obj.BranchName = branchDetails.BranchName;
+            //                }
+
+            //                obj.Payment_Term = Payment_TermList.FirstOrDefault(x => x.Id == item.PaymentTermId).Name;
+            //                var paymentMethod = PaymentMethodsList.FirstOrDefault(x => x.Id == summary.PaymentMethodId);
+
+            //                obj.Payment_Mode = paymentMethod == null ? "" : paymentMethod.Name;
+
+            //                if (customer != null)
+            //                    obj.Customer_Name = customer.FirstName + " " + customer.LastName;
+            //                //10MAy D
+            //                obj.Id = item.Id;
+
+            //                obj.Policy_Number = policy.PolicyNumber;
+            //                obj.Policy_startdate = Convert.ToDateTime(item.CoverStartDate).ToString("dd/MM/yyy");
+            //                obj.Policy_endate = Convert.ToDateTime(item.CoverEndDate).ToString("dd/MM/yyy");
+
+            //                //8 Feb
+            //                obj.PolicyRenewalDate = Convert.ToDateTime(item.RenewalDate);
+            //                obj.IsActive = item.IsActive;
+            //                obj.IsLapsed = item.isLapsed;
+
+
+            //                var modelDescription = "";
+
+            //                if (model != null && model.ModelDescription != null)
+            //                    modelDescription = model.ModelDescription;
+
+
+            //                obj.Vehicle_makeandmodel = make == null ? "" : make.MakeDescription + "/" + modelDescription;
+            //                obj.Stamp_duty = Convert.ToDecimal(item.StampDuty);
+            //                obj.ZTSC_Levy = Convert.ToDecimal(item.ZTSCLevy);
+            //                obj.Sum_Insured = Convert.ToDecimal(item.SumInsured);
+            //                obj.Zinara_License_Fee = Vehicle.VehicleLicenceFee;
+
+
+            //                var customerDetails = customerDetailsList.FirstOrDefault(x => x.Id == summary.CreatedBy);
+
+
+            //                if (customerDetails != null)
+            //                    obj.PolicyCreatedBy = customerDetails.FirstName + " " + customerDetails.LastName;
+
+
+            //                obj.Comission_percentage = 30;
+
+            //                if (Vehicle != null)
+            //                {
+            //                    obj.Comission_Amount = Convert.ToDecimal(Vehicle.Premium * 30 / 100);
+            //                }
+
+
+            //                obj.Currency = _summaryDetailService.GetCurrencyName(currenyList, Vehicle.CurrencyId);
+
+            //                string converType = "";
+
+            //                if (item.CoverTypeId == (int)eCoverType.ThirdParty)
+            //                    converType = eCoverType.ThirdParty.ToString();
+
+            //                if (item.CoverTypeId == (int)eCoverType.FullThirdParty)
+            //                    converType = eCoverType.FullThirdParty.ToString();
+
+            //                if (item.CoverTypeId == (int)eCoverType.Comprehensive)
+            //                    converType = eCoverType.Comprehensive.ToString();
+
+            //                obj.CoverType = converType;
+
+            //                obj.Net_Premium = item.Premium;
+            //                obj.Transaction_date = Convert.ToDateTime(Vehicle.TransactionDate).ToString("dd/MM/yyy");
+
+            //                obj.Annual_Premium = Convert.ToDecimal(item.Premium);
+
+            //                decimal radioLicenseCost = 0;
+            //                if (item.IncludeRadioLicenseCost.Value)
+            //                {
+            //                    radioLicenseCost = Convert.ToDecimal(item.RadioLicenseCost);
+            //                }
+
+
+            //                obj.Premium_due = Convert.ToDecimal(item.Premium) + Convert.ToDecimal(item.StampDuty) + Convert.ToDecimal(item.ZTSCLevy);
+
+
+
+
+            //                obj.RadioLicenseCost = item.RadioLicenseCost;
+            //                ListGrossWrittenPremiumReport.Add(obj);
+
+            //            }
+            //        }
+            //    }
+            //}
 
 
             Model.ListGrossWrittenPremiumReportdata = ListGrossWrittenPremiumReport.OrderByDescending(p => p.Id).ToList();
@@ -1989,6 +1992,10 @@ namespace InsuranceClaim.Controllers
             ProductiviySearchReportModel model = new ProductiviySearchReportModel();
             //   var vehicledetail = InsuranceContext.VehicleDetails.All(where: $"IsActive = 'True'or IsActive is null").OrderByDescending(c=>c.Id).ToList();
 
+            try
+            {
+
+         
             var vehicledetail = InsuranceContext.VehicleDetails.All().OrderByDescending(c => c.Id).ToList();
             var endorsedVehicle = InsuranceContext.EndorsementVehicleDetails.All().OrderByDescending(x => x.PrimaryVehicleId).ToList();
             var currencyList = _summaryDetailService.GetAllCurrency();
@@ -2107,7 +2114,11 @@ namespace InsuranceClaim.Controllers
 
 
 
+            }
+            catch (Exception ex)
+            {
 
+            }
 
 
             return View(model);

@@ -1153,8 +1153,9 @@ namespace InsuranceClaim.Controllers
                     obj.RegistrationNo = envehicle.RegistrationNo;
                     //Endor//
                     obj.PrimaryVehicleId = envehicle.PrimaryVehicleId;
-                    obj.EndorsementPolicyId = envehicle.Id;
+                   // obj.EndorsementPolicyId = envehicle.Id; // 03 sep 2019
                     obj.EndorsementCustomerId = envehicle.EndorsementCustomerId;
+                    obj.EndorsementPolicyId = envehicle.EndorsementPolicyId;  
                     //
                     obj.MakeId = envehicle.MakeId;
                     obj.ModelId = envehicle.ModelId;

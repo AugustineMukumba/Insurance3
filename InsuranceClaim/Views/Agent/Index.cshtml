@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNet.Identity.EntityFramework;
+@using System.Configuration;
 
 @model InsuranceClaim.Models.ListUserViewModel
 @{
@@ -39,13 +40,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-8 col-md-8">
-                        <div class="text-right search-btn">
-                            <button type="submit" class="btn btn-success">Search</button>
-                            <button type="button" onclick="removeSearchBoxText();" class="btn btn-danger">Clear Search</button>
-                        </div>
-
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -65,6 +60,9 @@
                             <th>Email Address</th>
                             <th>Phone Number</th>
                             <th>Branch</th>
+                            <th>WhatsApp </th>
+                            <th>Logo</th>
+                      
                             <th class="action-th">Action</th>
                         </tr>
                     </thead>
@@ -84,7 +82,10 @@
                                 <td>@item.FirstName</td>
                                 <td>@item.EmailAddress</td>
                                 <td>@item.PhoneNumber</td>
+                              
                                 <td>@item.Branch </td>
+                                <td>@item.AgentWhatsapp</td>
+                                <td> <img width="60px" src="@ConfigurationManager.AppSettings["urlpath"]@item.AgentLogo" /> </td>
                                 <td>
                                     <div class="tbl-btn-list">
                                         <ul class="list-inline">
@@ -150,5 +151,19 @@
         window.location.href = "/Account/UserManagementList";
 
     }
+
+    $(document).ready(function () {
+        $("#searchText").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $(".table>tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+
+
+
+
+
 
 </script>

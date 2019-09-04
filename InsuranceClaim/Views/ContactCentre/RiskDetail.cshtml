@@ -950,7 +950,7 @@
 
         $("#isVehicleRegisteredonICEcash").val(0);
 
-        if (@Model.VehicleUsage != null && @Model.VehicleUsage > 0)
+        if ('@Model.VehicleUsage' != null && @Model.VehicleUsage > 0)
         {
             $("#VehicleUsage").val('@Model.VehicleUsage');
         }
@@ -1436,10 +1436,13 @@
                     //$("#ProductId").removeClass("inputDisabled")
                     $(".loading-area").hide();
                     $("#InsuranceId").val("");
+                    $("#isVehicleRegisteredonICEcash").val(0);
                 }
                 if (data.result == 1) {
                     var policy = {};
                     policy = data.Data.Response.Quotes[0].Policy;
+
+                    $("#isVehicleRegisteredonICEcash").val(1);
 
                     var StampDuty = policy.StampDuty;
                     $("#StampDuty").val(parseFloat(StampDuty).toFixed(2));

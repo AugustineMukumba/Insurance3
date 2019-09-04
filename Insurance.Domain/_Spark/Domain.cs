@@ -144,7 +144,9 @@ namespace Insurance.Domain
         public int BranchId { get; set; }
 
         public string ALMId { get; set; }
+        public string AgentWhatsapp { get; set; }
 
+        public string AgentBranch { get; set; }
 
     }
 
@@ -304,6 +306,11 @@ namespace Insurance.Domain
         public DateTime? BalancePaidDate { get; set; }
         public string Notes { get; set; }
         public bool isQuotation { get; set; }
+
+        public int AgentId { get; set; }
+
+        public string ModuleName { get; set; }
+
     }
 
     public partial class VehicleDetail : Entity<VehicleDetail>
@@ -388,7 +395,8 @@ namespace Insurance.Domain
         public string CoverNote { get; set; }
 
         public int TaxClassId { get; set; }
-        public string Currency { get; set; }
+        public string Currency { get; set; }      
+        public string ManufacturerYear { get; set; }
 
     }
 
@@ -424,6 +432,11 @@ namespace Insurance.Domain
         public int? ModifiedBy { get; set; }
 
     }
+
+ 
+
+
+
 
 
     public partial class Branch : Entity<Branch>
@@ -831,6 +844,22 @@ namespace Insurance.Domain
         public DateTime ModifiedOn { get; set; }
 
     }
+
+    public partial class AgentLogo : Entity<AgentLogo>
+    {
+        public AgentLogo() { }
+        public AgentLogo(bool defaults) : base(defaults) { }
+
+        public int Id { get; set; }
+        public int CustomerId { get; set; }
+        public string LogoPath { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public int CreatedBy { get; set; }
+
+    }
+
+
+
 
     public partial class LicenceDiskDeliveryAddress : Entity<LicenceDiskDeliveryAddress>
     {
