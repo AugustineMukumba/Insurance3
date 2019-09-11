@@ -345,7 +345,8 @@
                                             <div class="col-sm-6 col-md-6 form-group-text">
                                                 <div class="form-group">
                                                     @Html.Label("Basic Premium", new { @class = "gender-label" })
-                                                    @Html.TextBoxFor(m => m.Premium, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Basic Premium", @readonly = "readonly" })
+                                                    @Html.TextBoxFor(m => m.Premium, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Basic Premium", @readonly = "readonly", @style = "display: none;" })
+                                                    @Html.TextBoxFor(m => m.PremiumWithDiscount, new { @class = "form-control", @autocomplete = "off", @placeholder = "Vehicle Basic Premium", @readonly = "readonly" })
                                                 </div>
                                             </div>
                                             <div class="col-sm-6 col-md-6 form-group-select" style="display:none;">

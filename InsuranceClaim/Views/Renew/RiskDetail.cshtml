@@ -90,7 +90,6 @@
                             @Html.Hidden("LevyICEcash")
 
                             @Html.HiddenFor(m => m.IsPolicyExpire)
-
                             @Html.HiddenFor(m => m.InsuranceId)
                         </div>
                         <div class="form-group-section">
@@ -1062,11 +1061,17 @@
 
         if('@Model.IsPolicyExpire'=='False')
         {
-             $("#CoverStartDate").val(today)
+             $("#CoverStartDate").val(today) // 05_sep_2019
         }
         else
         {
-            $("#CoverStartDate").val(@Model.CoverEndDate.Value.ToString("MM/dd/yyyy"))
+            
+          //  $("#CoverStartDate").val(@Model.CoverEndDate.Value.ToShortDateString())
+
+
+          
+
+
         }
     
 
@@ -1283,11 +1288,6 @@
             if ($("#PaymentTermId").val() != "" && $("#ProductId").val() != "" && $("#RegistrationNo").val() != "" && $("#CoverTypeId").val()!="") {
                 QuoteCalculation();
             }
-
-
-
-
-
 
         });
 
@@ -1527,6 +1527,7 @@
 
                 if ($("#isVehicleRegisteredonICEcash").val() == 1) {
                     generateQuotewithICEcash();
+                 
                 }
                 else{
                     QuoteCalculation();
@@ -1584,6 +1585,8 @@
                         $("#InsuranceId").val("");
                     }
                     if (data.result == 1) {
+
+                     
                         var policy = {};
                         policy = data.Data.Response.Quotes[0].Policy;
 

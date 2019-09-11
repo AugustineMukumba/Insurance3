@@ -90,14 +90,14 @@ namespace Insurance.Service
             // For ratinglist for AgentMotor
             // Session["CustomerDataModal"]
 
-           if (isAgentStaff==true  && coverType == eCoverType.Comprehensive && vehicleStartDate!="" && vehicleEndDate!="" && manufacturerYear!="")
+            if (isAgentStaff == true && coverType == eCoverType.Comprehensive && vehicleStartDate != "" && vehicleEndDate != "" && manufacturerYear != "")
             {
                 if (System.Web.HttpContext.Current.Session["CustomerDataModal"] != null)
                 {
                     var customer = (CustomerModel)System.Web.HttpContext.Current.Session["CustomerDataModal"];
 
-                   // var customerAge = (DateTime.Now - customer.DateOfBirth);
-                   var customerAge= CalculateInYear(customer.DateOfBirth.Value, DateTime.Now);
+                    // var customerAge = (DateTime.Now - customer.DateOfBirth);
+                    var customerAge = CalculateInYear(customer.DateOfBirth.Value, DateTime.Now);
 
                     //  var AgeOfLicense = DateTime.Now - Convert.ToDateTime(manufacturerYear);
 
@@ -106,13 +106,13 @@ namespace Insurance.Service
                     if (manufacturerYear == "")
                         manufacturerYear = DateTime.Now.ToShortDateString();
 
-                     var AgeOfLicense=   CalculateInYear(Convert.ToDateTime(manufacturerYear), DateTime.Now);
+                    var AgeOfLicense = CalculateInYear(Convert.ToDateTime(manufacturerYear), DateTime.Now);
 
                     // var AgeOfVehicle = Convert.ToDateTime(vehicleEndDate) - Convert.ToDateTime(vehicleStartDate);
 
-                    var AgeOfVehicle=   CalculateInYear(Convert.ToDateTime(vehicleStartDate), Convert.ToDateTime(vehicleEndDate));
+                    var AgeOfVehicle = CalculateInYear(Convert.ToDateTime(vehicleStartDate), Convert.ToDateTime(vehicleEndDate));
 
-                    ratingPremium= RatingListCalcualation(premium, ProductId, customer.Gender, customerAge, AgeOfLicense, AgeOfVehicle);
+                    ratingPremium = RatingListCalcualation(premium, ProductId, customer.Gender, customerAge, AgeOfLicense, AgeOfVehicle);
 
 
                 }
@@ -142,7 +142,6 @@ namespace Insurance.Service
                 {
                     var Amount = AddThirdPartyAmountADD - 10000;
                     premium += Convert.ToDecimal((Amount * settingAddThirdparty) / 100);
-
                 }
             }
 
@@ -269,10 +268,8 @@ namespace Insurance.Service
 
 
                 }
-
-
-
             }
+
 
             if (MedicalExpenses)
             {
@@ -284,7 +281,14 @@ namespace Insurance.Service
                 this.ExcessAmount = excess;
             }
 
-            this.Premium = premium;
+            //  this.Premium = premium;// 04_sep_2019
+
+
+            if (!isVehicleRegisteredonICEcash && coverType != eCoverType.Comprehensive)
+                this.Premium = premium * 5;
+            else
+                this.Premium = premium;
+
 
             this.PassengerAccidentCoverAmount = Math.Round(additionalchargepac, 2);
             this.PassengerAccidentCoverAmountPerPerson = Math.Round(PassengerAccidentCoverAmountPerPerson, 2);
@@ -376,6 +380,8 @@ namespace Insurance.Service
             }
 
 
+
+
             switch (PaymentTermid)
             {
                 case 1:
@@ -412,7 +418,7 @@ namespace Insurance.Service
                     this.TermlyRiskPremium = premium + discountField;
                     if (isVehicleRegisteredonICEcash && !(coverType == eCoverType.Comprehensive))
                     {
-                        this.TermlyRiskPremium = Convert.ToDecimal(BasicPremiumICEcash);
+                        this.TermlyRiskPremium = BasicPremiumICEcash == "" ? 0 : Convert.ToDecimal(BasicPremiumICEcash);
                     }
                     if (DiscountOnRenewalSettings.ValueType == Convert.ToInt32(eSettingValueType.percentage))
                     {
@@ -445,6 +451,11 @@ namespace Insurance.Service
                     }
                     break;
 
+            }
+
+            if (!isVehicleRegisteredonICEcash && coverType != eCoverType.Comprehensive)
+            {
+                this.Discount = this.Discount * 5;
             }
 
             // totalPremium = premium - this.Discount;
@@ -542,10 +553,15 @@ namespace Insurance.Service
             }
             else
             {
-                double maxZTSC = 10.80; // default ProductId=1;
+                //  double maxZTSC = 10.80 ; // default ProductId=1;
+                double maxZTSC = 10.80*5; // default ProductId=1;
+                // ztsc new calucation will be also aply for comprehensive
+           
                 if (ProductId == 3 || ProductId == 11) // Commercial Commuter Omnibus and Commercial Vehicle
                 {
-                    maxZTSC = 22.00;
+                    //  maxZTSC = 22.00;             
+                        maxZTSC = 22.00 * 5;
+                 
                 }
 
                 switch (PaymentTermid)
@@ -631,10 +647,16 @@ namespace Insurance.Service
             {
                 this.StamDuty = 100000;
             }
-            else if (Convert.ToDecimal(StampDutyICEcash) < 2) // minimum stamp duty
+            else if (coverType != eCoverType.Comprehensive && Convert.ToDecimal(StampDutyICEcash) < Convert.ToDecimal(7.50)) // minimum stamp duty
             {
-                this.StamDuty = 2;
+                this.StamDuty = Convert.ToDecimal(7.50);
             }
+
+
+            //else if (Convert.ToDecimal(StampDutyICEcash) < 2) // minimum stamp duty
+            //{
+            //    this.StamDuty = 2;
+            //}
 
 
             this.Premium = this.Premium + ratingPremium;
@@ -660,7 +682,7 @@ namespace Insurance.Service
 
         public decimal RatingListCalcualation(decimal baseRate, int prodcutId, string Gender, int DriverAge, int AgeOfLicense, int AgeOfVehicle)
         {
-            decimal calcuateRatingListPremium = 0 ;
+            decimal calcuateRatingListPremium = 0;
 
             // Usage Presonal
             decimal businessLoadig = 50;
@@ -697,7 +719,7 @@ namespace Insurance.Service
                 usageAmount = baseRate * businessLoadig / 100;
                 calcuateRatingListPremium = calcuateRatingListPremium + usageAmount;
             }
-                
+
 
 
             // Driver Gender
@@ -706,7 +728,7 @@ namespace Insurance.Service
                 genderAmount = baseRate * femalDriverLoading / 100;
                 calcuateRatingListPremium = calcuateRatingListPremium + genderAmount;
             }
-                
+
 
             // Driver Age
             if (DriverAge < 25)
@@ -728,17 +750,17 @@ namespace Insurance.Service
             }
 
             // Age Of License
-            if(AgeOfLicense>0 && AgeOfLicense<3)
+            if (AgeOfLicense > 0 && AgeOfLicense < 3)
             {
-                driverAgeOfLicenseAmount =    baseRate* ageOfLicense0to3Loading / 100;
+                driverAgeOfLicenseAmount = baseRate * ageOfLicense0to3Loading / 100;
                 calcuateRatingListPremium = calcuateRatingListPremium + driverAgeOfLicenseAmount;
             }
-            else if(AgeOfLicense > 3 && AgeOfLicense < 5)
+            else if (AgeOfLicense > 3 && AgeOfLicense < 5)
             {
                 driverAgeOfLicenseAmount = baseRate * ageOfLicense3to5Loading / 100;
                 calcuateRatingListPremium = calcuateRatingListPremium + driverAgeOfLicenseAmount;
             }
-            else if(AgeOfLicense>5)
+            else if (AgeOfLicense > 5)
             {
                 // discount
                 driverAgeOfLicenseAmount = baseRate * ageOfLicenseAbove5Discount / 100;

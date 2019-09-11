@@ -287,6 +287,7 @@
     <Content Include="Images\discover.png" />
     <Content Include="Images\ecocash.jpg" />
     <Content Include="Images\eft_pay.png" />
+    <Content Include="Images\genebanner.jpg" />
     <Content Include="Images\geneinsure-logo.jpeg" />
     <Content Include="Images\geneinsure-logo1.png" />
     <Content Include="Images\Geneinsuresign.png" />

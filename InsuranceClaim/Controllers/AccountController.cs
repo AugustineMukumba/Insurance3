@@ -1038,15 +1038,10 @@ namespace InsuranceClaim.Controllers
 
         public ActionResult DeleteRoleManagement(RoleViewModel model)
         {
-
             //Task<IdentityResult> RemoveFromRolesAsync(Id, params string[] roles);
-
             var test = roleManager.Roles.Where(x => x.Id == model.Id).FirstOrDefault();
             test.Name = model.RoleName;
             roleManager.Delete(test);
-
-
-
             return RedirectToAction("RoleManagementList");
         }
 
@@ -1127,8 +1122,6 @@ namespace InsuranceClaim.Controllers
                 obj.PhoneNumber = Convert.ToString(phone);
                 obj.EmailAddress = Convert.ToString(email);
 
-
-
             }
             return View(obj);
 
@@ -1168,7 +1161,6 @@ namespace InsuranceClaim.Controllers
                     if (result.Succeeded)
                     {
                         var currentUser = UserManager.FindByName(user.UserName);
-
                         var roleresult = UserManager.AddToRole(currentUser.Id, model.role);
 
                         var objCustomer = InsuranceContext.Customers.All().OrderByDescending(x => x.Id).FirstOrDefault();
@@ -1180,8 +1172,6 @@ namespace InsuranceClaim.Controllers
                         {
                             custId = Convert.ToDecimal(ConfigurationManager.AppSettings["CustomerId"]);
                         }
-
-
 
 
                         model.UserID = user.Id;
@@ -1209,7 +1199,6 @@ namespace InsuranceClaim.Controllers
                         cstmr.IsWelcomeNoteSent = model.IsWelcomeNoteSent;
                         cstmr.UserID = user.Id;
                         cstmr.PhoneNumber = model.PhoneNumber;
-
                         InsuranceContext.Customers.Insert(cstmr);
 
                     }

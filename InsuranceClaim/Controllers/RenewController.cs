@@ -766,10 +766,16 @@ namespace InsuranceClaim.Controllers
                         viewModels.CoverEndDate = data.CoverEndDate;
                         viewModels.CoverNoteNo = data.CoverNoteNo;
                         // viewModels.CoverStartDate = data.CoverStartDate;
+                        // viewModels.CoverStartDate = DateTime.Now; // added 05 sep_2019
                         viewModels.CoverStartDate = data.CoverEndDate.Value.AddDays(1);
+                      //  viewModels.CoverStartDate = data.CoverEndDate.Value.AddDays(10);
 
                         if (data.CoverEndDate < DateTime.Now)
                             viewModels.IsPolicyExpire = true;
+                        else if(DateTime.Now >= data.RenewalDate.Value.AddMonths(-2))
+                        {
+                            viewModels.CoverStartDate = data.CoverStartDate.Value.AddDays(1);
+                        }
 
 
 
@@ -2286,7 +2292,7 @@ namespace InsuranceClaim.Controllers
             //  var SummaryVehicleDetail = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={summary.Id}").ToList();
 
 
-            RenewApproveVRNToIceCash(customer, vehicle);
+           RenewApproveVRNToIceCash(customer, vehicle); 
 
             string Summeryofcover = "";
             //for (int i = 0; i < SummaryVehicleDetail.Count; i++)
@@ -3020,6 +3026,21 @@ namespace InsuranceClaim.Controllers
             if (tokenObject.Response.PartnerToken != "")
             {
                 ResultRootObject quoteresponse = ICEcashService.RequestQuote(tokenObject.Response.PartnerToken, regNo, SumInsured, make, model, Convert.ToInt32(PaymentTerm), VehicleYear, CoverTypeId, VehicleUsage, tokenObject.PartnerReference, Cover_StartDate, Cover_EndDate);
+
+
+                if (quoteresponse.Response != null && quoteresponse.Response.Message.Contains("Partner Token has expired"))
+                {
+
+                    ICEcashService.getToken();
+                    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                    quoteresponse = ICEcashService.RequestQuote(tokenObject.Response.PartnerToken, regNo, SumInsured, make, model, Convert.ToInt32(PaymentTerm), VehicleYear, CoverTypeId, VehicleUsage, tokenObject.PartnerReference, Cover_StartDate, Cover_EndDate);
+
+
+                }
+
+
+
+
                 response.result = quoteresponse.Response.Result;
                 if (response.result == 0)
                 {
@@ -3305,14 +3326,6 @@ namespace InsuranceClaim.Controllers
                     }
 
 
-
-
-
-
-
-
-
-
                     Session["CustomModal"] = model;
                     return Json(new { IsError = true, error = "" }, JsonRequestBehavior.AllowGet);
                 }
@@ -3416,6 +3429,7 @@ namespace InsuranceClaim.Controllers
                 viewModel.OptionalCovers = vehicledetailss.OptionalCovers;
                 viewModel.PolicyId = vehicledetailss.PolicyId;
                 viewModel.Premium = vehicledetailss.Premium;
+                viewModel.PremiumWithDiscount = vehicledetailss.Premium + vehicledetailss.Discount;
                 viewModel.RadioLicenseCost = (int)Math.Round(vehicledetailss.RadioLicenseCost == null ? 0 : vehicledetailss.RadioLicenseCost.Value, 0);
                 viewModel.Rate = vehicledetailss.Rate;
                 viewModel.RegistrationNo = vehicledetailss.RegistrationNo;

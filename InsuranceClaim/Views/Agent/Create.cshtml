@@ -37,13 +37,13 @@
                         <div class="row">
                             <div class="col-sm-6 col-md-6 form-group-text">
                                 <div class="form-group">
-                                    <label>Personal</label>
+                                    <label style="font-size:16px;">Personal</label>
                                     @Html.RadioButtonFor(m => m.IsCorporate, "Personal",new {@class="Profile", @onclick = "GetProfile('Personal')", @value = "Personal" })
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-6 form-group-text">
                                 <div class="form-group">
-                                    <label>Corporate</label>                
+                                    <label style="font-size:16px;">Corporate</label>                
                                     @Html.RadioButtonFor(m => m.IsCorporate, "Corporate", new { @class = "Profile", @onclick = "GetProfile('Corporate')", @value = "Corporate" })
                                 </div>
                             </div>
@@ -216,7 +216,6 @@
                                                     {
                                                         <button type="submit" id="buttonNext" class="btn">Add</button>
                                                     }
-
                                                 </div>
                                             </div>
                                         </div>
@@ -301,9 +300,9 @@
                                     <div class="col-sm-6 col-md-6 form-group-select">
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.AgentBranch, new { @class = "gender-label" })
-                                            @Html.DropDownListFor(x => x.AgentBranch, new SelectList(ViewBag.Branches, "Id", "BranchName"), new { @class = "form-control ", @multiple = "multiple" })
+                                            @Html.DropDownListFor(x => x.AgentBranch, new SelectList(ViewBag.Branches, "Id", "BranchName"), new { @class = "form-control ", @multiple = "multiple", @Id= "AgentBranchCorporate" })
                                             @Html.ValidationMessageFor(x => x.AgentBranch, "", new { @class = "text-danger" })
-                                            @Html.HiddenFor(x => x.HdnBrach)
+                                            @Html.HiddenFor(x => x.HdnBrach, new { @Id = "HdnBrachCorporate" })
                                         </div>
                                     </div>
                                 </div>
@@ -366,6 +365,14 @@
             });
         });
 
+        $(function () {
+            $('#AgentBranchCorporate').multiselect({
+                includeSelectAllOption: true
+            });
+        });
+
+        
+
         //$(function () {
         //    $('#AgentBranchCorporate').multiselect({
         //        includeSelectAllOption: true
@@ -373,9 +380,21 @@
         //});
 
 
-        $("#buttonNext").click(function () {
+        $("#buttonNext").click(function () {        
             $("#HdnBrach").val($("#AgentBranch").val());
+
+          
         });
+
+
+        $("#buttonNextCorporate").click(function () {         
+            debugger;
+            $("#HdnBrachCorporate").val($("#AgentBranchCorporate").val());
+        });
+
+
+
+
 
         //$("#buttonNextCorporate").click(function () {
 

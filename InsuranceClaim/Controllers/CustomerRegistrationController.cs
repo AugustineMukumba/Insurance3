@@ -3044,8 +3044,25 @@ namespace InsuranceClaim.Controllers
 
 
                     ResultRootObject quoteresponse = ICEcashService.RequestQuote(tokenObject.Response.PartnerToken, regNo, SumInsured, make, model, Convert.ToInt32(PaymentTerm), Convert.ToInt32(VehicleYear), CoverTypeId, VehicleUsage, tokenObject.PartnerReference, Cover_StartDate, Cover_EndDate);
+
+
+                    if (quoteresponse.Response != null && quoteresponse.Response.Message.Contains("Partner Token has expired"))
+                    {
+
+                        ICEcashService.getToken();
+                        tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                        quoteresponse = ICEcashService.RequestQuote(tokenObject.Response.PartnerToken, regNo, SumInsured, make, model, Convert.ToInt32(PaymentTerm), Convert.ToInt32(VehicleYear), CoverTypeId, VehicleUsage, tokenObject.PartnerReference, Cover_StartDate, Cover_EndDate);
+
+                    }
+
+
+
                     response.result = quoteresponse.Response.Result;
-                    if (response.result == 0)
+
+                   
+
+
+                        if (response.result == 0)
                     {
                         response.message = quoteresponse.Response.Quotes[0].Message;
                     }

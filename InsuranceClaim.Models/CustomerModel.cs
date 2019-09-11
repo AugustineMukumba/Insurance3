@@ -88,11 +88,23 @@ namespace InsuranceClaim.Models
         /// <summary>
         /// corporate opttion to agent
         /// </summary>
+        /// 
+        [Display(Name = "Company Name")]
         public string CompanyName { get; set; }
+
+        [Display(Name = "Company Email")]
         public string CompanyEmail { get; set; }
+
+        [Display(Name = "Company Address")]
         public string CompanyAddress { get; set; }
+
+        [Display(Name = "Company Phone")]
         public string CompanyPhone { get; set; }
+
+        [Display(Name = "Company City")]
         public string CompanyCity { get; set; }
+
+        [Display(Name = "BusinessId ")]
         public string CompanyBusinessId { get; set; }
         public bool IsCorporate { get; set; }
 

@@ -24,6 +24,9 @@
         }
     }
 
+
+  
+
 }
 @{
     var ErrorMessage = TempData["ErrorMessage"];
@@ -177,6 +180,8 @@
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav">
 
+                              
+
                                 @if (userLoggedin && (User.IsInRole("Staff")|| User.IsInRole("Renewals")))
                                 {
                                     <li><a href="/CustomerRegistration/Index">Issue Quotation</a></li>
@@ -195,6 +200,8 @@
                                 <li><a href="/Home/About">About Us</a></li>
 
                                 @*<li><a href="/Paypal/IceCashPayment">IceCash</a></li>*@
+
+                               
 
                                 @if (User.IsInRole("Staff") || User.IsInRole("Renewals") || User.IsInRole("AgentStaff"))
                                 {
@@ -241,14 +248,18 @@
 
                                 @if (User.IsInRole("Finance"))
                                 {
-                                    <li><a class="DashboardButton" href="@Url.Action("Dashboard","Account")">Dashboard</a></li>
+                                    @*<li><a class="DashboardButton" href="@Url.Action("Dashboard","Account")">Dashboard</a></li>*@
+
+                                    <li><a  href="@Url.Action("ReconciliationReport", "Report")">Reconciliation</a></li> 
+
+                                    <li><a  href="@Url.Action("ReceiptModule", "CustomerRegistration")">Receipt</a></li>                             
                                 }
 
-                               
-                                @if (User.IsInRole("Finance"))
+
+                                @*@if (User.IsInRole("Finance"))
                                 {
                                     <li><a class="DashboardButton" href="@Url.Action("Dashboard","Account")">Dashboard</a></li>
-                                }
+                                }*@
 
                                     @if (User.IsInRole("AgentStaff"))
                                     {

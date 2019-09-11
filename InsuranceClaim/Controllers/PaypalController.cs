@@ -865,7 +865,7 @@ namespace InsuranceClaim.Controllers
 
             if (Paymentid == Convert.ToString((int)paymentMethod.ecocash))
             {
-                var result = ApproveVRNToIceCash(id, Convert.ToInt16(Paymentid));
+                var result = ApproveVRNToIceCash(id, Convert.ToInt16(Paymentid)); // for now comment
 
                 if (result != "Approved")
                 {
@@ -946,7 +946,7 @@ namespace InsuranceClaim.Controllers
                 if (string.IsNullOrEmpty(Paymentid))
                     Paymentid = "1";
 
-                string res = ApproveVRNToIceCash(id, Convert.ToInt16(Paymentid));
+                string res = ApproveVRNToIceCash(id, Convert.ToInt16(Paymentid)); 
             }
 
 

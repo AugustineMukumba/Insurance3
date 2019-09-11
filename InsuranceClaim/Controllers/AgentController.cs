@@ -458,6 +458,19 @@ namespace InsuranceClaim.Controllers
                 var role = UserManager.GetRoles(data.UserID).FirstOrDefault();
 
 
+                // for corporate
+
+                if(data.IsCorporate)
+                {
+                    // data.EmailAddress = model.CompanyEmail;
+                    obj.CompanyEmail = data.CompanyEmail;
+                    obj.CompanyName = data.CompanyName;
+                    obj.CompanyAddress = data.CompanyAddress;
+                    obj.CompanyPhone = data.CompanyPhone;
+                    obj.CompanyCity = data.CompanyCity;
+                    obj.CompanyBusinessId = data.CompanyBusinessId;
+                    obj.IsCorporate = data.IsCorporate;
+                }
 
 
                 obj.FirstName = data.FirstName;
@@ -489,7 +502,7 @@ namespace InsuranceClaim.Controllers
 
         // POST: Agent/Edit/5
         [HttpPost]
-        public ActionResult Edit(CustomerModel model, HttpPostedFileBase file)
+        public ActionResult Edit(CustomerModel model, HttpPostedFileBase file, string Corporate)
         {
             try
             {
@@ -523,6 +536,33 @@ namespace InsuranceClaim.Controllers
                 //}
 
 
+
+                if (Corporate == "")
+                {
+                    model.IsCorporate = true;
+                    model.EmailAddress = model.CompanyEmail;
+                    model.CompanyEmail = model.CompanyEmail;
+
+                    model.FirstName = model.CompanyName;
+                    model.CompanyName = model.CompanyName;
+
+                    model.AddressLine1 = model.CompanyAddress;
+                    model.CompanyAddress = model.CompanyAddress;
+
+                    model.PhoneNumber = model.CompanyPhone;
+                    model.CompanyPhone = model.CompanyPhone;
+
+                    model.CompanyCity = model.CompanyCity;
+                    model.City = model.CompanyCity;
+
+                    model.CompanyBusinessId = model.CompanyBusinessId;
+
+                }
+
+
+
+
+
                 ctems.CustomerId = model.CustomerId;
                 ctems.Id = ctems.Id;
                 ctems.AddressLine1 = model.AddressLine1;
@@ -543,6 +583,21 @@ namespace InsuranceClaim.Controllers
                 ctems.IsPolicyDocSent = model.IsPolicyDocSent;
                 ctems.IsWelcomeNoteSent = model.IsWelcomeNoteSent;
                 ctems.PhoneNumber = model.PhoneNumber;
+
+
+                if (model.IsCorporate)
+                {
+                    ctems.IsCorporate = true;
+                    ctems.CompanyName = model.CompanyName;
+                    ctems.CompanyEmail = model.CompanyEmail;
+                    ctems.CompanyAddress = model.CompanyAddress;
+                    ctems.CompanyPhone = model.CompanyPhone;
+                    ctems.CompanyCity = model.CompanyCity;
+                    ctems.CompanyBusinessId = model.CompanyBusinessId;
+                    ctems.LastName = " ";
+                }
+
+
 
                 ctems.AgentWhatsapp = model.AgentWhatsapp;
                 InsuranceContext.Customers.Update(ctems);
