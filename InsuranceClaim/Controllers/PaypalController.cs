@@ -1275,32 +1275,32 @@ namespace InsuranceClaim.Controllers
 
                             // InsuranceID is null
 
-                            if (InsuranceID == null)
-                            {
-                                iceCash.getToken();
+                            //if (InsuranceID == null)
+                            //{
+                            //    iceCash.getToken();
 
-                                if (Session["ICEcashToken"] != null)
-                                    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
-
-
-
-                                List<RiskDetailModel> objVehicles = new List<RiskDetailModel>();
-                                //objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo });
-                                objVehicles.Add(new RiskDetailModel { RegistrationNo = vichelDetails.RegistrationNo, PaymentTermId = Convert.ToInt32(vichelDetails.PaymentTermId) });
-                                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                            //    if (Session["ICEcashToken"] != null)
+                            //        tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
 
 
-                                ResultRootObject quoteresponse = iceCash.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
 
-                                // if partern token expire
-                                if (quoteresponse.Response.Result != 0)
-                                {
-                                    if (quoteresponse.Response.Quotes[0] != null)
-                                    {
-                                        vichelDetails.InsuranceId = quoteresponse.Response.Quotes[0].InsuranceID;
-                                    }
-                                }
-                            }
+                            //    List<RiskDetailModel> objVehicles = new List<RiskDetailModel>();
+                            //    //objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo });
+                            //    objVehicles.Add(new RiskDetailModel { RegistrationNo = vichelDetails.RegistrationNo, PaymentTermId = Convert.ToInt32(vichelDetails.PaymentTermId) });
+                            //    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+
+
+                            //    ResultRootObject quoteresponse = iceCash.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
+
+                            //    // if partern token expire
+                            //    if (quoteresponse.Response.Result != 0)
+                            //    {
+                            //        if (quoteresponse.Response.Quotes[0] != null)
+                            //        {
+                            //            vichelDetails.InsuranceId = quoteresponse.Response.Quotes[0].InsuranceID;
+                            //        }
+                            //    }
+                            //}
 
                             // end is null
                             customerDetails = InsuranceContext.Customers.Single(vichelDetails.CustomerId);
@@ -1323,27 +1323,16 @@ namespace InsuranceClaim.Controllers
                         if (vichelDetails != null && vichelDetails.InsuranceId != null)
                         {
 
-                            //if (Session["ICEcashToken"] != null)
-                            //{
-                            //    var icevalue = (ICEcashTokenResponse)Session["ICEcashToken"];
-                            //    string format = "yyyyMMddHHmmss";
-                            //    var IceDateNowtime = DateTime.Now;
-                            //    var IceExpery = DateTime.ParseExact(icevalue.Response.ExpireDate, format, CultureInfo.InvariantCulture);
-                            //    if (IceDateNowtime > IceExpery)
-                            //    {
-                            //        iceCash.getToken();
-                            //    }
-                            //    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
-                            //}
-                            //else
-                            //{
-                            iceCash.getToken();
-                            tokenObject = (ICEcashTokenResponse)HttpContext.Session["ICEcashToken"];
-                            //}
+                           
+                           // iceCash.getToken();
 
+                            if(Session["ICEcashToken"]!=null)
+                            {
+                                tokenObject = (ICEcashTokenResponse)HttpContext.Session["ICEcashToken"];
+                                PartnerToken = tokenObject.Response.PartnerToken;
+                            }
+                            
 
-
-                            PartnerToken = tokenObject.Response.PartnerToken;
 
                             ResultRootObject quoteresponse = ICEcashService.TPIQuoteUpdate(customerDetails, vichelDetails, PartnerToken, paymentMethod);
 
@@ -1374,7 +1363,6 @@ namespace InsuranceClaim.Controllers
 
                             if (res.Response != null && res.Response.Message == "Policy Retrieved")
                             {
-
                                 //if (res.Response.Status == "Approved")
                                 //{
                                     result = res.Response.Status;

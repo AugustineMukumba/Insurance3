@@ -392,7 +392,7 @@ namespace InsuranceClaim.Controllers
 
             ViewBag.Products = InsuranceContext.Products.All(where: "Active = 'True' or Active is null").ToList();
 
-            ViewBag.TaxClass = InsuranceContext.VehicleTaxClasses.All().ToList().Take(7);
+            ViewBag.TaxClass = InsuranceContext.VehicleTaxClasses.All().ToList();
 
             //var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm))
             //                       select new
@@ -623,6 +623,21 @@ namespace InsuranceClaim.Controllers
         public ActionResult GenerateQuote(RiskDetailModel model, string btnAddVehicle = "")
         {
 
+            if (CheckIsVrnAlreadyExist(model.RegistrationNo))
+            {
+                model.ErrorMessage = "Vehicle Registration number already exist.";
+                TempData["ViewModel"] = model;
+
+                if (User.IsInRole("Staff"))
+                    return RedirectToAction("RiskDetail", "ContactCentre", new { id = 1 });
+                else
+                    return RedirectToAction("RiskDetail", new { id = 1 });           
+            }
+
+
+
+
+
             if (model.NumberofPersons == null)
             {
                 model.NumberofPersons = 0;
@@ -646,8 +661,6 @@ namespace InsuranceClaim.Controllers
 
 
             ModelState.Remove("SumInsured");
-
-
 
 
             if (model.isUpdate)
@@ -775,10 +788,6 @@ namespace InsuranceClaim.Controllers
 
                         }
 
-
-
-
-
                         if (User.IsInRole("Staff"))
                         {
                             return RedirectToAction("RiskDetail", "ContactCentre", new { id = 0 });
@@ -847,6 +856,28 @@ namespace InsuranceClaim.Controllers
                 }
             }
         }
+
+        public bool CheckIsVrnAlreadyExist(string vrn)
+        {
+
+            bool result = false;
+
+            var query = "select VehicleDetail.RegistrationNo from VehicleDetail join SummaryVehicleDetail on VehicleDetail.Id=SummaryVehicleDetail.VehicleDetailsId ";
+            query += " join SummaryDetail on SummaryVehicleDetail.SummaryDetailId = SummaryDetail.Id where RegistrationNo = '" + vrn + "' and SummaryDetail.isQuotation <> 1";
+
+
+            var list = InsuranceContext.Query(query).Select(x => new VehicleDetail()
+            {
+                RegistrationNo = x.RegistrationNo
+            }).ToList();
+            if (list.Count > 0)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+
 
 
         public void WriteLog(string error)
@@ -2561,8 +2592,8 @@ namespace InsuranceClaim.Controllers
             }
 
             bool isAgentStaff = User.IsInRole("AgentStaff");
-        
-            var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover, eexcessType, excess, policytermid, AddThirdPartyAmount, NumberofPersons, Addthirdparty, PassengerAccidentCover, ExcessBuyBack, RoadsideAssistance, MedicalExpenses, RadioLicenseCost, IncludeRadioLicenseCost, isVehicleRegisteredonICEcash, BasicPremium, StampDuty, ZTSCLevy, ProductId, vehicleStartDate , vehicleEndDate , manufacturerYear, isAgentStaff);
+
+            var premium = quote.CalculatePremium(vehicleUsageId, sumInsured, typeCover, eexcessType, excess, policytermid, AddThirdPartyAmount, NumberofPersons, Addthirdparty, PassengerAccidentCover, ExcessBuyBack, RoadsideAssistance, MedicalExpenses, RadioLicenseCost, IncludeRadioLicenseCost, isVehicleRegisteredonICEcash, BasicPremium, StampDuty, ZTSCLevy, ProductId, vehicleStartDate, vehicleEndDate, manufacturerYear, isAgentStaff);
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             json.Data = premium;
             return json;
@@ -2574,6 +2605,7 @@ namespace InsuranceClaim.Controllers
             JsonResult json = new JsonResult();
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             json.Data = false;
+          
 
             var list = (List<RiskDetailModel>)Session["VehicleDetails"];
 
@@ -2989,42 +3021,16 @@ namespace InsuranceClaim.Controllers
                 #region get ICE cash token
                 Session["InsuranceId"] = null;
 
-                var icevalue = (ICEcashTokenResponse)Session["ICEcashToken"];
-                string format = "yyyyMMddHHmmss";
-                var IceDateNowtime = DateTime.Now;
-                var IceExpery = DateTime.ParseExact(icevalue.Response.ExpireDate, format, CultureInfo.InvariantCulture);
+                //var icevalue = (ICEcashTokenResponse)Session["ICEcashToken"];
+                //string format = "yyyyMMddHHmmss";
+                //var IceDateNowtime = DateTime.Now;
+                //var IceExpery = DateTime.ParseExact(icevalue.Response.ExpireDate, format, CultureInfo.InvariantCulture);
 
-                //if (Session["ICEcashToken"] != null && IceDateNowtime < IceExpery)
-                //{
-                //    //ICEcashService.getToken();
-                //    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
-                //}
-                //else
-                //{
-                //    ICEcashService.getToken();
-                //    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
-                //}
+
 
 
                 ICEcashService.getToken();
                 tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
-
-                //if (Session["ICEcashToken"] != null) 
-                //{
-                //    if (IceDateNowtime > IceExpery)
-                //    {
-                //        ICEcashService.getToken();
-                //    }
-
-                //    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
-                //}
-                //else
-                //{
-                //    ICEcashService.getToken();
-                //    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
-                //}
-
-
 
                 #endregion
 
@@ -3059,10 +3065,10 @@ namespace InsuranceClaim.Controllers
 
                     response.result = quoteresponse.Response.Result;
 
-                   
 
 
-                        if (response.result == 0)
+
+                    if (response.result == 0)
                     {
                         response.message = quoteresponse.Response.Quotes[0].Message;
                     }

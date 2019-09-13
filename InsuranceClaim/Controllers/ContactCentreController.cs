@@ -21,6 +21,9 @@ namespace InsuranceClaim.Controllers
         public ActionResult RiskDetail(int? id = 1)
         {
             // summaryDetailId: it's represent to Qutation edit
+         
+
+
 
             if (Session["SummaryDetailId"] != null)
             {
@@ -36,38 +39,15 @@ namespace InsuranceClaim.Controllers
             }
 
 
-            ViewBag.Products = InsuranceContext.Products.All(where: "Active = 'True' or Active is Null").ToList();
-          
-            ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All(where: "IsActive = 'True' or IsActive is Null").ToList();
-
-
-            ViewBag.TaxClass = InsuranceContext.VehicleTaxClasses.All().ToList().Take(7);
-
-            var eExcessTypeData = from eExcessType e in Enum.GetValues(typeof(eExcessType))
-                                  select new
-                                  {
-                                      ID = (int)e,
-                                      Name = e.ToString()
-                                  };
-
-            ViewBag.eExcessTypeData = new SelectList(eExcessTypeData, "ID", "Name");
-
-            int RadioLicenseCosts = 0;
-          //  int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
-            var PolicyData = (PolicyDetail)Session["PolicyData"];
-            //Id is policyid from Policy detail table
-            var viewModel = new RiskDetailModel();
             var service = new VehicleService();
-
+            var viewModel = new RiskDetailModel();
             ViewBag.VehicleUsage = service.GetAllVehicleUsage();
-
-            viewModel.VehicleUsage = 0;
-            viewModel.NumberofPersons = 0;
-            viewModel.AddThirdPartyAmount = 0.00m;
-            viewModel.RadioLicenseCost = Convert.ToDecimal(RadioLicenseCosts);
+            ViewBag.Products = InsuranceContext.Products.All(where: "Active = 'True' or Active is Null").ToList();
+            ViewBag.PaymentTermId = InsuranceContext.PaymentTerms.All(where: "IsActive = 'True' or IsActive is Null").ToList();
+            ViewBag.TaxClass = InsuranceContext.VehicleTaxClasses.All().ToList();
+            ViewBag.AgentCommission = service.GetAgentCommission();
             var makers = service.GetMakers();
             ViewBag.CoverType = service.GetCoverType();
-            ViewBag.AgentCommission = service.GetAgentCommission();
 
 
             var data1 = (from p in InsuranceContext.BusinessSources.All().ToList()
@@ -89,23 +69,52 @@ namespace InsuranceClaim.Controllers
             }
             ViewBag.Sources = new SelectList(listdata, "Value", "Text");
             //ViewBag.Sources = InsuranceContext.BusinessSources.All();
-
-            ViewBag.Currencies = InsuranceContext.Currencies.All(where: $"IsActive = 'True'" );
-
+            ViewBag.Currencies = InsuranceContext.Currencies.All(where: $"IsActive = 'True'");
             // viewModel.CurrencyId = 7; // default "RTGS$" selected // for test server
-
             viewModel.CurrencyId = 6; // default "RTGS$" selected // for live server
-
-
             ViewBag.Makers = makers;
-            viewModel.isUpdate = false;
-            //TempData["Policy"] = service.GetPolicy(id);
+
             if (makers.Count > 0)
             {
                 var model = service.GetModel(makers.FirstOrDefault().MakeCode);
                 ViewBag.Model = model;
-
             }
+
+
+            var eExcessTypeData = from eExcessType e in Enum.GetValues(typeof(eExcessType))
+                                  select new
+                                  {
+                                      ID = (int)e,
+                                      Name = e.ToString()
+                                  };
+
+            ViewBag.eExcessTypeData = new SelectList(eExcessTypeData, "ID", "Name");
+            if (TempData["ViewModel"] != null)
+            {
+                viewModel = (RiskDetailModel)TempData["ViewModel"];
+                return View(viewModel);
+            }
+
+
+
+            int RadioLicenseCosts = 0;
+          // int RadioLicenseCosts = Convert.ToInt32(InsuranceContext.Settings.All().Where(x => x.keyname == "RadioLicenseCost").Select(x => x.value).FirstOrDefault());
+            var PolicyData = (PolicyDetail)Session["PolicyData"];
+            //Id is policyid from Policy detail table
+          //  var viewModel = new RiskDetailModel();
+           
+           
+
+            viewModel.VehicleUsage = 0;
+            viewModel.NumberofPersons = 0;
+            viewModel.AddThirdPartyAmount = 0.00m;
+            viewModel.RadioLicenseCost = Convert.ToDecimal(RadioLicenseCosts);
+           
+          
+        
+            viewModel.isUpdate = false;
+            //TempData["Policy"] = service.GetPolicy(id);
+            
 
             viewModel.NoOfCarsCovered = 1;
             if (Session["VehicleDetails"] != null)

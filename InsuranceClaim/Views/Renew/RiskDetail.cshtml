@@ -177,6 +177,18 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 form-group-select">
+                                            <div class="form-group">
+                                                @Html.Label("TaxClass", new { @class = "gender-label" })
+                                                @Html.DropDownListFor(x => x.TaxClassId, new SelectList(ViewBag.TaxClass, "TaxClassId", "Description"), "Select Tax Class", new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(x => x.TaxClassId, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6 form-group-text">
                                             <div class="form-group">
@@ -953,6 +965,21 @@
     });
 
 
+    function CalculatePremiumByCoverType()
+    {
+        if ($("#PaymentTermId").val() != "" && $("#ProductId").val() != "" && $("#RegistrationNo").val() != "" && $("#CoverTypeId").val()!="" && $("#TaxClassId").val()!="" ) 
+        {
+            var coverytype = $('#CoverTypeId option:selected').val();    
+            if (coverytype != 4) {          
+                generateQuotewithICEcash();        
+            }
+            else {
+                QuoteCalculation();
+            }
+        } 
+    }
+
+
 
 
     $(document).ready(function () {
@@ -1272,18 +1299,13 @@
 
         $("#ProductId").change(function () {
             GetVehicleUsage();
+            GetVehicleTaxClass($("#ProductId").val());
 
             if ($("fieldset").attr("disabled") == "disabled") {
-                if ($("#PaymentTermId").val() != "" && $("#ProductId").val() != "" && $("#RegistrationNo").val() != "") {
-                    checkVRNwithICEcash();
-                }
-                else{
-                    toastr.warning("Please Select Valid Payment Term And Vehicle Type And Vehicle Registeration Number.");
-                }
+                CalculatePremiumByCoverType();
             }
 
             GetRadioLicenseCost();
-
 
             if ($("#PaymentTermId").val() != "" && $("#ProductId").val() != "" && $("#RegistrationNo").val() != "" && $("#CoverTypeId").val()!="") {
                 QuoteCalculation();
@@ -1312,12 +1334,7 @@
                         }
                         else
                         {
-                            if ($("#PaymentTermId").val() != "" && $("#ProductId").val() != "" && $("#RegistrationNo").val() != "") {
-                                checkVRNwithICEcash();
-                            }
-                            else{
-                                toastr.warning("Please Select Valid Payment Term And Vehicle Type And Vehicle Registeration Number.");
-                            }
+                            CalculatePremiumByCoverType();
 
                         }
                     },
@@ -1332,12 +1349,7 @@
             }
             else
             {
-                if ($("#PaymentTermId").val() != "" && $("#ProductId").val() != "" && $("#RegistrationNo").val() != "") {
-                    checkVRNwithICEcash();
-                }
-                else{
-                    toastr.warning("Please Select Valid Payment Term And Vehicle Type And Vehicle Registeration Number.");
-                }
+                CalculatePremiumByCoverType();
             }
         });
 
@@ -1447,6 +1459,32 @@
             }
         });
     }
+
+
+    function GetVehicleTaxClass(productId)
+    {
+        $.ajax({
+            url: "@Url.Action("GetVehicleTaxClass", "CustomerRegistration")",
+            type: "POST",
+        data: { vehicleTypeId: productId},
+        dataType: "json",
+        success: function (result) {
+            debugger;
+            var $dropdown = $("#TaxClassId");
+            $dropdown.empty();
+            $dropdown.append($("<option />").val("").text("Select Tax Class"));
+            $.each(result, function () {
+                $dropdown.append($("<option />").val(this.TaxClassId).text(this.Description));
+            });
+
+            var taxClassId = @Model.TaxClassId;
+            if (taxClassId != "") {
+                $('#TaxClassId').val(taxClassId);
+            }
+        }
+    });
+    }
+
 
     function checkVRNwithICEcash() {
 
@@ -1583,6 +1621,7 @@
                         //$("#ProductId").removeClass("inputDisabled")
                         $(".loading-area").hide();
                         $("#InsuranceId").val("");
+                        $("#isVehicleRegisteredonICEcash").val(0);
                     }
                     if (data.result == 1) {
 
@@ -1610,6 +1649,7 @@
 
                         $("#stampDutyICEcash").val(parseFloat(StampDuty).toFixed(2))
                         $("#LevyICEcash").val(parseFloat(GovernmentLevy).toFixed(2))
+                        $("#isVehicleRegisteredonICEcash").val(1);
                         QuoteCalculation()
                         $(".loading-area").hide();
                     }
@@ -1657,6 +1697,11 @@
             }
         });
     }
+
+    $("#TaxClassId").change(function() {        
+        CalculatePremiumByCoverType();
+    });
+
 
 
 
@@ -1921,18 +1966,13 @@
         if (coverytype != 4) {
             $("#thridparty").hide();
             $("#divSumInsured").hide();
+            CalculatePremiumByCoverType();
         }
         else {
             $("#thridparty").show();
             $("#divSumInsured").show();
-        }
-
-        if ($("#isVehicleRegisteredonICEcash").val() == "1") {
-            generateQuotewithICEcash();
-        }
-        else{
             QuoteCalculation();
-        }
+        }   
     });
 
 

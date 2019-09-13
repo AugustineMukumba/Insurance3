@@ -614,6 +614,7 @@ namespace InsuranceClaim.Controllers
             var service = new VehicleService();
 
             ViewBag.VehicleUsage = service.GetAllVehicleUsage();
+            ViewBag.TaxClass = InsuranceContext.VehicleTaxClasses.All().ToList();
 
             viewModels.NumberofPersons = 0;
             viewModels.AddThirdPartyAmount = 0.00m;
@@ -752,6 +753,8 @@ namespace InsuranceClaim.Controllers
 
 
                     viewModels.IsPolicyExpire = RiskDetail.IsPolicyExpire;
+                    viewModels.TaxClassId = RiskDetail.TaxClassId;
+
 
                     var ser = new VehicleService();
                     var model = ser.GetModel(RiskDetail.MakeId);
@@ -845,6 +848,7 @@ namespace InsuranceClaim.Controllers
 
                         viewModels.BusinessSourceDetailId = data.BusinessSourceDetailId;
                         viewModels.CurrencyId = data.CurrencyId;
+                        viewModels.TaxClassId = data.TaxClassId;
 
                         var ser = new VehicleService();
                         var model = ser.GetModel(data.MakeId);
@@ -3159,34 +3163,38 @@ namespace InsuranceClaim.Controllers
                 ICEcashService iceCash = new ICEcashService();
 
 
-                iceCash.getToken();
-                tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
-                PartnerToken = tokenObject.Response.PartnerToken;
-
-
-                List<RiskDetailModel> objVehicles = new List<RiskDetailModel>();
-                //objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo });
-                objVehicles.Add(new RiskDetailModel { RegistrationNo = vichelDetails.RegistrationNo, PaymentTermId = Convert.ToInt32(vichelDetails.PaymentTermId), CoverTypeId = vichelDetails.CoverTypeId, ProductId = vichelDetails.ProductId, MakeId = vichelDetails.MakeId, ModelId = vichelDetails.ModelId, TaxClassId = vichelDetails.TaxClassId, VehicleYear = vichelDetails.VehicleYear });
-
-
-
-
-                ResultRootObject VehicalQuoteresponse = iceCash.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
-
-
-                if (VehicalQuoteresponse.Response != null && VehicalQuoteresponse.Response.Message.Contains("Partner Token has expired"))
+               // iceCash.getToken();
+               if(Session["ICEcashToken"]!=null)
                 {
-                    iceCash.getToken();
                     tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
-                    VehicalQuoteresponse = iceCash.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
+                    PartnerToken = tokenObject.Response.PartnerToken;
+                }
+              
 
-                    log.WriteLog(DateTime.Now.ToShortDateString());
-                    log.WriteLog("checkVehicleExists :" + VehicalQuoteresponse.Response.Message);
-                }
-                else if (VehicalQuoteresponse.Response.Quotes != null)
-                {
-                    vichelDetails.InsuranceId = VehicalQuoteresponse.Response.Quotes[0].InsuranceID;
-                }
+
+                //List<RiskDetailModel> objVehicles = new List<RiskDetailModel>();
+                ////objVehicles.Add(new RiskDetailModel { RegistrationNo = regNo });
+                //objVehicles.Add(new RiskDetailModel { RegistrationNo = vichelDetails.RegistrationNo, PaymentTermId = Convert.ToInt32(vichelDetails.PaymentTermId), CoverTypeId = vichelDetails.CoverTypeId, ProductId = vichelDetails.ProductId, MakeId = vichelDetails.MakeId, ModelId = vichelDetails.ModelId, TaxClassId = vichelDetails.TaxClassId, VehicleYear = vichelDetails.VehicleYear });
+
+
+
+
+                //ResultRootObject VehicalQuoteresponse = iceCash.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
+
+
+                //if (VehicalQuoteresponse.Response != null && VehicalQuoteresponse.Response.Message.Contains("Partner Token has expired"))
+                //{
+                //    iceCash.getToken();
+                //    tokenObject = (ICEcashTokenResponse)Session["ICEcashToken"];
+                //    VehicalQuoteresponse = iceCash.checkVehicleExists(objVehicles, tokenObject.Response.PartnerToken, tokenObject.PartnerReference);
+
+                //    log.WriteLog(DateTime.Now.ToShortDateString());
+                //    log.WriteLog("checkVehicleExists :" + VehicalQuoteresponse.Response.Message);
+                //}
+                //else if (VehicalQuoteresponse.Response.Quotes != null)
+                //{
+                //    vichelDetails.InsuranceId = VehicalQuoteresponse.Response.Quotes[0].InsuranceID;
+                //}
 
                 if (!string.IsNullOrEmpty(vichelDetails.InsuranceId))
                 {

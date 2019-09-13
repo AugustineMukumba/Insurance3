@@ -128,5 +128,7 @@ namespace InsuranceClaim.Models
 
         public bool IsPolicyExpire { get; set; }
 
+        public string ErrorMessage { get; set; }
+
     }
 }

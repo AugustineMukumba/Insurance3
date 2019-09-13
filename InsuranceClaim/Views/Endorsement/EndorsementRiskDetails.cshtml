@@ -691,12 +691,7 @@
     function gotoPeriviouse(summaryDetailsId) {
         debugger;
         // redirectToEndorseCustomer();
-
-
-
         window.location.href = "/Endorsement/EndorsementDetials?summaryId="+summaryDetailsId + "&endorback="+-1  ;
-
-
     }
 
     function cancelUpdate() {
@@ -706,8 +701,6 @@
     function redirectToSummary() {
         location.href = '@Url.Action("SummaryDetail", "CustomerRegistration")';
     }
-
-
 
 
     function redirectToEndorseCustomer(){
@@ -1693,8 +1686,6 @@
             excessType = parseInt($("#ExcessType").val());
         }
 
-
-
         var excess;
         if ($("#Excess").val() == "") {
             excess = 0;
@@ -1702,6 +1693,8 @@
         else {
             excess = parseFloat($("#Excess").val())
         }
+
+
         var AddThirdPartyAmount = parseFloat($("#AddThirdPartyAmount").val());
         var NumberofPersons = parseInt($("#NumberofPersons").val());
         var PassengerAccidentCover = $("#PassengerAccidentCover").is(":checked");
